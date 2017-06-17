@@ -21,6 +21,9 @@ class Engine {
     return new LXPattern[] {
       new StaticRainbowPattern(lx), 
       new BasicAnimationPattern(lx),
+      new RainbowZPattern(lx),
+      new OrientationTestPattern(lx),
+      new IndexTestPattern(lx),
     };
   }
 
