@@ -14,18 +14,74 @@ apply plugin: 'application'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
+    mavenCentral()
     jcenter()
 }
 
+sourceSets {
+    lx {
+        java {
+            srcDirs = ['lib_submodules/LX/src']
+        }
+    }
+
+    p3lx {
+        java {
+            srcDirs = ['lib_submodules/P3LX/src']
+        }
+    }
+
+    blinkyDome {
+        java {
+            srcDirs = ['src/blinkyDome']
+        }
+    }
+}
+
+
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
-    compile 'com.google.guava:guava:21.0'
+    blinkyDomeCompile 'com.google.guava:guava:21.0'
+
+    // https://mvnrepository.com/artifact/org.processing/core
+    blinkyDomeCompile group: 'org.processing', name: 'core', version: '3.3.4'
+
+    blinkyDomeCompile sourceSets.lx.output
+    blinkyDomeCompile sourceSets.p3lx.output
+
+
+    // LX dependencies
+    // ---------------------------------------------------
+    // LX isn't published on any repo, so it just lives in lib_submodules/LX as a git submodule
+    // But let gradle manage its depedencies
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    lxCompile 'com.google.code.gson:gson:2.8.1'
+
+    // https://mvnrepository.com/artifact/uk.co.xfactory-librarians/coremidi4j
+    lxCompile 'uk.co.xfactory-librarians:coremidi4j:1.0'
+
+    p3lxCompile group: 'org.processing', name: 'core', version: '3.3.4'
+    p3lxCompile sourceSets.lx.output
+
+
+    // Standard dependencies
+    // ---------------------------------------------------
+
+    compile sourceSets.blinkyDome.output
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
+
+// Task to build LX jar
+//task lxJar(type: Jar) {
+//    from sourceSets.lx.output
+//    manifest {
+//        attributes 'Implementation-Title': 'LX',
+//                'Implementation-Version': 'HEAD'
+//    }
+//}
 
 // Define the main class for the application
 mainClassName = 'App'
