@@ -24,6 +24,8 @@ class Engine {
       new RainbowZPattern(lx),
       new OrientationTestPattern(lx),
       new IndexTestPattern(lx),
+      new SubindexTestPattern(lx),
+      new LayerTestPattern(lx),
     };
   }
 

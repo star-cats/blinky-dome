@@ -117,7 +117,6 @@ class RainbowZPattern extends Pattern {
 
   public void run(double deltaMs) {
     int c;
-    // Fade around base with saw wave
     for (LED led : leds) {
       c = lx.hsb(led.z/196 * 360 + globalFade.getValuef(), 100, 80);
       setLEDColor(led, c);
@@ -127,16 +126,12 @@ class RainbowZPattern extends Pattern {
 
 class OrientationTestPattern extends Pattern {
 
-  SinLFO globalFade = new SinLFO(0, 360, 10000);
-
   OrientationTestPattern(LX lx) {
     super(lx);
-    //this.addModulator(globalFade).start();
   }
 
   public void run(double deltaMs) {
     int c;
-    // Fade around base with saw wave
     for (LED led : leds) {
       c = lx.hsb(led.pointsUp ? 0 : 180, 100, 80);
       setLEDColor(led, c);
@@ -146,18 +141,44 @@ class OrientationTestPattern extends Pattern {
 
 class IndexTestPattern extends Pattern {
 
-  SinLFO globalFade = new SinLFO(0, 360, 10000);
-
   IndexTestPattern(LX lx) {
     super(lx);
-    //this.addModulator(globalFade).start();
   }
 
   public void run(double deltaMs) {
     int c;
-    // Fade around base with saw wave
+    for (LED led : leds) {
+      c = lx.hsb(led.triangleIndex * 20, 100, 80);
+      setLEDColor(led, c);
+    }
+  }
+}
+
+class SubindexTestPattern extends Pattern {
+
+  SubindexTestPattern(LX lx) {
+    super(lx);
+  }
+
+  public void run(double deltaMs) {
+    int c;
     for (LED led : leds) {
       c = lx.hsb(led.triangleSubindex * 20, 100, 80);
+      setLEDColor(led, c);
+    }
+  }
+}
+
+class LayerTestPattern extends Pattern {
+
+  LayerTestPattern(LX lx) {
+    super(lx);
+  }
+
+  public void run(double deltaMs) {
+    int c;
+    for (LED led : leds) {
+      c = lx.hsb(led.layer * 50, 100, 80);
       setLEDColor(led, c);
     }
   }

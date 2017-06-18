@@ -35,6 +35,7 @@ class LED extends LXPoint {
   final int ledIndex;
   final boolean pointsUp;
   final float x, y, z;
+  final int layer;
 
   LED(TableRow row) {
     super(row.getFloat("x"), row.getFloat("z"), -row.getFloat("y"));
@@ -47,5 +48,6 @@ class LED extends LXPoint {
     this.triangleSubindex = row.getInt("sub_index");
     this.ledIndex = row.getInt("led_num");
     this.pointsUp = row.getInt("points_up") == 0;
+    this.layer = row.getInt("layer");
   }
 }
