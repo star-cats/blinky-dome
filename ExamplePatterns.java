@@ -119,7 +119,7 @@ class RainbowZPattern extends Pattern {
     int c;
     // Fade around base with saw wave
     for (LED led : leds) {
-      c = lx.hsb(led.y/196 * 360 + globalFade.getValuef(), 100, 80);
+      c = lx.hsb(led.z/196 * 360 + globalFade.getValuef(), 100, 80);
       setLEDColor(led, c);
     }
   }
