@@ -29,6 +29,9 @@ sourceSets {
         java {
             srcDirs = ['lib_submodules/P3LX/src']
         }
+        resources {
+            srcDirs = ['lib_submodules/P3LX/data/']
+        }
     }
 
     blinkyDome {
@@ -40,14 +43,20 @@ sourceSets {
 
 
 dependencies {
-    // This dependency is found on compile classpath of this component and consumers.
     blinkyDomeCompile 'com.google.guava:guava:21.0'
 
     // https://mvnrepository.com/artifact/org.processing/core
     blinkyDomeCompile group: 'org.processing', name: 'core', version: '3.3.4'
 
+    // Processing maven repo is missing jogl native jars.  They're brought in with the jogl-all-main
+    blinkyDomeCompile group: 'org.jogamp.jogl', name: 'jogl-all-main', version: '2.3.2'
+
     blinkyDomeCompile sourceSets.lx.output
     blinkyDomeCompile sourceSets.p3lx.output
+
+    // lx's runtime dependencies (TODO: is there a better Gradle Way of including these?)
+    blinkyDomeRuntime 'com.google.code.gson:gson:2.8.1'
+    blinkyDomeRuntime 'uk.co.xfactory-librarians:coremidi4j:1.0'
 
 
     // LX dependencies
@@ -62,6 +71,8 @@ dependencies {
     lxCompile 'uk.co.xfactory-librarians:coremidi4j:1.0'
 
     p3lxCompile group: 'org.processing', name: 'core', version: '3.3.4'
+    p3lxCompile group: 'org.processing', name: 'video', version: '3.2.3'
+    p3lxCompile 'com.google.code.gson:gson:2.8.1'
     p3lxCompile sourceSets.lx.output
 
 
