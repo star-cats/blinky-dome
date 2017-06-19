@@ -1,0 +1,43 @@
+// Build fatjars
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['git_submodule/src']
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": "lx",
+                "Implementation-Version": "HEAD"
+        )
+    }
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    compile 'com.google.code.gson:gson:2.8.1'
+
+    // https://mvnrepository.com/artifact/uk.co.xfactory-librarians/coremidi4j
+    compile 'uk.co.xfactory-librarians:coremidi4j:1.0'
+}

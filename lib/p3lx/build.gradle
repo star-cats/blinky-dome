@@ -1,0 +1,46 @@
+// Build fatjars
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['git_submodule/src']
+        }
+        resources {
+            srcDirs = ['git_submodule/data/']
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": "p3lx",
+                "Implementation-Version": "HEAD"
+        )
+    }
+}
+
+dependencies {
+    compile project(':lib:lx')
+
+    // Need processing to compile, but don't include it in fatjar -- downstream should bring it in
+    shadow group: 'org.processing', name: 'video', version: '3.2.3'
+    shadow group: 'org.processing', name: 'core', version: '3.3.4'
+}

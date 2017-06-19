@@ -6,94 +6,54 @@
  * user guide available at https://docs.gradle.org/4.0/userguide/tutorial_java_projects.html
  */
 
-// Apply the java plugin to add support for Java
-apply plugin: 'java'
-
-// Apply the application plugin to add support for building an application
-apply plugin: 'application'
-
-// In this section you declare where to find the dependencies of your project
-repositories {
-    mavenCentral()
-    jcenter()
+// Build fatjars (bundle all dependencies into single executable jar)
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+    }
 }
 
-sourceSets {
-    lx {
-        java {
-            srcDirs = ['lib_submodules/LX/src']
-        }
-    }
+apply plugin: 'com.github.johnrengelman.shadow'
 
-    p3lx {
-        java {
-            srcDirs = ['lib_submodules/P3LX/src']
-        }
-        resources {
-            srcDirs = ['lib_submodules/P3LX/data/']
-        }
-    }
+apply plugin: 'java'
 
-    blinkyDome {
-        java {
-            srcDirs = ['src/blinkyDome']
-        }
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes("Implementation-Title": "blinky-dome",
+                "Implementation-Version": "1.0",
+                "Main-Class": "com.github.starcats.blinkydome.AppGui")
     }
 }
 
 
 dependencies {
-    blinkyDomeCompile 'com.google.guava:guava:21.0'
+
+    compile project(':lib:lx')
+    compile project(':lib:p3lx')
+
+    //compile 'com.google.guava:guava:21.0'
 
     // https://mvnrepository.com/artifact/org.processing/core
-    blinkyDomeCompile group: 'org.processing', name: 'core', version: '3.3.4'
+    compile group: 'org.processing', name: 'core', version: '3.3.4'
 
     // Processing maven repo is missing jogl native jars.  They're brought in with the jogl-all-main
-    blinkyDomeCompile group: 'org.jogamp.jogl', name: 'jogl-all-main', version: '2.3.2'
+    runtime group: 'org.jogamp.jogl', name: 'jogl-all-main', version: '2.3.2'
 
-    blinkyDomeCompile sourceSets.lx.output
-    blinkyDomeCompile sourceSets.p3lx.output
-
-    // lx's runtime dependencies (TODO: is there a better Gradle Way of including these?)
-    blinkyDomeRuntime 'com.google.code.gson:gson:2.8.1'
-    blinkyDomeRuntime 'uk.co.xfactory-librarians:coremidi4j:1.0'
-
-
-    // LX dependencies
-    // ---------------------------------------------------
-    // LX isn't published on any repo, so it just lives in lib_submodules/LX as a git submodule
-    // But let gradle manage its depedencies
-
-    // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    lxCompile 'com.google.code.gson:gson:2.8.1'
-
-    // https://mvnrepository.com/artifact/uk.co.xfactory-librarians/coremidi4j
-    lxCompile 'uk.co.xfactory-librarians:coremidi4j:1.0'
-
-    p3lxCompile group: 'org.processing', name: 'core', version: '3.3.4'
-    p3lxCompile group: 'org.processing', name: 'video', version: '3.2.3'
-    p3lxCompile 'com.google.code.gson:gson:2.8.1'
-    p3lxCompile sourceSets.lx.output
-
-
-    // Standard dependencies
-    // ---------------------------------------------------
-
-    compile sourceSets.blinkyDome.output
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
 
-// Task to build LX jar
-//task lxJar(type: Jar) {
-//    from sourceSets.lx.output
-//    manifest {
-//        attributes 'Implementation-Title': 'LX',
-//                'Implementation-Version': 'HEAD'
-//    }
-//}
 
 // Define the main class for the application
-mainClassName = 'App'
+mainClassName = 'com.github.starcats.blinkydome.AppGui'
 

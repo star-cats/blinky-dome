@@ -9,10 +9,6 @@ Dependencies:
   - Note: We do NOT use the Processing IDE or even a Processing sketch layout.  This project is pure Java, only using
     Processing for utilities and since P3LX is built on it.  Welcome to grown-up software.
 
-# Setup for New Developers
-Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that itegrates Gradle builds
-should work.
-
 ## Checkout Instructions (Git Submodules)
 We depend on LX and P3LX, which do not follow any release/publishing process.  This project is configured to build them
  from source, which means their source needs to be checked out.  These dependencies are linked as
@@ -32,6 +28,28 @@ latest HEAD checkouts (they don't do any git tags or release branches).  If they
 If you run into weird LX or P3LX compile errors, try checking out a previous version of them.  As of June 18 2017, try:
   - LX: `git checkout ff98f6d54`
   - P3LX: `git checkout 9096d47b7`
+
+# Run / Deploy Instructions
+
+First, make sure you've checked out the submodules as described above.
+
+## To Run
+`./gradlew run`
+
+You should see the Processing window running the P3LX GUI show up.
+
+## To Deploy
+Gradle build scripts make a 'fatjar', meaning all dependencies are contained within a single jar.  Neat.
+
+`./gradlew shadowJar`
+
+Now you have an executable fatjar, eg:
+
+`java -jar build/libs/blinky-dome-all.jar`
+
+# Setup for New Developers
+Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that itegrates Gradle builds
+should work.
 
 ## IntelliJ Setup
 Project is built with Gradle, so IntelliJ should automagically configure and Just Work(TM).
