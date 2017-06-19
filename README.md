@@ -34,11 +34,11 @@ If you run into weird LX or P3LX compile errors, try checking out a previous ver
   - P3LX: `git checkout 9096d47b7`
 
 ## IntelliJ Setup
-Project is built with Gradle, so IntelliJ should automagically configure every to Just Work(TM).
+Project is built with Gradle, so IntelliJ should automagically configure and Just Work(TM).
 
 - Checkout with Git submodule initialization as described above
 - File > New > Project From Existing Sources
-- Select checkout directory
+- Select blinky-dome directory
 - Hit "Import project from existing model" > "Gradle"
 - Defaults should be fine
 - Hit "Finish"
