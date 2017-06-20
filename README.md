@@ -20,8 +20,9 @@ We depend on LX and P3LX, which do not follow any release/publishing process.  T
  1. Init submodules: `git submodule init`
  1. Clone submodules: `git submodule update`
 
-LX and P3LX source will now be available in `lib_submodules/LX` and `lib_submodules/P3LX`.  Our build scripts are
- configured to build from there, and their source files should be browsable from your IDE.
+LX and P3LX source will now be available in `lib/lx/git_submodule` and `lib/p3lx/git_submodule`.  Our build scripts are
+ configured to build them from there, and their source files should be browsable from your IDE with no external
+ project setup.
 
 **DEPENDENCY VERSION WARNING**: Since LX and P3LX don't follow any release/publishing process, we just rely on their
 latest HEAD checkouts (they don't do any git tags or release branches).  If they change their API, we're SOL.
