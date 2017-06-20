@@ -38,14 +38,20 @@ First, make sure you've checked out the submodules as described above.
 
 You should see the Processing window running the P3LX GUI show up.
 
-## To Deploy
+## To Deploy Locally
 Gradle build scripts make a 'fatjar', meaning all dependencies are contained within a single jar.  Neat.
 
 `./gradlew shadowJar`
 
-Now you have an executable fatjar, eg:
+Now you have an executable fatjar (synonym of shadowJar), eg:
 
 `java -jar build/libs/blinky-dome-all.jar`
+
+## To Deploy Embedded (raspi, odroid)
+TODO: The fatjar created above should run on embedded systems, but you usually need to go through some dependency hell
+ to make Processing run on embedded devices.  Has to do with jogl native jars (need the right native for the platform).
+ Build scripts include the jogl-all-main runtime group, which SHOULD include the natives for the embedded platform and
+ they SHOULD automatically get picked out, but, well, it's a TODO to make sure everything works.
 
 # Setup for New Developers
 Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that itegrates Gradle builds
@@ -54,12 +60,19 @@ should work.
 ## IntelliJ Setup
 Project is built with Gradle, so IntelliJ should automagically configure and Just Work(TM).
 
-- Checkout with Git submodule initialization as described above
+Note: use latest version of IntelliJ.  2016.1 was a bit glitchy with this newer version of Gradle, try at least 2017.1
+
+- Checkout repo with Git submodule initialization as described above
 - File > New > Project From Existing Sources
 - Select blinky-dome directory
 - Hit "Import project from existing model" > "Gradle"
 - Defaults should be fine
-- Hit "Finish"
-- Navigate to src > blinkydome > com.github.starcats.blinkydome.AppGui
-- Right click on AppGui class and hit 'Run AppGui.main()'
-- If all worked, you should see the Processing window with the P3LX GUI
+- Hit "Finish".
+- Let Gradle init scripts load everything, index, do initial linking build, etc.
+- Create run configuration from Gradle scripts:
+  - View > Tool Windows > Gradle
+  - Open up blinky-dome > Tasks > application
+  - Right click on "run"
+  - Hit "Run 'blinky-dome [run]'"
+  - P3LX window should appear
+  - You now have an IntelliJ run configuration.  You can hit the green Run triangle or green Debug bug to start it up.
