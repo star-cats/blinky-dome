@@ -7,7 +7,6 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SinLFO;
 import heronarts.lx.parameter.BoundedParameter;
-import heronarts.lx.parameter.MutableParameter;
 
 public class RainbowPattern extends LXPattern {
 

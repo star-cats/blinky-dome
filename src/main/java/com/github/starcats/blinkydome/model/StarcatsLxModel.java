@@ -5,6 +5,8 @@ import heronarts.lx.LXPattern;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.model.LXModel;
 import processing.core.PApplet;
+import com.github.starcats.blinkydome.model.BlinkyDome.Fixture;
+//import com.github.starcats.blinkydome.model.LED;
 
 import java.util.List;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public abstract class StarcatsLxModel extends LXModel{
 
   public final boolean hasGui;
+  public final List<LED> leds;
 
-  public StarcatsLxModel(LXFixture[] fixtures, boolean hasGui) {
-    super(fixtures);
+  public StarcatsLxModel(List<LED> leds, boolean hasGui) {
+    super(new Fixture(leds));
+    this.leds = leds;
     this.hasGui = hasGui;
   }
 

@@ -11,12 +11,6 @@ import processing.core.PApplet;
 public class ModelSupplier {
 
   public static StarcatsLxModel getModel(PApplet p, boolean hasGui, DeferredLxOutputProvider outputProvider) {
-    //return IcosastarLXModel.makeModel(hasGui, outputProvider);
-    //return CloudLXModelBuilder.makeModel(hasGui);
-    //return BikeModel.makeModel(hasGui, outputProvider); // playa bike geometry
-    //return RoadBikeModel.makeModel(hasGui, outputProvider); // road bike geometry
-
-    //return FibonocciPetalsModel.makeModel(hasGui);
     return BlinkyDome.makeModel(p, hasGui, outputProvider);
   }
 }
