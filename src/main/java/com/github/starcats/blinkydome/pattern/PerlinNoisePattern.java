@@ -281,7 +281,7 @@ public class PerlinNoisePattern extends LXPattern {
       w.run(deltaMs);
     }
     sparklers.run(deltaMs);
-    
+
   }
 
   public void rotate() {

@@ -4,13 +4,11 @@ import com.github.starcats.blinkydome.model.StarcatsLxModel;
 import com.github.starcats.blinkydome.util.AudioDetector;
 import com.github.starcats.blinkydome.util.ModelSupplier;
 import com.github.starcats.blinkydome.util.StarCatFFT;
+import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
-import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
-import heronarts.p3lx.P3LX;
-import heronarts.p3lx.ui.UI3dContext;
+import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.component.UIPointCloud;
-import heronarts.p3lx.ui.control.UIChannelControl;
 import processing.core.PApplet;
 
 import java.util.List;
@@ -32,7 +30,7 @@ public class AppGui extends PApplet {
     }
   }
 
-  private P3LX lx;
+  private LXStudio lxStudio;
   private LXOutput fcOutput;
   private final StarCatFFT starCatFFT = new StarCatFFT();
 
@@ -44,30 +42,38 @@ public class AppGui extends PApplet {
 
   public void setup() {
 
-    AppGui me = this;
-    StarcatsLxModel model = ModelSupplier.getModel(me, true, () -> me.fcOutput);
+    AppGui p = this; // PApplet reference
+    StarcatsLxModel scModel = ModelSupplier.getModel(p, true, () -> p.fcOutput);
 
     AudioDetector.init(starCatFFT.in.mix);
 
-    lx = new P3LX(this, model);
 
-    model.initLx(lx);
+    lxStudio = new LXStudio(this, scModel, false) {
+      @Override
+      public void initialize(LXStudio lx, LXStudio.UI ui) {
+        scModel.initLx(lx);
 
-    List<LXPattern> patterns = model.configPatterns(lx, this, starCatFFT);
-    lx.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
-    lx.goPattern(patterns.get(0));
+        LXChannel mainCh = lx.engine.getChannels().get(0);
 
-    fcOutput = new FadecandyOutput(lx, "localhost", 7890);
-    lx.addOutput(fcOutput);
+        List<LXPattern> patterns = scModel.configPatterns(lx, p, starCatFFT);
+        lx.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
+        lx.goPattern(patterns.get(0));
+      }
 
-    lx.ui.addLayer(
-        new UI3dContext(lx.ui)
-            .setCenter(model.cx, model.cy, model.cz)
-            .setRadius(model.xMax - model.xMin)
-            .addComponent(new UIPointCloud(lx, model).setPointSize(5))
-    );
+      @Override
+      public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+        ui.preview
+            .setRadius(scModel.xMax - scModel.xMin)
+            .setCenter(scModel.cx, scModel.cy, scModel.cz)
+            .addComponent(new UIPointCloud(lx, scModel).setPointSize(5));
+      }
+    };
 
-    lx.ui.addLayer(new UIChannelControl(lx.ui, lx, 16, 4, 4));
+
+//    fcOutput = new FadecandyOutput(lx, "localhost", 7890);
+//    lx.addOutput(fcOutput);
+
+    //lx.ui.addLayer(new UIChannelControl(lx.ui, lx, 16, 4, 4));
 
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
