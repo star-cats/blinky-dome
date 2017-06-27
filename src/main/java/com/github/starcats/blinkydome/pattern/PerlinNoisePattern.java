@@ -281,13 +281,7 @@ public class PerlinNoisePattern extends LXPattern {
       w.run(deltaMs);
     }
     sparklers.run(deltaMs);
-
-    if (beat.isKick()) {
-      System.out.println("FFT kick");
-    }
-    if (beat.isSnare()) {
-      System.out.println("FFT snare");
-    }
+    
   }
 
   public void rotate() {
