@@ -1,14 +1,16 @@
 package com.github.starcats.blinkydome.model;
 
+import com.github.starcats.blinkydome.model.BlinkyDome.Fixture;
+import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
+import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
-import heronarts.lx.model.LXFixture;
 import heronarts.lx.model.LXModel;
 import processing.core.PApplet;
-import com.github.starcats.blinkydome.model.BlinkyDome.Fixture;
-//import com.github.starcats.blinkydome.model.LED;
 
 import java.util.List;
+
+//import com.github.starcats.blinkydome.model.LED;
 
 /**
  * Class that defines mapping-specific pattern defaults that patterns can register themselves against.
@@ -42,5 +44,11 @@ public abstract class StarcatsLxModel extends LXModel{
    * @param p pApplet instance
    * @return List of patterns supported by the model
    */
-  public abstract List<LXPattern> configPatterns(LX lx, PApplet p);
+  public abstract List<LXPattern> configPatterns(LX lx, PApplet p, StarCatFFT fft);
+
+  /**
+   * Let model implementation visit a PerlinNoisePattern and configure any defaults, etc. specific to the model
+   * @param perlinNoise
+   */
+  public abstract void applyPresets(PerlinNoisePattern perlinNoise);
 }

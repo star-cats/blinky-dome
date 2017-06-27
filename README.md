@@ -5,6 +5,7 @@ StarCats LED dome control software.
 Dependencies:
 - [LX](https://github.com/heronarts/LX): LED lighting engine ([javadocs](http://heronarts.com/lx/api/index.html))
 - [P3LX](https://github.com/heronarts/P3LX): Processing-based UI for LX
+- [minim](https://github.com/ddf/Minim)@v2.2.2: Audio processing lib for Processing
 - [Processing](https://processing.org/)
   - Note: We do NOT use the Processing IDE or even a Processing sketch layout.  This project is pure Java, only using
     Processing for utilities, UI rendering, and since P3LX is built on it.  Congrats, we've graduated to grown-up software. (ish.)
