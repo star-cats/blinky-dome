@@ -7,7 +7,7 @@ Dependencies:
 - [P3LX](https://github.com/heronarts/P3LX): Processing-based UI for LX
 - [Processing](https://processing.org/)
   - Note: We do NOT use the Processing IDE or even a Processing sketch layout.  This project is pure Java, only using
-    Processing for utilities and since P3LX is built on it.  Welcome to grown-up software.
+    Processing for utilities, UI rendering, and since P3LX is built on it.  Congrats, we've graduated to grown-up software. (ish.)
 
 ## Checkout Instructions (Git Submodules)
 We depend on LX and P3LX, which do not follow any release/publishing process.  This project is configured to build them
@@ -18,16 +18,17 @@ We depend on LX and P3LX, which do not follow any release/publishing process.  T
  1. Clone as normal: `git clone https://github.com/star-cats/blinky-dome.git`
  1. `cd blinky-dome`
  1. Init submodules: `git submodule init`
- 1. Clone submodules: `git submodule update`
+ 1. Check out submodule source: `git submodule update`
 
-LX and P3LX source will now be available in `lib_submodules/LX` and `lib_submodules/P3LX`.  Our build scripts are
- configured to build from there, and their source files should be browsable from your IDE.
+LX and P3LX source will now be available in `lib/lx/git_submodule` and `lib/p3lx/git_submodule`.  Our build scripts are
+ configured to build them from there, and their source files should be browsable from your IDE with no external
+ project setup.
 
 **DEPENDENCY VERSION WARNING**: Since LX and P3LX don't follow any release/publishing process, we just rely on their
 latest HEAD checkouts (they don't do any git tags or release branches).  If they change their API, we're SOL.
 If you run into weird LX or P3LX compile errors, try checking out a previous version of them.  As of June 18 2017, try:
-  - LX: `git checkout ff98f6d54`
-  - P3LX: `git checkout 9096d47b7`
+  - lx: `git checkout ff98f6d54`
+  - p3lx: `git checkout 9096d47b7`
 
 # Run / Deploy Instructions
 
@@ -38,28 +39,41 @@ First, make sure you've checked out the submodules as described above.
 
 You should see the Processing window running the P3LX GUI show up.
 
-## To Deploy
+## To Deploy Locally
 Gradle build scripts make a 'fatjar', meaning all dependencies are contained within a single jar.  Neat.
 
 `./gradlew shadowJar`
 
-Now you have an executable fatjar, eg:
+Now you have an executable fatjar (shadowJar). Which means, you can simply do:
 
 `java -jar build/libs/blinky-dome-all.jar`
 
+## To Deploy Embedded (raspi, odroid)
+TODO: The fatjar created above should run on embedded systems, but you usually need to go through some dependency hell
+ to make Processing run on embedded devices.  Has to do with jogl native jars (need the right native for the platform).
+ Build scripts include the jogl-all-main runtime group, which SHOULD include the natives for the embedded platform and
+ they SHOULD automatically get picked out, but, well, it's a TODO to make sure everything works.
+
 # Setup for New Developers
-Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that itegrates Gradle builds
+Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that integrates Gradle builds
 should work.
 
 ## IntelliJ Setup
 Project is built with Gradle, so IntelliJ should automagically configure and Just Work(TM).
 
-- Checkout with Git submodule initialization as described above
+Note: use latest version of IntelliJ.  2016.1 was a bit glitchy with this newer version of Gradle, try at least 2017.1
+
+- Checkout repo with Git submodule initialization as described above
 - File > New > Project From Existing Sources
 - Select blinky-dome directory
 - Hit "Import project from existing model" > "Gradle"
 - Defaults should be fine
-- Hit "Finish"
-- Navigate to src > blinkydome > com.github.starcats.blinkydome.AppGui
-- Right click on AppGui class and hit 'Run AppGui.main()'
-- If all worked, you should see the Processing window with the P3LX GUI
+- Hit "Finish".
+- Let Gradle init scripts load everything, index, do initial linking build, etc.
+- Create run configuration from Gradle scripts:
+  - View > Tool Windows > Gradle
+  - Open up blinky-dome > Tasks > application
+  - Right click on "run"
+  - Hit "Run 'blinky-dome [run]'"
+  - P3LX window should appear
+  - You now have an IntelliJ run configuration.  You can hit the green Run triangle or green Debug bug to start it up.
