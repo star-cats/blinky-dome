@@ -1,9 +1,6 @@
 package com.github.starcats.blinkydome.model;
 
-import com.github.starcats.blinkydome.pattern.LayerTestPattern;
-import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
-import com.github.starcats.blinkydome.pattern.RainbowPattern;
-import com.github.starcats.blinkydome.pattern.RainbowZPattern;
+import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.util.DeferredLxOutputProvider;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
@@ -64,6 +61,7 @@ public class BlinkyDome extends StarcatsLxModel {
 
     List<LXPattern> patterns = new ArrayList<>(Arrays.asList(
         defaultPattern,
+        new FFTBandPattern(lx, fft),
         new RainbowZPattern(lx),
         new RainbowPattern(lx),
         new LayerTestPattern(lx)
