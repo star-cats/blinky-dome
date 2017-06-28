@@ -12,6 +12,7 @@ import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.component.UIPointCloud;
 import processing.core.PApplet;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -61,17 +62,19 @@ public class AppGui extends PApplet {
         mainCh.goPattern(patterns.get(0));
 
 
+        // Channel 2: All of the normal patterns + effects for blending, like white wipes and sparkles
+        LXChannel channel2 = lx.engine.addChannel();
+        channel2.fader.setValue(1); // Turn it on
         LXPattern ch2Default = new WhiteWipePattern(lx);
-        patterns = scModel.configPatterns(lx, p, starCatFFT);
+        patterns = new LinkedList<>();
         patterns.add(ch2Default);
-        LXChannel channel2 = lx.engine.addChannel(patterns.toArray(new LXPattern[patterns.size()]));
-        channel2.goPattern(ch2Default);
-        channel2.label.setDescription("Blend-into patterns");
-        channel2.fader.setValue(1);
+        patterns.addAll(scModel.configPatterns(lx, p, starCatFFT));
+        channel2.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
       }
 
       @Override
       public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+        // Configure camera view
         ui.preview
             .setRadius(scModel.xMax - scModel.xMin + 50)
             .setCenter(scModel.cx, scModel.cy, scModel.cz)
@@ -81,6 +84,7 @@ public class AppGui extends PApplet {
         // Turn off clip editor by default
         ui.toggleClipView();
 
+
         // Enable audio support
         lx.engine.audio.enabled.setValue(true);
       }
@@ -89,8 +93,6 @@ public class AppGui extends PApplet {
 
 //    fcOutput = new FadecandyOutput(lx, "localhost", 7890);
 //    lx.addOutput(fcOutput);
-
-    //lx.ui.addLayer(new UIChannelControl(lx.ui, lx, 16, 4, 4));
 
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
