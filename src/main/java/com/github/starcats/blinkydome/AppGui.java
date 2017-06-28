@@ -1,18 +1,18 @@
 package com.github.starcats.blinkydome;
 
 import com.github.starcats.blinkydome.model.StarcatsLxModel;
+import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
 import com.github.starcats.blinkydome.util.AudioDetector;
 import com.github.starcats.blinkydome.util.ModelSupplier;
 import com.github.starcats.blinkydome.util.StarCatFFT;
+import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
-import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
-import heronarts.p3lx.P3LX;
-import heronarts.p3lx.ui.UI3dContext;
+import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.component.UIPointCloud;
-import heronarts.p3lx.ui.control.UIChannelControl;
 import processing.core.PApplet;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -32,42 +32,67 @@ public class AppGui extends PApplet {
     }
   }
 
-  private P3LX lx;
+  private LXStudio lxStudio;
   private LXOutput fcOutput;
   private final StarCatFFT starCatFFT = new StarCatFFT();
 
   private float lastDrawMs = 0;
 
   public void settings() {
-    size(600, 600, P3D); // P3D to force GPU blending
+    size(1000, 800, P3D); // P3D to force GPU blending
   }
 
   public void setup() {
 
-    AppGui me = this;
-    StarcatsLxModel model = ModelSupplier.getModel(me, true, () -> me.fcOutput);
+    AppGui p = this; // PApplet reference
+    StarcatsLxModel scModel = ModelSupplier.getModel(p, true, () -> p.fcOutput);
 
     AudioDetector.init(starCatFFT.in.mix);
 
-    lx = new P3LX(this, model);
 
-    model.initLx(lx);
+    lxStudio = new LXStudio(this, scModel, false) {
+      @Override
+      public void initialize(LXStudio lx, LXStudio.UI ui) {
+        scModel.initLx(lx);
 
-    List<LXPattern> patterns = model.configPatterns(lx, this, starCatFFT);
-    lx.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
-    lx.goPattern(patterns.get(0));
+        LXChannel mainCh = lx.engine.getChannels().get(0);
 
-    fcOutput = new FadecandyOutput(lx, "localhost", 7890);
-    lx.addOutput(fcOutput);
+        List<LXPattern> patterns = scModel.configPatterns(lx, p, starCatFFT);
+        mainCh.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
+        mainCh.goPattern(patterns.get(0));
 
-    lx.ui.addLayer(
-        new UI3dContext(lx.ui)
-            .setCenter(model.cx, model.cy, model.cz)
-            .setRadius(model.xMax - model.xMin)
-            .addComponent(new UIPointCloud(lx, model).setPointSize(5))
-    );
 
-    lx.ui.addLayer(new UIChannelControl(lx.ui, lx, 16, 4, 4));
+        // Channel 2: All of the normal patterns + effects for blending, like white wipes and sparkles
+        LXChannel channel2 = lx.engine.addChannel();
+        channel2.fader.setValue(1); // Turn it on
+        LXPattern ch2Default = new WhiteWipePattern(lx);
+        patterns = new LinkedList<>();
+        patterns.add(ch2Default);
+        patterns.addAll(scModel.configPatterns(lx, p, starCatFFT));
+        channel2.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
+      }
+
+      @Override
+      public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+        // Configure camera view
+        ui.preview
+            .setRadius(scModel.xMax - scModel.xMin + 50)
+            .setCenter(scModel.cx, scModel.cy, scModel.cz)
+            .addComponent(new UIPointCloud(lx, scModel).setPointSize(5));
+
+
+        // Turn off clip editor by default
+        ui.toggleClipView();
+
+
+        // Enable audio support
+        lx.engine.audio.enabled.setValue(true);
+      }
+    };
+
+
+//    fcOutput = new FadecandyOutput(lx, "localhost", 7890);
+//    lx.addOutput(fcOutput);
 
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
