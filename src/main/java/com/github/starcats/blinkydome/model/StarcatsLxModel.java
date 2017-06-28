@@ -1,28 +1,25 @@
 package com.github.starcats.blinkydome.model;
 
-import com.github.starcats.blinkydome.model.BlinkyDome.Fixture;
 import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
+import com.github.starcats.blinkydome.pattern.SCPatternVisitor;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import processing.core.PApplet;
 
 import java.util.List;
 
-//import com.github.starcats.blinkydome.model.LED;
-
 /**
  * Class that defines mapping-specific pattern defaults that patterns can register themselves against.
  */
-public abstract class StarcatsLxModel extends LXModel{
+public abstract class StarcatsLxModel extends LXModel implements SCPatternVisitor {
 
   public final boolean hasGui;
-  public final List<LED> leds;
 
-  public StarcatsLxModel(List<LED> leds, boolean hasGui) {
-    super(new Fixture(leds));
-    this.leds = leds;
+  public StarcatsLxModel(List<LXPoint> allLeds, boolean hasGui) {
+    super(allLeds);
     this.hasGui = hasGui;
   }
 

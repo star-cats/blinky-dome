@@ -1,13 +1,14 @@
 package com.github.starcats.blinkydome.pattern;
 
-import com.github.starcats.blinkydome.model.LED;
+import com.github.starcats.blinkydome.model.BlinkyDome;
 import heronarts.lx.LX;
+import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SinLFO;
 
 /**
- * Created by akesich on 6/23/17.
+ * Simple pattern that uses pixels' z-values to derive a rainbow color
  */
-public class RainbowZPattern extends StarcatsLxPattern {
+public class RainbowZPattern extends AbstractSimplePattern {
 
   SinLFO globalFade = new SinLFO(0, 360, 10000);
 
@@ -18,9 +19,14 @@ public class RainbowZPattern extends StarcatsLxPattern {
 
   public void run(double deltaMs) {
     int c;
-    for (LED led : leds) {
+    for (LXPoint led : points) {
       c = lx.hsb(led.z/196 * 360 + globalFade.getValuef(), 100, 80);
       setLEDColor(led, c);
     }
+  }
+
+  @Override
+  public void accept(BlinkyDome model) {
+    // TODO: Could do BlinkyDome-specific stuff here
   }
 }

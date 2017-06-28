@@ -1,6 +1,7 @@
-package com.github.starcats.blinkydome.pattern;
+package com.github.starcats.blinkydome.pattern.blinky_dome;
 
-import com.github.starcats.blinkydome.model.LED;
+import com.github.starcats.blinkydome.model.BlinkyDome;
+import com.github.starcats.blinkydome.pattern.AbstractSimplePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
@@ -9,7 +10,8 @@ import heronarts.lx.modulator.Accelerator;
 /**
  * Created by akesich on 6/27/17.
  */
-public class FFTBandPattern extends StarcatsLxPattern {
+public class FFTBandPattern extends AbstractSimplePattern {
+    private BlinkyDome model;
     private StarCatFFT fft;
 
     private Accelerator ringPhi;
@@ -23,13 +25,18 @@ public class FFTBandPattern extends StarcatsLxPattern {
         addModulator(this.ringPhi).start();
     }
 
+    @Override
+    public void accept(BlinkyDome model) {
+        this.model = model;
+    }
+
     public void run(double deltaMs) {
 
         int c = LXColor.hsb(60, 100, 100);
 
         float phiPos = this.getRingPhi();
 
-        for (LED led : this.leds) {
+        for (BlinkyDome.LED led : this.model.leds) {
             float dist = angluarDistance(led.phi, phiPos);
             if (dist < 0.3) {
                 int d = LXColor.lerp(c, 0, dist / 0.3);
