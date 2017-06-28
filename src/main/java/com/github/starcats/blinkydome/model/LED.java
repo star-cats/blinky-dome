@@ -15,6 +15,8 @@ public class LED extends LXPoint {
     final public float x, y, z;
     final public float triangleX, triangleY, triangleZ;
 
+    final public float theta, phi;
+
     public LED(TableRow row) {
         super(row.getFloat("x"), row.getFloat("z"), -row.getFloat("y"));
         this.x = row.getFloat("x");
@@ -30,6 +32,10 @@ public class LED extends LXPoint {
         this.triangleY = row.getFloat("triangle_center_y");
         this.triangleZ = row.getFloat("triangle_center_z");
 
+        double r = Math.sqrt(x * x + y * y + z * z);
+
+        this.theta = (float)Math.acos(z / r);
+        this.phi = (float)Math.atan2(y, x);
     }
 }
 
