@@ -14,13 +14,26 @@ public class WhiteWipe {
   private final LXPattern host;
   private Function<LXPoint, Float> pointValueGetter;
 
-  public final BoundedParameter durationMs = new BoundedParameter("durationMs", 400, 50, 1000);
-  public final BoundedParameter widthPx = new BoundedParameter("widthPx", 5, 0, 20);
+  public final BoundedParameter durationMs;
+  public final BoundedParameter widthPx;
 
   public WhiteWipe(LX lx, LXPattern host,
                    Function<LXModel, Float> minGetter,
                    Function<LXModel, Float> maxGetter,
                    Function<LXPoint, Float> pointValueGetter
+  ) {
+    this(lx, host, minGetter, maxGetter, pointValueGetter,
+        new BoundedParameter("durationMs", 400, 50, 1000),
+        new BoundedParameter("widthPx", 5, 0, 20)
+    );
+  }
+
+  public WhiteWipe(LX lx, LXPattern host,
+                   Function<LXModel, Float> minGetter,
+                   Function<LXModel, Float> maxGetter,
+                   Function<LXPoint, Float> pointValueGetter,
+                   BoundedParameter durationMs,
+                   BoundedParameter widthPx
   ) {
     this.host = host;
     this.pointValueGetter = pointValueGetter;
@@ -31,6 +44,9 @@ public class WhiteWipe {
         durationMs
     );
     wave.setLooping(false);
+
+    this.durationMs = durationMs;
+    this.widthPx = widthPx;
   }
 
   public void start() {

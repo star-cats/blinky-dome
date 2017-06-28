@@ -1,6 +1,7 @@
 package com.github.starcats.blinkydome;
 
 import com.github.starcats.blinkydome.model.StarcatsLxModel;
+import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
 import com.github.starcats.blinkydome.util.AudioDetector;
 import com.github.starcats.blinkydome.util.ModelSupplier;
 import com.github.starcats.blinkydome.util.StarCatFFT;
@@ -37,7 +38,7 @@ public class AppGui extends PApplet {
   private float lastDrawMs = 0;
 
   public void settings() {
-    size(600, 600, P3D); // P3D to force GPU blending
+    size(1000, 800, P3D); // P3D to force GPU blending
   }
 
   public void setup() {
@@ -56,16 +57,32 @@ public class AppGui extends PApplet {
         LXChannel mainCh = lx.engine.getChannels().get(0);
 
         List<LXPattern> patterns = scModel.configPatterns(lx, p, starCatFFT);
-        lx.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
-        lx.goPattern(patterns.get(0));
+        mainCh.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
+        mainCh.goPattern(patterns.get(0));
+
+
+        LXPattern ch2Default = new WhiteWipePattern(lx);
+        patterns = scModel.configPatterns(lx, p, starCatFFT);
+        patterns.add(ch2Default);
+        LXChannel channel2 = lx.engine.addChannel(patterns.toArray(new LXPattern[patterns.size()]));
+        channel2.goPattern(ch2Default);
+        channel2.label.setDescription("Blend-into patterns");
+        channel2.fader.setValue(1);
       }
 
       @Override
       public void onUIReady(LXStudio lx, LXStudio.UI ui) {
         ui.preview
-            .setRadius(scModel.xMax - scModel.xMin)
+            .setRadius(scModel.xMax - scModel.xMin + 50)
             .setCenter(scModel.cx, scModel.cy, scModel.cz)
             .addComponent(new UIPointCloud(lx, scModel).setPointSize(5));
+
+
+        // Turn off clip editor by default
+        ui.toggleClipView();
+
+        // Enable audio support
+        lx.engine.audio.enabled.setValue(true);
       }
     };
 
