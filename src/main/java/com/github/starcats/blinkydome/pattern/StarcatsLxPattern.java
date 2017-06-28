@@ -9,12 +9,12 @@ import java.util.List;
 /**
  * Created by akesich on 6/20/17.
  */
-public abstract class Pattern extends LXPattern {
+public abstract class StarcatsLxPattern extends LXPattern {
   protected final StarcatsLxModel model;
 
   protected final List<LED> leds;
 
-  public Pattern(LX lx) {
+  public StarcatsLxPattern(LX lx) {
     super(lx);
     this.model = (StarcatsLxModel)super.model;
     this.leds = model.leds;

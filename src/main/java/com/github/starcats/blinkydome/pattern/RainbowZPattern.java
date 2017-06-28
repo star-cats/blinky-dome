@@ -7,7 +7,7 @@ import heronarts.lx.modulator.SinLFO;
 /**
  * Created by akesich on 6/23/17.
  */
-public class RainbowZPattern extends Pattern {
+public class RainbowZPattern extends StarcatsLxPattern {
 
   SinLFO globalFade = new SinLFO(0, 360, 10000);
 

@@ -6,7 +6,7 @@ import com.github.starcats.blinkydome.model.LED;
 /**
  * Created by akesich on 6/25/17.
  */
-public class LayerTestPattern extends Pattern{
+public class LayerTestPattern extends StarcatsLxPattern {
     public LayerTestPattern(LX lx) {
         super(lx);
     }
