@@ -6,15 +6,21 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
- * Picks a color from the gradients.png image
+ * Color source that samples colors from an image containing stips of gradients (see gradients.png or patterns.png).
+ *
+ * Exposes .gradientSelect, which is a DiscreteParameter of {@link GradientSampler} instances.  Use the parameter to
+ * select an appropriate gradient, then use {@link GradientSampler#getColor} to extract a color from the gradient.
  */
 public class GradientSupplier {
   private static final int GRADIENT_HEIGHT = 10; // normal screenshot
   //private static final int GRADIENT_HEIGHT = 20; // retina screenshot (2x resolution)
 
+  private final int numGradients;
+  private final GradientSampler[] samplers;
+
   public final DiscreteParameter gradientSelect;
 
-  private final PImage gradients;
+  public final PImage gradients;
 
   public GradientSupplier(PApplet p) {
     this(p, false);
@@ -22,7 +28,41 @@ public class GradientSupplier {
 
   public GradientSupplier(PApplet p, boolean isPatterns) {
     gradients = p.loadImage(isPatterns ? "patterns.png" : "gradients.png");
-    gradientSelect = new DiscreteParameter(isPatterns ? "pattern" : "gradient", 0, gradients.height / GRADIENT_HEIGHT);
+    numGradients = gradients.height / GRADIENT_HEIGHT;
+
+    samplers = new GradientSampler[numGradients];
+    for (int i=0; i < numGradients; i++) {
+      samplers[i] = new GradientSampler(i);
+    }
+
+    gradientSelect = new DiscreteParameter(isPatterns ? "pattern" : "gradient", samplers);
+  }
+
+  /**
+   * Helper class that actually picks out a color from the gradient.
+   *
+   * When just the DiscreteParameter is referenced, these instances are the Objects that come out of the
+   * DiscreteParameter so you don't need a reference to the actual GradientSupplier.
+   */
+  public class GradientSampler {
+
+    private final int gradientI;
+
+    private GradientSampler(int gradientI) {
+      this.gradientI = gradientI;
+    }
+
+    public int getColor(double pos) {
+      return gradients.get(
+          (int)(Math.abs(pos * gradients.width) % (gradients.width - 1)),
+          gradientI * GRADIENT_HEIGHT + GRADIENT_HEIGHT / 2 // add half height to hit the middle of grad strips
+      );
+    }
+
+    /** Used to generate value labels when extracted from parameter */
+    public String toString() {
+      return "" + gradientI;
+    }
   }
 
   public void setRandomGradient() {
@@ -35,14 +75,29 @@ public class GradientSupplier {
    * @return color
    */
   public int getColor(double pos) {
-    return gradients.get(
-        (int)(Math.abs(pos * gradients.width) % (gradients.width - 1)),
-        GRADIENT_HEIGHT / 2 + gradientSelect.getValuei() * GRADIENT_HEIGHT
-    );
+    return ((GradientSampler) gradientSelect.getObject()).getColor(pos);
   }
 
   public float getHue(double pos) {
     return LXColor.h(getColor(pos));
   }
 
+  public int getNumGradients() {
+    return numGradients;
+  }
+
+  /**
+   * Given a y-position on the .gradients PImage (eg mouse click), returns the GradientSampler associated with it.
+   *
+   * Useful for getting the appropriate parameter option for UI elements.
+   */
+  public GradientSampler getSamplerFromMouseY(float my) {
+    if (my < 0) {
+      return samplers[0];
+    } else if (my > gradients.height - 1) {
+      return samplers[samplers.length - 1];
+    }
+
+    return samplers[ (int) (my / GRADIENT_HEIGHT) ];
+  }
 }
