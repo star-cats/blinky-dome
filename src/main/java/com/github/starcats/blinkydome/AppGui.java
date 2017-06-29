@@ -7,6 +7,7 @@ import com.github.starcats.blinkydome.util.ModelSupplier;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
+import heronarts.lx.color.LXPalette;
 import heronarts.lx.output.LXOutput;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.component.UIPointCloud;
@@ -70,6 +71,12 @@ public class AppGui extends PApplet {
         patterns.add(ch2Default);
         patterns.addAll(scModel.configPatterns(lx, p, starCatFFT));
         channel2.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
+
+
+        // Config default palette to do interesting things
+        lx.palette.hueMode.setValue(LXPalette.Mode.OSCILLATE);
+        lx.palette.period.setValue(10000); // 10sec
+        lx.palette.range.setValue(130); // to about green
       }
 
       @Override
