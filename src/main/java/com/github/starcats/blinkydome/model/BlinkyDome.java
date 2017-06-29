@@ -163,7 +163,7 @@ public class BlinkyDome extends StarcatsLxModel {
         new PerlinNoisePattern(lx, p, fft.beat),
         new FFTBandPattern(lx, fft),
         new RainbowZPattern(lx),
-        new RainbowPattern(lx),
+        new PalettePainterPattern(lx, lx.palette), // feed it default palette used by LxStudio
         new BlinkyDomeFixtureSelectorPattern(lx)
         // Include other pattern implementations:
 //        new RainbowSpreadPattern(lx)
