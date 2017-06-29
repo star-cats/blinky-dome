@@ -2,9 +2,7 @@ package com.github.starcats.blinkydome;
 
 import com.github.starcats.blinkydome.model.StarcatsLxModel;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
-import com.github.starcats.blinkydome.ui.UIGradientPicker;
 import com.github.starcats.blinkydome.util.AudioDetector;
-import com.github.starcats.blinkydome.util.GradientSupplier;
 import com.github.starcats.blinkydome.util.ModelSupplier;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LXChannel;
@@ -12,7 +10,6 @@ import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.output.LXOutput;
 import heronarts.p3lx.LXStudio;
-import heronarts.p3lx.ui.UI2dScrollContext;
 import heronarts.p3lx.ui.component.UIPointCloud;
 import processing.core.PApplet;
 
@@ -92,19 +89,16 @@ public class AppGui extends PApplet {
             .addComponent(new UIPointCloud(lx, scModel).setPointSize(5));
 
 
-        // Add custom gradient selector
-        GradientSupplier gradientSupplier = new GradientSupplier(p);
-        UI2dScrollContext container = ui.leftPane.global;
-        UIGradientPicker uiGradientPicker = new UIGradientPicker(ui, gradientSupplier, 0, 0, container.getContentWidth());
-        uiGradientPicker.addToContainer(container);
-
-
         // Turn off clip editor by default
         ui.toggleClipView();
 
 
         // Enable audio support
         lx.engine.audio.enabled.setValue(true);
+
+
+        // Model-specific configs
+        scModel.onUIReady(lx, ui);
       }
     };
 
