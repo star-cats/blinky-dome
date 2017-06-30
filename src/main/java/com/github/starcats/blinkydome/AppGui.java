@@ -77,6 +77,7 @@ public class AppGui extends PApplet {
         lx.palette.hueMode.setValue(LXPalette.Mode.OSCILLATE);
         lx.palette.period.setValue(10000); // 10sec
         lx.palette.range.setValue(130); // to about green
+
       }
 
       @Override
@@ -94,6 +95,10 @@ public class AppGui extends PApplet {
 
         // Enable audio support
         lx.engine.audio.enabled.setValue(true);
+
+
+        // Model-specific configs
+        scModel.onUIReady(lx, ui);
       }
     };
 

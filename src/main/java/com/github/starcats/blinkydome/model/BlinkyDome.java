@@ -1,14 +1,19 @@
 package com.github.starcats.blinkydome.model;
 
+import com.github.starcats.blinkydome.color.ImageColorSampler;
+import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
+import com.github.starcats.blinkydome.ui.UIGradientPicker;
 import com.github.starcats.blinkydome.util.DeferredLxOutputProvider;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.model.LXAbstractFixture;
 import heronarts.lx.model.LXPoint;
+import heronarts.p3lx.LXStudio;
+import heronarts.p3lx.ui.UI2dScrollContext;
 import processing.core.PApplet;
 import processing.data.Table;
 import processing.data.TableRow;
@@ -22,6 +27,14 @@ import java.util.stream.Collectors;
 public class BlinkyDome extends StarcatsLxModel {
   /** Like LXModel.points, but up-cast to our LED class */
   public final List<LED> leds;
+
+  /** Source of gradient coloring for certain patterns */
+  public final ImageColorSampler gradientColorSource;
+
+  /** Source of pattern-based coloring for certain patterns */
+  public final ImageColorSampler patternColorSource;
+
+  public final ImageColorSamplerClan colorSamplers;
 
   private final Map<Integer, List<TriangleFixture>> trianglesByLayer;
   private final Map<Integer, List<TriangleFixture>> trianglesByIndex;
@@ -69,7 +82,7 @@ public class BlinkyDome extends StarcatsLxModel {
     Map<Integer, List<TriangleFixture>> trianglesByIndex = allTriangles.stream()
         .collect(Collectors.groupingBy(triangle -> triangle.index));
 
-    return new BlinkyDome(allLeds, hasGui, trianglesByLayer, trianglesByIndex);
+    return new BlinkyDome(allLeds, hasGui, trianglesByLayer, trianglesByIndex, p);
   }
 
   /**
@@ -135,10 +148,17 @@ public class BlinkyDome extends StarcatsLxModel {
   }
 
   private BlinkyDome(List<LED> allLEDs, boolean hasGui, Map<Integer, List<TriangleFixture>> trianglesByLayer,
-                     Map<Integer, List<TriangleFixture>> trianglesByIndex) {
+                     Map<Integer, List<TriangleFixture>> trianglesByIndex, PApplet p) {
     super(new ArrayList<>(allLEDs), hasGui); // dupe LXPoint-typed ArrayList needed for java generics type inference ಠ_ಠ
 
     this.leds = Collections.unmodifiableList(allLEDs);
+
+    this.gradientColorSource = new ImageColorSampler(p, "gradients.png");
+    this.patternColorSource = new ImageColorSampler(p, "patterns.png");
+    this.colorSamplers = new ImageColorSamplerClan(new ImageColorSampler[] {
+        this.gradientColorSource,
+        this.patternColorSource
+    });
 
 
     // Make fixture definitions immutable:
@@ -160,7 +180,7 @@ public class BlinkyDome extends StarcatsLxModel {
   @Override
   public List<LXPattern> configPatterns(LX lx, PApplet p, StarCatFFT fft) {
     List<LXPattern> patterns = new ArrayList<>(Arrays.asList(
-        new PerlinNoisePattern(lx, p, fft.beat),
+        new PerlinNoisePattern(lx, p, fft.beat, colorSamplers),
         new FFTBandPattern(lx, fft),
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it default palette used by LxStudio
@@ -200,5 +220,15 @@ public class BlinkyDome extends StarcatsLxModel {
   @Override
   public void visit(SCPattern pattern) {
     pattern.accept(this);
+  }
+
+
+  @Override
+  public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+    // Add custom gradient selector
+    UI2dScrollContext container = ui.leftPane.global;
+    UIGradientPicker uiGradientPicker = new UIGradientPicker(
+        ui, colorSamplers, 0, 0, container.getContentWidth());
+    uiGradientPicker.addToContainer(container);
   }
 }

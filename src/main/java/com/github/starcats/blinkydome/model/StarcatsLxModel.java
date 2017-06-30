@@ -7,6 +7,7 @@ import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
+import heronarts.p3lx.LXStudio;
 import processing.core.PApplet;
 
 import java.util.List;
@@ -48,4 +49,13 @@ public abstract class StarcatsLxModel extends LXModel implements SCPatternVisito
    * @param perlinNoise
    */
   public abstract void applyPresets(PerlinNoisePattern perlinNoise);
+
+  /**
+   * Implementation hook for models to configure UI according to their needs (add custom controllers, etc.)
+   * @param lx
+   * @param ui
+   */
+  public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+    // default no-op
+  }
 }
