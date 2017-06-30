@@ -1,15 +1,15 @@
 package com.github.starcats.blinkydome.pattern;
 
 
+import com.github.starcats.blinkydome.color.ColorMappingSourceClan;
 import com.github.starcats.blinkydome.model.StarcatsLxModel;
 import com.github.starcats.blinkydome.pattern.effects.Sparklers;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipe;
-import com.github.starcats.blinkydome.pattern.perlin.GradientColorizer;
+import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer;
 import com.github.starcats.blinkydome.pattern.perlin.LXPerlinNoiseExplorer;
 import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseColorizer;
 import com.github.starcats.blinkydome.pattern.perlin.RotatingHueColorizer;
 import com.github.starcats.blinkydome.util.AudioDetector;
-import com.github.starcats.blinkydome.util.GradientSupplier;
 import ddf.minim.analysis.BeatDetect;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
@@ -24,7 +24,7 @@ import heronarts.lx.parameter.LXParameter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,10 +48,12 @@ public class PerlinNoisePattern extends LXPattern {
   private BoundedParameter brightnessBoostDecayPerMs = new BoundedParameter("bb decay", 0.998, 0.990, 0.999);
 
   /** Selects a colorizer to use */
-  public DiscreteParameter colorizerSelect;
-  public BooleanParameter rotateColorizer = new BooleanParameter("rotate", true);
+  public final DiscreteParameter colorizerSelect;
+  public final BooleanParameter rotateColorizer;
 
   private Map<String, PerlinNoiseColorizer> allColorizers;
+  private int[] colorizerWeights;
+  private int totalWeight;
 
   private SawLFO gradientAutoselect;
 
@@ -69,7 +71,7 @@ public class PerlinNoisePattern extends LXPattern {
   private final Sparklers sparklers;
   private BooleanParameter triggerSparklers = new BooleanParameter("sparkle");
 
-  public PerlinNoisePattern(LX lx, PApplet p, BeatDetect beat, GradientSupplier gradients, GradientSupplier patterns) {
+  public PerlinNoisePattern(LX lx, PApplet p, BeatDetect beat, ColorMappingSourceClan colorSamplers) {
     super(lx);
 
     this.beat = beat;
@@ -100,7 +102,8 @@ public class PerlinNoisePattern extends LXPattern {
 
     // Make colorizers
     // -----------------
-    allColorizers = new HashMap<>();
+    allColorizers = new LinkedHashMap<>(); // LinkedHashMap to maintain same ordering as colorizerWeights
+    colorizerWeights = new int[2];
 
     RotatingHueColorizer rotatingHueColorizer = new RotatingHueColorizer(hueNoise) {
       @Override
@@ -110,27 +113,20 @@ public class PerlinNoisePattern extends LXPattern {
       }
     };
     allColorizers.put("rotatingHue", rotatingHueColorizer);
+    colorizerWeights[0] = 1; // 1 real pattern, so one weight
     addParameter(rotatingHueColorizer.huePeriodMs);
 
-    // Colorizer: gradient
-    GradientColorizer gradientColorizer = new GradientColorizer(hueNoise, gradients) {
-        @Override
-        public GradientColorizer activate() {
-          hueNoise.noiseSpeed.setValue(0.027);
-          return this;
-        }
-    };
-    allColorizers.put("gradient", gradientColorizer);
-
-    // Colorizer: patterns
-    GradientColorizer patternColorizer = new GradientColorizer(hueNoise, patterns) {
+    // Colorizer: ColorMappingSource
+    ColorMappingSourceColorizer colorMappingColorizer = new ColorMappingSourceColorizer(hueNoise, colorSamplers) {
       @Override
-      public GradientColorizer activate() {
-        hueNoise.noiseSpeed.setValue(0.006);
+      public ColorMappingSourceColorizer activate() {
+        hueNoise.noiseSpeed.setValue(0.027);
         return this;
       }
     };
-    allColorizers.put("pattern", patternColorizer);
+    allColorizers.put("mapping", colorMappingColorizer);
+    colorizerWeights[1] = colorSamplers.getNumSources();
+
 
     // Register all colorizers
     for (PerlinNoiseColorizer colorizer : allColorizers.values()) {
@@ -138,29 +134,40 @@ public class PerlinNoisePattern extends LXPattern {
         addModulator(modulator);
       }
     }
+    int totalWeight = 0;
+    for (int w : colorizerWeights) {
+      totalWeight += w;
+    }
+    this.totalWeight = totalWeight;
 
     colorizerSelect = new DiscreteParameter(
         "clrzr",
         allColorizers.keySet().toArray(new String[allColorizers.keySet().size()])
     );
-    colorizerSelect.addListener(param -> allColorizers.get(colorizerSelect.getOption()).activate());
+    colorizerSelect
+    .setDescription("Set which colorizer to use")
+    .addListener(param -> allColorizers.get(colorizerSelect.getOption()).activate());
+
     // And do first activation:
     allColorizers.get(colorizerSelect.getOption()).activate();
 
     addParameter(colorizerSelect);
+
+    rotateColorizer = new BooleanParameter("do rotates", true);
+    rotateColorizer.setDescription("Enable or disable rotating through different colorizers on rotate triggers.");
     addParameter(rotateColorizer);
 
 
 
-    // Add an auto-rotate-through-gradients if in headless
+    // Add an auto-rotate-through-patternMap if in headless
 //    if (!((AbstractIcosaLXModel) this.model).hasGui) {
 //      useGradientSupplier.setValue(true);
 //      gradientAutoselect = new SawLFO(
-//          gradientSupplier.gradientSelect.getMinValue(),
-//          gradientSupplier.gradientSelect.getMaxValue() + 1,
-//          5000 * (gradientSupplier.gradientSelect.getMaxValue() + 1)
+//          gradientColorSource.patternSelect.getMinValue(),
+//          gradientColorSource.patternSelect.getMaxValue() + 1,
+//          5000 * (gradientColorSource.patternSelect.getMaxValue() + 1)
 //      );
-//      gradientSupplier.gradientSelect.addListener(param -> System.out.println("Using gradient #" + param.getValue()) );
+//      gradientColorSource.patternSelect.addListener(param -> System.out.println("Using gradient #" + param.getValue()) );
 //      addModulator(
 //          gradientAutoselect
 //      ).start();
@@ -212,7 +219,7 @@ public class PerlinNoisePattern extends LXPattern {
 
   public void run(double deltaMs) {
 //    if (gradientAutoselect != null) {
-//      gradientSupplier.gradientSelect.setValue(Math.floor(gradientAutoselect.getValue()));
+//      gradientColorSource.patternSelect.setValue(Math.floor(gradientAutoselect.getValue()));
 //    }
 
 
@@ -290,22 +297,16 @@ public class PerlinNoisePattern extends LXPattern {
   }
 
   private PerlinNoiseColorizer randomColorizer() {
-    double rand = Math.random();
+    int rand = (int) (this.totalWeight * Math.random());
 
-    // Weighted random
-
-    // hueRotate
-    if (rand < 0.2) {
-      colorizerSelect.setValue(0);
-
-    // gradient:
-    } else if (rand < 0.7) {
-      colorizerSelect.setValue(1);
-
-    // pattern
-    } else {
-      colorizerSelect.setValue(2);
+    int i=0;
+    for (; i<colorizerWeights.length - 1; i++) {
+      if (rand < colorizerWeights[i]) {
+        break;
+      }
     }
+
+    colorizerSelect.setValue(i);
 
     return allColorizers.get(colorizerSelect.getOption());
   }
