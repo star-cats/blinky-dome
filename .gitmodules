@@ -3,7 +3,13 @@
 	url = https://github.com/heronarts/LX.git
 [submodule "lib/p3lx/git_submodule"]
 	path = lib/p3lx/git_submodule
-	url = https://github.com/heronarts/P3LX.git
+
+	# Normal source:
+	# url = https://github.com/heronarts/P3LX.git
+
+	# Dan's pushing-this-to-bleeding-edge-and-fixing-bugs-before-heronarts-accepts-the-PRs fork/branch:
+	url = https://github.com/dlopuch/P3LX.git
+	branch = bugfixes
 [submodule "lib/minim/git_submodule"]
 	path = lib/minim/git_submodule
 	url = https://github.com/ddf/Minim.git

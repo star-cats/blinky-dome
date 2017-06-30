@@ -69,7 +69,7 @@ public class PerlinNoisePattern extends LXPattern {
   private final Sparklers sparklers;
   private BooleanParameter triggerSparklers = new BooleanParameter("sparkle");
 
-  public PerlinNoisePattern(LX lx, PApplet p, BeatDetect beat, GradientSupplier gradients) {
+  public PerlinNoisePattern(LX lx, PApplet p, BeatDetect beat, GradientSupplier gradients, GradientSupplier patterns) {
     super(lx);
 
     this.beat = beat;
@@ -123,7 +123,7 @@ public class PerlinNoisePattern extends LXPattern {
     allColorizers.put("gradient", gradientColorizer);
 
     // Colorizer: patterns
-    GradientColorizer patternColorizer = new GradientColorizer(hueNoise, new GradientSupplier(p, true)) {
+    GradientColorizer patternColorizer = new GradientColorizer(hueNoise, patterns) {
       @Override
       public GradientColorizer activate() {
         hueNoise.noiseSpeed.setValue(0.006);
@@ -131,7 +131,6 @@ public class PerlinNoisePattern extends LXPattern {
       }
     };
     allColorizers.put("pattern", patternColorizer);
-    addParameter(patternColorizer.gradientSupplier.gradientSelect);
 
     // Register all colorizers
     for (PerlinNoiseColorizer colorizer : allColorizers.values()) {

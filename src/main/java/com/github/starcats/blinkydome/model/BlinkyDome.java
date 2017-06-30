@@ -30,6 +30,9 @@ public class BlinkyDome extends StarcatsLxModel {
   /** Source of gradient coloring for certain patterns */
   public final GradientSupplier gradientSupplier;
 
+  /** Source of pattern-based coloring for certain patterns */
+  public final GradientSupplier patternSupplier;
+
   private final Map<Integer, List<TriangleFixture>> trianglesByLayer;
   private final Map<Integer, List<TriangleFixture>> trianglesByIndex;
 
@@ -148,6 +151,7 @@ public class BlinkyDome extends StarcatsLxModel {
     this.leds = Collections.unmodifiableList(allLEDs);
 
     this.gradientSupplier = new GradientSupplier(p);
+    this.patternSupplier = new GradientSupplier(p, true);
 
 
     // Make fixture definitions immutable:
@@ -169,7 +173,7 @@ public class BlinkyDome extends StarcatsLxModel {
   @Override
   public List<LXPattern> configPatterns(LX lx, PApplet p, StarCatFFT fft) {
     List<LXPattern> patterns = new ArrayList<>(Arrays.asList(
-        new PerlinNoisePattern(lx, p, fft.beat, gradientSupplier),
+        new PerlinNoisePattern(lx, p, fft.beat, gradientSupplier, patternSupplier),
         new FFTBandPattern(lx, fft),
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it default palette used by LxStudio
@@ -216,7 +220,8 @@ public class BlinkyDome extends StarcatsLxModel {
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // Add custom gradient selector
     UI2dScrollContext container = ui.leftPane.global;
-    UIGradientPicker uiGradientPicker = new UIGradientPicker(ui, gradientSupplier, 0, 0, container.getContentWidth());
+    UIGradientPicker uiGradientPicker = new UIGradientPicker(
+        ui, new GradientSupplier[] {gradientSupplier, patternSupplier}, 0, 0, container.getContentWidth());
     uiGradientPicker.addToContainer(container);
   }
 }

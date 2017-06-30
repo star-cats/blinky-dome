@@ -17,6 +17,7 @@ public class GradientSupplier {
 
   private final int numGradients;
   private final GradientSampler[] samplers;
+  private String label;
 
   public final DiscreteParameter gradientSelect;
 
@@ -27,6 +28,7 @@ public class GradientSupplier {
   }
 
   public GradientSupplier(PApplet p, boolean isPatterns) {
+    label = isPatterns ? "patterns.png" : "gradients.png";
     gradients = p.loadImage(isPatterns ? "patterns.png" : "gradients.png");
     numGradients = gradients.height / GRADIENT_HEIGHT;
 
@@ -66,7 +68,10 @@ public class GradientSupplier {
   }
 
   public void setRandomGradient() {
-    gradientSelect.setValue((int)(Math.random() * gradientSelect.getMaxValue()));
+    gradientSelect.setValue(
+        gradientSelect.getMinValue() +
+        (int)(Math.random() * gradientSelect.getRange())
+    );
   }
 
   /**
@@ -98,6 +103,21 @@ public class GradientSupplier {
       return samplers[samplers.length - 1];
     }
 
-    return samplers[ (int) (my / GRADIENT_HEIGHT) ];
+    int i = (int) (my / GRADIENT_HEIGHT);
+
+    return samplers[ Math.max(0, Math.min(i, samplers.length - 1)) ];
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public GradientSupplier setLabel(String label) {
+    this.label = label;
+    return this;
+  }
+
+  public String toString() {
+    return label;
   }
 }
