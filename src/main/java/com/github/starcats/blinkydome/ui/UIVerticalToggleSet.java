@@ -168,11 +168,11 @@ public class UIVerticalToggleSet extends UI2dComponent implements UIFocus, UICon
   @Override
   protected void onKeyPressed(KeyEvent keyEvent, char keyChar, int keyCode) {
     if ((keyCode == java.awt.event.KeyEvent.VK_LEFT)
-        || (keyCode == java.awt.event.KeyEvent.VK_DOWN)) {
+        || (keyCode == java.awt.event.KeyEvent.VK_UP)) {
       consumeKeyEvent();
       setValue(LXUtils.constrain(this.value - 1, 0, this.options.length - 1));
     } else if ((keyCode == java.awt.event.KeyEvent.VK_RIGHT)
-        || (keyCode == java.awt.event.KeyEvent.VK_UP)) {
+        || (keyCode == java.awt.event.KeyEvent.VK_DOWN)) {
       consumeKeyEvent();
       setValue(LXUtils.constrain(this.value + 1, 0, this.options.length - 1));
     }
