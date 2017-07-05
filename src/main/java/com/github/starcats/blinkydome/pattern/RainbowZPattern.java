@@ -26,7 +26,7 @@ public class RainbowZPattern extends AbstractSimplePattern {
   }
 
   @Override
-  public void accept(BlinkyDome model) {
+  public void configureAgainst(BlinkyDome model) {
     // TODO: Could do BlinkyDome-specific stuff here
   }
 }

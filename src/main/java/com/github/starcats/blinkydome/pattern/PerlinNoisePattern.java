@@ -2,6 +2,7 @@ package com.github.starcats.blinkydome.pattern;
 
 
 import com.github.starcats.blinkydome.color.ColorMappingSourceClan;
+import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.model.StarcatsLxModel;
 import com.github.starcats.blinkydome.pattern.effects.Sparklers;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipe;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PerlinNoisePattern extends LXPattern {
+public class PerlinNoisePattern extends LXPattern implements SCPattern {
 
   private BeatDetect beat;
 
@@ -198,8 +199,12 @@ public class PerlinNoisePattern extends LXPattern {
     });
 
 
-    // initialize according to mapping
-    ((StarcatsLxModel) this.model).applyPresets(this);
+    // initialize defaults against particular model configurations
+    ((StarcatsLxModel) this.model).visit(this);
+  }
+
+  @Override
+  public void configureAgainst(BlinkyDome model) {
     brightnessBoostNoise.noiseSpeed.setValue(2.0 * this.hueSpeed.getValue());
     brightnessBoostNoise.noiseXForm.setValue(0.5 * this.hueXForm.getValue());
   }

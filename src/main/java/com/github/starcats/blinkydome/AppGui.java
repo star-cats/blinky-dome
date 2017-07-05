@@ -1,20 +1,15 @@
 package com.github.starcats.blinkydome;
 
+import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.model.StarcatsLxModel;
-import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
-import com.github.starcats.blinkydome.util.AudioDetector;
+import com.github.starcats.blinkydome.model.configuration.BlinkyDomeStudioConfig;
+import com.github.starcats.blinkydome.model.configuration.StarcatsLxModelConfig;
 import com.github.starcats.blinkydome.util.ModelSupplier;
-import com.github.starcats.blinkydome.util.StarCatFFT;
-import heronarts.lx.LXChannel;
-import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.output.LXOutput;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.component.UIPointCloud;
 import processing.core.PApplet;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Main GUI-iful processing app that runs the P3LX UI
@@ -35,9 +30,6 @@ public class AppGui extends PApplet {
 
   private LXStudio lxStudio;
   private LXOutput fcOutput;
-  private final StarCatFFT starCatFFT = new StarCatFFT();
-
-  private float lastDrawMs = 0;
 
   public void settings() {
     size(1000, 800, P3D); // P3D to force GPU blending
@@ -48,29 +40,14 @@ public class AppGui extends PApplet {
     AppGui p = this; // PApplet reference
     StarcatsLxModel scModel = ModelSupplier.getModel(p, true, () -> p.fcOutput);
 
-    AudioDetector.init(starCatFFT.in.mix);
-
 
     lxStudio = new LXStudio(this, scModel, false) {
+      private StarcatsLxModelConfig scConfig;
+
       @Override
       public void initialize(LXStudio lx, LXStudio.UI ui) {
-        scModel.initLx(lx);
-
-        LXChannel mainCh = lx.engine.getChannels().get(0);
-
-        List<LXPattern> patterns = scModel.configPatterns(lx, p, starCatFFT);
-        mainCh.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
-        mainCh.goPattern(patterns.get(0));
-
-
-        // Channel 2: All of the normal patterns + effects for blending, like white wipes and sparkles
-        LXChannel channel2 = lx.engine.addChannel();
-        channel2.fader.setValue(1); // Turn it on
-        LXPattern ch2Default = new WhiteWipePattern(lx);
-        patterns = new LinkedList<>();
-        patterns.add(ch2Default);
-        patterns.addAll(scModel.configPatterns(lx, p, starCatFFT));
-        channel2.setPatterns(patterns.toArray(new LXPattern[patterns.size()]));
+        this.scConfig = new BlinkyDomeStudioConfig(p, lx, (BlinkyDome) scModel);
+        scConfig.init();
 
 
         // Config default palette to do interesting things
@@ -98,7 +75,7 @@ public class AppGui extends PApplet {
 
 
         // Model-specific configs
-        scModel.onUIReady(lx, ui);
+        scConfig.onUIReady(lx, ui);
       }
     };
 
@@ -125,11 +102,6 @@ public class AppGui extends PApplet {
     // Wipe the frame...
     background(0x292929);
     // ...and everything else is handled by P3LX!
-
-    starCatFFT.forward();
-    AudioDetector.LINE_IN.tick(this.millis() - lastDrawMs, isVerbose);
-
-    lastDrawMs = this.millis();
   }
 
 }

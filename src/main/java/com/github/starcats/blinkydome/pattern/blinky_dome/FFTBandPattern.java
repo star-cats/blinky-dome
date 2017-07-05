@@ -26,7 +26,7 @@ public class FFTBandPattern extends AbstractSimplePattern {
     }
 
     @Override
-    public void accept(BlinkyDome model) {
+    public void configureAgainst(BlinkyDome model) {
         this.model = model;
     }
 

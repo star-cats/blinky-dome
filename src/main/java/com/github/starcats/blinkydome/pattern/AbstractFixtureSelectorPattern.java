@@ -1,6 +1,5 @@
 package com.github.starcats.blinkydome.pattern;
 
-import com.github.starcats.blinkydome.model.StarcatsLxModel;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.model.LXPoint;
@@ -26,9 +25,6 @@ public abstract class AbstractFixtureSelectorPattern<E extends Enum> extends Abs
 
   protected AbstractFixtureSelectorPattern(LX lx) {
     super(lx);
-
-    StarcatsLxModel model = (StarcatsLxModel) super.model;
-    model.visit(this);
 
     fixtureFamily = makeFixtureFamilyParameter();
     if (fixtureFamily.getDescription() == null) {
@@ -78,7 +74,7 @@ public abstract class AbstractFixtureSelectorPattern<E extends Enum> extends Abs
   }
 
   /**
-   * After accept()'ing the appropriate model type, should provide an EnumParameter for selecting the appropriate fixture
+   * After configureAgainst()'ing the appropriate model type, should provide an EnumParameter for selecting the appropriate fixture
    * types in the model
    */
   abstract protected EnumParameter<E> makeFixtureFamilyParameter();

@@ -28,7 +28,7 @@ public class BlinkyDomeFixtureSelectorPattern
   }
 
   @Override
-  public void accept(BlinkyDome model) {
+  public void configureAgainst(BlinkyDome model) {
     this.model = model;
   }
 
