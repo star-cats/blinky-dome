@@ -1,7 +1,7 @@
 package com.github.starcats.blinkydome.model;
 
-import com.github.starcats.blinkydome.pattern.SCPattern;
 import heronarts.lx.model.LXAbstractFixture;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import processing.core.PApplet;
 import processing.data.Table;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Model of StarCats dome
  */
-public class BlinkyDome extends StarcatsLxModel {
+public class BlinkyDome extends LXModel {
   /** Like LXModel.points, but up-cast to our LED class */
   public final List<LED> leds;
 
@@ -164,10 +164,5 @@ public class BlinkyDome extends StarcatsLxModel {
 
   public Set<Integer> getTriangleIndexKeys() {
     return trianglesByIndex.keySet();
-  }
-
-  @Override
-  public void visit(SCPattern pattern) {
-    pattern.configureAgainst(this);
   }
 }

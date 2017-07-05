@@ -2,8 +2,6 @@ package com.github.starcats.blinkydome.pattern;
 
 
 import com.github.starcats.blinkydome.color.ColorMappingSourceClan;
-import com.github.starcats.blinkydome.model.BlinkyDome;
-import com.github.starcats.blinkydome.model.StarcatsLxModel;
 import com.github.starcats.blinkydome.pattern.effects.Sparklers;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipe;
 import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer;
@@ -30,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PerlinNoisePattern extends LXPattern implements SCPattern {
+public class PerlinNoisePattern extends LXPattern {
 
   private BeatDetect beat;
 
@@ -39,7 +37,7 @@ public class PerlinNoisePattern extends LXPattern implements SCPattern {
   public final LXParameter hueSpeed;
   public final LXParameter hueXForm;
 
-  private LXPerlinNoiseExplorer brightnessBoostNoise;
+  public final LXPerlinNoiseExplorer brightnessBoostNoise;
   private float brightnessBoostT = 0;
 
   /**
@@ -197,16 +195,6 @@ public class PerlinNoisePattern extends LXPattern implements SCPattern {
     triggerSparklers.addListener(param -> {
       triggerSparklers(param.getValue() > 0);
     });
-
-
-    // initialize defaults against particular model configurations
-    ((StarcatsLxModel) this.model).visit(this);
-  }
-
-  @Override
-  public void configureAgainst(BlinkyDome model) {
-    brightnessBoostNoise.noiseSpeed.setValue(2.0 * this.hueSpeed.getValue());
-    brightnessBoostNoise.noiseXForm.setValue(0.5 * this.hueXForm.getValue());
   }
 
   public void startRandomWipe() {

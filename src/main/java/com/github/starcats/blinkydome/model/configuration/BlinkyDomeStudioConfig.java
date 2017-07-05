@@ -162,14 +162,20 @@ public class BlinkyDomeStudioConfig extends StarcatsLxModelConfig<BlinkyDome> {
     lx.engine.modulation.addTrigger(fcbpNewBarModulation);
 
 
+    // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
+    // --------------------
+    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSamplers);
+    perlinNoisePattern.brightnessBoostNoise.noiseSpeed.setValue(2.0 * perlinNoisePattern.hueSpeed.getValue());
+    perlinNoisePattern.brightnessBoostNoise.noiseXForm.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
+
     // Normal patterns
     // --------------------
     return Arrays.asList(
-        new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSamplers),
-        new FFTBandPattern(lx, starCatFFT),
+        perlinNoisePattern,
+        new FFTBandPattern(lx, model, starCatFFT),
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it LX default palette (controlled by Studio's palette UI)
-        new BlinkyDomeFixtureSelectorPattern(lx),
+        new BlinkyDomeFixtureSelectorPattern(lx, model),
         fixtureColorBarsPattern
     );
   }

@@ -1,6 +1,5 @@
 package com.github.starcats.blinkydome.pattern;
 
-import com.github.starcats.blinkydome.model.BlinkyDome;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SinLFO;
@@ -10,7 +9,7 @@ import heronarts.lx.modulator.SinLFO;
  */
 public class RainbowZPattern extends AbstractSimplePattern {
 
-  SinLFO globalFade = new SinLFO(0, 360, 10000);
+  private SinLFO globalFade = new SinLFO(0, 360, 10000);
 
   public RainbowZPattern(LX lx) {
     super(lx);
@@ -20,13 +19,8 @@ public class RainbowZPattern extends AbstractSimplePattern {
   public void run(double deltaMs) {
     int c;
     for (LXPoint led : points) {
-      c = lx.hsb(led.z/196 * 360 + globalFade.getValuef(), 100, 80);
+      c = LX.hsb(led.z/196 * 360 + globalFade.getValuef(), 100, 80);
       setLEDColor(led, c);
     }
-  }
-
-  @Override
-  public void configureAgainst(BlinkyDome model) {
-    // TODO: Could do BlinkyDome-specific stuff here
   }
 }
