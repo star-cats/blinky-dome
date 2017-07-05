@@ -11,23 +11,20 @@ import heronarts.lx.modulator.Accelerator;
  * Created by akesich on 6/27/17.
  */
 public class FFTBandPattern extends AbstractSimplePattern {
-    private BlinkyDome model;
-    private StarCatFFT fft;
+    private final BlinkyDome model;
+    private final StarCatFFT fft;
 
     private Accelerator ringPhi;
 
-    public FFTBandPattern(LX lx, StarCatFFT fft) {
+    public FFTBandPattern(LX lx, BlinkyDome model, StarCatFFT fft) {
         super(lx);
+
+        this.model = model;
 
         this.fft = fft;
 
         this.ringPhi = new Accelerator(0, 0.3, 0);
         addModulator(this.ringPhi).start();
-    }
-
-    @Override
-    public void accept(BlinkyDome model) {
-        this.model = model;
     }
 
     public void run(double deltaMs) {

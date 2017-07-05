@@ -1,8 +1,8 @@
 package com.github.starcats.blinkydome.pattern;
 
-import com.github.starcats.blinkydome.model.StarcatsLxModel;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXFixture;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.EnumParameter;
@@ -14,7 +14,9 @@ import java.util.List;
 /**
  * Pattern that selects and colors fixtures on a model
  */
-public abstract class AbstractFixtureSelectorPattern<E extends Enum> extends AbstractSimplePattern implements SCPattern {
+public abstract class AbstractFixtureSelectorPattern<M extends LXModel, E extends Enum> extends AbstractSimplePattern {
+
+  protected M model;
 
   private final EnumParameter<E> fixtureFamily;
   private final DiscreteParameter fixtureSelector;
@@ -22,13 +24,12 @@ public abstract class AbstractFixtureSelectorPattern<E extends Enum> extends Abs
   private E currentlySelectedFamily;
   private Object currentlySelectedKey;
 
-  private List<LXFixture> currentFixtures = Collections.emptyList();
+  private List<? extends LXFixture> currentFixtures = Collections.emptyList();
 
-  protected AbstractFixtureSelectorPattern(LX lx) {
+  protected AbstractFixtureSelectorPattern(LX lx, M model) {
     super(lx);
 
-    StarcatsLxModel model = (StarcatsLxModel) super.model;
-    model.visit(this);
+    this.model = model;
 
     fixtureFamily = makeFixtureFamilyParameter();
     if (fixtureFamily.getDescription() == null) {
@@ -78,7 +79,7 @@ public abstract class AbstractFixtureSelectorPattern<E extends Enum> extends Abs
   }
 
   /**
-   * After accept()'ing the appropriate model type, should provide an EnumParameter for selecting the appropriate fixture
+   * After configureAgainst()'ing the appropriate model type, should provide an EnumParameter for selecting the appropriate fixture
    * types in the model
    */
   abstract protected EnumParameter<E> makeFixtureFamilyParameter();
@@ -89,7 +90,7 @@ public abstract class AbstractFixtureSelectorPattern<E extends Enum> extends Abs
    */
   abstract protected Object[] getFixtureKeysForFamily(E fixtureFamily);
 
-  abstract protected List<LXFixture> getFixturesByKey(E fixtureFamily, Object key);
+  abstract protected List<? extends LXFixture> getFixturesByKey(E fixtureFamily, Object key);
 
 
 }

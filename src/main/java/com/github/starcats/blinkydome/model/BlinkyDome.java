@@ -1,24 +1,8 @@
 package com.github.starcats.blinkydome.model;
 
-import com.github.starcats.blinkydome.color.ImageColorSampler;
-import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
-import com.github.starcats.blinkydome.pattern.*;
-import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
-import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
-import com.github.starcats.blinkydome.ui.UIGradientPicker;
-import com.github.starcats.blinkydome.util.DeferredLxOutputProvider;
-import com.github.starcats.blinkydome.util.LXTriggerLinkModulation;
-import com.github.starcats.blinkydome.util.StarCatFFT;
-import heronarts.lx.LX;
-import heronarts.lx.LXPattern;
-import heronarts.lx.audio.BandGate;
 import heronarts.lx.model.LXAbstractFixture;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.modulator.VariableLFO;
-import heronarts.lx.parameter.LXCompoundModulation;
-import heronarts.lx.parameter.LXTriggerModulation;
-import heronarts.p3lx.LXStudio;
-import heronarts.p3lx.ui.UI2dScrollContext;
 import processing.core.PApplet;
 import processing.data.Table;
 import processing.data.TableRow;
@@ -29,34 +13,21 @@ import java.util.stream.Collectors;
 /**
  * Model of StarCats dome
  */
-public class BlinkyDome extends StarcatsLxModel {
+public class BlinkyDome extends LXModel {
   /** Like LXModel.points, but up-cast to our LED class */
   public final List<LED> leds;
 
-  /** Source of gradient coloring for certain patterns */
-  public final ImageColorSampler gradientColorSource;
+  public final List<TriangleFixture> allTriangles;
 
-  /** Source of pattern-based coloring for certain patterns */
-  public final ImageColorSampler patternColorSource;
-
-  public final ImageColorSamplerClan colorSamplers;
-
-  private final List<TriangleFixture> allTriangles;
   private final Map<Integer, List<TriangleFixture>> trianglesByLayer;
   private final Map<Integer, List<TriangleFixture>> trianglesByIndex;
 
   /**
    * Factory to construct a new instance from CSV LED position map
    * @param p processing instance
-   * @param hasGui True if this model is created in GUI mode (eg for additional debugging patterns)
-   * @param outputProvider
    * @return new BlinkyDome instance
    */
-  public static BlinkyDome makeModel(PApplet p, boolean hasGui, DeferredLxOutputProvider outputProvider) {
-    // If not gui, then model is running headless on raspi.  Get GPIO inputs.
-//    if (!hasGui) {
-//      RaspiGpio.init(outputProvider);
-//    }
+  public static BlinkyDome makeModel(PApplet p) {
 
     Table ledTable = p.loadTable("led-locations.csv", "header,csv");
     if (ledTable == null) {
@@ -88,7 +59,7 @@ public class BlinkyDome extends StarcatsLxModel {
     Map<Integer, List<TriangleFixture>> trianglesByIndex = allTriangles.stream()
         .collect(Collectors.groupingBy(triangle -> triangle.index));
 
-    return new BlinkyDome(allLeds, hasGui, allTriangles, trianglesByLayer, trianglesByIndex, p);
+    return new BlinkyDome(allLeds, allTriangles, trianglesByLayer, trianglesByIndex, p);
   }
 
   /**
@@ -153,20 +124,13 @@ public class BlinkyDome extends StarcatsLxModel {
     }
   }
 
-  private BlinkyDome(List<LED> allLEDs, boolean hasGui,
+  private BlinkyDome(List<LED> allLEDs,
                      List<TriangleFixture> allTriangles,
                      Map<Integer, List<TriangleFixture>> trianglesByLayer,
                      Map<Integer, List<TriangleFixture>> trianglesByIndex, PApplet p) {
-    super(new ArrayList<>(allLEDs), hasGui); // dupe LXPoint-typed ArrayList needed for java generics type inference ಠ_ಠ
+    super(new ArrayList<>(allLEDs)); // dupe LXPoint-typed ArrayList needed for java generics type inference ಠ_ಠ
 
     this.leds = Collections.unmodifiableList(allLEDs);
-
-    this.gradientColorSource = new ImageColorSampler(p, "gradients.png");
-    this.patternColorSource = new ImageColorSampler(p, "patterns.png");
-    this.colorSamplers = new ImageColorSamplerClan(new ImageColorSampler[] {
-        this.gradientColorSource,
-        this.patternColorSource
-    });
 
 
     // Make fixture definitions immutable:
@@ -186,82 +150,6 @@ public class BlinkyDome extends StarcatsLxModel {
     this.trianglesByIndex = Collections.unmodifiableMap(immutableTrianglesByIndex);
   }
 
-
-  @Override
-  public List<LXPattern> configPatterns(LX lx, PApplet p, StarCatFFT fft) {
-    // LX-wide components
-    // --------------------
-    VariableLFO colorGradientLfo = new VariableLFO("Color Gradient LFO");
-    colorGradientLfo.running.setValue(true);
-    colorGradientLfo.period.setValue(3000);
-    lx.engine.modulation.addModulator(colorGradientLfo);
-
-
-    BandGate kickModulator = new BandGate("Kick beat detect", lx);
-    kickModulator.running.setValue(true);
-    kickModulator.gain.setValue(30); //dB
-    lx.engine.modulation.addModulator(kickModulator);
-
-
-    // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
-    // --------------------
-    FixtureColorBarsPattern fixtureColorBarsPattern = new FixtureColorBarsPattern(
-        lx,
-        allTriangles.toArray( new TriangleFixture[ allTriangles.size() ] ),
-        colorSamplers
-    );
-
-    LXCompoundModulation fcbpAudioModulation = new LXCompoundModulation(
-        lx.engine.audio.meter, fixtureColorBarsPattern.visibleRange
-    );
-    fixtureColorBarsPattern.visibleRange.setValue(0.25);
-    fcbpAudioModulation.range.setValue(0.75);
-    lx.engine.modulation.addModulation(fcbpAudioModulation);
-
-    LXCompoundModulation fcbpColorModulation = new LXCompoundModulation(
-        colorGradientLfo, fixtureColorBarsPattern.colorSourceI
-    );
-    fixtureColorBarsPattern.colorSourceI.setValue(0.0);
-    fcbpColorModulation.range.setValue(1.0);
-    lx.engine.modulation.addModulation(fcbpColorModulation);
-
-//    LXCompoundModulation fcbpNewBarModulation = new LXCompoundModulation(
-//        kickModulator, fixtureColorBarsPattern.newBarModulationSink
-//    );
-//    fcbpNewBarModulation.range.setValue(1.0);
-//    lx.engine.modulation.addModulation(fcbpNewBarModulation);
-    LXTriggerModulation fcbpNewBarModulation = new LXTriggerLinkModulation(
-        kickModulator, fixtureColorBarsPattern.getTriggerTarget()
-    );
-    lx.engine.modulation.addTrigger(fcbpNewBarModulation);
-
-
-
-    // Normal patterns
-    // --------------------
-    List<LXPattern> patterns = new ArrayList<>(Arrays.asList(
-        new PerlinNoisePattern(lx, p, fft.beat, colorSamplers),
-        new FFTBandPattern(lx, fft),
-        new RainbowZPattern(lx),
-        new PalettePainterPattern(lx, lx.palette), // feed it default palette used by LxStudio
-        new BlinkyDomeFixtureSelectorPattern(lx),
-        fixtureColorBarsPattern
-        // Include other pattern implementations:
-//        new RainbowSpreadPattern(lx)
-    ));
-
-    // Can also add GUI-specific patterns for non-headless modes only:
-    if (hasGui) {
-      // patterns.add(new LedSelectorPattern(lx));
-    }
-
-    return patterns;
-  }
-
-  @Override
-  public void applyPresets(PerlinNoisePattern perlinNoise) {
-  }
-
   public List<TriangleFixture> getTrianglesByLayer(Integer layer) {
     return trianglesByLayer.get(layer);
   }
@@ -276,20 +164,5 @@ public class BlinkyDome extends StarcatsLxModel {
 
   public Set<Integer> getTriangleIndexKeys() {
     return trianglesByIndex.keySet();
-  }
-
-  @Override
-  public void visit(SCPattern pattern) {
-    pattern.accept(this);
-  }
-
-
-  @Override
-  public void onUIReady(LXStudio lx, LXStudio.UI ui) {
-    // Add custom gradient selector
-    UI2dScrollContext container = ui.leftPane.global;
-    UIGradientPicker uiGradientPicker = new UIGradientPicker(
-        ui, colorSamplers, 0, 0, container.getContentWidth());
-    uiGradientPicker.addToContainer(container);
   }
 }

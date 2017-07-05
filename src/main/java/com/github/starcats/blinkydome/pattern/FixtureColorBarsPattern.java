@@ -12,6 +12,7 @@ import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.p3lx.ui.UITriggerTarget;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -26,13 +27,9 @@ public class FixtureColorBarsPattern extends LXPattern implements UITriggerTarge
   /** Public Compound Modulation Sink: What percentage of the fixture is covered by color bars (remainder will be black */
   public final CompoundParameter visibleRange;
 
-//  /** Public Compound Modulation Sink: When this crosses 0.95, triggers a new color bar to appear */
-//  public final CompoundParameter newBarModulationSink;
 
-
-  private LXFixture[] fixtures;
+  private Collection<? extends LXFixture> fixtures;
   private ColorMappingSource colorSource;
-
 
   /** How long it takes a color bar to travel entire length of fixture (100% of LEDs) */
   private final BoundedParameter barPeriodMs;
@@ -42,7 +39,7 @@ public class FixtureColorBarsPattern extends LXPattern implements UITriggerTarge
 
   private final BooleanParameter newBarTrigger;
 
-  public FixtureColorBarsPattern(LX lx, LXFixture[] fixtures, ColorMappingSource colorSource)
+  public FixtureColorBarsPattern(LX lx, Collection<? extends LXFixture> fixtures, ColorMappingSource colorSource)
   {
     super(lx);
     this.fixtures = fixtures;
