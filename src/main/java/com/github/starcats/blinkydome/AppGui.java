@@ -1,12 +1,9 @@
 package com.github.starcats.blinkydome;
 
-import com.github.starcats.blinkydome.model.BlinkyDome;
-import com.github.starcats.blinkydome.model.StarcatsLxModel;
-import com.github.starcats.blinkydome.model.configuration.BlinkyDomeStudioConfig;
 import com.github.starcats.blinkydome.model.configuration.StarcatsLxModelConfig;
-import com.github.starcats.blinkydome.util.ModelSupplier;
+import com.github.starcats.blinkydome.util.ConfigSupplier;
 import heronarts.lx.color.LXPalette;
-import heronarts.lx.output.LXOutput;
+import heronarts.lx.model.LXModel;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.component.UIPointCloud;
 import processing.core.PApplet;
@@ -29,7 +26,6 @@ public class AppGui extends PApplet {
   }
 
   private LXStudio lxStudio;
-  private LXOutput fcOutput;
 
   public void settings() {
     size(1000, 800, P3D); // P3D to force GPU blending
@@ -38,16 +34,15 @@ public class AppGui extends PApplet {
   public void setup() {
 
     AppGui p = this; // PApplet reference
-    StarcatsLxModel scModel = ModelSupplier.getModel(p, true, () -> p.fcOutput);
+
+    final StarcatsLxModelConfig scConfig = ConfigSupplier.getConfig(p);
 
 
-    lxStudio = new LXStudio(this, scModel, false) {
-      private StarcatsLxModelConfig scConfig;
+    lxStudio = new LXStudio(this, scConfig.getModel(), false) {
 
       @Override
       public void initialize(LXStudio lx, LXStudio.UI ui) {
-        this.scConfig = new BlinkyDomeStudioConfig(p, lx, (BlinkyDome) scModel);
-        scConfig.init();
+        scConfig.init(lx);
 
 
         // Config default palette to do interesting things
@@ -59,19 +54,16 @@ public class AppGui extends PApplet {
 
       @Override
       public void onUIReady(LXStudio lx, LXStudio.UI ui) {
+        LXModel model = scConfig.getModel();
         // Configure camera view
         ui.preview
-            .setRadius(scModel.xMax - scModel.xMin + 50)
-            .setCenter(scModel.cx, scModel.cy, scModel.cz)
-            .addComponent(new UIPointCloud(lx, scModel).setPointSize(5));
+            .setRadius(model.xMax - model.xMin + 50)
+            .setCenter(model.cx, model.cy, model.cz)
+            .addComponent(new UIPointCloud(lx, model).setPointSize(5));
 
 
         // Turn off clip editor by default
         ui.toggleClipView();
-
-
-        // Enable audio support
-        lx.engine.audio.enabled.setValue(true);
 
 
         // Model-specific configs
@@ -79,18 +71,14 @@ public class AppGui extends PApplet {
       }
     };
 
-
-//    fcOutput = new FadecandyOutput(lx, "localhost", 7890);
-//    lx.addOutput(fcOutput);
-
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
       public void run () {
 
         System.out.println("Shutting down: turning all off...");
 
-        fcOutput.mode.setValue(0d);
-        fcOutput.send(null);
+        lxStudio.engine.output.mode.setValue(0d);
+        lxStudio.engine.output.send(null);
         for (int i=0; i<100000; i++)
           Thread.yield();
       }

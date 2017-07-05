@@ -2,7 +2,9 @@ package com.github.starcats.blinkydome.model.configuration;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
+import heronarts.lx.model.LXModel;
 import heronarts.lx.modulator.LXModulator;
+import heronarts.lx.output.LXOutput;
 import heronarts.p3lx.LXStudio;
 import processing.core.PApplet;
 
@@ -17,19 +19,38 @@ import java.util.List;
  *   - different wirings to be used in headless vs GUI (P3LX) configurations
  *
  * Implementors should implement/override various implementation hooks with a configuration specific to the model.
+ *
+ * @param <M> The type of LXModel this configuration is valid for
  */
-public abstract class StarcatsLxModelConfig {
+public abstract class StarcatsLxModelConfig<M extends LXModel> {
 
-  protected final LX lx;
   protected final PApplet p;
+  protected final M model;
+  protected LX lx;
 
-  protected StarcatsLxModelConfig(PApplet p, LX lx) {
+  protected StarcatsLxModelConfig(PApplet p) {
     this.p = p;
-    this.lx = lx;
+    this.model = makeModel();
   }
 
-  public void init() {
-    registerModulators();
+  /**
+   * IMPLEMENTATION HOOK: Provide an instance of the config's model
+   * @return Model instance
+   */
+  protected abstract M makeModel();
+
+  public M getModel() {
+    return model;
+  }
+
+  public void init(LX lx) {
+    this.lx = lx;
+
+    constructOutputs().forEach(lx::addOutput);
+
+    initComponents();
+
+    constructModulators().forEach(lx.engine.modulation::addModulator);
 
     for (int i=0; i<getNumChannels(); i++) {
       LXChannel channel;
@@ -44,9 +65,16 @@ public abstract class StarcatsLxModelConfig {
     }
   }
 
-  private void registerModulators() {
-    constructModulators().forEach(lx.engine.modulation::addModulator);
-  }
+  /**
+   * IMPLEMENTATION HOOK: Return any outputs to be registered with LX
+   */
+  abstract protected List<LXOutput> constructOutputs();
+
+  /**
+   * IMPLEMENTATION HOOK: Configure and setup anything specific to this model config that doesn't fit into other impl
+   * hooks (eg custom FFT, custom color sources, RaspiGPIO, etc)
+   */
+  abstract protected void initComponents();
 
   /**
    * IMPLEMENTATION HOOK: Return all modulators that should be added to the LX modulation engine.

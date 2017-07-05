@@ -14,12 +14,13 @@ import com.github.starcats.blinkydome.ui.UIGradientPicker;
 import com.github.starcats.blinkydome.util.AudioDetector;
 import com.github.starcats.blinkydome.util.LXTriggerLinkModulation;
 import com.github.starcats.blinkydome.util.StarCatFFT;
-import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.modulator.VariableLFO;
+import heronarts.lx.output.FadecandyOutput;
+import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.LXCompoundModulation;
 import heronarts.lx.parameter.LXTriggerModulation;
 import heronarts.p3lx.LXStudio;
@@ -28,22 +29,22 @@ import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * LXStudio-based (GUI, not headless) configuration for the {@link BlinkyDome} model
  */
-public class BlinkyDomeStudioConfig extends StarcatsLxModelConfig {
-  private final BlinkyDome model;
+public class BlinkyDomeStudioConfig extends StarcatsLxModelConfig<BlinkyDome> {
 
   /** minim-based FFT.  Offers better beat-detection algorithms than LX built-in stuff */
-  private final StarCatFFT starCatFFT;
+  private StarCatFFT starCatFFT;
 
 
   // Color sources
   // ----------------
   /** Grouping of color sources */
-  private final ImageColorSamplerClan colorSamplers;
+  private ImageColorSamplerClan colorSamplers;
 
 
   // Modulators
@@ -55,11 +56,25 @@ public class BlinkyDomeStudioConfig extends StarcatsLxModelConfig {
   private VariableLFO colorMappingSourceLfo;
 
 
-  public BlinkyDomeStudioConfig(PApplet p, LX lx, BlinkyDome model) {
-    super(p, lx);
-    this.model = model;
+  public BlinkyDomeStudioConfig(PApplet p) {
+    super(p);
+  }
 
+  @Override
+  protected BlinkyDome makeModel() {
+    return BlinkyDome.makeModel(p);
+  }
 
+  @Override
+  protected List<LXOutput> constructOutputs() {
+    return Collections.singletonList(
+        new FadecandyOutput(lx, "localhost", 7890)
+        // TODO: pixelpusher, etc.
+    );
+  }
+
+  @Override
+  protected void initComponents() {
     // FFT
     this.starCatFFT = new StarCatFFT();
     AudioDetector.init(starCatFFT.in.mix);
@@ -166,5 +181,9 @@ public class BlinkyDomeStudioConfig extends StarcatsLxModelConfig {
     UIGradientPicker uiGradientPicker = new UIGradientPicker(
         ui, colorSamplers, 0, 0, container.getContentWidth());
     uiGradientPicker.addToContainer(container);
+
+
+    // Enable audio support
+    lx.engine.audio.enabled.setValue(true);
   }
 }

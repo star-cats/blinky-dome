@@ -1,7 +1,6 @@
 package com.github.starcats.blinkydome.model;
 
 import com.github.starcats.blinkydome.pattern.SCPattern;
-import com.github.starcats.blinkydome.util.DeferredLxOutputProvider;
 import heronarts.lx.model.LXAbstractFixture;
 import heronarts.lx.model.LXPoint;
 import processing.core.PApplet;
@@ -26,15 +25,9 @@ public class BlinkyDome extends StarcatsLxModel {
   /**
    * Factory to construct a new instance from CSV LED position map
    * @param p processing instance
-   * @param hasGui True if this model is created in GUI mode (eg for additional debugging patterns)
-   * @param outputProvider
    * @return new BlinkyDome instance
    */
-  public static BlinkyDome makeModel(PApplet p, boolean hasGui, DeferredLxOutputProvider outputProvider) {
-    // If not gui, then model is running headless on raspi.  Get GPIO inputs.
-//    if (!hasGui) {
-//      RaspiGpio.init(outputProvider);
-//    }
+  public static BlinkyDome makeModel(PApplet p) {
 
     Table ledTable = p.loadTable("led-locations.csv", "header,csv");
     if (ledTable == null) {
@@ -66,7 +59,7 @@ public class BlinkyDome extends StarcatsLxModel {
     Map<Integer, List<TriangleFixture>> trianglesByIndex = allTriangles.stream()
         .collect(Collectors.groupingBy(triangle -> triangle.index));
 
-    return new BlinkyDome(allLeds, hasGui, allTriangles, trianglesByLayer, trianglesByIndex, p);
+    return new BlinkyDome(allLeds, allTriangles, trianglesByLayer, trianglesByIndex, p);
   }
 
   /**
@@ -131,7 +124,7 @@ public class BlinkyDome extends StarcatsLxModel {
     }
   }
 
-  private BlinkyDome(List<LED> allLEDs, boolean hasGui,
+  private BlinkyDome(List<LED> allLEDs,
                      List<TriangleFixture> allTriangles,
                      Map<Integer, List<TriangleFixture>> trianglesByLayer,
                      Map<Integer, List<TriangleFixture>> trianglesByIndex, PApplet p) {
