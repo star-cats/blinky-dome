@@ -151,8 +151,8 @@ public class UIGradientPicker extends UICollapsibleSection {
   }
 
   private void resize() {
-    this.setHeight(
-        30 + GRADIENT_SUPPLIER_UIS_ROW_Y +
+    this.setContentHeight(
+        GRADIENT_SUPPLIER_UIS_ROW_Y +
         currentSamplerUI.getHeight()
     );
   }
