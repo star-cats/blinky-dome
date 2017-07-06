@@ -1,11 +1,10 @@
-package com.github.starcats.blinkydome.model.configuration;
+package com.github.starcats.blinkydome.configuration;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.output.LXOutput;
-import heronarts.p3lx.LXStudio;
 import processing.core.PApplet;
 
 import java.util.List;
@@ -22,13 +21,13 @@ import java.util.List;
  *
  * @param <M> The type of LXModel this configuration is valid for
  */
-public abstract class AbstractStarcatsLxModelConfig<M extends LXModel> {
+public abstract class AbstractStarcatsLxConfig<M extends LXModel> implements StarcatsLxConfig<M> {
 
   protected final PApplet p;
   protected final M model;
   protected LX lx;
 
-  protected AbstractStarcatsLxModelConfig(PApplet p) {
+  protected AbstractStarcatsLxConfig(PApplet p) {
     this.p = p;
     this.model = makeModel();
   }
@@ -39,10 +38,12 @@ public abstract class AbstractStarcatsLxModelConfig<M extends LXModel> {
    */
   protected abstract M makeModel();
 
+  @Override
   public M getModel() {
     return model;
   }
 
+  @Override
   public void init(LX lx) {
     this.lx = lx;
 
@@ -103,12 +104,4 @@ public abstract class AbstractStarcatsLxModelConfig<M extends LXModel> {
    * @param channel The Channel instance
    */
   protected abstract void configChannel(int channelNum, LXChannel channel);
-
-  /**
-   * IMPLEMENTATION HOOK: if using a P3LX / GUI config, add any special things to your GUI.
-   */
-  public void onUIReady(LXStudio lx, LXStudio.UI ui) {
-    // default no-op / headless
-    // TODO: Can we move this to different config so no dependencies on P3LX in headless --> smaller jar packaging?
-  }
 }

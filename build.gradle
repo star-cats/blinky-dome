@@ -80,6 +80,7 @@ task headlessShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sh
     exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
 
     // AppHeadless shouldn't be using any p3lx stuff, so exclude it from shadowjar
+    // TODO: Still have a few headless config dependencies on p3lx stuff... should clean that up.
 //    dependencies {
 //        exclude(project(':lib:p3lx'))
 //    }

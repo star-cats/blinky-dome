@@ -1,7 +1,6 @@
 package com.github.starcats.blinkydome;
 
-import com.github.starcats.blinkydome.model.configuration.AbstractStarcatsLxModelConfig;
-import com.github.starcats.blinkydome.util.ConfigSupplier;
+import com.github.starcats.blinkydome.configuration.StarcatsLxConfig;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.output.LXOutput;
@@ -39,7 +38,7 @@ public class AppHeadless extends PApplet {
 
     AppHeadless p = this; // PApplet reference
 
-    final AbstractStarcatsLxModelConfig scConfig = ConfigSupplier.getConfig(p);
+    final StarcatsLxConfig scConfig = ConfigSupplier.getConfig(p);
 
     lx = new LX(scConfig.getModel());
     scConfig.init(lx);

@@ -10,6 +10,10 @@ import heronarts.lx.transform.LXVector;
 import java.util.*;
 import java.util.stream.Stream;
 
+
+/**
+ * DLo's backpack-mounted LED icosahedron
+ */
 public class Icosastar extends LXModel {
   public final List<ConnectedVectorStripModel> innerSpokeLeds;
   public final List<ConnectedVectorStripModel> outerSpokeLeds;

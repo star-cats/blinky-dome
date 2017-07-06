@@ -1,5 +1,6 @@
-package com.github.starcats.blinkydome.model.configuration;
+package com.github.starcats.blinkydome.configuration;
 
+import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -8,13 +9,15 @@ import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
+import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
+import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
+import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
-import heronarts.p3lx.LXStudio;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
@@ -23,11 +26,19 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * LXStudio-based (GUI, not headless) configuration for the {@link BlinkyDome} model
+ * Headless configuration for the {@link BlinkyDome} model
  */
-public class BlinkyDomeStudioConfig extends CommonStarcatsLxModelConfig<BlinkyDome> {
+public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
-  public BlinkyDomeStudioConfig(PApplet p) {
+  // Components
+  private StarCatFFT starCatFFT;
+  protected ImageColorSamplerClan colorSampler;
+
+  // Modulators
+  private BandGate kickModulator;
+  private VariableLFO colorMappingLFO;
+
+  public BlinkyDomeConfig(PApplet p) {
     super(p);
   }
 
@@ -37,18 +48,20 @@ public class BlinkyDomeStudioConfig extends CommonStarcatsLxModelConfig<BlinkyDo
   }
 
   @Override
-  protected void initComponentsImpl(PApplet p, LX lx, BlinkyDome model) {
-    // no-op
+  protected void initComponents(PApplet p, LX lx, BlinkyDome model) {
+    starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
+    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p);
   }
 
   @Override
-  protected List<LXModulator> constructModulatorsImpl(PApplet p, LX lx, BlinkyDome model) {
-    return Collections.emptyList();
-  }
+  protected List<LXModulator> constructModulators(PApplet p, LX lx, BlinkyDome model) {
+    kickModulator = CommonScLxConfigUtils.Modulators.makeKickModulator(lx);
+    colorMappingLFO = CommonScLxConfigUtils.Modulators.makeColorMappingLFO();
 
-  @Override
-  protected void onUIReadyImpl(LXStudio lx, LXStudio.UI ui) {
-    // no-op
+    return Arrays.asList(
+        kickModulator,
+        colorMappingLFO
+    );
   }
 
   @Override
@@ -88,12 +101,15 @@ public class BlinkyDomeStudioConfig extends CommonStarcatsLxModelConfig<BlinkyDo
 
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
-    FixtureColorBarsPattern fixtureColorBarsPattern = wireUpFixtureColorBarsPattern(model.allTriangles);
+    FixtureColorBarsPattern fixtureColorBarsPattern =
+        CommonScLxConfigUtils.Patterns.wireUpFixtureColorBarsPattern(
+            lx, model.allTriangles, colorSampler, colorMappingLFO, kickModulator
+        );
 
 
     // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
     // --------------------
-    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSamplers);
+    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
     perlinNoisePattern.brightnessBoostNoise.noiseSpeed.setValue(2.0 * perlinNoisePattern.hueSpeed.getValue());
     perlinNoisePattern.brightnessBoostNoise.noiseXForm.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
 

@@ -1,7 +1,7 @@
 package com.github.starcats.blinkydome;
 
-import com.github.starcats.blinkydome.model.configuration.AbstractStarcatsLxModelConfig;
-import com.github.starcats.blinkydome.util.ConfigSupplier;
+import com.github.starcats.blinkydome.configuration.StarcatsLxConfig;
+import com.github.starcats.blinkydome.configuration.StarcatsLxGuiConfig;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.output.LXOutput;
@@ -36,7 +36,15 @@ public class AppGui extends PApplet {
 
     AppGui p = this; // PApplet reference
 
-    final AbstractStarcatsLxModelConfig scConfig = ConfigSupplier.getConfig(p);
+    StarcatsLxConfig suppliedScConfig = ConfigSupplier.getConfig(p);
+
+    if (!(suppliedScConfig instanceof StarcatsLxGuiConfig)) {
+      throw new RuntimeException(
+          "Configuration supplied not a StarcatsLxGuiConfig: " + suppliedScConfig.getClass().getName()
+      );
+    }
+
+    final StarcatsLxGuiConfig scConfig = (StarcatsLxGuiConfig) suppliedScConfig;
 
 
     lxStudio = new LXStudio(this, scConfig.getModel(), false) {
