@@ -49,6 +49,12 @@ public class AppHeadless extends PApplet {
     lx.palette.period.setValue(10000); // 10sec
     lx.palette.range.setValue(130); // to about green
 
+
+    // Kick it!
+    lx.engine.start();
+
+
+    // Safety: Turn everything off on shutdown
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 
       public void run () {
@@ -71,7 +77,7 @@ public class AppHeadless extends PApplet {
   public void draw() {
     // Wipe the frame...
     background(0x000);
-    // ...and everything else is handled by P3LX!
+    // ...and everything else is handled by LX engine!
   }
 
 }

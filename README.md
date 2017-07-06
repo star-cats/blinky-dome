@@ -49,11 +49,37 @@ Now you have an executable fatjar (shadowJar). Which means, you can simply do:
 
 `java -jar build/libs/blinky-dome-all.jar`
 
-## To Deploy Embedded (raspi, odroid)
-TODO: The fatjar created above should run on embedded systems, but you usually need to go through some dependency hell
- to make Processing run on embedded devices.  Has to do with jogl native jars (need the right native for the platform).
- Build scripts include the jogl-all-main runtime group, which SHOULD include the natives for the embedded platform and
- they SHOULD automatically get picked out, but, well, it's a TODO to make sure everything works.
+## Headless/Embedded (raspi, odroid)
+
+We also have a headless mode that doesn't run P3LX, suited for small single-board computers like a Raspi or ODroid.
+Not running P3LX saves some CPU work (eg no OpenGL rendering) so your limited CPU can just crunch your animations.
+
+### To Run (/Debug) Headless
+`./gradlew headlessRun`
+
+You won't see a window, but you should see a new processing app start up in your OS's task manager.
+
+You can also add an IntelliJ run configuration against this gradle task to allow you to debug your headless runs.
+
+### To Deploy Headless
+Build a fatjar (shadowjar):
+
+`./gradlew headlessShadowJar`
+
+Now you have an executable fatjar (shadowJar). Which means, you can simply do:
+
+`java -jar build/libs/blinky-dome-headless-all.jar`
+
+Copy it onto your embdedded device of choice.
+
+**Note: Not True Headless!**  Although LX doesn't have a dependency on Processing, blinky-dome does since we rely on a
+lot of Processing utils.  This means it's not *true* headless (just a 1x1 px window), but this also means you'll have to
+jump through a few hoops to get Processing running on a headless device like a Raspi or ODroid.
+
+TODO: detailed instructions on how to get it running on raspi/odroid. For now, google "raspi processing headless"...
+basically you'll have to setup a virtual frame buffer `Xvfb` and run the fatjar like
+`sudo DISPLAY=:1 java -jar blinky-dome-headless-all.jar`
+
 
 # Setup for New Developers
 Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that integrates Gradle builds
