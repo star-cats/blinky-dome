@@ -4,6 +4,7 @@ import com.github.starcats.blinkydome.model.configuration.AbstractStarcatsLxMode
 import com.github.starcats.blinkydome.util.ConfigSupplier;
 import heronarts.lx.color.LXPalette;
 import heronarts.lx.model.LXModel;
+import heronarts.lx.output.LXOutput;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.component.UIPointCloud;
 import processing.core.PApplet;
@@ -77,10 +78,14 @@ public class AppGui extends PApplet {
 
         System.out.println("Shutting down: turning all off...");
 
-        lxStudio.engine.output.mode.setValue(0d);
+        lxStudio.engine.output.mode.setValue(LXOutput.Mode.OFF);
         lxStudio.engine.output.send(null);
-        for (int i=0; i<100000; i++)
+
+        // wait a few ms for all commands to flush
+        long waitUntil = System.currentTimeMillis() + 100;
+        while (System.currentTimeMillis() < waitUntil) {
           Thread.yield();
+        }
       }
     }
     ));
