@@ -104,3 +104,7 @@ Note: use latest version of IntelliJ.  2016.1 was a bit glitchy with this newer 
   - Hit "Run 'blinky-dome [run]'"
   - P3LX window should appear
   - You now have an IntelliJ run configuration.  You can hit the green Run triangle or green Debug bug to start it up.
+- Optional: Create run configuration for headless mode
+  - The headless run config is useful for attaching debugger to headless (non-P3LX) runs (see "Headless/Embedded" section above)
+  - Same steps as above, but in the Gradle tool window, buried in blinky-dome > Tasks > other > headlessRun
+  - Since it's a headless run, you won't see any window appear, but you should see application output in run console.
