@@ -22,13 +22,13 @@ import java.util.List;
  *
  * @param <M> The type of LXModel this configuration is valid for
  */
-public abstract class StarcatsLxModelConfig<M extends LXModel> {
+public abstract class AbstractStarcatsLxModelConfig<M extends LXModel> {
 
   protected final PApplet p;
   protected final M model;
   protected LX lx;
 
-  protected StarcatsLxModelConfig(PApplet p) {
+  protected AbstractStarcatsLxModelConfig(PApplet p) {
     this.p = p;
     this.model = makeModel();
   }
@@ -46,11 +46,11 @@ public abstract class StarcatsLxModelConfig<M extends LXModel> {
   public void init(LX lx) {
     this.lx = lx;
 
-    constructOutputs().forEach(lx::addOutput);
+    constructOutputs(lx).forEach(lx::addOutput);
 
-    initComponents();
+    initComponents(p, lx, model);
 
-    constructModulators().forEach(lx.engine.modulation::addModulator);
+    constructModulators(p, lx, model).forEach(lx.engine.modulation::addModulator);
 
     for (int i=0; i<getNumChannels(); i++) {
       LXChannel channel;
@@ -68,13 +68,13 @@ public abstract class StarcatsLxModelConfig<M extends LXModel> {
   /**
    * IMPLEMENTATION HOOK: Return any outputs to be registered with LX
    */
-  abstract protected List<LXOutput> constructOutputs();
+  abstract protected List<LXOutput> constructOutputs(LX lx);
 
   /**
    * IMPLEMENTATION HOOK: Configure and setup anything specific to this model config that doesn't fit into other impl
    * hooks (eg custom FFT, custom color sources, RaspiGPIO, etc)
    */
-  abstract protected void initComponents();
+  abstract protected void initComponents(PApplet p, LX lx, M model);
 
   /**
    * IMPLEMENTATION HOOK: Return all modulators that should be added to the LX modulation engine.
@@ -84,7 +84,7 @@ public abstract class StarcatsLxModelConfig<M extends LXModel> {
    * Note: Don't confuse modulators with modulations! Modulations should be added probably during pattern-instantiation,
    * potentially referencing one of the modulators added here.
    */
-  protected abstract List<LXModulator> constructModulators();
+  protected abstract List<LXModulator> constructModulators(PApplet p, LX lx, M model);
 
   /**
    * IMPLEMENTATION HOOK: Return the number of channels LX should be configured with (default 1)

@@ -1,7 +1,7 @@
 package com.github.starcats.blinkydome.util;
 
-import com.github.starcats.blinkydome.model.configuration.BlinkyDomeStudioConfig;
-import com.github.starcats.blinkydome.model.configuration.StarcatsLxModelConfig;
+import com.github.starcats.blinkydome.model.configuration.AbstractStarcatsLxModelConfig;
+import com.github.starcats.blinkydome.model.configuration.IcosastarStudioConfig;
 import processing.core.PApplet;
 
 /**
@@ -10,7 +10,8 @@ import processing.core.PApplet;
  */
 public class ConfigSupplier {
 
-  public static StarcatsLxModelConfig getConfig(PApplet p) {
-    return new BlinkyDomeStudioConfig(p);
+  public static AbstractStarcatsLxModelConfig getConfig(PApplet p) {
+    //return new BlinkyDomeStudioConfig(p);
+    return new IcosastarStudioConfig(p);
   }
 }
