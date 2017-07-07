@@ -3,6 +3,7 @@ package com.github.starcats.blinkydome.pattern.effects;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 
 /**
@@ -18,8 +19,9 @@ public class WhiteWipePattern extends LXPattern {
   private final BoundedParameter widthPx = new BoundedParameter("width", 5, 0, 20)
       .setDescription("Width of the wipe, in model units");
 
-  private final BoundedParameter triggerWipe = new BoundedParameter("Trigger")
-      .setDescription("Change to start a wipe");
+  private final BooleanParameter triggerWipe = new BooleanParameter("Trigger")
+      .setDescription("Hit to start a wipe")
+      .setMode(BooleanParameter.Mode.MOMENTARY);
 
   public WhiteWipePattern(LX lx) {
     super(lx);
@@ -40,7 +42,9 @@ public class WhiteWipePattern extends LXPattern {
 
     addParameter(triggerWipe);
     triggerWipe.addListener(param -> {
-      this.startRandomWipe();
+      if (param.getValue() == 1) {
+        this.startRandomWipe();
+      }
     });
   }
 
