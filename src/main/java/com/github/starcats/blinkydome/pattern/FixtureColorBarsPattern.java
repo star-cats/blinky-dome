@@ -20,6 +20,9 @@ import java.util.LinkedList;
  * Sends bars of colors up a fixture
  */
 public class FixtureColorBarsPattern extends LXPattern implements UITriggerTarget {
+  // TODO: We need the UITriggerTarget to allow trigger-based modulation in P3LX, but this makes this pattern incapable
+  // of being used in headless configs since headless configs shouldn't rely on P3LX.  See build script that excludes
+  // P3LX from headless builds (although now it's commented out)
 
   /** Public Compound Modulation Sink: Input into {@link ColorMappingSource} to pick color of current bar */
   public final CompoundParameter colorSourceI;

@@ -4,11 +4,14 @@ import ddf.minim.AudioInput;
 import ddf.minim.Minim;
 import ddf.minim.analysis.BeatDetect;
 import ddf.minim.analysis.FFT;
+import heronarts.lx.LX;
 
 import static processing.core.PApplet.*;
 
 /**
- * Wrapper class around a minim FFT configuration
+ * Wrapper class around a minim FFT configuration.
+ *
+ * Hooks into LX engine to do the sound sampling on every LX loop
  */
 public class StarCatFFT {
 
@@ -22,13 +25,8 @@ public class StarCatFFT {
   public final AudioInput in;
   public final BeatDetect beat;
 
-  protected StarCatFFT(BeatDetect beat) {
-    this.in = null;
-    this.fft = null;
-    this.beat = beat;
-  }
 
-  public StarCatFFT() {
+  public StarCatFFT(LX lx) {
 
     this.minim = new Minim(this);
     //minim.debugOn();
@@ -44,6 +42,13 @@ public class StarCatFFT {
 
     this.beat = new BeatDetect(in.bufferSize(), in.sampleRate());
     this.beat.setSensitivity(200);
+
+
+    // Register with LX engine to do the audio sampling
+    lx.engine.addLoopTask(deltaMs -> {
+      this.forward();
+      AudioDetector.LINE_IN.tick(deltaMs, false);
+    });
   }
 
   // Move the FFT forward one cycle
