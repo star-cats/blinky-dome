@@ -9,6 +9,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,13 +20,16 @@ import java.util.List;
  */
 public class CombJellyPattern extends LXPattern {
 
-  public final CompoundParameter brightnessParam;
+  public final CompoundParameter baseBrightnessParam;
+  public final CompoundParameter pulseBrightnessParam;
 
   public final BooleanParameter triggerPulse;
 
-  public final CompoundParameter fixturePeriodMs;
+  public final CompoundParameter fixtureDurationMs;
 
   public final CompoundParameter wigglePeriodMs;
+
+  public final CompoundParameter wiggleDurationMs;
 
   public final CompoundParameter hueWiggleWidth;
 
@@ -41,9 +45,13 @@ public class CombJellyPattern extends LXPattern {
     this.baseColor = baseColorPalette;
     this.fixtures = fixtures;
 
-    brightnessParam = new CompoundParameter("brightness", 100, 0, 100);
-    brightnessParam.setDescription("Sets the brightness (black) of the base hue");
-    addParameter(brightnessParam);
+    baseBrightnessParam = new CompoundParameter("base b", 0, 0, 100);
+    baseBrightnessParam.setDescription("Base Brightness: Sets the brightness (black) of the base hue");
+    addParameter(baseBrightnessParam);
+
+    pulseBrightnessParam = new CompoundParameter("puls b", 100, 0, 100);
+    pulseBrightnessParam.setDescription("Pulse Brightness: Sets the brightness (black) of the pulse hue");
+    addParameter(pulseBrightnessParam);
 
     triggerPulse = new BooleanParameter("pulse", false)
         .setMode(BooleanParameter.Mode.MOMENTARY)
@@ -51,17 +59,36 @@ public class CombJellyPattern extends LXPattern {
     addParameter(triggerPulse);
 
 
-    fixturePeriodMs = new CompoundParameter("duration", 1000, 100, 10000);
-    fixturePeriodMs
-        .setDescription("How long a pulse takes to travel length of fixtures")
+    fixtureDurationMs = new CompoundParameter("f duration", 500, 100, 5000);
+    fixtureDurationMs
+        .setDescription("Fixture Duration: How long a pulse takes to travel length of fixtures")
         .setUnits(LXParameter.Units.MILLISECONDS);
-    addParameter(fixturePeriodMs);
+    addParameter(fixtureDurationMs);
 
-    wigglePeriodMs = new CompoundParameter("wiggle", 500, 100, 10000);
+    wiggleDurationMs = new CompoundParameter("w dur", 800, 100, 2000);
+    wiggleDurationMs
+        .setDescription("Wiggle Duration: How long a point wiggles in the pulse")
+        .setUnits(LXParameter.Units.MILLISECONDS);
+    addParameter(wiggleDurationMs);
+
+    wigglePeriodMs = new CompoundParameter("w period", 400, 100, 2000);
     wigglePeriodMs
-        .setDescription("How long a point wiggles in the pulse")
+        .setDescription("The period of a full wiggle cycle (ms)")
         .setUnits(LXParameter.Units.MILLISECONDS);
     addParameter(wigglePeriodMs);
+
+
+    CompoundParameter wiggleDurationToPeriodRatio = new CompoundParameter(
+        "w d/p",
+        0,
+        // log10 scale, ie -1, 0, and 1 mean 0.1, 1, and 10
+        Math.log10( wiggleDurationMs.range.min / wigglePeriodMs.range.max ),
+        Math.log10( wiggleDurationMs.range.max / wigglePeriodMs.range.min )
+    );
+    wiggleDurationToPeriodRatio.setDescription("Ratio of wiggle duration to wiggle period");
+    addParameter(wiggleDurationToPeriodRatio);
+    wiggleDurationToPeriodRatio.setUnits(LXParameter.Units.LOG10);
+
 
     hueWiggleWidth = new CompoundParameter("c width", 50, 0, 180);
     hueWiggleWidth.setDescription("Color Wiggle Width: how wide in the color palette one wiggle is");
@@ -71,18 +98,64 @@ public class CombJellyPattern extends LXPattern {
     triggerPulse.addListener(parameter -> {
       if (parameter.getValue() == 1) {
         this.pulses.add(new Pulse(
-            fixturePeriodMs.getValue(),
-            wigglePeriodMs.getValue()
+            fixtureDurationMs.getValue(),
+            wigglePeriodMs.getValue(),
+            wiggleDurationMs.getValue()
         ));
       }
     });
+
+
+    // Going to do something weird: going to join wiggle duration, period, and duration-to-period.  Changing the
+    // first two will change the third; changing the third will change the first two
+    boolean[] changingLock = new boolean[]{ false };
+    LXParameterListener onRatioChanged = parameter -> {
+      if (changingLock[0]) {
+        return;
+      }
+
+      changingLock[0] = true;
+
+      wiggleDurationToPeriodRatio.setValue( Math.log10(wiggleDurationMs.getValue() / wigglePeriodMs.getValue()) );
+
+      changingLock[0] = false;
+    };
+    wiggleDurationMs.addListener(onRatioChanged);
+    wigglePeriodMs.addListener(onRatioChanged);
+
+    wiggleDurationToPeriodRatio.addListener(parameter -> {
+      if (changingLock[0]) {
+        return;
+      }
+
+      changingLock[0] = true;
+
+      double ratio = Math.pow(10, wiggleDurationToPeriodRatio.getValue());
+
+      double duration = wiggleDurationMs.getValue();
+      double period = duration / ratio;
+
+      if (period < wigglePeriodMs.range.min) {
+        period = wigglePeriodMs.range.min;
+        duration = ratio * period;
+      } else if (period > wigglePeriodMs.range.max) {
+        period = wigglePeriodMs.range.max;
+        duration = ratio * period;
+      }
+
+      wiggleDurationMs.setValue( duration );
+      wigglePeriodMs.setValue( period );
+
+      changingLock[0] = false;
+    });
+
+    onRatioChanged.onParameterChanged(null); // init the ratio param
   }
 
   public void run(double deltaMs) {
-    // TODO TEMP??  Initialize each point to base hue
     for (LXFixture fixture : fixtures) {
       for (LXPoint pt : fixture.getPoints()) {
-        setColor(pt.index, baseColor.getColor(brightnessParam.getValue()));
+        setColor(pt.index, baseColor.getColor(baseBrightnessParam.getValue()));
       }
     }
 
@@ -97,13 +170,13 @@ public class CombJellyPattern extends LXPattern {
           if (ptModulation == 0) {
             continue;
           }
-          
+
           blendColor(
               pt.index,
               LXColor.hsb(
                   palette.getHue() + hueWiggleWidth.getValue() * ptModulation,
                   palette.getSaturation(),
-                  brightnessParam.getValue()
+                  pulseBrightnessParam.getValue()
               ),
               LXColor.Blend.LERP
           );
@@ -137,9 +210,13 @@ public class CombJellyPattern extends LXPattern {
     /** How long it will take a point to do a complete wiggle of the waveform */
     final double wigglePeriodMs;
 
-    Pulse(double fixturePeriodMs, double wigglePeriodMs) {
+    /** How long a point wiggle */
+    final double wiggleDurationMs;
+
+    Pulse(double fixturePeriodMs, double wigglePeriodMs, double wiggleDurationMs) {
       this.fixturePeriodMs = fixturePeriodMs;
       this.wigglePeriodMs = wigglePeriodMs;
+      this.wiggleDurationMs = wiggleDurationMs;
       this.lifespanMs = 0D;
     }
 
@@ -148,7 +225,7 @@ public class CombJellyPattern extends LXPattern {
     }
 
     boolean isStillActive() {
-      return lifespanMs < fixturePeriodMs + wigglePeriodMs;
+      return lifespanMs < fixturePeriodMs + wiggleDurationMs;
     }
 
     double getWaveformModulation(double tMs) {
@@ -169,7 +246,7 @@ public class CombJellyPattern extends LXPattern {
 
       double tMs = lifespanMs - ptStartT;
 
-      if (tMs > wigglePeriodMs) {
+      if (tMs > wiggleDurationMs) {
         return 0; // force the point to be done wiggling
       }
 
