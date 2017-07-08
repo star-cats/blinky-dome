@@ -15,11 +15,7 @@ import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.modulator.SawLFO;
-import heronarts.lx.parameter.BooleanParameter;
-import heronarts.lx.parameter.BoundedParameter;
-import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.*;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -34,8 +30,11 @@ public class PerlinNoisePattern extends LXPattern {
 
   private LXPerlinNoiseExplorer hueNoise;
 
-  public final LXParameter hueSpeed;
-  public final LXParameter hueXForm;
+  /** The speed of the perlin noise pattern used for hue mapping */
+  public final CompoundParameter hueSpeed;
+
+  /** Multiplier ('zoom') of the perlin noise pattern used for hue mapping */
+  public final CompoundParameter hueXForm;
 
   public final LXPerlinNoiseExplorer brightnessBoostNoise;
   private float brightnessBoostT = 0;
@@ -44,7 +43,9 @@ public class PerlinNoisePattern extends LXPattern {
    * Exponential dropoff of the brightness boost, per ms.
    * eg in 500ms, the brightness boost will be at Math.pow({bright decay}, 500) %
    */
-  private BoundedParameter brightnessBoostDecayPerMs = new BoundedParameter("bb decay", 0.998, 0.990, 0.999);
+  private BoundedParameter brightnessBoostDecayPerMs = new BoundedParameter("bb decay", 0.998, 0.990, 0.999)
+      .setDescription("Exponential dropoff of the brightness boost, per ms (eg after 123ms, the brightness boost " +
+      "will be at Math.pow({bb decay}, 123))");
 
   /** Selects a colorizer to use */
   public final DiscreteParameter colorizerSelect;
@@ -54,8 +55,6 @@ public class PerlinNoisePattern extends LXPattern {
   private int[] colorizerWeights;
   private int totalWeight;
 
-  private SawLFO gradientAutoselect;
-
   private double timeSinceLastRotate = 0;
 
   public final BoundedParameter maxBrightness = new BoundedParameter("maxBrightness", 100, 0, 100);
@@ -63,7 +62,7 @@ public class PerlinNoisePattern extends LXPattern {
 
 
   // WhiteWipes overlay
-  private BooleanParameter triggerWipe = new BooleanParameter("doWipe", false);
+  private BooleanParameter triggerWipe;
   private WhiteWipe wiper;
   private WhiteWipe[] allWipes;
 
@@ -86,15 +85,21 @@ public class PerlinNoisePattern extends LXPattern {
         .collect(Collectors.toList());
 
     this.hueNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "h ");
-    addParameter(this.hueSpeed = hueNoise.noiseSpeed);
-    addParameter(this.hueXForm = hueNoise.noiseXForm);
+
+    this.hueSpeed = hueNoise.noiseSpeed
+        .setDescription("The speed of the perlin noise pattern used for hue mapping");
+    addParameter(this.hueSpeed);
+
+    this.hueXForm = hueNoise.noiseZoom
+        .setDescription("Multiplier ('zoom') of the perlin noise pattern used for hue mapping");
+    addParameter(this.hueXForm);
 
 
     // Make Noise field
     // -----------------
     this.brightnessBoostNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "bb ");
     addParameter(brightnessBoostNoise.noiseSpeed);
-    addParameter(brightnessBoostNoise.noiseXForm);
+    addParameter(brightnessBoostNoise.noiseZoom);
 
     addParameter(brightnessBoostDecayPerMs);
 
@@ -107,7 +112,7 @@ public class PerlinNoisePattern extends LXPattern {
     RotatingHueColorizer rotatingHueColorizer = new RotatingHueColorizer(hueNoise) {
       @Override
       public RotatingHueColorizer activate() {
-        hueNoise.noiseSpeed.setValue(0.027);
+        hueNoise.noiseSpeed.setValue(0.25);
         return this;
       }
     };
@@ -119,7 +124,7 @@ public class PerlinNoisePattern extends LXPattern {
     ColorMappingSourceColorizer colorMappingColorizer = new ColorMappingSourceColorizer(hueNoise, colorSamplers) {
       @Override
       public ColorMappingSourceColorizer activate() {
-        hueNoise.noiseSpeed.setValue(0.027);
+        hueNoise.noiseSpeed.setValue(0.25);
         return this;
       }
     };
@@ -157,22 +162,6 @@ public class PerlinNoisePattern extends LXPattern {
     addParameter(rotateColorizer);
 
 
-
-    // Add an auto-rotate-through-patternMap if in headless
-//    if (!((AbstractIcosaLXModel) this.model).hasGui) {
-//      useGradientSupplier.setValue(true);
-//      gradientAutoselect = new SawLFO(
-//          gradientColorSource.patternSelect.getMinValue(),
-//          gradientColorSource.patternSelect.getMaxValue() + 1,
-//          5000 * (gradientColorSource.patternSelect.getMaxValue() + 1)
-//      );
-//      gradientColorSource.patternSelect.addListener(param -> System.out.println("Using gradient #" + param.getValue()) );
-//      addModulator(
-//          gradientAutoselect
-//      ).start();
-//    }
-
-
     allWipes = new WhiteWipe[] {
         new WhiteWipe(lx, this, m -> m.yMin, m -> m.yMax, pt -> pt.y),
         new WhiteWipe(lx, this, m -> m.yMax, m -> m.yMin, pt -> pt.y),
@@ -183,6 +172,9 @@ public class PerlinNoisePattern extends LXPattern {
         new WhiteWipe(lx, this, m -> m.zMin, m -> m.zMax, pt -> pt.z),
         new WhiteWipe(lx, this, m -> m.zMax, m -> m.zMin, pt -> pt.z)
     };
+
+    triggerWipe = new BooleanParameter("doWipe", false);
+    triggerWipe.setMode(BooleanParameter.Mode.MOMENTARY);
     addParameter(triggerWipe);
     triggerWipe.addListener(param -> {
       //if (param.getValue() > 0) {
@@ -270,7 +262,7 @@ public class PerlinNoisePattern extends LXPattern {
       timeSinceLastRotate += deltaMs;
     }
 
-    hueNoise.step();
+    hueNoise.step(deltaMs);
     //brightnessBoostNoise.step();
 
 

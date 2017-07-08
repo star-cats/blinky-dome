@@ -87,7 +87,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
     perlinNoisePattern.brightnessBoostNoise.noiseSpeed.setValue(2.0 * perlinNoisePattern.hueSpeed.getValue());
-    perlinNoisePattern.brightnessBoostNoise.noiseXForm.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
+    perlinNoisePattern.brightnessBoostNoise.noiseZoom.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
 
     channel.setPatterns(new LXPattern[] {
         perlinNoisePattern,
