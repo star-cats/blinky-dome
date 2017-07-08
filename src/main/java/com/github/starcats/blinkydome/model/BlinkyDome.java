@@ -1,5 +1,7 @@
 package com.github.starcats.blinkydome.model;
 
+import com.github.starcats.blinkydome.pixelpusher.PixelPushableLed;
+import com.github.starcats.blinkydome.pixelpusher.PixelPushableModel;
 import heronarts.lx.model.LXAbstractFixture;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Model of StarCats dome
  */
-public class BlinkyDome extends LXModel {
+public class BlinkyDome extends LXModel implements PixelPushableModel {
   /** Like LXModel.points, but up-cast to our LED class */
   public final List<LED> leds;
 
@@ -65,10 +67,10 @@ public class BlinkyDome extends LXModel {
   /**
    * BlinkyDome LED definition
    */
-  public static class LED extends LXPoint {
+  public static class LED extends LXPoint implements PixelPushableLed {
     final public int triangleIndex;
     final public int triangleSubindex;
-    final public int ledIndex;
+    final public int ledIndex; // in the triangle
     final public int layer;
 
     final public float x, y, z;
@@ -95,6 +97,29 @@ public class BlinkyDome extends LXModel {
 
       this.theta = (float)Math.acos(z / r);
       this.phi = (float)Math.atan2(y, x);
+    }
+
+    @Override
+    public int getPpGroup() {
+      return 0; // TODO: hardcoded
+    }
+
+    @Override
+    public int getPpStripIndex() {
+      return 1; // TODO: hardcoded
+    }
+
+    @Override
+    public int getPpLedIndex() {
+      if (this.index > 107 * 3) {
+        return -1; // TODO: past the first three panels, just ignore for now.
+      }
+      return this.index; // TODO: using LX index as single strip index
+    }
+
+    @Override
+    public LXPoint getPoint() {
+      return this;
     }
   }
 
@@ -164,5 +189,10 @@ public class BlinkyDome extends LXModel {
 
   public Set<Integer> getTriangleIndexKeys() {
     return trianglesByIndex.keySet();
+  }
+
+  @Override
+  public List<? extends PixelPushableLed> getPpLeds() {
+    return leds;
   }
 }

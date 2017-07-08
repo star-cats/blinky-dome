@@ -10,7 +10,9 @@ import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
+import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
+import com.heroicrobot.dropbit.registry.DeviceRegistry;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
@@ -77,9 +79,16 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
   @Override
   protected List<LXOutput> constructOutputs(LX lx) {
-    return Collections.singletonList(
-        new FadecandyOutput(lx, "localhost", 7890)
-        // TODO: pixelpusher, etc.
+
+    DeviceRegistry ppRegistry = new DeviceRegistry();
+    ppRegistry.setLogging(false);
+    ppRegistry.setExtraDelay(0);
+    ppRegistry.setAutoThrottle(true);
+    ppRegistry.setAntiLog(true);
+
+    return Arrays.asList(
+        new FadecandyOutput(lx, "localhost", 7890),
+        new PixelPusherOutput(lx, getModel(), ppRegistry)
     );
   }
 

@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * PixelPusher Output, loosely borrowed from https://github.com/ascensionproject/ascension
  */
-class PixelPusherOutput extends LXOutput {
+public class PixelPusherOutput extends LXOutput {
 
   private final PixelPushableModel model;
   private final DeviceRegistry ppRegistry;
 
-  PixelPusherOutput(LX lx, PixelPushableModel model, DeviceRegistry ppRegistry) {
+  public PixelPusherOutput(LX lx, PixelPushableModel model, DeviceRegistry ppRegistry) {
     super(lx);
     // enabled.setValue(false);
     this.model = model;
@@ -25,8 +25,8 @@ class PixelPusherOutput extends LXOutput {
 
   public void onSend(int[] colors) {
     for (PixelPushableLed led : model.getPpLeds()) {
-      if (led.getPpStripIndex() == -1) continue;
       if (led.getPpGroup() == -1) continue;
+      if (led.getPpStripIndex() == -1) continue;
       if (led.getPpLedIndex() == -1) continue;
 
       List<Strip> ppStrips = ppRegistry.getStrips(led.getPpGroup());
