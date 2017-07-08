@@ -3,7 +3,7 @@ package com.github.starcats.blinkydome.pixelpusher;
 import heronarts.lx.model.LXPoint;
 
 /**
- * An LXPoint that contains pixelpusher LED metadata.
+ * Indicates an LXPoint that contains PixelPusher LED metadata to be used in a {@link PixelPusherOutput}
  */
 public interface PixelPushableLed {
 

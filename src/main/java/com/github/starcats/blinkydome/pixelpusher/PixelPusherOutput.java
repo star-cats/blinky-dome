@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * PixelPusher Output, loosely borrowed from https://github.com/ascensionproject/ascension
+ *
+ * See https://docs.google.com/document/d/1D3tlMd0-H1p7Nmi4XtdEq_6MiXMoZ2Fhey-4_rigBz4 for details on using PixelPushers.
  */
 public class PixelPusherOutput extends LXOutput {
 
