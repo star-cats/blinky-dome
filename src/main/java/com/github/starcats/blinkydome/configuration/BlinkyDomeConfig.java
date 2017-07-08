@@ -121,7 +121,17 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
+
     // If the color sampler changes, adjust perlin settings to be appropriate for selected color sampler family
+    // Start with mapping-appropriate defaults, but if user changes them, use the last sampler's param
+    double[] hueSpeedDefaultsBySampler = new double[] { 0.25, 0.10 };
+    perlinNoisePattern.hueSpeed.addListener(param -> {
+      if (colorSampler.samplerSelector.getObject() == gradientColorSource) {
+        hueSpeedDefaultsBySampler[0] = param.getValue();
+      } else if (colorSampler.samplerSelector.getObject() == patternColorSource) {
+        hueSpeedDefaultsBySampler[1] = param.getValue();
+      }
+    });
     colorSampler.samplerSelector.addListener(param -> {
       if (perlinNoisePattern.getChannel().getActivePattern() != perlinNoisePattern) {
         return;
@@ -129,9 +139,9 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
       DiscreteParameter parameter = (DiscreteParameter) param;
       if (parameter.getObject() == gradientColorSource) {
-        perlinNoisePattern.hueSpeed.setValue(0.25);
+        perlinNoisePattern.hueSpeed.setValue(hueSpeedDefaultsBySampler[0]);
       } else if (parameter.getObject() == patternColorSource) {
-        perlinNoisePattern.hueSpeed.setValue(0.10);
+        perlinNoisePattern.hueSpeed.setValue(hueSpeedDefaultsBySampler[1]);
       }
     });
     perlinNoisePattern.hueSpeed.setValue(0.25);
