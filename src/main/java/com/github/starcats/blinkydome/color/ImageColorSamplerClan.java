@@ -8,7 +8,9 @@ import heronarts.lx.parameter.LXNormalizedParameter;
  */
 public class ImageColorSamplerClan implements ColorMappingSourceClan {
 
-  private final DiscreteParameter samplerSelector;
+  /** Selects which {@link ImageColorSampler} from the colorSamplers passed to constructor is active */
+  public final DiscreteParameter samplerSelector;
+
   private final ImageColorSampler[] colorSamplers;
 
   private final int totalNumSources;

@@ -2,14 +2,19 @@ package com.github.starcats.blinkydome.pattern.perlin;
 
 
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.BoundedParameter;
-import heronarts.lx.parameter.LXParameterListener;
+import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Projects a list of points as vectors into a perlin noise space.
+ *
+ * On every {@link #step(double)}, moves the perlin noise space in the direction of travelVector.  When the projected
+ * points sample the perlin noise space, it appears as if they've moved.
+ */
 public class LXPerlinNoiseExplorer {
   // Needed for noise() dependency
   private PApplet p;
@@ -26,36 +31,38 @@ public class LXPerlinNoiseExplorer {
   // Accessible Parameters
   // --------------
 
-  /** Vector multiplier to transform features down into noise space -- smaller makes larger perlin features */
-  public final BoundedParameter noiseXForm;
+  /** Points' vector multiplier to transform features down into noise space -- smaller makes larger perlin features */
+  public final CompoundParameter noiseZoom;
+
+  private double lastNoiseZoom;
 
   /** Speed we move through the noise space */
-  public final BoundedParameter noiseSpeed;
+  public final CompoundParameter noiseSpeed;
 
 
-  public LXPerlinNoiseExplorer(PApplet p, List<LXPoint> features, String prefix) {
+  public LXPerlinNoiseExplorer(PApplet p, List<LXPoint> features, String prefix, String desc) {
     this.p = p;
 
-    noiseXForm = new BoundedParameter(prefix + "xform", 0.01, 0.005, 0.03);
-    noiseSpeed = new BoundedParameter(prefix + "speed", 0.02, 0.005, 0.1);
+
+    noiseZoom = new CompoundParameter(prefix + "zoom", 0.01, 0.005, 0.03)
+        .setDescription("Multiplier ('zoom') of the perlin noise pattern used for " + desc + " mapping");
+
+    lastNoiseZoom = noiseZoom.getValue();
+
+
+    noiseSpeed = new CompoundParameter(prefix + "speed", .5)
+        .setDescription("The speed of the perlin noise pattern used for " + desc + " mapping");
+
 
     this.origFeatures = features.stream().map(f -> new LXVector(f.x, f.y, f.z)).collect(Collectors.toList());
-
-    LXPerlinNoiseExplorer me = this;
-
-
-    // noiseXForm controls 'zoom' into perlin noise field
-    LXParameterListener onNoiseXformChange = noiseXForm -> me.features = this.origFeatures.stream()
-        .map(f -> f.copy().mult(noiseXForm.getValuef()))
-        .collect(Collectors.toList());
-
-    noiseXForm.addListener(onNoiseXformChange);
-    onNoiseXformChange.onParameterChanged(noiseXForm); // initialize feature
 
 
     // noiseSpeed controls magnitude of noiseTravel vector
     this.randomizeDirection();
-    noiseSpeed.addListener(noiseSpeed -> me.noiseTravel.setMag(noiseSpeed.getValuef()));
+
+    // initialize magnitudes
+    lastNoiseZoom = -1;
+    step(50);
   }
 
   public LXPerlinNoiseExplorer randomizeDirection() {
@@ -64,27 +71,42 @@ public class LXPerlinNoiseExplorer {
         (float)(Math.random()*0.5 - 0.25f),
         (float)(Math.random()*0.5 - 0.25f),
         (float)(Math.random() - 0.5f)
-    )
-    .setMag(noiseSpeed.getValuef());
+    );
     return this;
   }
 
   /**
    * Step through the noise field according to travel vector
-   * @return
    */
-  public LXPerlinNoiseExplorer step() {
-    noiseOrigin.add(noiseTravel);
+  public LXPerlinNoiseExplorer step(double deltaMs) {
+    // Re-Map points according to whatever modulation is on the noiseZoom (if it's changed)
+    if (noiseZoom.getValue() != lastNoiseZoom) {
+      lastNoiseZoom = noiseZoom.getValue();
 
-    // TODO: decay zoom
+      this.features = this.origFeatures.stream()
+          .map(f -> f.copy().mult(noiseZoom.getValuef()))
+          .collect(Collectors.toList());
+    }
+
+
+    // Set the travel vector of the noise field proportional to time elapsed and current zoom level
+    float newTravelMag = noiseSpeed.getValuef() * (float) deltaMs * noiseZoom.getValuef() / 2.5f;
+    if (newTravelMag > 0) {
+      noiseTravel.setMag(newTravelMag);
+      noiseOrigin.add(noiseTravel);
+    }
 
     return this;
   }
 
   public float getNoise(int i) {
-    LXVector noiseVect = noiseOrigin.copy().add(features.get(i));
+    LXVector ptProjection = features.get(i);
 
-    return p.noise(noiseVect.x, noiseVect.y, noiseVect.z);
+    return p.noise(
+        noiseOrigin.x + ptProjection.x,
+        noiseOrigin.y + ptProjection.y,
+        noiseOrigin.z + ptProjection.z
+    );
   }
 
 
