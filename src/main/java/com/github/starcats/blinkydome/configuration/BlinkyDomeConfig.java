@@ -89,6 +89,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     return Arrays.asList(
         new FadecandyOutput(lx, "localhost", 7890),
         new PixelPusherOutput(lx, getModel(), ppRegistry)
+            .addDebugOutput()
     );
   }
 
