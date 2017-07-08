@@ -247,6 +247,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // Normal patterns
     // --------------------
     return Arrays.asList(
+        new CombJellyPattern(lx, lx.palette, model.allTriangles),
         perlinNoisePattern,
         new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
             new LXVector(0, -1, 0), // mapping seems reversed... 'up' is y:-1
