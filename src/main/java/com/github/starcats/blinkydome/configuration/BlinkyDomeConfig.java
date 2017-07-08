@@ -1,5 +1,6 @@
 package com.github.starcats.blinkydome.configuration;
 
+import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
@@ -18,6 +19,7 @@ import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
+import heronarts.lx.parameter.DiscreteParameter;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   // Components
   private StarCatFFT starCatFFT;
   protected ImageColorSamplerClan colorSampler;
+  protected ImageColorSampler gradientColorSource;
+  protected ImageColorSampler patternColorSource;
 
   // Modulators
   private BandGate kickModulator;
@@ -51,6 +55,13 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   protected void initComponents(PApplet p, LX lx, BlinkyDome model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
     colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p);
+
+    gradientColorSource = new ImageColorSampler(p, "gradients.png");
+    patternColorSource = new ImageColorSampler(p, "patterns.png");
+    colorSampler = new ImageColorSamplerClan(new ImageColorSampler[] {
+        gradientColorSource,
+        patternColorSource
+    });
   }
 
   @Override
@@ -110,8 +121,23 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
+    // If the color sampler changes, adjust perlin settings to be appropriate for selected color sampler family
+    colorSampler.samplerSelector.addListener(param -> {
+      if (perlinNoisePattern.getChannel().getActivePattern() != perlinNoisePattern) {
+        return;
+      }
+
+      DiscreteParameter parameter = (DiscreteParameter) param;
+      if (parameter.getObject() == gradientColorSource) {
+        perlinNoisePattern.hueSpeed.setValue(0.25);
+      } else if (parameter.getObject() == patternColorSource) {
+        perlinNoisePattern.hueSpeed.setValue(0.10);
+      }
+    });
+    perlinNoisePattern.hueSpeed.setValue(0.25);
     perlinNoisePattern.brightnessBoostNoise.noiseSpeed.setValue(2.0 * perlinNoisePattern.hueSpeed.getValue());
     perlinNoisePattern.brightnessBoostNoise.noiseZoom.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
+
 
     // Normal patterns
     // --------------------

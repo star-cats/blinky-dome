@@ -40,15 +40,19 @@ public class LXPerlinNoiseExplorer {
   public final CompoundParameter noiseSpeed;
 
 
-  public LXPerlinNoiseExplorer(PApplet p, List<LXPoint> features, String prefix) {
+  public LXPerlinNoiseExplorer(PApplet p, List<LXPoint> features, String prefix, String desc) {
     this.p = p;
 
 
-    noiseZoom = new CompoundParameter(prefix + "xform", 0.01, 0.005, 0.03);
+    noiseZoom = new CompoundParameter(prefix + "zoom", 0.01, 0.005, 0.03)
+        .setDescription("Multiplier ('zoom') of the perlin noise pattern used for " + desc + " mapping");
+
     lastNoiseZoom = noiseZoom.getValue();
 
-    // Not fully 0-1 -- this is travel vector magnitude multiplier, setting it to 0 would lose travel direction
-    noiseSpeed = new CompoundParameter(prefix + "speed", .5);
+
+    noiseSpeed = new CompoundParameter(prefix + "speed", .5)
+        .setDescription("The speed of the perlin noise pattern used for " + desc + " mapping");
+
 
     this.origFeatures = features.stream().map(f -> new LXVector(f.x, f.y, f.z)).collect(Collectors.toList());
 

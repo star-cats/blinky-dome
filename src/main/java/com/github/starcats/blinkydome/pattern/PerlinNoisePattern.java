@@ -84,20 +84,20 @@ public class PerlinNoisePattern extends LXPattern {
         .map(pt -> new PVector(pt.x, pt.y, pt.z))
         .collect(Collectors.toList());
 
-    this.hueNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "h ");
+    this.hueNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "h ", "hue");
 
-    this.hueSpeed = hueNoise.noiseSpeed
-        .setDescription("The speed of the perlin noise pattern used for hue mapping");
+    this.hueSpeed = hueNoise.noiseSpeed;
     addParameter(this.hueSpeed);
 
-    this.hueXForm = hueNoise.noiseZoom
-        .setDescription("Multiplier ('zoom') of the perlin noise pattern used for hue mapping");
+    this.hueXForm = hueNoise.noiseZoom;
     addParameter(this.hueXForm);
 
 
     // Make Noise field
     // -----------------
-    this.brightnessBoostNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "bb ");
+    this.brightnessBoostNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "bb ",
+        "brightness bumps"
+    );
     addParameter(brightnessBoostNoise.noiseSpeed);
     addParameter(brightnessBoostNoise.noiseZoom);
 
@@ -109,25 +109,18 @@ public class PerlinNoisePattern extends LXPattern {
     allColorizers = new LinkedHashMap<>(); // LinkedHashMap to maintain same ordering as colorizerWeights
     colorizerWeights = new int[2];
 
-    RotatingHueColorizer rotatingHueColorizer = new RotatingHueColorizer(hueNoise) {
-      @Override
-      public RotatingHueColorizer activate() {
-        hueNoise.noiseSpeed.setValue(0.25);
-        return this;
-      }
-    };
+    RotatingHueColorizer rotatingHueColorizer = new RotatingHueColorizer(hueNoise);
     allColorizers.put("rotatingHue", rotatingHueColorizer);
     colorizerWeights[0] = 1; // 1 real pattern, so one weight
-    addParameter(rotatingHueColorizer.huePeriodMs);
+    addParameter(
+        rotatingHueColorizer.huePeriodMs
+        .setDescription("When the rotating hue colorizer is used, the period (ms) of 1 full rotation through the " +
+            "color spectrum")
+        .setUnits(LXParameter.Units.MILLISECONDS)
+    );
 
     // Colorizer: ColorMappingSource
-    ColorMappingSourceColorizer colorMappingColorizer = new ColorMappingSourceColorizer(hueNoise, colorSamplers) {
-      @Override
-      public ColorMappingSourceColorizer activate() {
-        hueNoise.noiseSpeed.setValue(0.25);
-        return this;
-      }
-    };
+    ColorMappingSourceColorizer colorMappingColorizer = new ColorMappingSourceColorizer(hueNoise, colorSamplers);
     allColorizers.put("mapping", colorMappingColorizer);
     colorizerWeights[1] = colorSamplers.getNumSources();
 
@@ -138,6 +131,7 @@ public class PerlinNoisePattern extends LXPattern {
         addModulator(modulator);
       }
     }
+
     int totalWeight = 0;
     for (int w : colorizerWeights) {
       totalWeight += w;
