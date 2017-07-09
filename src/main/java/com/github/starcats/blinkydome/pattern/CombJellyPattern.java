@@ -154,8 +154,12 @@ public class CombJellyPattern extends LXPattern {
 
   public void run(double deltaMs) {
     for (LXFixture fixture : fixtures) {
-      for (LXPoint pt : fixture.getPoints()) {
-        setColor(pt.index, baseColor.getColor(baseBrightnessParam.getValue()));
+      for (int i=0; i < fixture.getPoints().size(); i++) {
+        LXPoint pt = fixture.getPoints().get(i);
+        //setColor(pt.index, baseColor.getColor(baseBrightnessParam.getValue()));
+
+        double normalizedI = (double) i / fixture.getPoints().size();
+        setColor(pt.index, LXColor.hsb(360*normalizedI, 100, baseBrightnessParam.getValue()));
       }
     }
 
@@ -173,10 +177,15 @@ public class CombJellyPattern extends LXPattern {
 
           blendColor(
               pt.index,
+//              LXColor.hsb(
+//                  palette.getHue() + hueWiggleWidth.getValue() * ptModulation,
+//                  palette.getSaturation(),
+//                  pulseBrightnessParam.getValue()
+//              ),
               LXColor.hsb(
-                  palette.getHue() + hueWiggleWidth.getValue() * ptModulation,
-                  palette.getSaturation(),
-                  pulseBrightnessParam.getValue()
+                  LXColor.h(this.colors[pt.index]),
+                  100,
+                  pulseBrightnessParam.getValue() * (1 - Math.abs(ptModulation))
               ),
               LXColor.Blend.LERP
           );
