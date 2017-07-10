@@ -3,10 +3,7 @@ package com.github.starcats.blinkydome.configuration;
 import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.Icosastar;
 import com.github.starcats.blinkydome.model.util.ConnectedVectorStripModel;
-import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
-import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
-import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
-import com.github.starcats.blinkydome.pattern.RainbowZPattern;
+import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
@@ -17,6 +14,7 @@ import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
+import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
@@ -83,13 +81,25 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
             lx, allSpokes, colorSampler, colorMappingLFO, kickModulator
         );
 
-    // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
+    // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
     perlinNoisePattern.brightnessBoostNoise.noiseSpeed.setValue(2.0 * perlinNoisePattern.hueSpeed.getValue());
     perlinNoisePattern.brightnessBoostNoise.noiseZoom.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
 
+
+    // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
+    // --------------------
+    PerlinBreathing perlinBreathing = new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
+        new LXVector(0, 0, -1),
+        new LXVector(0, 0, 1)
+    );
+    perlinBreathing.perlinNoiseFieldZoom.setValue(0.02);
+    perlinBreathing.speedModulationAmount.setValue(0.29);
+
+
     channel.setPatterns(new LXPattern[] {
+        perlinBreathing,
         perlinNoisePattern,
         // TODO: bring in FixtureTracerPattern
         new RainbowZPattern(lx),

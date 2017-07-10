@@ -9,6 +9,7 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.FunctionalModulator;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXCompoundModulation;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.transform.LXVector;
@@ -21,13 +22,33 @@ import java.util.List;
  */
 public class PerlinBreathing extends LXPattern {
 
+  public final CompoundParameter perlinNoiseFieldZoom;
   public final CompoundParameter breathingPeriodMs;
-  public final LXPerlinNoiseExplorer perlinNoiseField;
   public final CompoundParameter speedModulationAmount;
+  public final EnumParameter<LedFilterType> ledFilteringParam;
 
-  //private final VariableLFO positionLFO;
+  /**
+   * When breathing, we can also filter LEDs with the breath
+   */
+  public enum LedFilterType {
+    /** No filtering */
+    NONE,
+
+    /** Uniformly scale brightness proportional to breathing position */
+    BREATH_FADE,
+
+    /** Scale brightness proportional to noise mapping along with breathing position*/
+    NOISE_FADE,
+
+    /** When an LED's noise mapping value drops below breathing position, it just turns off */
+    CUTOFF_DISCRETE,
+
+    /** Apply the {@link LedFilterType#NOISE_FADE} only when an LED's noise mapping value drops below breathing position */
+    CUTOFF_NOISE_FADE
+  };
+
+  private final LXPerlinNoiseExplorer perlinNoiseField;
   private final FunctionalModulator positionLFO;
-
   private final SpeedModulator speedLFO;
   private final List<? extends LXPoint> points;
   private final ColorMappingSourceColorizer colorizer;
@@ -64,11 +85,15 @@ public class PerlinBreathing extends LXPattern {
     this.up = upVector;
     this.down = downVector;
 
-    breathingPeriodMs = new CompoundParameter("period", 8000, 500, 16000);
+    breathingPeriodMs = new CompoundParameter("period", 10000, 500, 20000);
     breathingPeriodMs
         .setDescription("Period (ms) of one breath")
         .setUnits(LXParameter.Units.MILLISECONDS);
     addParameter(breathingPeriodMs);
+
+    ledFilteringParam = new EnumParameter<>("led filter", LedFilterType.NOISE_FADE);
+    ledFilteringParam.setDescription("When breathing, we can also filter LEDs proportional to the breath");
+    addParameter(ledFilteringParam);
 
 //    positionLFO = new VariableLFO("pos");
 //    positionLFO.waveshape.setValue(VariableLFO.Waveshape.SIN);
@@ -103,6 +128,8 @@ public class PerlinBreathing extends LXPattern {
 
     perlinNoiseField = new LXPerlinNoiseExplorer(p, points, "br", "breathing");
     perlinNoiseField.setTravelVector(up);
+    perlinNoiseFieldZoom = perlinNoiseField.noiseZoom; // expose publicly
+    addParameter(perlinNoiseField.noiseZoom);
 
     // provide a memoized reference to each tick's positionLFO.getValue() so can reference it inside colorizer without
     // recalculating it for every pixel
@@ -113,12 +140,27 @@ public class PerlinBreathing extends LXPattern {
       public int getColor(LXPoint point) {
         float noiseValue = noiseSource.getNoise(point.index);
 
-        // Modulate which pixels get colored according to position -- everything gets a color mapping only at full pos
-        if (noiseValue > positionLfoValueProvider[0]) {
+        double pos = positionLfoValueProvider[0];
+        int color = getColorSource().getColor(noiseValue);
+
+        // Modulate which pixels get colored according to position:
+        // Everything gets a color mapping only at full pos, below that which pixels get colored is proportional to position
+        if ( ledFilteringParam.getEnum() == LedFilterType.NOISE_FADE ||
+             (ledFilteringParam.getEnum() == LedFilterType.CUTOFF_NOISE_FADE && noiseValue > pos))
+        {
+          return LXColor.scaleBrightness(
+              color,
+              (float) (pos * (1 - (noiseValue - pos)))
+          );
+
+        } else if (ledFilteringParam.getEnum() == LedFilterType.CUTOFF_DISCRETE && noiseValue > pos) {
           return LXColor.BLACK;
+
+        } else if (ledFilteringParam.getEnum() == LedFilterType.BREATH_FADE) {
+          return LXColor.scaleBrightness(color, (float) pos);
         }
 
-        return getColorSource().getColor(noiseValue);
+        return color;
       }
     };
 
