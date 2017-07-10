@@ -26,5 +26,7 @@ public class IcosastarGuiConfig extends IcosastarConfig implements StarcatsLxGui
 
     // Enable audio support
     lx.engine.audio.enabled.setValue(true);
+
+    lx.engine.output.brightness.setValue(0.75); // don't trip power supply breakers
   }
 }
