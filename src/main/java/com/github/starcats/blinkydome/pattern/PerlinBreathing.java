@@ -45,7 +45,50 @@ public class PerlinBreathing extends LXPattern {
 
     /** Apply the {@link LedFilterType#NOISE_FADE} only when an LED's noise mapping value drops below breathing position */
     CUTOFF_NOISE_FADE
-  };
+  }
+
+
+  /**
+   * Defines the breathing shape.
+   *
+   * "Position" of breath is basically how much air you're holding.  Out-breath is you've just exhaled everything,
+   * in-breath is you've just inhaled everything.
+   *
+   * "Speed" of breath is the rate at which you're inhaling air.  A simple breath model might have breath speed
+   * as the derivative of breath position -- speed is positive while inhaling and negative while exhaling.
+   *
+   * See {@link BreathEasings} enum for example easings
+   */
+  public interface BreathEasingSupplier {
+    /** Supplies normalized position of the breath: 0 is out-breath, 1 is in-breath */
+    FunctionalModulator makePositionLFO(LXParameter periodMs);
+
+    /**
+     * Supplies the magnitude of the perlin noise field travel vector. In general, this should be the derivative of
+     * position.  However, since this is the *magnitude*, it should always compute() a positive number -- if doing
+     * derivative approach, flip the negatives (see {@link SpeedModulator} for details)
+     */
+    SpeedModulator makeSpeedModulator(LXParameter periodMs);
+  }
+
+  /**
+   * The speed modulator is used to modulate the *magnitude* of the speed through the perlin noise field.
+   *
+   * Since we're specifying the magnitude, it must {@link #compute} a non-negative normalized value, ie from 0 to 1.
+   */
+  public static abstract class SpeedModulator extends FunctionalModulator {
+    public SpeedModulator(String label, LXParameter periodMs) {
+      super(label, 0, 1, periodMs);
+    }
+
+    /**
+     * compute() must always return a normalized positive magnitude 0-1, but this should return true when the current
+     * basis is to be interpreted as a negative (reverse) speedLFO.
+     *
+     * In other words, {@link #compute} figures out magnitude, this figures out direction
+     */
+    abstract public boolean isNegative();
+  }
 
   private final LXPerlinNoiseExplorer perlinNoiseField;
   private final FunctionalModulator positionLFO;
@@ -58,18 +101,6 @@ public class PerlinBreathing extends LXPattern {
   private final LXVector down;
 
 
-  private abstract class SpeedModulator extends FunctionalModulator {
-    public SpeedModulator(String label, double start, double end, LXParameter periodMs) {
-      super(label, start, end, periodMs);
-    }
-
-    /**
-     * compute() must always return a normalized value 0-1, but this should return true when the current basis mapping
-     * is to be interpreted as a negative speedLFO.
-     */
-    abstract public boolean isNegative();
-  }
-
 
   public PerlinBreathing(
       LX lx,
@@ -78,6 +109,18 @@ public class PerlinBreathing extends LXPattern {
       ColorMappingSourceClan colorSource,
       LXVector upVector,
       LXVector downVector
+  ) {
+    this(lx, p, points, colorSource, upVector, downVector, BreathEasings.SIN);
+  }
+
+  public PerlinBreathing(
+      LX lx,
+      PApplet p,
+      List<? extends LXPoint> points,
+      ColorMappingSourceClan colorSource,
+      LXVector upVector,
+      LXVector downVector,
+      BreathEasingSupplier breathEasingSupplier
   ) {
     super(lx);
 
@@ -95,33 +138,11 @@ public class PerlinBreathing extends LXPattern {
     ledFilteringParam.setDescription("When breathing, we can also filter LEDs proportional to the breath");
     addParameter(ledFilteringParam);
 
-//    positionLFO = new VariableLFO("pos");
-//    positionLFO.waveshape.setValue(VariableLFO.Waveshape.SIN);
-//    positionLFO.setPeriod(breathingPeriodMs);
-    positionLFO = new FunctionalModulator("pos", 0, 1, breathingPeriodMs) {
-      @Override
-      public double compute(double basis) {
-        return Math.sin(2 * Math.PI * basis) / 2 + 0.5;
-      }
-    };
+    positionLFO = breathEasingSupplier.makePositionLFO(breathingPeriodMs);
     addModulator(positionLFO);
     positionLFO.start();
 
-    speedLFO = new SpeedModulator("abs speedLFO", 0., 1., breathingPeriodMs) {
-      @Override
-      public double compute(double basis) {
-        // Speed must always be positive (a magnitude), so we get a normalized compute() response by just abs()'ing cosine
-        return Math.abs(
-            Math.cos(2 * Math.PI * basis)
-        );
-      }
-
-      @Override
-      public boolean isNegative() {
-        // Return true when cosine is negative
-        return getBasis() > 0.25 && getBasis() < 0.75;
-      }
-    };
+    speedLFO = breathEasingSupplier.makeSpeedModulator(breathingPeriodMs);
     addModulator(speedLFO);
     speedLFO.start();
 
@@ -150,7 +171,7 @@ public class PerlinBreathing extends LXPattern {
         {
           return LXColor.scaleBrightness(
               color,
-              (float) (pos * (1 - (noiseValue - pos)))
+              Math.min(1f, (float) (pos * (1 - (noiseValue - pos))))
           );
 
         } else if (ledFilteringParam.getEnum() == LedFilterType.CUTOFF_DISCRETE && noiseValue > pos) {
@@ -225,5 +246,155 @@ public class PerlinBreathing extends LXPattern {
 //      System.out.println("\t\t\t\t\t\tcos RESET");
 //    }
 
+  }
+
+
+  /**
+   * Example easings for breath definition
+   */
+  public enum BreathEasings implements BreathEasingSupplier {
+    /** Sinusoidal easing for breaths -- breath follows a sin wave */
+    SIN {
+      @Override
+      public FunctionalModulator makePositionLFO(LXParameter periodMs) {
+        return new FunctionalModulator("pos", 0, 1, periodMs) {
+          @Override
+          public double compute(double basis) {
+            return Math.sin(2 * Math.PI * basis) / 2 + 0.5;
+          }
+        };
+      }
+
+      @Override
+      public SpeedModulator makeSpeedModulator(LXParameter periodMs) {
+        return new SpeedModulator("abs speedLFO", periodMs) {
+          @Override
+          public double compute(double basis) {
+            // Speed must always be positive (a magnitude), so we get a normalized compute() response by just abs()'ing cosine
+            return Math.abs(
+                Math.cos(2 * Math.PI * basis)
+            );
+          }
+
+          @Override
+          public boolean isNegative() {
+            // Return true when cosine is negative
+            return getBasis() > 0.25 && getBasis() < 0.75;
+          }
+        };
+      }
+    },
+
+    /**
+     * Exponential-out for both in-breaths and out-breaths -- start quickly, long finish.
+     * See https://github.com/d3/d3-ease#easeExpOut
+     */
+    EXP_OUT_EXP_OUT {
+      @Override
+      public FunctionalModulator makePositionLFO(LXParameter periodMs) {
+        return new FunctionalModulator("pos", 0, 1, periodMs) {
+          @Override
+          public double compute(double basis) {
+            if (basis < 0.5) {
+              // First half, in-breath:
+              //   1 - Math.pow(2, -10 * basis), but scale basis by 2 to get full 0-1 in formula
+              return 1 - Math.pow(2, -10 * basis * 2);
+            } else {
+              // Second half, out-breath:
+              //   1 - <inbreath-easing>, but adjust basis so it looks like full 0-1 in formula
+              return Math.pow(2, -10 * (basis - 0.5)*2);
+            }
+          }
+        };
+      }
+
+      @Override
+      public SpeedModulator makeSpeedModulator(LXParameter periodMs) {
+        return new SpeedModulator("abs speedLFO", periodMs) {
+          @Override
+          public boolean isNegative() {
+            return getBasis() > 0.5;
+          }
+
+          @Override
+          public double compute(double basis) {
+            // Derivative of position (use wolfram alpha)
+            // Derivative is the same in both time frames, just negative above 0.5.
+            // Since we always return positive magnitude for speed, use same formula for both, just adjust basis
+            // so it always scales out to full 0-1
+
+            if (basis < 0.5) {
+              basis = basis * 2;
+            } else {
+              basis = (basis - 0.5) * 2;
+            }
+
+            return Math.min(
+                1, // clip speed at normalized 1
+                Math.log(32) * Math.pow(2, 1 - 10 * basis)
+            );
+          }
+        };
+      }
+    },
+
+    /**
+     * Exponential-out for in-breaths (start quickly, long finish),
+     * cubic inout for out-breaths (S-shaped breathout)
+     * See https://github.com/d3/d3-ease#easeExpOut, https://github.com/d3/d3-ease#easeCubicInOut
+     */
+    EXP_OUT_CUBIC_INOUT {
+      @Override
+      public FunctionalModulator makePositionLFO(LXParameter periodMs) {
+        return new FunctionalModulator("pos", 0, 1, periodMs) {
+          @Override
+          public double compute(double basis) {
+            if (basis < 0.5) {
+              // First half, in-breath:
+              //   1 - Math.pow(2, -10 * basis), but scale basis by 2 to get full 0-1 in formula
+              return 1 - Math.pow(2, -10 * basis * 2);
+
+            } else {
+              // Second half, out-breath: cubic inout
+              double t = (basis - 0.5) * 2; // scale basis to get full 0-1
+
+              // https://github.com/d3/d3-ease/blob/master/src/cubic.js#L9
+              return 1 - ((t *= 2) <= 1  ?  t * t * t  :  (t -= 2) * t * t + 2) / 2;
+            }
+          }
+        };
+      }
+
+      @Override
+      public SpeedModulator makeSpeedModulator(LXParameter periodMs) {
+        return new SpeedModulator("abs speedLFO", periodMs) {
+          @Override
+          public boolean isNegative() {
+            return getBasis() > 0.5;
+          }
+
+          @Override
+          public double compute(double basis) {
+            // Derivative of position (use wolfram alpha)
+
+            if (basis < 0.5) {
+              basis = basis * 2; // scale basis for full 0-1
+              return Math.min(
+                  1, // clip speed at normalized 1
+                  Math.log(32) * Math.pow(2, 1 - 10 * basis)
+              );
+
+            } else {
+              double t = (basis - 0.5) * 2;
+              return Math.min(
+                  1,
+                  3 * ((t *= 2) <= 1  ?  t*t  :  (t -= 2) * t ) / 2
+              );
+            }
+
+          }
+        };
+      }
+    }
   }
 }

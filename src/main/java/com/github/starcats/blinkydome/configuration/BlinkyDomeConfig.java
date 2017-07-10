@@ -161,7 +161,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     return Arrays.asList(
         new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
             new LXVector(0, -1, 0), // mapping seems reversed... 'up' is y:-1
-            new LXVector(0, 1, 0)
+            new LXVector(0, 1, 0),
+            PerlinBreathing.BreathEasings.EXP_OUT_CUBIC_INOUT
         ),
         perlinNoisePattern,
         new FFTBandPattern(lx, model, starCatFFT),
