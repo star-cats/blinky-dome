@@ -16,10 +16,18 @@ import java.util.stream.Collectors;
  * points sample the perlin noise space, it appears as if they've moved.
  */
 public class LXPerlinNoiseExplorer {
-  // Needed for noise() dependency
-  private PApplet p;
 
-  private List<LXVector> origFeatures;
+  /** Points' vector multiplier to transform features down into noise space -- smaller makes larger perlin features */
+  public final CompoundParameter noiseZoom;
+
+  /** Speed we move through the noise space */
+  public final CompoundParameter noiseSpeed;
+
+
+  // Needed for noise() dependency
+  private final PApplet p;
+
+  private final List<LXVector> origFeatures;
 
   private final LXVector noiseOrigin = new LXVector(0, 0, 0);
 
@@ -27,20 +35,11 @@ public class LXPerlinNoiseExplorer {
 
   private LXVector noiseTravel;
 
-
-  // Accessible Parameters
-  // --------------
-
-  /** Points' vector multiplier to transform features down into noise space -- smaller makes larger perlin features */
-  public final CompoundParameter noiseZoom;
-
   private double lastNoiseZoom;
 
-  /** Speed we move through the noise space */
-  public final CompoundParameter noiseSpeed;
 
 
-  public LXPerlinNoiseExplorer(PApplet p, List<LXPoint> features, String prefix, String desc) {
+  public LXPerlinNoiseExplorer(PApplet p, List<? extends LXPoint> features, String prefix, String desc) {
     this.p = p;
 
 
@@ -76,6 +75,21 @@ public class LXPerlinNoiseExplorer {
   }
 
   /**
+   * Sets the travel direction (note: magnitude is ignored, use {@link #noiseSpeed} for speed through noise field)
+   * @param travelVector New direction of travel
+   */
+  public void setTravelVector(LXVector travelVector) {
+    this.noiseTravel = travelVector;
+  }
+
+  /**
+   * @return Get the direction of travel through noise field
+   */
+  public LXVector getTravelVector() {
+    return this.noiseTravel.setMag(1);
+  }
+
+  /**
    * Step through the noise field according to travel vector
    */
   public LXPerlinNoiseExplorer step(double deltaMs) {
@@ -91,7 +105,7 @@ public class LXPerlinNoiseExplorer {
 
     // Set the travel vector of the noise field proportional to time elapsed and current zoom level
     float newTravelMag = noiseSpeed.getValuef() * (float) deltaMs * noiseZoom.getValuef() / 2.5f;
-    if (newTravelMag > 0) {
+    if (newTravelMag != 0) {
       noiseTravel.setMag(newTravelMag);
       noiseOrigin.add(noiseTravel);
     }

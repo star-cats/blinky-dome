@@ -3,10 +3,7 @@ package com.github.starcats.blinkydome.configuration;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.BlinkyDome;
-import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
-import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
-import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
-import com.github.starcats.blinkydome.pattern.RainbowZPattern;
+import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
@@ -26,7 +23,6 @@ import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -162,6 +158,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // Normal patterns
     // --------------------
     return Arrays.asList(
+        new PerlinBreathing(lx, p, model.getPoints(), colorSampler),
         perlinNoisePattern,
         new FFTBandPattern(lx, model, starCatFFT),
         new RainbowZPattern(lx),
