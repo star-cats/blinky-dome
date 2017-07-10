@@ -19,6 +19,7 @@ import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
@@ -158,7 +159,10 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // Normal patterns
     // --------------------
     return Arrays.asList(
-        new PerlinBreathing(lx, p, model.getPoints(), colorSampler),
+        new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
+            new LXVector(0, -1, 0), // mapping seems reversed... 'up' is y:-1
+            new LXVector(0, 1, 0)
+        ),
         perlinNoisePattern,
         new FFTBandPattern(lx, model, starCatFFT),
         new RainbowZPattern(lx),

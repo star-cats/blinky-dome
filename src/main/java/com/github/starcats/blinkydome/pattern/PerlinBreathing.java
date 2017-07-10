@@ -5,9 +5,9 @@ import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer
 import com.github.starcats.blinkydome.pattern.perlin.LXPerlinNoiseExplorer;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.FunctionalModulator;
-import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXCompoundModulation;
 import heronarts.lx.parameter.LXParameter;
@@ -21,18 +21,20 @@ import java.util.List;
  */
 public class PerlinBreathing extends LXPattern {
 
-  public final CompoundParameter breathingPeriod;
+  public final CompoundParameter breathingPeriodMs;
   public final LXPerlinNoiseExplorer perlinNoiseField;
   public final CompoundParameter speedModulationAmount;
 
-  private final VariableLFO positionLFO;
+  //private final VariableLFO positionLFO;
+  private final FunctionalModulator positionLFO;
 
   private final SpeedModulator speedLFO;
   private final List<? extends LXPoint> points;
   private final ColorMappingSourceColorizer colorizer;
+  private final double[] positionLfoValueProvider;
 
-  private final LXVector up = new LXVector(0, 1, 0);
-  private final LXVector down = new LXVector(0, -1, 0);
+  private final LXVector up;
+  private final LXVector down;
 
 
   private abstract class SpeedModulator extends FunctionalModulator {
@@ -48,29 +50,45 @@ public class PerlinBreathing extends LXPattern {
   }
 
 
-  public PerlinBreathing(LX lx, PApplet p, List<? extends LXPoint> points, ColorMappingSourceClan colorSource) {
+  public PerlinBreathing(
+      LX lx,
+      PApplet p,
+      List<? extends LXPoint> points,
+      ColorMappingSourceClan colorSource,
+      LXVector upVector,
+      LXVector downVector
+  ) {
     super(lx);
 
     this.points = points;
+    this.up = upVector;
+    this.down = downVector;
 
-    breathingPeriod = new CompoundParameter("period", 8000, 500, 16000);
-    breathingPeriod
+    breathingPeriodMs = new CompoundParameter("period", 8000, 500, 16000);
+    breathingPeriodMs
         .setDescription("Period (ms) of one breath")
         .setUnits(LXParameter.Units.MILLISECONDS);
-    addParameter(breathingPeriod);
+    addParameter(breathingPeriodMs);
 
-    positionLFO = new VariableLFO("pos");
-    positionLFO.waveshape.setValue(VariableLFO.Waveshape.SIN);
-    positionLFO.setPeriod(breathingPeriod);
+//    positionLFO = new VariableLFO("pos");
+//    positionLFO.waveshape.setValue(VariableLFO.Waveshape.SIN);
+//    positionLFO.setPeriod(breathingPeriodMs);
+    positionLFO = new FunctionalModulator("pos", 0, 1, breathingPeriodMs) {
+      @Override
+      public double compute(double basis) {
+        return Math.sin(2 * Math.PI * basis) / 2 + 0.5;
+      }
+    };
     addModulator(positionLFO);
     positionLFO.start();
 
-    speedLFO = new SpeedModulator("abs speedLFO", 0., 1., breathingPeriod) {
+    speedLFO = new SpeedModulator("abs speedLFO", 0., 1., breathingPeriodMs) {
       @Override
       public double compute(double basis) {
-        // Speed must always be positive, so we get a normalized compute() response by just abs-valueing cosine
-        double cos = Math.cos(2 * Math.PI * basis);
-        return Math.abs(cos);
+        // Speed must always be positive (a magnitude), so we get a normalized compute() response by just abs()'ing cosine
+        return Math.abs(
+            Math.cos(2 * Math.PI * basis)
+        );
       }
 
       @Override
@@ -86,7 +104,23 @@ public class PerlinBreathing extends LXPattern {
     perlinNoiseField = new LXPerlinNoiseExplorer(p, points, "br", "breathing");
     perlinNoiseField.setTravelVector(up);
 
-    this.colorizer = new ColorMappingSourceColorizer(perlinNoiseField, colorSource);
+    // provide a memoized reference to each tick's positionLFO.getValue() so can reference it inside colorizer without
+    // recalculating it for every pixel
+    positionLfoValueProvider = new double[] {0.};
+
+    this.colorizer = new ColorMappingSourceColorizer(perlinNoiseField, colorSource) {
+      @Override
+      public int getColor(LXPoint point) {
+        float noiseValue = noiseSource.getNoise(point.index);
+
+        // Modulate which pixels get colored according to position -- everything gets a color mapping only at full pos
+        if (noiseValue > positionLfoValueProvider[0]) {
+          return LXColor.BLACK;
+        }
+
+        return getColorSource().getColor(noiseValue);
+      }
+    };
 
 
     LXCompoundModulation speedModulation = new LXCompoundModulation(speedLFO, perlinNoiseField.noiseSpeed);
@@ -94,8 +128,10 @@ public class PerlinBreathing extends LXPattern {
 
     // TODO: This is only needed b/c P3LX doesn't seem to show the built-in modulation device UI.  Remove if that bug
     // fixed ??
-    speedModulationAmount = new CompoundParameter("speedLFO mod");
-    speedModulationAmount.setDescription("Amount of modulation the speedLFO modulator applies to perlin noise speed");
+    speedModulationAmount = new CompoundParameter("speed mod");
+    speedModulationAmount.setDescription("How quickly perlin noise fields moves on breathing (amount of modulation the " +
+        "speedLFO modulator applies to perlin noise speed"
+    );
     addParameter(speedModulationAmount);
     speedModulationAmount.addListener(parameter -> {
       speedModulation.range.setValue(parameter.getValue());
@@ -106,13 +142,14 @@ public class PerlinBreathing extends LXPattern {
     // The perlin field's speedLFO should always stay at 0.  Idea is the speedLFO modulates the speed parameter,
     // moving it up and down with the up and down motion. The base value should stay at 0.
     perlinNoiseField.noiseSpeed.setValue(0);
-    addParameter(perlinNoiseField.noiseSpeed); // adding it to see value of modulation, but not needed.
+    //addParameter(perlinNoiseField.noiseSpeed); // adding it to see value of modulation, but not needed.
 
   }
 
   @Override
   protected void run(double deltaMs) {
-    //if (speedLFO.getValue() > 0.5) {
+    positionLfoValueProvider[0] = positionLFO.getValue();
+
     if ( speedLFO.isNegative() ) {
       perlinNoiseField.setTravelVector(down);
     } else {
@@ -125,5 +162,26 @@ public class PerlinBreathing extends LXPattern {
     for (LXPoint point : points) {
       setColor(point.index, colorizer.getColor(point));
     }
+
+//    if (positionLFO.getValue() > 0.9999) {
+//      System.out.println("SIN MAX");
+//    } else if (positionLFO.getValue() < 0.0001) {
+//      System.out.println("sin min");
+//    }
+//
+//    if (speedLFO.getValue() > 0.9999) {
+//      System.out.println("\t\tCOS MAX");
+//    } else if (speedLFO.getValue() < 0.0005) {
+//      System.out.println("\t\tcos min");
+//    }
+//
+//    if (positionLFO.getBasis() < 0.01) {
+//      System.out.println("\t\t\t\tsin RESET");
+//    }
+//
+//    if (speedLFO.getBasis() < 0.01) {
+//      System.out.println("\t\t\t\t\t\tcos RESET");
+//    }
+
   }
 }
