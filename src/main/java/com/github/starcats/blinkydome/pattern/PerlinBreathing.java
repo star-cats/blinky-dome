@@ -109,6 +109,7 @@ public class PerlinBreathing extends LXPattern {
   private final List<? extends LXPoint> points;
   private final ColorMappingSourceColorizer colorizer;
   private final double[] positionLfoValueProvider;
+  private boolean lastWasNegative = false;
 
   private final LXVector up;
   private final LXVector down;
@@ -203,6 +204,15 @@ public class PerlinBreathing extends LXPattern {
     speedModulationAmount = speedModulation.range;
 
 
+    // init speed direction
+    speedSwitchedNegative();
+    if (lastWasNegative) {
+      perlinNoiseField.getTravelVector().set(down);
+    } else {
+      perlinNoiseField.getTravelVector().set(up);
+    }
+
+
     // provide a memoized reference to each tick's positionLFO.getValue() so can reference it inside colorizer without
     // recalculating it for every pixel
     positionLfoValueProvider = new double[] {0.};
@@ -238,14 +248,21 @@ public class PerlinBreathing extends LXPattern {
 
   }
 
+  private boolean speedSwitchedNegative() {
+    boolean isNowNegative = ((SpeedWaveshape) speedLFO.waveshape.getObject()).isNegative(speedLFO.getBasis());
+    boolean switched = isNowNegative == lastWasNegative;
+    lastWasNegative = isNowNegative;
+    return switched;
+  }
+
   @Override
   protected void run(double deltaMs) {
     positionLfoValueProvider[0] = positionLFO.getValue();
 
-    if ( ((SpeedWaveshape) speedLFO.waveshape.getObject()).isNegative(speedLFO.getBasis()) ) {
-      perlinNoiseField.setTravelVector(down);
+    if (speedSwitchedNegative()) {
+      perlinNoiseField.getTravelVector().set(down);
     } else {
-      perlinNoiseField.setTravelVector(up);
+      perlinNoiseField.getTravelVector().set(up);
     }
 
 
