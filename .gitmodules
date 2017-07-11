@@ -1,6 +1,13 @@
 [submodule "lib/lx/git_submodule"]
 	path = lib/lx/git_submodule
-	url = https://github.com/heronarts/LX.git
+
+	# Normal source:
+	# url = https://github.com/heronarts/LX.git
+
+	# Dan's pushing-this-to-bleeding-edge-and-fixing-bugs-before-heronarts-accepts-the-PRs fork/branch:
+	url = https://github.com/dlopuch/LX.git
+	branch = bugfixes
+
 [submodule "lib/p3lx/git_submodule"]
 	path = lib/p3lx/git_submodule
 
