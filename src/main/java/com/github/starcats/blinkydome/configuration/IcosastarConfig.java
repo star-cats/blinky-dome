@@ -93,7 +93,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     PerlinBreathing perlinBreathing = new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
         new LXVector(0, 0, -1),
         new LXVector(0, 0, 1),
-        PerlinBreathing.BreathEasings.EXP_OUT_CUBIC_INOUT
+        PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
     );
     perlinBreathing.perlinNoiseFieldZoom.setValue(0.02);
     perlinBreathing.speedModulationAmount.setValue(0.29);
