@@ -25,6 +25,7 @@ public class PerlinBreathing extends LXPattern {
   public final CompoundParameter breathingPeriodMs;
   public final BoundedParameter speedModulationAmount;
   public final EnumParameter<LedFilterType> ledFilteringParam;
+  public final CompoundParameter rotateColorProbability;
 
   /**
    * When breathing, we can also filter LEDs with the breath
@@ -104,6 +105,7 @@ public class PerlinBreathing extends LXPattern {
 
 
   private final LXPerlinNoiseExplorer perlinNoiseField;
+  private final ColorMappingSourceClan colorSource;
   private final SyncedVariableLFO positionLFO;
   private final SyncedVariableLFO speedLFO;
   private final List<? extends LXPoint> points;
@@ -217,6 +219,7 @@ public class PerlinBreathing extends LXPattern {
     // recalculating it for every pixel
     positionLfoValueProvider = new double[] {0.};
 
+    this.colorSource = colorSource;
     this.colorizer = new ColorMappingSourceColorizer(perlinNoiseField, colorSource) {
       @Override
       public int getColor(LXPoint point) {
@@ -246,6 +249,11 @@ public class PerlinBreathing extends LXPattern {
       }
     };
 
+
+    rotateColorProbability = new CompoundParameter("rotate color", 0.25, 0., 1.);
+    rotateColorProbability.setDescription("Probability that color source will rotate in between breaths (set to 0 to " +
+        "turn off color rotation)");
+    addParameter(rotateColorProbability);
   }
 
   private boolean speedSwitchedNegative() {
@@ -270,6 +278,10 @@ public class PerlinBreathing extends LXPattern {
 
     for (LXPoint point : points) {
       setColor(point.index, colorizer.getColor(point));
+    }
+
+    if (positionLFO.loop() && Math.random() < rotateColorProbability.getValue()) {
+      colorSource.setRandomGroupAndSource();
     }
 
 //    if (positionLFO.getValue() > 0.9999) {
