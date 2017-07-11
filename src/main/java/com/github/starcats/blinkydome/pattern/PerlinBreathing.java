@@ -186,7 +186,6 @@ public class PerlinBreathing extends LXPattern {
 
 
     perlinNoiseField = new LXPerlinNoiseExplorer(p, points, "br", "breathing");
-    perlinNoiseField.setTravelVector(up);
     perlinNoiseFieldZoom = perlinNoiseField.noiseZoom; // expose publicly
     addParameter(perlinNoiseField.noiseZoom);
 
@@ -201,13 +200,13 @@ public class PerlinBreathing extends LXPattern {
     LXCompoundModulation speedModulation = new LXCompoundModulation(speedLFO, perlinNoiseField.noiseSpeed);
     speedModulation.label.setValue("speed modulation");
     this.modulation.addModulation(speedModulation); // add it to modulator UI in P3LX
-    speedModulation.range.setNormalized(0.10);
+    speedModulation.range.setValue(0.20);
     addParameter(perlinNoiseField.noiseSpeed); // adding it to see value of modulation, but not needed.
     speedModulationAmount = speedModulation.range;
 
 
     // init speed direction
-    speedSwitchedNegative();
+    lastWasNegative = isSpeedNegative();
     if (lastWasNegative) {
       perlinNoiseField.getTravelVector().set(down);
     } else {
@@ -256,22 +255,23 @@ public class PerlinBreathing extends LXPattern {
     addParameter(rotateColorProbability);
   }
 
-  private boolean speedSwitchedNegative() {
-    boolean isNowNegative = ((SpeedWaveshape) speedLFO.waveshape.getObject()).isNegative(speedLFO.getBasis());
-    boolean switched = isNowNegative == lastWasNegative;
-    lastWasNegative = isNowNegative;
-    return switched;
+  private boolean isSpeedNegative() {
+    return ((SpeedWaveshape) speedLFO.waveshape.getObject()).isNegative(speedLFO.getBasis());
   }
 
   @Override
   protected void run(double deltaMs) {
     positionLfoValueProvider[0] = positionLFO.getValue();
 
-    if (speedSwitchedNegative()) {
-      perlinNoiseField.getTravelVector().set(down);
-    } else {
-      perlinNoiseField.getTravelVector().set(up);
+    boolean isNegative = isSpeedNegative();
+    if (lastWasNegative != isNegative) {
+      if (isNegative) {
+        perlinNoiseField.getTravelVector().set(down);
+      } else {
+        perlinNoiseField.getTravelVector().set(up);
+      }
     }
+    lastWasNegative = isNegative;
 
 
     perlinNoiseField.step(deltaMs);
@@ -283,26 +283,6 @@ public class PerlinBreathing extends LXPattern {
     if (positionLFO.loop() && Math.random() < rotateColorProbability.getValue()) {
       colorSource.setRandomGroupAndSource();
     }
-
-//    if (positionLFO.getValue() > 0.9999) {
-//      System.out.println("SIN MAX");
-//    } else if (positionLFO.getValue() < 0.0001) {
-//      System.out.println("sin min");
-//    }
-//
-//    if (speedLFO.getValue() > 0.9999) {
-//      System.out.println("\t\tCOS MAX");
-//    } else if (speedLFO.getValue() < 0.0005) {
-//      System.out.println("\t\tcos min");
-//    }
-//
-//    if (positionLFO.getBasis() < 0.01) {
-//      System.out.println("\t\t\t\tsin RESET");
-//    }
-//
-//    if (speedLFO.getBasis() < 0.01) {
-//      System.out.println("\t\t\t\t\t\tcos RESET");
-//    }
 
   }
 

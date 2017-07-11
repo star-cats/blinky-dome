@@ -96,7 +96,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
         PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
     );
     perlinBreathing.perlinNoiseFieldZoom.setValue(0.02);
-    perlinBreathing.speedModulationAmount.setValue(0.29);
+    perlinBreathing.speedModulationAmount.setValue(0.20);
 
 
     channel.setPatterns(new LXPattern[] {
