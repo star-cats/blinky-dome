@@ -86,7 +86,7 @@ public class LXPerlinNoiseExplorer {
    * @return Get the direction of travel through noise field
    */
   public LXVector getTravelVector() {
-    return this.noiseTravel.setMag(1);
+    return this.noiseTravel;
   }
 
   /**
