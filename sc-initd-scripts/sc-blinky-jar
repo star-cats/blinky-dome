@@ -1,20 +1,20 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          sc-icosa-jar
+# Provides:          sc-blinky-jar
 # Required-Start:    $local_fs $network $named $time $syslog
 # Required-Stop:     $local_fs $network $named $time $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Description:       Starts sc-cloud icosastar jar
+# Description:       Starts blinky-dome headless jar
 ### END INIT INFO
 
 # HEYDAN: Got this from https://gist.github.com/naholyr/4275302
 
-SCRIPT="DISPLAY=\":1\" java -jar /etc/starcats/icosastar/lx-icosastar-linux-arm6.jar"
+SCRIPT="DISPLAY=\":1\" java -jar /etc/starcats/blinky-dome-headless-all.jar.jar"
 RUNAS=starcat
 
-PIDFILE=/var/run/sc-icosa-jar.pid
-LOGFILE=/var/log/sc-icosa-jar.log
+PIDFILE=/var/run/sc-blinky-jar.pid
+LOGFILE=/var/log/sc-blinky-jar.log
 
 start() {
   if [ -f /var/run/$PIDNAME ] && kill -0 $(cat /var/run/$PIDNAME); then
