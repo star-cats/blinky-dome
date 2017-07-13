@@ -18,12 +18,12 @@ public class FibonocciPetalsModel extends LXModel {
   // Coordinate system scale factor to get approximately in sync with other models
   private static final float ALPHA = 10;
 
-  public static class Petal {
+  public static class Petal implements LXFixture {
     public final LXVector point;
 
     private LXFixture cwSide;
     private LXFixture ccwSide;
-    private LXFixture allPoints;
+    private List<LXPoint> allPoints;
 
     private Petal(double thetaRad, int numRotations) {
       // Set magnitude of vector based on numRotations
@@ -41,7 +41,7 @@ public class FibonocciPetalsModel extends LXModel {
       return ccwSide;
     }
 
-    public LXFixture getPoints() {
+    public List<LXPoint> getPoints() {
       return allPoints;
     }
   }
@@ -176,7 +176,7 @@ public class FibonocciPetalsModel extends LXModel {
 
     List<LXPoint> allPetalPoints = new ArrayList<>(therePts);
     allPetalPoints.addAll(backPts);
-    petal.allPoints = () -> allPetalPoints;
+    petal.allPoints = allPetalPoints;
 
     allFixtures.add(there);
     allFixtures.add(back);
@@ -302,22 +302,32 @@ public class FibonocciPetalsModel extends LXModel {
   }
 
   /**
+   * Gets a spiral's worth of petals
+   * @param spiralSelect Which cwSpiral to grab
+   * @return Petals in that spiral
+   */
+  public List<Petal> getPetalsBySpiral(int spiralSelect) {
+    return getPetals(spiralSelect, -1);
+  }
+
+  /**
    * Gets a cross section of petals from this layout
    * @param spiralSelect Which cwSpiral to grab, or -1 for all
    * @param petalSelect Which petal from the spiral to use, or -1 for all
-   * @return
+   * @return One or more petals as an immutable list
    */
   public List<Petal> getPetals(int spiralSelect, int petalSelect) {
-    List<Petal> petals = new LinkedList<>();
 
     if (spiralSelect >= 0) {
       if (petalSelect >= 0) {
-        petals.add(cwSpirals.get(spiralSelect).getPetals().get(petalSelect));
+        return Collections.singletonList( cwSpirals.get(spiralSelect).getPetals().get(petalSelect) );
       } else {
-        petals.addAll(cwSpirals.get(spiralSelect).getPetals());
+        return Collections.unmodifiableList( cwSpirals.get(spiralSelect).getPetals() );
       }
+
     } else {
       // all spirals
+      List<Petal> petals = new ArrayList<>();
       for (PetalSpiral spiral : cwSpirals) {
         if (petalSelect >= 0) {
           if (petalSelect >= spiral.getPetals().size()) {
@@ -329,9 +339,8 @@ public class FibonocciPetalsModel extends LXModel {
           petals.addAll(spiral.getPetals());
         }
       }
+      return Collections.unmodifiableList(petals);
     }
-
-    return petals;
   }
 
 }

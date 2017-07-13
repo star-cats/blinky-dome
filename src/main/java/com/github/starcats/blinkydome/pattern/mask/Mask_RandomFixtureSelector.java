@@ -8,6 +8,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class Mask_RandomFixtureSelector extends LXPattern {
 
 
   private final List<LXFixture> allFixtures;
-  private List<LXFixture> selectedFixtures;
+  private List<LXFixture> selectedFixtures = Collections.emptyList();
 
   public Mask_RandomFixtureSelector(LX lx, List<? extends LXFixture> fixturesToSelect) {
     super(lx);
@@ -55,19 +56,30 @@ public class Mask_RandomFixtureSelector extends LXPattern {
         return;
       }
 
-      selectedFixtures = allFixtures.stream()
+      // Since new fixtures may not be a subset of previous one, turn off all the current ones
+      for (LXFixture fixture : selectedFixtures) {
+        setColor(fixture, LXColor.BLACK);
+      }
+
+      List<LXFixture> fixtures = (List<LXFixture>) this.getAllFixtures();
+      if (fixtures == null) {
+        selectedFixtures = Collections.emptyList();
+        return;
+      }
+
+      selectedFixtures = fixtures.stream()
           .filter(fixture -> Math.random() < probabilityToSelect.getValue())
           .collect(Collectors.toList());
-
-      // TODO: remove if https://github.com/heronarts/LX/pull/9 gets accepted
-      ((BooleanParameter) param).setValue(false); // Triggers don't change this back to low
     });
+
+    // trigger the listener
     selectRandomFixturesTrigger.setValue(true);
+    selectRandomFixturesTrigger.setValue(false);
   }
 
   @Override
   protected void run(double deltaMs) {
-    for (LXFixture fixture : allFixtures) {
+    for (LXFixture fixture : this.getAllFixtures()) {
       setColor(fixture, LXColor.BLACK);
     }
 
@@ -75,5 +87,9 @@ public class Mask_RandomFixtureSelector extends LXPattern {
       setColor(fixture, LXColor.hsb(0, 0, brightness.getValue()));
     }
 
+  }
+
+  public List<? extends LXFixture> getAllFixtures() {
+    return allFixtures;
   }
 }

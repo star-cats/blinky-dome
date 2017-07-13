@@ -287,7 +287,7 @@ public class PerlinPetalsPattern extends LXPattern {
         double petalGaussian = pulse.gaussianForPetal(i);
 //        System.out.println("petal:" + i + " gaussian:" + petalGaussian);
 
-        for (LXPoint p : pulse.spiral.getPetals().get(i).getPoints().getPoints()) {
+        for (LXPoint p : pulse.spiral.getPetals().get(i).getPoints()) {
           colors[p.index] = LXColor.lerp(
               decayedColorField[p.index],
               origColorField[p.index],
