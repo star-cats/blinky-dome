@@ -20,6 +20,8 @@ public class Mask_RandomFixtureSelector extends LXPattern {
   /** Param from 0-1 indicating probability each fixture should be selected on a trigger event */
   public final CompoundParameter probabilityToSelect;
 
+  public final CompoundParameter brightness;
+
 
   private final List<LXFixture> allFixtures;
   private List<LXFixture> selectedFixtures;
@@ -38,6 +40,11 @@ public class Mask_RandomFixtureSelector extends LXPattern {
         .setDescription("Probability that each fixture will be selected on a trigger event (ie 0.25 == 1/4 of all " +
             "fixtures will be selected on each trigger");
     addParameter(probabilityToSelect);
+
+    brightness = new CompoundParameter("brightness", 100, 0, 100);
+    brightness
+        .setDescription("Brightness of mask (try modulating me!)");
+    addParameter(brightness);
 
     allFixtures = new ArrayList<>(fixturesToSelect);
 
@@ -65,7 +72,7 @@ public class Mask_RandomFixtureSelector extends LXPattern {
     }
 
     for (LXFixture fixture : selectedFixtures) {
-      setColor(fixture, LXColor.WHITE);
+      setColor(fixture, LXColor.hsb(0, 0, brightness.getValue()));
     }
 
   }
