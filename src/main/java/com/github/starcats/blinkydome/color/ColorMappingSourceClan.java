@@ -25,17 +25,14 @@ public interface ColorMappingSourceClan extends ColorMappingSourceGroup {
    */
   void setRandomGroupAndSource();
 
+  /** Picks a random source in the current group */
+  void setRandomSourceInGroup();
+
   /**
    * Returns total number of sources across all groups
    */
   @Override
   int getNumSources();
-
-  /**
-   * Changes the sourceSelect to a random source in the *current* source group
-   */
-  @Override
-  void setRandomSource();
 
   /**
    * Shortcut to call {@link ColorMappingSource#getColor} against the currently-selected Source in
