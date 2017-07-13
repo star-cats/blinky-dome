@@ -6,7 +6,7 @@ import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
-import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
 import com.github.starcats.blinkydome.util.LXTriggerLinkModulation;
@@ -107,15 +107,26 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     } else {
       channel.fader.setValue(1.0);
 
-      Mask_RandomFixtureSelector randomFixtureSelector = new Mask_RandomFixtureSelector(lx, model.allTriangles);
-      LXTriggerLinkModulation beatTrigger = new LXTriggerLinkModulation(
-          kickModulator, randomFixtureSelector.selectRandomFixturesTrigger
+
+      // Masks
+      // --------------
+
+      Mask_RandomFixtureSelector randomFixtureMask = new Mask_RandomFixtureSelector(lx, model.allTriangles);
+      LXTriggerLinkModulation rfmBeatTrigger = new LXTriggerLinkModulation(
+          kickModulator, randomFixtureMask.selectRandomFixturesTrigger
       );
-      lx.engine.modulation.addTrigger(beatTrigger);
+      lx.engine.modulation.addTrigger(rfmBeatTrigger);
+
+
+      Mask_WipePattern wipeMask = new Mask_WipePattern(lx);
+      LXTriggerLinkModulation wipeBeatTrigger = new LXTriggerLinkModulation(
+          kickModulator, wipeMask.wipeTrigger
+      );
+      lx.engine.modulation.addTrigger(wipeBeatTrigger);
 
       patterns = new ArrayList<>();
-      patterns.add(randomFixtureSelector);
-      patterns.add(new WhiteWipePattern(lx));
+      patterns.add(randomFixtureMask);
+      patterns.add(wipeMask);
       patterns.addAll(makeStandardPatterns());
 
     }

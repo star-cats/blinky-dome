@@ -4,7 +4,7 @@ import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.Icosastar;
 import com.github.starcats.blinkydome.model.util.ConnectedVectorStripModel;
 import com.github.starcats.blinkydome.pattern.*;
-import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
@@ -105,7 +105,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
         // TODO: bring in FixtureTracerPattern
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it LX default palette (controlled by Studio's palette UI)
-        new WhiteWipePattern(lx),
+        new Mask_WipePattern(lx),
         fixtureColorBarsPattern
     });
 
