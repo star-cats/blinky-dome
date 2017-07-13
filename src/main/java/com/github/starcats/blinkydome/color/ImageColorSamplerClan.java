@@ -70,7 +70,7 @@ public class ImageColorSamplerClan implements ColorMappingSourceClan {
 
   @Override
   public void setRandomSource() {
-    ((ImageColorSampler) samplerSelector.getObject()).setRandomSource();
+    this.setRandomGroupAndSource();
   }
 
   @Override
@@ -83,7 +83,12 @@ public class ImageColorSamplerClan implements ColorMappingSourceClan {
       }
     }
     samplerSelector.setValue(i);
-    setRandomSource();
+    setRandomSourceInGroup();
+  }
+
+  @Override
+  public void setRandomSourceInGroup() {
+    ((ImageColorSampler) samplerSelector.getObject()).setRandomSource();
   }
 
   @Override

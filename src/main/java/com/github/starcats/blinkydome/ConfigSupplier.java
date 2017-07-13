@@ -19,5 +19,6 @@ public class ConfigSupplier {
     // GUI:
     return new BlinkyDomeGuiConfig(p);
 //    return new IcosastarGuiConfig(p);
+//    return new FibonocciPetalsGuiConfig(p);
   }
 }

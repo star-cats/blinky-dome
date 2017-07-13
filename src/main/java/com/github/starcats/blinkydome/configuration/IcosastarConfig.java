@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * LXStudio / GUI config for {@link com.github.starcats.blinkydome.model.Icosastar} model
+ * Standard config for {@link com.github.starcats.blinkydome.model.Icosastar} model
  */
 public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
