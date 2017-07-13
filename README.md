@@ -26,7 +26,7 @@ LX and P3LX source will now be available in `lib/lx/git_submodule` and `lib/p3lx
  project setup.
 
 **DEPENDENCY VERSION WARNING**: Since LX and P3LX don't follow any release/publishing process, we just rely on their
-latest HEAD checkouts (they don't do any git tags or release branches).  If they change their API, we're SOL.
+latest HEAD checkouts (they don't do any git tags or release branches).  If they change their API, we need to adjust.
 If you run into weird LX or P3LX compile errors, try checking out a previous version of them.  As of June 18 2017, try:
   - lx: `git checkout ff98f6d54`
   - p3lx: `git checkout 9096d47b7`
@@ -72,14 +72,14 @@ Now you have an executable fatjar (shadowJar). Which means, you can simply do:
 
 Copy it onto your embdedded device of choice.
 
+See [this wiki page](https://github.com/star-cats/blinky-dome/wiki/Running-blinky-dome-on-Headless-Embedded-(raspi,-odroid))
+for how to provision a raspi or ODroid with all the utilities and stuff to make it run.
+
 **Note: Not True Headless!**  Although LX doesn't have a dependency on Processing, blinky-dome does since we rely on a
 lot of Processing utils.  This means it's not *true* headless (just a 1x1 px window), but this also means you'll have to
-jump through a few hoops to get Processing running on a headless device like a Raspi or ODroid.
-
-TODO: detailed instructions on how to get it running on raspi/odroid. For now, google "raspi processing headless"...
-basically you'll have to setup a virtual frame buffer `Xvfb` and run the fatjar like
-`sudo DISPLAY=:1 java -jar blinky-dome-headless-all.jar`
-
+jump through a few hoops to get Processing running on a headless device like a Raspi or ODroid.  See
+[the wiki](https://github.com/star-cats/blinky-dome/wiki/Running-blinky-dome-on-Headless-Embedded-(raspi,-odroid))
+for details.
 
 # Setup for New Developers
 Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that integrates Gradle builds
