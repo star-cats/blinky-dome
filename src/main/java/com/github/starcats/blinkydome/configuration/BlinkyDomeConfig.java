@@ -106,6 +106,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // Channel 2:
     } else {
       channel.fader.setValue(1.0);
+      channel.blendMode.setValue(1); // Multiply
 
 
       // Masks

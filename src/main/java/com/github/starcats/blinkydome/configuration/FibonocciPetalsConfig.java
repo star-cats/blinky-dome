@@ -91,7 +91,12 @@ public class FibonocciPetalsConfig extends AbstractStarcatsLxConfig<FibonocciPet
       ));
       patterns.addAll(getGuiPatterns());
 
+    // Channel 2
     } else {
+      channel.fader.setValue(1.0);
+      channel.blendMode.setValue(1); // Multiply
+
+
       Mask_RandomFixtureSelector randomFixtureMask = new Mask_RandomPetalsSelector(lx, model);
       LXTriggerModulation rfmBeatTrigger = new LXTriggerModulation(
           kickModulator.getTriggerSource(), randomFixtureMask.selectRandomFixturesTrigger
