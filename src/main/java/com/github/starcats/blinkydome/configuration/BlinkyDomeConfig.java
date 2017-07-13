@@ -7,7 +7,9 @@ import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
+import com.github.starcats.blinkydome.util.LXTriggerLinkModulation;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
 import heronarts.lx.LX;
@@ -104,7 +106,15 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // Channel 2:
     } else {
       channel.fader.setValue(1.0);
+
+      Mask_RandomFixtureSelector randomFixtureSelector = new Mask_RandomFixtureSelector(lx, model.allTriangles);
+      LXTriggerLinkModulation beatTrigger = new LXTriggerLinkModulation(
+          kickModulator, randomFixtureSelector.selectRandomFixturesTrigger
+      );
+      lx.engine.modulation.addTrigger(beatTrigger);
+
       patterns = new ArrayList<>();
+      patterns.add(randomFixtureSelector);
       patterns.add(new WhiteWipePattern(lx));
       patterns.addAll(makeStandardPatterns());
 
