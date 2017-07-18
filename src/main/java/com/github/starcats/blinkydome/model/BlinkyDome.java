@@ -78,6 +78,8 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
 
     final public float theta, phi;
 
+    final public int ppGroup, ppStrip, ppIndex;
+
     public LED(TableRow row) {
       super(row.getFloat("x"), row.getFloat("z"), -row.getFloat("y"));
       this.x = row.getFloat("x");
@@ -97,24 +99,25 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
 
       this.theta = (float)Math.acos(z / r);
       this.phi = (float)Math.atan2(y, x);
+
+      this.ppGroup = row.getInt("pp_group");
+      this.ppStrip = row.getInt("pp_strip");
+      this.ppIndex = row.getInt("pp_index");
     }
 
     @Override
     public int getPpGroup() {
-      return 0; // TODO: hardcoded
+      return this.ppGroup;
     }
 
     @Override
     public int getPpStripIndex() {
-      return 1; // TODO: hardcoded
+      return this.ppStrip;
     }
 
     @Override
     public int getPpLedIndex() {
-      if (this.index > 107 * 3) {
-        return -1; // TODO: past the first three panels, just ignore for now.
-      }
-      return this.index; // TODO: using LX index as single strip index
+      return  this.ledIndex;
     }
 
     @Override
