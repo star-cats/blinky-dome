@@ -117,7 +117,7 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
 
     @Override
     public int getPpLedIndex() {
-      return  this.ledIndex;
+      return  this.ppIndex;
     }
 
     @Override
