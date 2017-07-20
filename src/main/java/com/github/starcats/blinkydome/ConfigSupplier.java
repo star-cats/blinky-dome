@@ -15,6 +15,7 @@ public class ConfigSupplier {
     // Headless:
 //    return new BlinkyDomeConfig(p);
 //    return new IcosastarConfig(p);
+//    return new FibonocciPetalsConfig(p);
 
     // GUI:
     return new BlinkyDomeGuiConfig(p);
