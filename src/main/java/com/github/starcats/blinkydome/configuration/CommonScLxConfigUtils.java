@@ -5,7 +5,6 @@ import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.util.AudioDetector;
-import com.github.starcats.blinkydome.util.LXTriggerLinkModulation;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.audio.BandGate;
@@ -116,8 +115,8 @@ public class CommonScLxConfigUtils {
       fcbpColorModulation.range.setValue(1.0);
       lx.engine.modulation.addModulation(fcbpColorModulation);
 
-      LXTriggerModulation fcbpNewBarModulation = new LXTriggerLinkModulation(
-          newBarTrigger, fixtureColorBarsPattern.getTriggerTarget()
+      LXTriggerModulation fcbpNewBarModulation = new LXTriggerModulation(
+          newBarTrigger.getTriggerSource(), fixtureColorBarsPattern.getTriggerTarget()
       );
       lx.engine.modulation.addTrigger(fcbpNewBarModulation);
 

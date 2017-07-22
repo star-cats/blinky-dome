@@ -6,10 +6,9 @@ import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
-import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
+import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
-import com.github.starcats.blinkydome.util.LXTriggerLinkModulation;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
 import heronarts.lx.LX;
@@ -21,6 +20,7 @@ import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXTriggerModulation;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 
@@ -113,15 +113,15 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
       // --------------
 
       Mask_RandomFixtureSelector randomFixtureMask = new Mask_RandomFixtureSelector(lx, model.allTriangles);
-      LXTriggerLinkModulation rfmBeatTrigger = new LXTriggerLinkModulation(
-          kickModulator, randomFixtureMask.selectRandomFixturesTrigger
+      LXTriggerModulation rfmBeatTrigger = new LXTriggerModulation(
+          kickModulator.getTriggerSource(), randomFixtureMask.selectRandomFixturesTrigger
       );
       lx.engine.modulation.addTrigger(rfmBeatTrigger);
 
 
       Mask_WipePattern wipeMask = new Mask_WipePattern(lx);
-      LXTriggerLinkModulation wipeBeatTrigger = new LXTriggerLinkModulation(
-          kickModulator, wipeMask.wipeTrigger
+      LXTriggerModulation wipeBeatTrigger = new LXTriggerModulation(
+          kickModulator.getTriggerSource(), wipeMask.wipeTrigger
       );
       lx.engine.modulation.addTrigger(wipeBeatTrigger);
 
