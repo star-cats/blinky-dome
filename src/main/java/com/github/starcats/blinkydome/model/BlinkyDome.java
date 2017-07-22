@@ -2,7 +2,7 @@ package com.github.starcats.blinkydome.model;
 
 import com.github.starcats.blinkydome.pixelpusher.PixelPushableLed;
 import com.github.starcats.blinkydome.pixelpusher.PixelPushableModel;
-import heronarts.lx.model.LXAbstractFixture;
+import com.github.starcats.blinkydome.util.SCAbstractFixture;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import processing.core.PApplet;
@@ -129,7 +129,7 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
   /**
    * BlinkyDome triangle definition
    */
-  public static class TriangleFixture extends LXAbstractFixture {
+  public static class TriangleFixture extends SCAbstractFixture {
     final public int index;
     final public int subindex;
     final public float x, y, z;
@@ -148,7 +148,8 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
       this.z = canonical.triangleZ;
       this.layer = canonical.layer;
 
-      leds.forEach(this::addPoint);
+      leds.forEach(this::addPointFast);
+      this.initCentroid();
     }
   }
 

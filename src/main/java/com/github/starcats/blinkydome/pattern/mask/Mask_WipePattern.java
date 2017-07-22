@@ -3,6 +3,7 @@ package com.github.starcats.blinkydome.pattern.mask;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipe;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
@@ -57,7 +58,7 @@ public class Mask_WipePattern extends LXPattern {
 
   public void run(double deltaMs) {
     for (LXPoint p : getModel().points) {
-      getColors()[p.index] = LX.hsb(0, 0, 0);
+      setColor(p.index, LXColor.BLACK);
     }
     for (WhiteWipe w : allWipes) {
       w.run(deltaMs);

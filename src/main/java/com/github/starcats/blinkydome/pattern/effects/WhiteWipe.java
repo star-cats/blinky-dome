@@ -2,6 +2,7 @@ package com.github.starcats.blinkydome.pattern.effects;
 
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.SawLFO;
@@ -64,7 +65,7 @@ public class WhiteWipe {
 
       for (LXPoint p : host.getModel().points) {
         if (pointValueGetter.apply(p) > min && pointValueGetter.apply(p) < max) {
-          host.getColors()[p.index] = LX.hsb(0, 0, 100);
+          host.getColors()[p.index] = LXColor.WHITE;
         }
       }
     }

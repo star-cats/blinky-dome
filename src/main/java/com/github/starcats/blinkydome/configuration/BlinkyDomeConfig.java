@@ -6,6 +6,7 @@ import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.*;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
@@ -23,6 +24,7 @@ import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXTriggerModulation;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,10 +103,12 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   protected void configChannel(int channelNum, LXChannel channel) {
     List<LXPattern> patterns;
     if (channelNum == 1) {
+      channel.label.setValue("BasePatterns");
       patterns = makeStandardPatterns();
 
     // Channel 2:
     } else {
+      channel.label.setValue("Masks");
       channel.fader.setValue(1.0);
       channel.blendMode.setValue(1); // Multiply
 
@@ -126,6 +130,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
       lx.engine.modulation.addTrigger(wipeBeatTrigger);
 
       patterns = new ArrayList<>();
+      patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles));
       patterns.add(randomFixtureMask);
       patterns.add(wipeMask);
       patterns.addAll(makeStandardPatterns());
@@ -181,12 +186,12 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // Normal patterns
     // --------------------
     return Arrays.asList(
+        perlinNoisePattern,
         new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
             new LXVector(0, -1, 0), // mapping seems reversed... 'up' is y:-1
             new LXVector(0, 1, 0),
             PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
         ),
-        perlinNoisePattern,
         new FFTBandPattern(lx, model, starCatFFT),
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it LX default palette (controlled by Studio's palette UI)
