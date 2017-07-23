@@ -3,10 +3,15 @@ package com.github.starcats.blinkydome.configuration;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.BlinkyDome;
-import com.github.starcats.blinkydome.pattern.*;
+import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
+import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
+import com.github.starcats.blinkydome.pattern.PerlinBreathing;
+import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
+import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep;
+import com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
@@ -130,6 +135,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
       lx.engine.modulation.addTrigger(wipeBeatTrigger);
 
       patterns = new ArrayList<>();
+      patterns.add(new Mask_FixtureDottedLine(lx, model.allTriangles));
       patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles, lx.tempo));
       patterns.add(randomFixtureMask);
       patterns.add(wipeMask);
