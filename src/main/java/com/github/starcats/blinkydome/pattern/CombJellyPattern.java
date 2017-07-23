@@ -87,7 +87,7 @@ public class CombJellyPattern extends LXPattern {
     );
     wiggleDurationToPeriodRatio.setDescription("Ratio of wiggle duration to wiggle period");
     addParameter(wiggleDurationToPeriodRatio);
-    wiggleDurationToPeriodRatio.setUnits(LXParameter.Units.LOG10);
+    wiggleDurationToPeriodRatio.setFormatter(value -> String.format("%.2f", Math.pow(10, value)));
 
 
     hueWiggleWidth = new CompoundParameter("c width", 50, 0, 180);
