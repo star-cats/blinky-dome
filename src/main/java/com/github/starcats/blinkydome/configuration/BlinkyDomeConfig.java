@@ -130,7 +130,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
       lx.engine.modulation.addTrigger(wipeBeatTrigger);
 
       patterns = new ArrayList<>();
-      patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles));
+      patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles, lx.tempo));
       patterns.add(randomFixtureMask);
       patterns.add(wipeMask);
       patterns.addAll(makeStandardPatterns());

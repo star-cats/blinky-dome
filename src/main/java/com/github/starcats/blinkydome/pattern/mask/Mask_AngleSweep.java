@@ -1,8 +1,10 @@
 package com.github.starcats.blinkydome.pattern.mask;
 
 import com.github.starcats.blinkydome.util.SCFixture;
+import com.github.starcats.blinkydome.util.TempoLock;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
+import heronarts.lx.Tempo;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.VariableLFO;
@@ -52,9 +54,14 @@ public class Mask_AngleSweep extends LXPattern {
       .setValue(0);
 
 
-  private List<FixtureAngle> fixtures = Collections.emptyList();
+  public final BooleanParameter tempoLock = new BooleanParameter("tempo lck")
+      .setDescription("Trigger to lock sweep modulator to global Tempo");
 
-  public Mask_AngleSweep(LX lx, PVector reference, List<? extends SCFixture> fixtures) {
+
+  private List<FixtureAngle> fixtures = Collections.emptyList();
+  private Tempo tempo;
+
+  public Mask_AngleSweep(LX lx, PVector reference, List<? extends SCFixture> fixtures, Tempo tempo) {
     super(lx);
 
     this.addParameter(sweepTrigger);
@@ -102,6 +109,13 @@ public class Mask_AngleSweep extends LXPattern {
 
     this.fixtures = fixtures.stream().map(FixtureAngle::new).collect(Collectors.toList());
     this.setReferenceAngle(reference);
+
+
+    if (tempo != null) {
+      TempoLock tempoLock = new TempoLock(tempo, sweepModulator);
+      sweepModulator.phase.setValue(0.5); // beats will be full-sweep "on"
+      addParameter(tempoLock.enableLock);
+    }
   }
 
   /** Change the reference angle for all the fixtures */
