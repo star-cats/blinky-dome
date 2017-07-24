@@ -12,10 +12,12 @@ import com.github.starcats.blinkydome.util.AudioDetector;
 import ddf.minim.analysis.BeatDetect;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXParameter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -36,17 +38,6 @@ public class PerlinNoisePattern extends LXPattern {
   /** Multiplier ('zoom') of the perlin noise pattern used for hue mapping */
   public final CompoundParameter hueXForm;
 
-  public final LXPerlinNoiseExplorer brightnessBoostNoise;
-  private float brightnessBoostT = 0;
-
-  /**
-   * Exponential dropoff of the brightness boost, per ms.
-   * eg in 500ms, the brightness boost will be at Math.pow({bright decay}, 500) %
-   */
-  private BoundedParameter brightnessBoostDecayPerMs = new BoundedParameter("bb decay", 0.998, 0.990, 0.999)
-      .setDescription("Exponential dropoff of the brightness boost, per ms (eg after 123ms, the brightness boost " +
-      "will be at Math.pow({bb decay}, 123))");
-
   /** Selects a colorizer to use */
   public final DiscreteParameter colorizerSelect;
   public final BooleanParameter rotateColorizer;
@@ -56,9 +47,6 @@ public class PerlinNoisePattern extends LXPattern {
   private int totalWeight;
 
   private double timeSinceLastRotate = 0;
-
-  public final BoundedParameter maxBrightness = new BoundedParameter("maxBrightness", 100, 0, 100);
-  public final BoundedParameter baseBrightnessPct = new BoundedParameter("baseBrightnessPct", 0.30, 0.10, 1.00);
 
 
   // WhiteWipes overlay
@@ -73,9 +61,6 @@ public class PerlinNoisePattern extends LXPattern {
     super(lx);
 
     this.beat = beat;
-
-    addParameter(maxBrightness);
-    addParameter(baseBrightnessPct);
 
 
     // Make Hue Noise
@@ -92,16 +77,6 @@ public class PerlinNoisePattern extends LXPattern {
     this.hueXForm = hueNoise.noiseZoom;
     addParameter(this.hueXForm);
 
-
-    // Make Noise field
-    // -----------------
-    this.brightnessBoostNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "bb ",
-        "brightness bumps"
-    );
-    addParameter(brightnessBoostNoise.noiseSpeed);
-    addParameter(brightnessBoostNoise.noiseZoom);
-
-    addParameter(brightnessBoostDecayPerMs);
 
 
     // Make colorizers
@@ -201,45 +176,11 @@ public class PerlinNoisePattern extends LXPattern {
 //      gradientColorSource.patternSelect.setValue(Math.floor(gradientAutoselect.getValue()));
 //    }
 
-
-    boolean isBrightnessBoost = beat.isKick();
-    if (isBrightnessBoost) {
-      brightnessBoostT = 1.0f;
-    } else if (brightnessBoostT > 0.05) {
-      brightnessBoostT *= Math.pow(brightnessBoostDecayPerMs.getValuef(), deltaMs);
-    }
-
     PerlinNoiseColorizer colorizer = allColorizers.get(colorizerSelect.getOption());
     //float maxBrightness = ((AbstractIcosaLXModel)model).getMaxBrightness();
-    float maxBrightness = this.maxBrightness.getValuef();
-    float baseBrightness = maxBrightness * baseBrightnessPct.getValuef();
-    float boostBrightness = maxBrightness * (1.0f - baseBrightnessPct.getValuef());
 
     for (LXPoint p : this.model.points) {
-      int color = colorizer.getColor(p);
-
-      float b = LXColor.b(color);
-
-      if (AudioDetector.LINE_IN.isRunning()) {
-        b = baseBrightness * b/100f +
-            (brightnessBoostT > 0.05 ?
-                brightnessBoostT * boostBrightness * brightnessBoostNoise.getNoise(p.index) :
-                0
-            );
-      } else {
-        // If audio not working, just do random brightness mapping
-        b = baseBrightness * b/100f +
-            boostBrightness * brightnessBoostNoise.getNoise(p.index);
-      }
-
-      color = LX.hsb(
-          LXColor.h(color),
-          LXColor.s(color),
-          b
-      );
-
-      colors[p.index] = color;
-
+      colors[p.index] = colorizer.getColor(p);
     }
 
     // Rotate colorizers

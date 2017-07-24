@@ -1,5 +1,6 @@
 package com.github.starcats.blinkydome.pattern.mask;
 
+import com.github.starcats.blinkydome.util.SCTriggerable;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Masking pattern that selects random fixtures on a trigger
  */
-public class Mask_RandomFixtureSelector extends LXPattern {
+public class Mask_RandomFixtureSelector extends LXPattern implements SCTriggerable {
   public final BooleanParameter selectRandomFixturesTrigger;
 
   /** Param from 0-1 indicating probability each fixture should be selected on a trigger event */
@@ -75,6 +76,11 @@ public class Mask_RandomFixtureSelector extends LXPattern {
     // trigger the listener
     selectRandomFixturesTrigger.setValue(true);
     selectRandomFixturesTrigger.setValue(false);
+  }
+
+  @Override
+  public BooleanParameter getTrigger() {
+    return selectRandomFixturesTrigger;
   }
 
   @Override

@@ -11,6 +11,7 @@ import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep;
+import com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost;
 import com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
@@ -26,7 +27,6 @@ import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.parameter.LXTriggerModulation;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -45,6 +45,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   protected ImageColorSamplerClan colorSampler;
   protected ImageColorSampler gradientColorSource;
   protected ImageColorSampler patternColorSource;
+  protected CommonScLxConfigUtils.MinimBeatTriggers minimBeatTriggers;
 
   // Modulators
   private BandGate kickModulator;
@@ -70,6 +71,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
         gradientColorSource,
         patternColorSource
     });
+
+    minimBeatTriggers = new CommonScLxConfigUtils.MinimBeatTriggers(lx, starCatFFT);
   }
 
   @Override
@@ -101,7 +104,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
   @Override
   protected int getNumChannels() {
-    return 2;
+    return 3;
   }
 
   @Override
@@ -111,40 +114,57 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
       channel.label.setValue("BasePatterns");
       patterns = makeStandardPatterns();
 
-    // Channel 2:
-    } else {
-      channel.label.setValue("Masks");
+    // Channel 2: Primary masks
+    } else if (channelNum == 2) {
+      channel.label.setValue("Masks 1");
       channel.fader.setValue(1.0);
       channel.blendMode.setValue(1); // Multiply
 
+      patterns = makeMasks();
 
-      // Masks
-      // --------------
+    // Channel 3: Secondary masks
+    } else {
+      channel.label.setValue("Masks 2");
+      channel.fader.setValue(1.0);
+      channel.blendMode.setValue(1); // Multiply
 
-      Mask_RandomFixtureSelector randomFixtureMask = new Mask_RandomFixtureSelector(lx, model.allTriangles);
-      LXTriggerModulation rfmBeatTrigger = new LXTriggerModulation(
-          kickModulator.getTriggerSource(), randomFixtureMask.selectRandomFixturesTrigger
-      );
-      lx.engine.modulation.addTrigger(rfmBeatTrigger);
-
-
-      Mask_WipePattern wipeMask = new Mask_WipePattern(lx);
-      LXTriggerModulation wipeBeatTrigger = new LXTriggerModulation(
-          kickModulator.getTriggerSource(), wipeMask.wipeTrigger
-      );
-      lx.engine.modulation.addTrigger(wipeBeatTrigger);
-
-      patterns = new ArrayList<>();
-      patterns.add(new Mask_FixtureDottedLine(lx, model.allTriangles));
-      patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles, lx.tempo));
-      patterns.add(randomFixtureMask);
-      patterns.add(wipeMask);
-      patterns.addAll(makeStandardPatterns());
-
+      patterns = makeMasks();
     }
 
     // common:
     channel.setPatterns( patterns.toArray( new LXPattern[patterns.size()] ) );
+
+    if (channelNum == 3) {
+      // Select default mask2
+      channel.goIndex(1);
+    }
+  }
+
+  private List<LXPattern> makeMasks() {
+    Mask_BrightnessBeatBoost mask_bbb = new Mask_BrightnessBeatBoost(lx);
+    minimBeatTriggers.triggerWithKick(mask_bbb.trigger);
+
+
+    Mask_RandomFixtureSelector randomFixtureMask = new Mask_RandomFixtureSelector(lx, model.allTriangles);
+    minimBeatTriggers.triggerWithKick(randomFixtureMask);
+
+
+    Mask_WipePattern wipeMask = new Mask_WipePattern(lx);
+    minimBeatTriggers.triggerWithKick(wipeMask);
+    wipeMask.widthPx.setValue(20);
+
+
+    List<LXPattern> patterns = new ArrayList<>();
+    patterns.add(mask_bbb);
+    patterns.add(new Mask_FixtureDottedLine(lx, model.allTriangles));
+    patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles, lx.tempo));
+    patterns.add(randomFixtureMask);
+    patterns.add(wipeMask);
+
+    // patterns.addAll(makeStandardPatterns());
+
+    return patterns;
+
   }
 
   /** Creates standard set of BlinkyDome patterns */
@@ -185,8 +205,6 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
       }
     });
     perlinNoisePattern.hueSpeed.setValue(0.25);
-    perlinNoisePattern.brightnessBoostNoise.noiseSpeed.setValue(2.0 * perlinNoisePattern.hueSpeed.getValue());
-    perlinNoisePattern.brightnessBoostNoise.noiseZoom.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
 
 
     // Normal patterns

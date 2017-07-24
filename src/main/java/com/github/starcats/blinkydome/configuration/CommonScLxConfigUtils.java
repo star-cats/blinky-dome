@@ -5,13 +5,16 @@ import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.util.AudioDetector;
+import com.github.starcats.blinkydome.util.SCTriggerable;
 import com.github.starcats.blinkydome.util.StarCatFFT;
+import ddf.minim.analysis.BeatDetect;
 import heronarts.lx.LX;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.modulator.LXTriggerSource;
 import heronarts.lx.modulator.VariableLFO;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXCompoundModulation;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXTriggerModulation;
@@ -121,6 +124,48 @@ public class CommonScLxConfigUtils {
       lx.engine.modulation.addTrigger(fcbpNewBarModulation);
 
       return fixtureColorBarsPattern;
+    }
+  }
+
+  public static class MinimBeatTriggers implements LXTriggerSource {
+    public final BooleanParameter kickTrigger = new BooleanParameter("kick")
+        .setMode(BooleanParameter.Mode.MOMENTARY)
+        .setDescription("Triggers on minim-detected kicks");
+
+    private final LX lx;
+
+    public MinimBeatTriggers(LX lx, StarCatFFT minimProvider) {
+      this(lx, minimProvider.beat);
+    }
+
+    public MinimBeatTriggers(LX lx, BeatDetect minim) {
+      this.lx = lx;
+      lx.engine.addLoopTask(deltaMs -> {
+        kickTrigger.setValue(minim.isKick());
+
+        // TODO: hat and snare triggers
+      });
+    }
+
+    /** See {@link #triggerWithKick(BooleanParameter)} */
+    public LXTriggerModulation triggerWithKick(SCTriggerable target) {
+      return triggerWithKick(target.getTrigger());
+    }
+
+    /**
+     * Wires up a new trigger modulation to make a target trigger when a kick-drum hits
+     * @param target param to modulate
+     * @return The modulation object.  Don't need to do anything with it if you're never going to .dispose() it.
+     */
+    public LXTriggerModulation triggerWithKick(BooleanParameter target) {
+      LXTriggerModulation trigger = new LXTriggerModulation(kickTrigger, target);
+      lx.engine.modulation.addTrigger(trigger);
+      return trigger;
+    }
+
+    @Override
+    public BooleanParameter getTriggerSource() {
+      return kickTrigger;
     }
   }
 

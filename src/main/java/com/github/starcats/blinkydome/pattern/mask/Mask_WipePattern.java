@@ -1,6 +1,7 @@
 package com.github.starcats.blinkydome.pattern.mask;
 
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipe;
+import com.github.starcats.blinkydome.util.SCTriggerable;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
@@ -11,7 +12,7 @@ import heronarts.lx.parameter.BoundedParameter;
 /**
  * Perform a random wipe in x, y, or z direction
  */
-public class Mask_WipePattern extends LXPattern {
+public class Mask_WipePattern extends LXPattern implements SCTriggerable {
 
   public final BooleanParameter wipeTrigger = new BooleanParameter("Trigger")
       .setDescription("Hit to start a wipe")
@@ -19,10 +20,10 @@ public class Mask_WipePattern extends LXPattern {
 
   private final WhiteWipe[] allWipes;
 
-  private final BoundedParameter durationMs = new BoundedParameter("durationMs", 400, 50, 1000)
+  public final BoundedParameter durationMs = new BoundedParameter("durationMs", 400, 50, 1000)
       .setDescription("Duration for wipes to travel across model (ms)");
 
-  private final BoundedParameter widthPx = (BoundedParameter) new BoundedParameter("width", 5, 0, 100)
+  public final BoundedParameter widthPx = (BoundedParameter) new BoundedParameter("width", 5, 0, 100)
       .setDescription("Width of the wipe, in model units")
       .setExponent(2);
 
@@ -50,6 +51,11 @@ public class Mask_WipePattern extends LXPattern {
         this.startRandomWipe();
       }
     });
+  }
+
+  @Override
+  public BooleanParameter getTrigger() {
+    return wipeTrigger;
   }
 
   public void startRandomWipe() {
