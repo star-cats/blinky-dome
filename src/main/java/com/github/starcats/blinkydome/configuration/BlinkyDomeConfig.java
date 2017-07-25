@@ -15,6 +15,7 @@ import com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost;
 import com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine;
 import com.github.starcats.blinkydome.pattern.mask.Mask_Perlin;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
+import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
@@ -153,6 +154,12 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   }
 
   private List<LXPattern> makeMasks() {
+    Mask_RollingBouncingDisc mask_disc = new Mask_RollingBouncingDisc(lx,
+        new LXVector(0, model.yMin, 0),
+        new LXVector(0, model.yMax - model.yMin, 0)
+    );
+
+
     Mask_Perlin mask_perlin = new Mask_Perlin(lx, p);
     mask_perlin.speed.setValue(0.02);
     mask_perlin.zoom.setValue(0.2);
@@ -177,6 +184,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
 
     List<LXPattern> patterns = new ArrayList<>();
+    patterns.add(mask_disc);
     patterns.add(mask_perlin);
     patterns.add(mask_bbb);
     patterns.add(new Mask_FixtureDottedLine(lx, model.allTriangles));
