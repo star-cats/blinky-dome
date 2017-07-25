@@ -13,6 +13,7 @@ import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep;
 import com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost;
 import com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine;
+import com.github.starcats.blinkydome.pattern.mask.Mask_Perlin;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
@@ -27,6 +28,7 @@ import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.LXCompoundModulation;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -117,16 +119,26 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     // Channel 2: Primary masks
     } else if (channelNum == 2) {
       channel.label.setValue("Masks 1");
-      channel.fader.setValue(1.0);
       channel.blendMode.setValue(1); // Multiply
+
+      // Modulate visibility of this mask down on kick drums
+      channel.fader.setValue(1.0);
+      LXCompoundModulation ch2MaskVisibilityMod = new LXCompoundModulation(kickModulator, channel.fader);
+      ch2MaskVisibilityMod.range.setValue(-1);
+      lx.engine.modulation.addModulation(ch2MaskVisibilityMod);
 
       patterns = makeMasks();
 
     // Channel 3: Secondary masks
     } else {
       channel.label.setValue("Masks 2");
-      channel.fader.setValue(1.0);
       channel.blendMode.setValue(1); // Multiply
+
+      // Modulate visibility of this mask up on kick drums (opposite of ch2)
+      channel.fader.setValue(0.1);
+      LXCompoundModulation ch3MaskVisibilityMod = new LXCompoundModulation(kickModulator, channel.fader);
+      ch3MaskVisibilityMod.range.setValue(1);
+      lx.engine.modulation.addModulation(ch3MaskVisibilityMod);
 
       patterns = makeMasks();
     }
@@ -136,11 +148,21 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
     if (channelNum == 3) {
       // Select default mask2
-      channel.goIndex(1);
+      channel.goIndex(2);
     }
   }
 
   private List<LXPattern> makeMasks() {
+    Mask_Perlin mask_perlin = new Mask_Perlin(lx, p);
+    mask_perlin.speed.setValue(0.02);
+    mask_perlin.zoom.setValue(0.2);
+    // Bias noise to be mostly going up/down
+    mask_perlin.perlinNoise.xPosBias.setValue(0.2);
+    mask_perlin.perlinNoise.xNegBias.setValue(0.2);
+    mask_perlin.perlinNoise.zPosBias.setValue(0.2);
+    mask_perlin.perlinNoise.zNegBias.setValue(0.2);
+
+
     Mask_BrightnessBeatBoost mask_bbb = new Mask_BrightnessBeatBoost(lx);
     minimBeatTriggers.triggerWithKick(mask_bbb.trigger);
 
@@ -155,6 +177,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
 
     List<LXPattern> patterns = new ArrayList<>();
+    patterns.add(mask_perlin);
     patterns.add(mask_bbb);
     patterns.add(new Mask_FixtureDottedLine(lx, model.allTriangles));
     patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles, lx.tempo));

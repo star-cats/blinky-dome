@@ -11,9 +11,9 @@ import java.util.List;
  */
 public abstract class PerlinNoiseColorizer {
 
-  protected LXPerlinNoiseExplorer noiseSource;
+  protected PerlinNoiseExplorer noiseSource;
 
-  public PerlinNoiseColorizer(LXPerlinNoiseExplorer noiseSource) {
+  public PerlinNoiseColorizer(PerlinNoiseExplorer noiseSource) {
     this.noiseSource = noiseSource;
   }
 
@@ -35,7 +35,7 @@ public abstract class PerlinNoiseColorizer {
   }
 
   /**
-   * Advance to the nenoiseSourcext color scheme
+   * Advance to the next noiseSource color scheme
    * @return this instance for chaining
    */
   public abstract PerlinNoiseColorizer rotate();

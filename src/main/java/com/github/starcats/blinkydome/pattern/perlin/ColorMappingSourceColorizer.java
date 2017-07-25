@@ -5,12 +5,12 @@ import com.github.starcats.blinkydome.color.ColorMappingSourceGroup;
 import heronarts.lx.model.LXPoint;
 
 /**
- * Uses a {@link LXPerlinNoiseExplorer} as the mapping source into a {@link ColorMappingSource}
+ * Uses a {@link PerlinNoiseExplorer} as the mapping source into a {@link ColorMappingSource}
  */
 public class ColorMappingSourceColorizer extends PerlinNoiseColorizer {
   private final ColorMappingSourceGroup colorMappingSourceGroup;
 
-  public ColorMappingSourceColorizer(LXPerlinNoiseExplorer noiseSource, ColorMappingSourceGroup colorSource) {
+  public ColorMappingSourceColorizer(PerlinNoiseExplorer noiseSource, ColorMappingSourceGroup colorSource) {
     super(noiseSource);
     this.colorMappingSourceGroup = colorSource;
   }

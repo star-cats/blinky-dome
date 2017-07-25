@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * On every {@link #step(double)}, moves the perlin noise space in the direction of travelVector.  When the projected
  * points sample the perlin noise space, it appears as if they've moved.
  */
-public class LXPerlinNoiseExplorer {
+public class PerlinNoiseExplorer {
 
   /** Points' vector multiplier to transform features down into noise space -- smaller makes larger perlin features */
   public final CompoundParameter noiseZoom;
@@ -23,6 +23,19 @@ public class LXPerlinNoiseExplorer {
   /** Speed we move through the noise space */
   public final CompoundParameter noiseSpeed;
 
+  /**
+   * When picking a random noise travel direction, biases can be tweaked to adjust dominant directions.
+   * eg can be set to predominantly travel 'up', whichever direction model defines that
+   *
+   * If x+ and x- are set to 1 and -1 respectively, perlin noise will be equally likely to travel anywhere in the x dim.
+   * If x+ and x- are set to 1 and 0 respectively, perlin noise will only travel in the positive x direction
+   */
+  public final CompoundParameter xPosBias = new CompoundParameter("x+ bias", 1, 0, 1);
+  public final CompoundParameter yPosBias = new CompoundParameter("y+ bias", 1, 0, 1);
+  public final CompoundParameter zPosBias = new CompoundParameter("z+ bias", 1, 0, 1);
+  public final CompoundParameter xNegBias = new CompoundParameter("x- bias", -1, 0, -1);
+  public final CompoundParameter yNegBias = new CompoundParameter("y- bias", -1, 0, -1);
+  public final CompoundParameter zNegBias = new CompoundParameter("z- bias", -1, 0, -1);
 
   // Needed for noise() dependency
   private final PApplet p;
@@ -39,18 +52,31 @@ public class LXPerlinNoiseExplorer {
 
 
 
-  public LXPerlinNoiseExplorer(PApplet p, List<? extends LXPoint> features, String prefix, String desc) {
+  public PerlinNoiseExplorer(PApplet p, List<? extends LXPoint> features, String prefix, String desc) {
+    this(p, features, prefix, desc, null, null);
+  }
+
+  public PerlinNoiseExplorer(PApplet p, List<? extends LXPoint> features, String prefix, String desc,
+                             CompoundParameter noiseSpeed, CompoundParameter noiseZoom
+  ) {
     this.p = p;
 
+    if (noiseZoom == null) {
+      this.noiseZoom = new CompoundParameter(prefix + "zoom", 0.01, 0.005, 0.03)
+          .setDescription("Multiplier ('zoom') of the perlin noise pattern used for " + desc + " mapping");
+    } else {
+      this.noiseZoom = noiseZoom;
+    }
 
-    noiseZoom = new CompoundParameter(prefix + "zoom", 0.01, 0.005, 0.03)
-        .setDescription("Multiplier ('zoom') of the perlin noise pattern used for " + desc + " mapping");
-
-    lastNoiseZoom = noiseZoom.getValue();
+    lastNoiseZoom = this.noiseZoom.getValue();
 
 
-    noiseSpeed = new CompoundParameter(prefix + "speed", .5)
-        .setDescription("The speed of the perlin noise pattern used for " + desc + " mapping");
+    if (noiseSpeed == null) {
+      this.noiseSpeed = new CompoundParameter(prefix + "speed", .5)
+          .setDescription("The speed of the perlin noise pattern used for " + desc + " mapping");
+    } else {
+      this.noiseSpeed = noiseSpeed;
+    }
 
 
     this.origFeatures = features.stream().map(f -> new LXVector(f.x, f.y, f.z)).collect(Collectors.toList());
@@ -64,12 +90,11 @@ public class LXPerlinNoiseExplorer {
     step(50);
   }
 
-  public LXPerlinNoiseExplorer randomizeDirection() {
+  public PerlinNoiseExplorer randomizeDirection() {
     this.noiseTravel = new LXVector(
-        // Mostly travel in Z-axis so shapes are coming 'through' the cloud rather than 'across'
-        (float)(Math.random()*0.5 - 0.25f),
-        (float)(Math.random()*0.5 - 0.25f),
-        (float)(Math.random() - 0.5f)
+        (float)(Math.random()*(xPosBias.getValue() - xNegBias.getValue()) + xNegBias.getValue()),
+        (float)(Math.random()*(yPosBias.getValue() - yNegBias.getValue()) + yNegBias.getValue()),
+        (float)(Math.random()*(zPosBias.getValue() - zNegBias.getValue()) + zNegBias.getValue())
     );
     return this;
   }
@@ -92,7 +117,7 @@ public class LXPerlinNoiseExplorer {
   /**
    * Step through the noise field according to travel vector
    */
-  public LXPerlinNoiseExplorer step(double deltaMs) {
+  public PerlinNoiseExplorer step(double deltaMs) {
     // Re-Map points according to whatever modulation is on the noiseZoom (if it's changed)
     if (noiseZoom.getValue() != lastNoiseZoom) {
       lastNoiseZoom = noiseZoom.getValue();

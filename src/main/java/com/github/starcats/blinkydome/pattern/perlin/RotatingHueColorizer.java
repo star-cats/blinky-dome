@@ -19,7 +19,7 @@ public class RotatingHueColorizer extends PerlinNoiseColorizer {
 
   private SawLFO hueOffset = new SawLFO(0, 360, huePeriodMs);
 
-  public RotatingHueColorizer(LXPerlinNoiseExplorer noiseSource) {
+  public RotatingHueColorizer(PerlinNoiseExplorer noiseSource) {
     super(noiseSource);
     hueOffset.start();
   }

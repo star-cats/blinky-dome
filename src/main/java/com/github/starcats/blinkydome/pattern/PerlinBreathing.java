@@ -2,7 +2,7 @@ package com.github.starcats.blinkydome.pattern;
 
 import com.github.starcats.blinkydome.color.ColorMappingSourceClan;
 import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer;
-import com.github.starcats.blinkydome.pattern.perlin.LXPerlinNoiseExplorer;
+import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseExplorer;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
@@ -104,7 +104,7 @@ public class PerlinBreathing extends LXPattern {
   }
 
 
-  private final LXPerlinNoiseExplorer perlinNoiseField;
+  private final PerlinNoiseExplorer perlinNoiseField;
   private final ColorMappingSourceClan colorSource;
   private final SyncedVariableLFO positionLFO;
   private final SyncedVariableLFO speedLFO;
@@ -185,7 +185,7 @@ public class PerlinBreathing extends LXPattern {
     syncer.syncModulators( Arrays.asList(positionLFO, speedLFO) );
 
 
-    perlinNoiseField = new LXPerlinNoiseExplorer(p, points, "br", "breathing");
+    perlinNoiseField = new PerlinNoiseExplorer(p, points, "br", "breathing");
     perlinNoiseFieldZoom = perlinNoiseField.noiseZoom; // expose publicly
     addParameter(perlinNoiseField.noiseZoom);
 

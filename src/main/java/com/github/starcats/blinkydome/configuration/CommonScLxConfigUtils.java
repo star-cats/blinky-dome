@@ -65,6 +65,7 @@ public class CommonScLxConfigUtils {
       BandGate kickModulator = new BandGate("Kick beat detect", lx);
       kickModulator.running.setValue(true);
       kickModulator.gain.setValue(30); //dB
+      kickModulator.floor.setValue(0.9);
       return kickModulator;
     }
 

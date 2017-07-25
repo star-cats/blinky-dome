@@ -5,32 +5,28 @@ import com.github.starcats.blinkydome.color.ColorMappingSourceClan;
 import com.github.starcats.blinkydome.pattern.effects.Sparklers;
 import com.github.starcats.blinkydome.pattern.effects.WhiteWipe;
 import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer;
-import com.github.starcats.blinkydome.pattern.perlin.LXPerlinNoiseExplorer;
 import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseColorizer;
+import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseExplorer;
 import com.github.starcats.blinkydome.pattern.perlin.RotatingHueColorizer;
 import com.github.starcats.blinkydome.util.AudioDetector;
 import ddf.minim.analysis.BeatDetect;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameter;
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class PerlinNoisePattern extends LXPattern {
 
   private BeatDetect beat;
 
-  private LXPerlinNoiseExplorer hueNoise;
+  private PerlinNoiseExplorer hueNoise;
 
   /** The speed of the perlin noise pattern used for hue mapping */
   public final CompoundParameter hueSpeed;
@@ -65,11 +61,7 @@ public class PerlinNoisePattern extends LXPattern {
 
     // Make Hue Noise
     // -----------------
-    List<PVector> leds = this.model.getPoints().stream()
-        .map(pt -> new PVector(pt.x, pt.y, pt.z))
-        .collect(Collectors.toList());
-
-    this.hueNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "h ", "hue");
+    this.hueNoise = new PerlinNoiseExplorer(p, this.model.getPoints(), "h ", "hue");
 
     this.hueSpeed = hueNoise.noiseSpeed;
     addParameter(this.hueSpeed);
@@ -101,11 +93,9 @@ public class PerlinNoisePattern extends LXPattern {
 
 
     // Register all colorizers
-    for (PerlinNoiseColorizer colorizer : allColorizers.values()) {
-      for (LXModulator modulator : colorizer.getModulators()) {
-        addModulator(modulator);
-      }
-    }
+    allColorizers.values().forEach(
+        colorizer -> colorizer.getModulators().forEach(this::addModulator)
+    );
 
     int totalWeight = 0;
     for (int w : colorizerWeights) {
