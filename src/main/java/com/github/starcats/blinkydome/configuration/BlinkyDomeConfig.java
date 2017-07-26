@@ -17,6 +17,7 @@ import com.github.starcats.blinkydome.pattern.mask.Mask_Perlin;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_XyzFilter;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
@@ -156,8 +157,12 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   private List<LXPattern> makeMasks() {
     Mask_RollingBouncingDisc mask_disc = new Mask_RollingBouncingDisc(lx,
         new LXVector(0, model.yMin, 0),
-        new LXVector(0, model.yMax - model.yMin, 0)
-    );
+        new LXVector(0, model.yMax - model.yMin, 0),
+        new LXVector(1, 0, 0)
+    )
+        .addDemoBounce();
+    mask_disc.discThicknessRad.setValue(0.15);
+
 
 
     Mask_Perlin mask_perlin = new Mask_Perlin(lx, p);
@@ -191,6 +196,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles, lx.tempo));
     patterns.add(randomFixtureMask);
     patterns.add(wipeMask);
+    patterns.add(new Mask_XyzFilter(lx));
 
     // patterns.addAll(makeStandardPatterns());
 

@@ -73,7 +73,6 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
     final public int ledIndex; // in the triangle
     final public int layer;
 
-    final public float x, y, z;
     final public float triangleX, triangleY, triangleZ;
 
     final public float theta, phi;
@@ -82,9 +81,6 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
 
     public LED(TableRow row) {
       super(row.getFloat("x"), row.getFloat("z"), -row.getFloat("y"));
-      this.x = row.getFloat("x");
-      this.y = row.getFloat("y");
-      this.z = row.getFloat("z");
 
       this.triangleIndex = row.getInt("index");
       this.triangleSubindex = row.getInt("sub_index");
