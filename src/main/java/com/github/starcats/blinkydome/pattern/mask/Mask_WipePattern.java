@@ -1,29 +1,34 @@
-package com.github.starcats.blinkydome.pattern.effects;
+package com.github.starcats.blinkydome.pattern.mask;
 
+import com.github.starcats.blinkydome.pattern.effects.WhiteWipe;
+import com.github.starcats.blinkydome.util.SCTriggerable;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
+import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 
 /**
- * Created by dlopuch on 6/27/17.
+ * Perform a random wipe in x, y, or z direction
  */
-public class WhiteWipePattern extends LXPattern {
+public class Mask_WipePattern extends LXPattern implements SCTriggerable {
 
-  private final WhiteWipe[] allWipes;
-
-  private final BoundedParameter durationMs = new BoundedParameter("durationMs", 400, 50, 1000)
-      .setDescription("Duration for wipes to travel across model (ms)");
-
-  private final BoundedParameter widthPx = new BoundedParameter("width", 5, 0, 20)
-      .setDescription("Width of the wipe, in model units");
-
-  private final BooleanParameter triggerWipe = new BooleanParameter("Trigger")
+  public final BooleanParameter wipeTrigger = new BooleanParameter("Trigger")
       .setDescription("Hit to start a wipe")
       .setMode(BooleanParameter.Mode.MOMENTARY);
 
-  public WhiteWipePattern(LX lx) {
+  private final WhiteWipe[] allWipes;
+
+  public final BoundedParameter durationMs = new BoundedParameter("durationMs", 400, 50, 1000)
+      .setDescription("Duration for wipes to travel across model (ms)");
+
+  public final BoundedParameter widthPx = (BoundedParameter) new BoundedParameter("width", 5, 0, 100)
+      .setDescription("Width of the wipe, in model units")
+      .setExponent(2);
+
+
+  public Mask_WipePattern(LX lx) {
     super(lx);
 
     allWipes = new WhiteWipe[] {
@@ -40,12 +45,17 @@ public class WhiteWipePattern extends LXPattern {
     addParameter(durationMs);
     addParameter(widthPx);
 
-    addParameter(triggerWipe);
-    triggerWipe.addListener(param -> {
+    addParameter(wipeTrigger);
+    wipeTrigger.addListener(param -> {
       if (param.getValue() == 1) {
         this.startRandomWipe();
       }
     });
+  }
+
+  @Override
+  public BooleanParameter getTrigger() {
+    return wipeTrigger;
   }
 
   public void startRandomWipe() {
@@ -54,7 +64,7 @@ public class WhiteWipePattern extends LXPattern {
 
   public void run(double deltaMs) {
     for (LXPoint p : getModel().points) {
-      getColors()[p.index] = LX.hsb(0, 0, 0);
+      setColor(p.index, LXColor.BLACK);
     }
     for (WhiteWipe w : allWipes) {
       w.run(deltaMs);

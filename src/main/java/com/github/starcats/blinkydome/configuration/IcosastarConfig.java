@@ -4,7 +4,7 @@ import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.Icosastar;
 import com.github.starcats.blinkydome.model.util.ConnectedVectorStripModel;
 import com.github.starcats.blinkydome.pattern.*;
-import com.github.starcats.blinkydome.pattern.effects.WhiteWipePattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
@@ -84,8 +84,6 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
-    perlinNoisePattern.brightnessBoostNoise.noiseSpeed.setValue(2.0 * perlinNoisePattern.hueSpeed.getValue());
-    perlinNoisePattern.brightnessBoostNoise.noiseZoom.setValue(0.5 * perlinNoisePattern.hueXForm.getValue());
 
 
     // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
@@ -105,7 +103,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
         // TODO: bring in FixtureTracerPattern
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it LX default palette (controlled by Studio's palette UI)
-        new WhiteWipePattern(lx),
+        new Mask_WipePattern(lx),
         fixtureColorBarsPattern
     });
 

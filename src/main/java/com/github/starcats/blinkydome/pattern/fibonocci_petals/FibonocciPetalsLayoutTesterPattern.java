@@ -120,7 +120,7 @@ public class FibonocciPetalsLayoutTesterPattern extends LXPattern {
       case 0:
       default:
         pointsToIlluminate = petalsToUse.stream()
-            .flatMap(petal -> petal.getPoints().getPoints().stream())
+            .flatMap(petal -> petal.getPoints().stream())
             .collect(Collectors.toList());
     }
 

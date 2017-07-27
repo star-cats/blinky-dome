@@ -3,7 +3,7 @@ package com.github.starcats.blinkydome.pattern.fibonocci_petals;
 import com.github.starcats.blinkydome.color.ColorMappingSourceGroup;
 import com.github.starcats.blinkydome.model.FibonocciPetalsModel;
 import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer;
-import com.github.starcats.blinkydome.pattern.perlin.LXPerlinNoiseExplorer;
+import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseExplorer;
 import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseColorizer;
 import com.github.starcats.blinkydome.pattern.perlin.RotatingHueColorizer;
 import com.github.starcats.blinkydome.util.StarCatFFT;
@@ -38,7 +38,7 @@ public class PerlinPetalsPattern extends LXPattern {
 
   private BeatDetect beat;
 
-  private LXPerlinNoiseExplorer hueNoise;
+  private PerlinNoiseExplorer hueNoise;
   private Map<String, PerlinNoiseColorizer> allColorizers;
 
   public DiscreteParameter colorizerSelect;
@@ -134,7 +134,7 @@ public class PerlinPetalsPattern extends LXPattern {
         .map(pt -> new PVector(pt.x, pt.y, pt.z))
         .collect(Collectors.toList());
 
-    this.hueNoise = new LXPerlinNoiseExplorer(p, this.model.getPoints(), "h ", "hue");
+    this.hueNoise = new PerlinNoiseExplorer(p, this.model.getPoints(), "h ", "hue");
     addParameter(this.hueSpeed = hueNoise.noiseSpeed);
     addParameter(this.hueXForm = hueNoise.noiseZoom);
 
@@ -287,7 +287,7 @@ public class PerlinPetalsPattern extends LXPattern {
         double petalGaussian = pulse.gaussianForPetal(i);
 //        System.out.println("petal:" + i + " gaussian:" + petalGaussian);
 
-        for (LXPoint p : pulse.spiral.getPetals().get(i).getPoints().getPoints()) {
+        for (LXPoint p : pulse.spiral.getPetals().get(i).getPoints()) {
           colors[p.index] = LXColor.lerp(
               decayedColorField[p.index],
               origColorField[p.index],
