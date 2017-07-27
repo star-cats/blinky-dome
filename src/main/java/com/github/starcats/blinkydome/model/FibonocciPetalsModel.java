@@ -1,6 +1,7 @@
 package com.github.starcats.blinkydome.model;
 
 import com.github.starcats.blinkydome.model.util.VectorStripModel;
+import com.github.starcats.blinkydome.util.SCAbstractFixture;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
@@ -18,7 +19,7 @@ public class FibonocciPetalsModel extends LXModel {
   // Coordinate system scale factor to get approximately in sync with other models
   private static final float ALPHA = 10;
 
-  public static class Petal implements LXFixture {
+  public static class Petal extends SCAbstractFixture {
     public final LXVector point;
 
     private LXFixture cwSide;
@@ -26,8 +27,9 @@ public class FibonocciPetalsModel extends LXModel {
     private List<LXPoint> allPoints;
 
     private Petal(double thetaRad, int numRotations) {
+
       // Set magnitude of vector based on numRotations
-      point = new LXVector(ALPHA * (numRotations + 1), 0, 0);
+      point = new LXVector(ALPHA * (numRotations + 1), 0, (numRotations - 7) * 10);
 
       // and add rotation
       point.rotate((float)thetaRad);
@@ -156,7 +158,8 @@ public class FibonocciPetalsModel extends LXModel {
     for (int i=0; i<numLedsThere; i++) {
       therePts.add(new LXPoint(
           bezierPoint(origin.x, originControl.x, tip.x + tipControlThere.x, tip.x, (float)i / ((float)numLedsThere)),
-          bezierPoint(origin.y, originControl.y, tip.y + tipControlThere.y, tip.y, (float)i / ((float)numLedsThere))
+          bezierPoint(origin.y, originControl.y, tip.y + tipControlThere.y, tip.y, (float)i / ((float)numLedsThere)),
+          petal.point.z
       ));
     }
 
@@ -164,7 +167,8 @@ public class FibonocciPetalsModel extends LXModel {
     for (int i=0; i<numLedsBack; i++) {
       backPts.add(new LXPoint(
           bezierPoint(tip.x, tip.x + tipControlBack.x, originControl.x, origin.x, (float)i / ((float)numLedsThere)),
-          bezierPoint(tip.y, tip.y + tipControlBack.y, originControl.y, origin.y, (float)i / ((float)numLedsThere))
+          bezierPoint(tip.y, tip.y + tipControlBack.y, originControl.y, origin.y, (float)i / ((float)numLedsThere)),
+          petal.point.z
       ));
     }
 
@@ -177,6 +181,7 @@ public class FibonocciPetalsModel extends LXModel {
     List<LXPoint> allPetalPoints = new ArrayList<>(therePts);
     allPetalPoints.addAll(backPts);
     petal.allPoints = allPetalPoints;
+    petal.initCentroid();
 
     allFixtures.add(there);
     allFixtures.add(back);

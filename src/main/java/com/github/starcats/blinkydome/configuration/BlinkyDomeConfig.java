@@ -150,7 +150,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
     if (channelNum == 3) {
       // Select default mask2
-      channel.goIndex(2);
+      channel.goIndex(3);
     }
   }
 
