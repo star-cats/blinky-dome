@@ -3,6 +3,7 @@ package com.github.starcats.blinkydome.configuration;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
 import com.github.starcats.blinkydome.model.BlinkyDome;
+import com.github.starcats.blinkydome.pattern.CombJellyPattern;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
 import com.github.starcats.blinkydome.pattern.PerlinBreathing;
