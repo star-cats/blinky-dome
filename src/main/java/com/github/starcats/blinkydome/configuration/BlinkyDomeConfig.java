@@ -253,11 +253,11 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
             new LXVector(0, 1, 0),
             PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
         ),
-        new FFTBandPattern(lx, model, starCatFFT),
+        fixtureColorBarsPattern,
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it LX default palette (controlled by Studio's palette UI)
-        new BlinkyDomeFixtureSelectorPattern(lx, model),
-        fixtureColorBarsPattern
+        new FFTBandPattern(lx, model, starCatFFT),
+        new BlinkyDomeFixtureSelectorPattern(lx, model)
     );
   }
 

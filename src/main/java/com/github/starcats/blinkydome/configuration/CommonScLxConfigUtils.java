@@ -74,7 +74,11 @@ public class CommonScLxConfigUtils {
      * {@link com.github.starcats.blinkydome.color.ColorMappingSource} to get out time-varying colors.
      */
     public static VariableLFO makeColorMappingLFO() {
-      VariableLFO colorMappingSourceLfo = new VariableLFO("Color Mapping LFO");
+      VariableLFO colorMappingSourceLfo = new VariableLFO("ColorMappingSource LFO");
+      colorMappingSourceLfo.setDescription("LFO to be used as a modulation against some ColorMappingSource input");
+
+      // TODO: Should bundle this with the default ColorMappingSource and just expose it as a straight color param
+
       colorMappingSourceLfo.running.setValue(true);
       colorMappingSourceLfo.period.setValue(3000);
       return colorMappingSourceLfo;
