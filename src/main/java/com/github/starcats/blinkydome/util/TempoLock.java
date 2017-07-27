@@ -23,20 +23,20 @@ public class TempoLock {
     enableLock.addListener(parameter -> {
       if (!enableLock.getValueb()) return;
 
-      modulator.period.setValue(tempo.getPeriodMs().getValue());
+      modulator.period.setValue(tempo.period.getValue());
     });
 
     // When the tempo period changes, propagate to the modulator's period
-    tempo.getPeriodMs().addListener(parameter -> {
+    tempo.period.addListener(parameter -> {
       if (!enableLock.getValueb()) return;
 
       modulator.period.setValue(parameter.getValue());
     });
 
     // Reset the modulator everytime the tempo changes
-    tempo.addListener(new Tempo.BaseTempoListener() {
+    tempo.addListener(new Tempo.AbstractListener() {
       @Override
-      public void onBeat(Tempo tempo) {
+      public void onBeat(Tempo tempo, int beat) {
         if (!enableLock.getValueb()) return;
 
         modulator.setBasis(1); // will rollover fine, but set to 1 to trigger modulator loop()
