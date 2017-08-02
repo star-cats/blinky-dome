@@ -25,11 +25,11 @@ LX and P3LX source will now be available in `lib/lx/git_submodule` and `lib/p3lx
  configured to build them from there, and their source files should be browsable from your IDE with no external
  project setup.
 
-**DEPENDENCY VERSION WARNING**: Since LX and P3LX don't follow any release/publishing process, we just rely on their
-latest HEAD checkouts (they don't do any git tags or release branches).  If they change their API, we need to adjust.
-If you run into weird LX or P3LX compile errors, try checking out a previous version of them.  As of June 18 2017, try:
-  - lx: `git checkout ff98f6d54`
-  - p3lx: `git checkout 9096d47b7`
+**DEPENDENCY VERSION WARNING**: Since LX and P3LX don't follow any semver release/publishing process, we just rely on
+specific checkouts specified in the `.gitmodules` file and build from source.  If your `git status` says your submodules
+are out of date and you can't get back in sync, just `rm -r lib/**/git_submodule` then `git submodule update` to
+re-clone the appropriate revision.
+
 
 # Run / Deploy Instructions
 
