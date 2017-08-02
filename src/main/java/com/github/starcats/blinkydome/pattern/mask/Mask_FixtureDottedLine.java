@@ -9,6 +9,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXCompoundModulation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +31,20 @@ public class Mask_FixtureDottedLine extends LXPattern {
   /** What percentage of a segment is considered on */
   public final CompoundParameter onLength;
 
+  public final CompoundParameter position;
+
 
   private List<LXFixture> fixtures;
-  private VariableLFO position;
+  private VariableLFO positionLFO;
 
   public Mask_FixtureDottedLine(LX lx, List<? extends LXFixture> fixtures) {
     super(lx);
 
     this.fixtures = new ArrayList<>(fixtures);
+
+    position = new CompoundParameter("pos", 0, 0, 1)
+        .setDescription("'Start' segment position");
+    addParameter(position);
 
     periodMs = (CompoundParameter) new CompoundParameter("period", 1000, 100, 10000)
         .setDescription("Duration a segment takes to travel the length of a fixture")
@@ -54,8 +61,8 @@ public class Mask_FixtureDottedLine extends LXPattern {
         .setDescription("What percentage of a segment is 'on'");
     addParameter(onLength);
 
-    position = (VariableLFO) new VariableLFO(
-        "position",
+    positionLFO = (VariableLFO) new VariableLFO(
+        "positionLFO",
         new LXWaveshape[] {
             LXWaveshape.UP,
             LXWaveshape.SIN,
@@ -64,9 +71,12 @@ public class Mask_FixtureDottedLine extends LXPattern {
         },
         periodMs
     ).setDescription("Position modulator of segments");
-    position.waveshape.setValue(LXWaveshape.UP);
-    position.start();
-    this.modulation.addModulator(position);
+    positionLFO.waveshape.setValue(LXWaveshape.UP);
+    LXCompoundModulation posModulation = new LXCompoundModulation(positionLFO, position);
+    posModulation.range.setValue(1);
+    this.modulation.addModulation(posModulation);
+    positionLFO.start();
+    this.modulation.addModulator(positionLFO);
   }
 
   @Override
@@ -80,7 +90,7 @@ public class Mask_FixtureDottedLine extends LXPattern {
 
       double ptSpacing = 1. / (pts.size() - 1);
 
-      // Current segment: init to seed position
+      // Current segment: init to seed positionLFO
       double segmentStart = position.getValue();
       double initialPos = position.getValue();
 
