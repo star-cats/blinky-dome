@@ -45,7 +45,7 @@ public class CombJellyPattern extends LXPattern {
     this.baseColor = baseColorPalette;
     this.fixtures = fixtures;
 
-    baseBrightnessParam = new CompoundParameter("base b", 0, 0, 100);
+    baseBrightnessParam = new CompoundParameter("base b", 0, 1, 100);
     baseBrightnessParam.setDescription("Base Brightness: Sets the brightness (black) of the base hue");
     addParameter(baseBrightnessParam);
 
