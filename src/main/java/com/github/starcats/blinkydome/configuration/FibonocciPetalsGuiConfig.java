@@ -33,6 +33,11 @@ public class FibonocciPetalsGuiConfig extends FibonocciPetalsConfig implements S
   }
 
   @Override
+  public void initUI(LXStudio lx, LXStudio.UI ui) {
+    // no-op
+  }
+
+  @Override
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // Add custom gradient selector
     UI2dScrollContext container = ui.leftPane.global;

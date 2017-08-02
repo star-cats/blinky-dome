@@ -76,6 +76,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
     });
 
     minimBeatTriggers = new CommonScLxConfigUtils.MinimBeatTriggers(lx, starCatFFT);
+    lx.engine.modulation.addModulator(minimBeatTriggers);
   }
 
   @Override

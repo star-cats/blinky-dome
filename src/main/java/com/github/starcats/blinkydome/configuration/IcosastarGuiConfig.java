@@ -16,6 +16,11 @@ public class IcosastarGuiConfig extends IcosastarConfig implements StarcatsLxGui
   }
 
   @Override
+  public void initUI(LXStudio lx, LXStudio.UI ui) {
+    // no-op
+  }
+
+  @Override
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // Add custom gradient selector
     UI2dScrollContext container = ui.leftPane.global;

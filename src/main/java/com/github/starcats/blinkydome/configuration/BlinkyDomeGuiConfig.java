@@ -4,6 +4,7 @@ import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
 import com.github.starcats.blinkydome.ui.RollingBouncingDiscAxisViz;
 import com.github.starcats.blinkydome.ui.UIColorMappingSource;
+import com.github.starcats.blinkydome.ui.UIMinimModulator;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.p3lx.LXStudio;
@@ -17,6 +18,15 @@ public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxG
 
   public BlinkyDomeGuiConfig(PApplet p) {
     super(p);
+  }
+
+  @Override
+  public void initUI(LXStudio lx, LXStudio.UI ui) {
+    // Add modulator UI's
+    ui.rightPane.registerModulatorUI(
+        CommonScLxConfigUtils.MinimBeatTriggers.class,
+        UIMinimModulator::new
+    );
   }
 
   @Override
