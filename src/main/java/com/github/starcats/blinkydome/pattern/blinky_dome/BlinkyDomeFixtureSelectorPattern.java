@@ -61,7 +61,9 @@ public class BlinkyDomeFixtureSelectorPattern
       return model.getTrianglesByIndex(key);
 
     } else if (fixtureFamily == BlinkyDomeFixtureType.TRIANGLE) {
-      return Collections.singletonList(model.allTriangles.get(key));
+      BlinkyDome.TriangleFixture triangle = model.allTriangles.get(key);
+      System.out.println("Selected triangle: " + triangle.toString());
+      return Collections.singletonList(triangle);
 
     } else {
       throw new RuntimeException("Unsupported fixture type: " + fixtureFamily);

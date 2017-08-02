@@ -96,9 +96,38 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
       this.theta = (float)Math.acos(z / r);
       this.phi = (float)Math.atan2(y, x);
 
-      this.ppGroup = row.getInt("pp_group");
-      this.ppStrip = row.getInt("pp_strip");
-      this.ppIndex = row.getInt("pp_index");
+//      this.ppGroup = row.getInt("pp_group");
+//      this.ppStrip = row.getInt("pp_strip");
+//      this.ppIndex = row.getInt("pp_index");
+
+
+      // 0 105 210 315
+
+      if (triangleIndex == 1 && triangleSubindex == 9) {
+        this.ppGroup = 0;
+        this.ppStrip = 1;
+        this.ppIndex = 0 + ledIndex;
+
+      } else if (triangleIndex == 1 && triangleSubindex == 5) {
+        this.ppGroup = 0;
+        this.ppStrip = 1;
+        this.ppIndex = 105 + ledIndex;
+
+      } else if (triangleIndex == 0 && triangleSubindex == 1) {
+        this.ppGroup = 0;
+        this.ppStrip = 1;
+        this.ppIndex = 210 + ledIndex;
+
+      } else if (triangleIndex == 0 && triangleSubindex == 9) {
+        this.ppGroup = 0;
+        this.ppStrip = 1;
+        this.ppIndex = 315 + ledIndex;
+
+      } else {
+        this.ppGroup = -1;
+        this.ppStrip = -1;
+        this.ppIndex = -1;
+      }
     }
 
     @Override
@@ -146,6 +175,10 @@ public class BlinkyDome extends LXModel implements PixelPushableModel {
 
       leds.forEach(this::addPointFast);
       this.initCentroid();
+    }
+
+    public String toString() {
+      return "[Triangle index:" + index + " subindex:" + subindex + "]";
     }
   }
 
