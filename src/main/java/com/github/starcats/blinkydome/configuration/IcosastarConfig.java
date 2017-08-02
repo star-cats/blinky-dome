@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.configuration;
 
-import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
+import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
 import com.github.starcats.blinkydome.model.Icosastar;
 import com.github.starcats.blinkydome.model.util.ConnectedVectorStripModel;
 import com.github.starcats.blinkydome.pattern.*;
@@ -28,7 +28,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
   // Components
   private StarCatFFT starCatFFT;
-  protected ImageColorSamplerClan colorSampler;
+  protected ImageColorSamplerGroup colorSampler;
 
   // Modulators
   private BandGate kickModulator;
@@ -53,7 +53,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
   @Override
   protected void initComponents(PApplet p, LX lx, Icosastar model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
-    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p);
+    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx);
   }
 
   @Override

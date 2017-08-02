@@ -3,7 +3,7 @@ package com.github.starcats.blinkydome.configuration;
 import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
 import com.github.starcats.blinkydome.ui.RollingBouncingDiscAxisViz;
-import com.github.starcats.blinkydome.ui.UIGradientPicker;
+import com.github.starcats.blinkydome.ui.UIColorMappingSource;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.p3lx.LXStudio;
@@ -23,9 +23,9 @@ public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxG
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // Add custom gradient selector
     UI2dScrollContext container = ui.leftPane.global;
-    UIGradientPicker uiGradientPicker = new UIGradientPicker(
+    UIColorMappingSource uiColorMappingSource = new UIColorMappingSource(
         ui, colorSampler, 0, 0, container.getContentWidth());
-    uiGradientPicker.addToContainer(container);
+    uiColorMappingSource.addToContainer(container);
 
 
     // Enable audio support

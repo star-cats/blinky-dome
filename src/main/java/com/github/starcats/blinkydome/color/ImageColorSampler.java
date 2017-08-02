@@ -1,6 +1,9 @@
 package com.github.starcats.blinkydome.color;
 
+import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import processing.core.PApplet;
@@ -17,9 +20,11 @@ import processing.core.PImage;
  * Exposes .patternSelect, which is a DiscreteParameter of {@link PatternSampler} instances.  Use the parameter to
  * select an appropriate pattern, then use {@link PatternSampler#getColor} to extract a color from the pattern image.
  */
-public class ImageColorSampler implements ColorMappingSourceGroup {
+public class ImageColorSampler extends LXComponent implements ColorMappingSourceFamily {
   private static final int GRADIENT_HEIGHT = 10; // normal screenshot
   //private static final int GRADIENT_HEIGHT = 20; // retina screenshot (2x resolution)
+
+  private final BooleanParameter randomSourceTrigger;
 
   private final PatternSampler[] samplers;
   private String label;
@@ -35,13 +40,25 @@ public class ImageColorSampler implements ColorMappingSourceGroup {
    */
   public final PImage patternMap;
 
-  public ImageColorSampler(PApplet p) {
-    this(p, "patterns.png");
+  public ImageColorSampler(PApplet p, LX lx) {
+    this(p, lx, "patterns.png");
   }
 
-  public ImageColorSampler(PApplet p, String filepath) {
+  public ImageColorSampler(PApplet p, LX lx, String filepath) {
+    super(lx, "ImageColorSampler:" + filepath);
     label = filepath;
     patternMap = p.loadImage(filepath);
+
+    randomSourceTrigger = (BooleanParameter) new BooleanParameter("shuffle", false)
+        .setMode(BooleanParameter.Mode.MOMENTARY)
+        .setDescription("Trigger a random source")
+        .addListener(param -> {
+          if (param.getValue() == 0) return;
+
+          this.setRandomSource();
+        });
+    addParameter(randomSourceTrigger);
+
 
     int numPatterns = patternMap.height / GRADIENT_HEIGHT;
 
@@ -87,7 +104,11 @@ public class ImageColorSampler implements ColorMappingSourceGroup {
   }
 
   @Override
-  public void setRandomSource() {
+  public BooleanParameter getRandomSourceTrigger() {
+    return randomSourceTrigger;
+  }
+
+  protected void setRandomSource() {
     patternSelect.setValue(
         patternSelect.getMinValue() +
         (int)(Math.random() * patternSelect.getRange())

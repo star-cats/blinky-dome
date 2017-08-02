@@ -1,7 +1,7 @@
 package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.model.Icosastar;
-import com.github.starcats.blinkydome.ui.UIGradientPicker;
+import com.github.starcats.blinkydome.ui.UIColorMappingSource;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.UI2dScrollContext;
 import processing.core.PApplet;
@@ -19,9 +19,9 @@ public class IcosastarGuiConfig extends IcosastarConfig implements StarcatsLxGui
   public void onUIReady(LXStudio lx, LXStudio.UI ui) {
     // Add custom gradient selector
     UI2dScrollContext container = ui.leftPane.global;
-    UIGradientPicker uiGradientPicker = new UIGradientPicker(
+    UIColorMappingSource uiColorMappingSource = new UIColorMappingSource(
         ui, colorSampler, 0, 0, container.getContentWidth());
-    uiGradientPicker.addToContainer(container);
+    uiColorMappingSource.addToContainer(container);
 
 
     // Enable audio support

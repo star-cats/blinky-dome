@@ -1,8 +1,7 @@
 package com.github.starcats.blinkydome.ui;
 
 import com.github.starcats.blinkydome.color.ImageColorSampler;
-import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
-import heronarts.lx.parameter.BooleanParameter;
+import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.p3lx.ui.UI;
 import heronarts.p3lx.ui.UI2dContainer;
@@ -13,9 +12,12 @@ import processing.core.PGraphics;
 import processing.event.MouseEvent;
 
 /**
- * Gradient picker UI component.  Provides a UI to control a {@link ImageColorSampler}
+ * UI to select a {@link com.github.starcats.blinkydome.color.ColorMappingSource} from a
+ * {@link com.github.starcats.blinkydome.color.ColorMappingSourceClan}
+ *
+ * Currently chooses between gradients and patterns.
  */
-public class UIGradientPicker extends UICollapsibleSection {
+public class UIColorMappingSource extends UICollapsibleSection {
 
   private static final float TOGGLES_W = 20;
   private static final float GROUP_SELECT_H = 15;
@@ -26,42 +28,25 @@ public class UIGradientPicker extends UICollapsibleSection {
   private final ImageColorSamplerUI[] imageColorSamplerUIs;
   private ImageColorSamplerUI currentSamplerUI;
 
-  public UIGradientPicker(UI lxUI, ImageColorSamplerClan imageSamplerClan, float x, float y, float w) {
+  public UIColorMappingSource(UI lxUI, ImageColorSamplerGroup imageSamplerGroup, float x, float y, float w) {
     super(
         lxUI, x, y, w,
         30 + GRADIENT_SUPPLIER_UIS_ROW_Y
     );
-    setTitle("GRADIENT PICKER");
+    setTitle("COLOR MAPPING SRC");
 
-    groupSelector = imageSamplerClan.getGroupSelect();
+    groupSelector = imageSamplerGroup.getFamilySelect();
 
 
     // Create UI elements:
 
     // First row: shuffle buttons
-    BooleanParameter sourceRandomizerParam = new BooleanParameter("shuffle")
-        .setDescription("Select a random source from the currently-selected group")
-        .setMode(BooleanParameter.Mode.MOMENTARY);
-    sourceRandomizerParam.addListener(parameter -> {
-      if (((BooleanParameter) parameter).getValueb()) {
-        this.setRandomGradient();
-      }
-    });
     new UISwitch(0, 0)
-        .setParameter(sourceRandomizerParam)
+        .setParameter(imageSamplerGroup.getRandomSourceInFamilyTrigger())
         .addToContainer(this);
 
-
-    BooleanParameter groupRandomizerParam = new BooleanParameter("full shuffle")
-        .setDescription("Select a random source across all groups")
-        .setMode(BooleanParameter.Mode.MOMENTARY);
-    groupRandomizerParam.addListener(parameter -> {
-      if (((BooleanParameter) parameter).getValueb()) {
-        imageSamplerClan.setRandomGroupAndSource();
-      }
-    });
     new UISwitch(UISwitch.WIDTH, 0)
-        .setParameter(groupRandomizerParam)
+        .setParameter(imageSamplerGroup.getRandomSourceTrigger())
         .addToContainer(this);
 
 
@@ -75,7 +60,7 @@ public class UIGradientPicker extends UICollapsibleSection {
 
     // Third row: add all the sampler UI's (but hide inactive ones)
 
-    ImageColorSampler[] imageSamplers = imageSamplerClan.getGroups();
+    ImageColorSampler[] imageSamplers = imageSamplerGroup.getFamilies();
     this.imageColorSamplerUIs = new ImageColorSamplerUI[imageSamplers.length];
     for (int i=0; i<imageSamplers.length; i++) {
       imageColorSamplerUIs[i] =  new ImageColorSamplerUI(
@@ -155,9 +140,5 @@ public class UIGradientPicker extends UICollapsibleSection {
         GRADIENT_SUPPLIER_UIS_ROW_Y +
         currentSamplerUI.getHeight()
     );
-  }
-
-  public void setRandomGradient() {
-    currentSamplerUI.sourceGroup.setRandomSource();
   }
 }

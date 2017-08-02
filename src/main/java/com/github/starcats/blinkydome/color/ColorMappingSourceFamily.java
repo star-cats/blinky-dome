@@ -1,5 +1,6 @@
 package com.github.starcats.blinkydome.color;
 
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 
@@ -9,7 +10,7 @@ import heronarts.lx.parameter.LXNormalizedParameter;
  * For example, an {@link ImageColorSampler} is a {@link ColorMappingSource} that groups all the sources in a particular
  * sample-able image (eg gradients in gradients.png, patterns in patterns.png).
  */
-public interface ColorMappingSourceGroup extends ColorMappingSource {
+public interface ColorMappingSourceFamily extends ColorMappingSource {
 
   /**
    * @return a DiscreteParameter where the Objects are {@link ColorMappingSource} entities
@@ -19,7 +20,7 @@ public interface ColorMappingSourceGroup extends ColorMappingSource {
   /**
    * Changes the sourceSelect to a random source
    */
-  void setRandomSource();
+  BooleanParameter getRandomSourceTrigger();
 
   /**
    * Returns how many sources this group contains

@@ -3,6 +3,7 @@ package com.github.starcats.blinkydome.pattern;
 import com.github.starcats.blinkydome.color.ColorMappingSourceClan;
 import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer;
 import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseExplorer;
+import com.github.starcats.blinkydome.util.BooleanParameterImpulse;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
@@ -106,6 +107,7 @@ public class PerlinBreathing extends LXPattern {
 
   private final PerlinNoiseExplorer perlinNoiseField;
   private final ColorMappingSourceClan colorSource;
+  private final BooleanParameterImpulse colorSourceRandomSourceTrigger;
   private final SyncedVariableLFO positionLFO;
   private final SyncedVariableLFO speedLFO;
   private final List<? extends LXPoint> points;
@@ -219,6 +221,10 @@ public class PerlinBreathing extends LXPattern {
     positionLfoValueProvider = new double[] {0.};
 
     this.colorSource = colorSource;
+    this.colorSourceRandomSourceTrigger = BooleanParameterImpulse.makeImpulseFor(
+        colorSource.getRandomSourceTrigger(), this, "trigger random source"
+    );
+
     this.colorizer = new ColorMappingSourceColorizer(perlinNoiseField, colorSource) {
       @Override
       public int getColor(LXPoint point) {
@@ -281,7 +287,7 @@ public class PerlinBreathing extends LXPattern {
     }
 
     if (positionLFO.loop() && Math.random() < rotateColorProbability.getValue()) {
-      colorSource.setRandomGroupAndSource();
+      colorSourceRandomSourceTrigger.trigger();
     }
 
   }

@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.pattern.fibonocci_petals;
 
-import com.github.starcats.blinkydome.color.ColorMappingSourceGroup;
+import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
 import com.github.starcats.blinkydome.model.FibonocciPetalsModel;
 import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer;
 import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseExplorer;
@@ -123,7 +123,7 @@ public class PerlinPetalsPattern extends LXPattern {
   }
 
 
-  public PerlinPetalsPattern(LX lx, PApplet p, StarCatFFT fft, ColorMappingSourceGroup colorMappingSourceGroup) {
+  public PerlinPetalsPattern(LX lx, PApplet p, StarCatFFT fft, ColorMappingSourceFamily colorMappingSourceFamily) {
     super(lx);
 
     this.beat = fft.beat;
@@ -153,8 +153,8 @@ public class PerlinPetalsPattern extends LXPattern {
     allColorizers.put("rotatingHue", rotatingHueColorizer);
     addParameter(rotatingHueColorizer.huePeriodMs);
 
-    // Colorizer: colorMappingSourceGroup
-    ColorMappingSourceColorizer gradientColorizer = new ColorMappingSourceColorizer(hueNoise, colorMappingSourceGroup) {
+    // Colorizer: colorMappingSourceFamily
+    ColorMappingSourceColorizer gradientColorizer = new ColorMappingSourceColorizer(hueNoise, colorMappingSourceFamily) {
       @Override
       public ColorMappingSourceColorizer activate() {
         hueNoise.noiseSpeed.setValue(0.020);

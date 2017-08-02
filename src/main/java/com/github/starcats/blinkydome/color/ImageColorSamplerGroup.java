@@ -1,26 +1,53 @@
 package com.github.starcats.blinkydome.color;
 
+import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 
 /**
- * A {@link ColorMappingSourceClan} of {@link ImageColorSampler}'s
+ * A grouping or {@link ColorMappingSourceClan} of {@link ImageColorSampler}'s
  */
-public class ImageColorSamplerClan implements ColorMappingSourceClan {
+public class ImageColorSamplerGroup extends LXComponent implements ColorMappingSourceClan {
 
   /** Selects which {@link ImageColorSampler} from the colorSamplers passed to constructor is active */
   public final DiscreteParameter samplerSelector;
+
+  private final BooleanParameter shuffle = new BooleanParameter("shuffle")
+      .setDescription("Select a random source from the currently-selected sampler")
+      .setMode(BooleanParameter.Mode.MOMENTARY);
+
+  private final BooleanParameter fullShuffle = new BooleanParameter("full shuffle")
+      .setDescription("Select a random source across all groups")
+      .setMode(BooleanParameter.Mode.MOMENTARY);
 
   private final ImageColorSampler[] colorSamplers;
 
   private final int totalNumSources;
   private final double[] weightsBySourceGroup;
 
-  public ImageColorSamplerClan(ImageColorSampler[] colorSamplers) {
+  public ImageColorSamplerGroup(LX lx, String label, ImageColorSampler[] colorSamplers) {
+    super(lx, label);
     this.colorSamplers = colorSamplers;
 
     this.samplerSelector = new DiscreteParameter("samplers", colorSamplers);
     this.samplerSelector.setDescription("Select which ImageColorSampler to use");
+    addParameter(this.samplerSelector);
+
+    this.shuffle.addListener(param -> {
+      if (param.getValue() == 0) return;
+
+      setRandomSourceInFamily();
+    });
+    addParameter(this.shuffle);
+
+    this.fullShuffle.addListener(param -> {
+      if (param.getValue() == 0) return;
+
+      setRandomFamilyAndSource();
+    });
+    addParameter(this.fullShuffle);
 
 
     // Generate weightsBySourceGroup, which will be used to evenly chose a random sourceGroup according to how many
@@ -44,12 +71,12 @@ public class ImageColorSamplerClan implements ColorMappingSourceClan {
   }
 
   @Override
-  public ImageColorSampler[] getGroups() {
+  public ImageColorSampler[] getFamilies() {
     return colorSamplers;
   }
 
   @Override
-  public DiscreteParameter getGroupSelect() {
+  public DiscreteParameter getFamilySelect() {
     return samplerSelector;
   }
 
@@ -69,12 +96,16 @@ public class ImageColorSamplerClan implements ColorMappingSourceClan {
   }
 
   @Override
-  public void setRandomSource() {
-    this.setRandomGroupAndSource();
+  public BooleanParameter getRandomSourceTrigger() {
+    return fullShuffle;
   }
 
   @Override
-  public void setRandomGroupAndSource() {
+  public BooleanParameter getRandomSourceInFamilyTrigger() {
+    return shuffle;
+  }
+
+  private void setRandomFamilyAndSource() {
     double rand = Math.random();
     int i=0;
     for (; i < weightsBySourceGroup.length - 1 /* stop 1 early so final incr lands on last */; i++) {
@@ -83,11 +114,10 @@ public class ImageColorSamplerClan implements ColorMappingSourceClan {
       }
     }
     samplerSelector.setValue(i);
-    setRandomSourceInGroup();
+    setRandomSourceInFamily();
   }
 
-  @Override
-  public void setRandomSourceInGroup() {
+  private void setRandomSourceInFamily() {
     ((ImageColorSampler) samplerSelector.getObject()).setRandomSource();
   }
 

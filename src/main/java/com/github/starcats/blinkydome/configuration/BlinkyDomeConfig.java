@@ -1,7 +1,7 @@
 package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.color.ImageColorSampler;
-import com.github.starcats.blinkydome.color.ImageColorSamplerClan;
+import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
 import com.github.starcats.blinkydome.model.BlinkyDome;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -46,7 +46,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
   // Components
   private StarCatFFT starCatFFT;
-  protected ImageColorSamplerClan colorSampler;
+  protected ImageColorSamplerGroup colorSampler;
   protected ImageColorSampler gradientColorSource;
   protected ImageColorSampler patternColorSource;
   protected CommonScLxConfigUtils.MinimBeatTriggers minimBeatTriggers;
@@ -67,11 +67,10 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   @Override
   protected void initComponents(PApplet p, LX lx, BlinkyDome model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
-    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p);
 
-    gradientColorSource = new ImageColorSampler(p, "gradients.png");
-    patternColorSource = new ImageColorSampler(p, "patterns.png");
-    colorSampler = new ImageColorSamplerClan(new ImageColorSampler[] {
+    gradientColorSource = new ImageColorSampler(p, lx, "gradients.png");
+    patternColorSource = new ImageColorSampler(p, lx, "patterns.png");
+    colorSampler = new ImageColorSamplerGroup(lx, "color samplers", new ImageColorSampler[] {
         gradientColorSource,
         patternColorSource
     });

@@ -1,42 +1,45 @@
 package com.github.starcats.blinkydome.color;
 
+import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 
 /**
- * Represents some a higher-level grouping of {@link ColorMappingSourceGroup}'s.
+ * Represents some a higher-level grouping of {@link ColorMappingSourceFamily}'s.
  *
- * For example, several {@link ImageColorSampler}'s are SourceGroups that could be grouped into a SourceClan.
+ * For example, several {@link ImageColorSampler}'s are SourceFamilies that could be grouped into a SourceClan.
  */
-public interface ColorMappingSourceClan extends ColorMappingSourceGroup {
+public interface ColorMappingSourceClan extends ColorMappingSourceFamily {
 
   /**
-   * @return a DiscreteParameter where the Objects are {@link ColorMappingSourceGroup} entities
+   * @return a DiscreteParameter where the Objects are {@link ColorMappingSourceFamily} entities
    */
-  DiscreteParameter getGroupSelect();
+  DiscreteParameter getFamilySelect();
 
   /**
-   * @return List of all the groups in the clan
+   * @return List of all the families in the clan
    */
-  ColorMappingSourceGroup[] getGroups();
+  ColorMappingSourceFamily[] getFamilies();
 
   /**
-   * Picks a random source group and a random source in that group.
+   * @return Trigger that sets a random source across ALL families
+   *   (ie picks a random family AND a random source in that family.
    */
-  void setRandomGroupAndSource();
+  @Override
+  BooleanParameter getRandomSourceTrigger();
 
-  /** Picks a random source in the current group */
-  void setRandomSourceInGroup();
+  /** @return Trigger that sets a random source in the current family */
+  BooleanParameter getRandomSourceInFamilyTrigger();
 
   /**
-   * Returns total number of sources across all groups
+   * Returns total number of sources across all families
    */
   @Override
   int getNumSources();
 
   /**
    * Shortcut to call {@link ColorMappingSource#getColor} against the currently-selected Source in
-   * the currently selected SourceGroup
+   * the currently selected family
    *
    * @param normalizedValue Value from 0-1
    * @return A color through some mapping
@@ -46,7 +49,7 @@ public interface ColorMappingSourceClan extends ColorMappingSourceGroup {
 
   /**
    * Shortcut to call {@link ColorMappingSource#getColor} against the currently-selected Source in
-   * the currently selected SourceGroup
+   * the currently selected family
    *
    * @param normalizedParameter A parameter that can provide a normalized value
    * @return A color through some mapping
