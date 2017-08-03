@@ -9,6 +9,7 @@ import com.github.starcats.blinkydome.util.SCTriggerable;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import ddf.minim.analysis.BeatDetect;
 import heronarts.lx.LX;
+import heronarts.lx.LXComponent;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.modulator.LXModulator;
@@ -132,7 +133,7 @@ public class CommonScLxConfigUtils {
     }
   }
 
-  public static class MinimBeatTriggers implements LXTriggerSource {
+  public static class MinimBeatTriggers extends LXComponent implements LXTriggerSource {
     public final BooleanParameter kickTrigger = new BooleanParameter("kick")
         .setMode(BooleanParameter.Mode.MOMENTARY)
         .setDescription("Triggers on minim-detected kicks");
@@ -144,7 +145,12 @@ public class CommonScLxConfigUtils {
     }
 
     public MinimBeatTriggers(LX lx, BeatDetect minim) {
+      super(lx);
+
       this.lx = lx;
+
+      this.addParameter(kickTrigger);
+
       lx.engine.addLoopTask(deltaMs -> {
         kickTrigger.setValue(minim.isKick());
 
