@@ -52,6 +52,7 @@ public class AppGui extends PApplet {
       @Override
       public void initialize(LXStudio lx, LXStudio.UI ui) {
         scConfig.init(lx);
+        scConfig.initUI(lx, ui);
 
 
         // Config default palette to do interesting things

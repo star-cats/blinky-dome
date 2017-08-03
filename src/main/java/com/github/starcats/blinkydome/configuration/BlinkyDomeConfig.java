@@ -3,6 +3,7 @@ package com.github.starcats.blinkydome.configuration;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
 import com.github.starcats.blinkydome.model.BlinkyDome;
+import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
 import com.github.starcats.blinkydome.pattern.PerlinBreathing;
@@ -49,7 +50,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   protected ImageColorSamplerGroup colorSampler;
   protected ImageColorSampler gradientColorSource;
   protected ImageColorSampler patternColorSource;
-  protected CommonScLxConfigUtils.MinimBeatTriggers minimBeatTriggers;
+  protected MinimBeatTriggers minimBeatTriggers;
 
   // Modulators
   private BandGate kickModulator;
@@ -75,7 +76,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
         patternColorSource
     });
 
-    minimBeatTriggers = new CommonScLxConfigUtils.MinimBeatTriggers(lx, starCatFFT);
+    minimBeatTriggers = new MinimBeatTriggers(lx, starCatFFT);
+    lx.engine.modulation.addModulator(minimBeatTriggers);
   }
 
   @Override
