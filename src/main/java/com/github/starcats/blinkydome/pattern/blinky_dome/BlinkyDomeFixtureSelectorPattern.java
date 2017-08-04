@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.pattern.blinky_dome;
 
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyTriangle;
 import com.github.starcats.blinkydome.pattern.AbstractFixtureSelectorPattern;
 import heronarts.lx.LX;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * Debugging pattern to select specific triangles (or parts of triangles) in blinky-dome
  */
 public class BlinkyDomeFixtureSelectorPattern
-    extends AbstractFixtureSelectorPattern<BlinkyDome, BlinkyDomeFixtureSelectorPattern.BlinkyDomeFixtureType>
+    extends AbstractFixtureSelectorPattern<BlinkyModel, BlinkyDomeFixtureSelectorPattern.BlinkyDomeFixtureType>
 {
   public final EnumParameter<BlinkyDomeSubfixtureType> subfixtureParam;
 
@@ -35,7 +35,7 @@ public class BlinkyDomeFixtureSelectorPattern
     Z
   }
 
-  public BlinkyDomeFixtureSelectorPattern(LX lx, BlinkyDome model) {
+  public BlinkyDomeFixtureSelectorPattern(LX lx, BlinkyModel model) {
     super(lx, model);
 
     subfixtureParam = new EnumParameter<>("Triangle leg", BlinkyDomeSubfixtureType.ALL)

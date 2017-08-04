@@ -86,7 +86,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
 
 
-    // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
+    // PerlinNoisePattern: apply defaults appropriate for BlinkyDomeModel mapping size
     // --------------------
     PerlinBreathing perlinBreathing = new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
         new LXVector(0, 0, -1),

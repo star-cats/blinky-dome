@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.configuration;
 
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
 import com.github.starcats.blinkydome.ui.RollingBouncingDiscAxisViz;
@@ -14,9 +14,9 @@ import heronarts.p3lx.ui.UI2dScrollContext;
 import processing.core.PApplet;
 
 /**
- * LXStudio-based (GUI, not headless) configuration for the {@link BlinkyDome} model
+ * LXStudio-based (GUI, not headless) configuration for the {@link BlinkyModel} model
  */
-public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxGuiConfig<BlinkyDome> {
+public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxGuiConfig<BlinkyModel> {
 
   private P3LX p3lx;
   private LXStudio.UI ui;
