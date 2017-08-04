@@ -1,13 +1,14 @@
 package com.github.starcats.blinkydome.pattern.blinky_dome;
 
-import com.github.starcats.blinkydome.model.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyTriangle;
 import com.github.starcats.blinkydome.pattern.AbstractFixtureSelectorPattern;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.parameter.EnumParameter;
 
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +19,7 @@ public class BlinkyDomeFixtureSelectorPattern
     extends AbstractFixtureSelectorPattern<BlinkyDome, BlinkyDomeFixtureSelectorPattern.BlinkyDomeFixtureType>
 {
   public enum BlinkyDomeFixtureType {
-    LAYER,
-    INDEX,
+    GROUP,
     TRIANGLE
   }
 
@@ -29,18 +29,16 @@ public class BlinkyDomeFixtureSelectorPattern
 
   @Override
   protected EnumParameter<BlinkyDomeFixtureType> makeFixtureFamilyParameter() {
-    return new EnumParameter<>("class", BlinkyDomeFixtureType.LAYER);
+    return new EnumParameter<>("class", BlinkyDomeFixtureType.GROUP);
   }
 
   @Override
   protected Object[] getFixtureKeysForFamily(BlinkyDomeFixtureType fixtureFamily) {
     Set<Integer> keys;
-    if (fixtureFamily == BlinkyDomeFixtureType.LAYER) {
-      keys = model.getLayerKeys();
-    } else if (fixtureFamily == BlinkyDomeFixtureType.INDEX) {
-      keys = model.getTriangleIndexKeys();
+    if (fixtureFamily == BlinkyDomeFixtureType.GROUP) {
+      keys = model.getTriangleGroupsKeys();
     } else if (fixtureFamily == BlinkyDomeFixtureType.TRIANGLE) {
-      keys = new LinkedHashSet<>();
+      keys = new HashSet<>();
       for (int i=0; i<model.allTriangles.size(); i++) {
         keys.add(i);
       }
@@ -54,14 +52,11 @@ public class BlinkyDomeFixtureSelectorPattern
   @Override
   protected List<? extends LXFixture> getFixturesByKey(BlinkyDomeFixtureType fixtureFamily, Object keyObj) {
     Integer key = (Integer) keyObj;
-    if (fixtureFamily == BlinkyDomeFixtureType.LAYER) {
-      return model.getTrianglesByLayer(key);
-
-    } else if (fixtureFamily == BlinkyDomeFixtureType.INDEX) {
-      return model.getTrianglesByIndex(key);
+    if (fixtureFamily == BlinkyDomeFixtureType.GROUP) {
+      return model.getTrianglesByGroup(key);
 
     } else if (fixtureFamily == BlinkyDomeFixtureType.TRIANGLE) {
-      BlinkyDome.TriangleFixture triangle = model.allTriangles.get(key);
+      BlinkyTriangle triangle = model.allTriangles.get(key);
       System.out.println("Selected triangle: " + triangle.toString());
       return Collections.singletonList(triangle);
 

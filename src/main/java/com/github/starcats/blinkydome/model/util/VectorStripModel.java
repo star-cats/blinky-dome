@@ -1,21 +1,56 @@
 package com.github.starcats.blinkydome.model.util;
 
-import heronarts.lx.model.LXAbstractFixture;
-import heronarts.lx.model.LXModel;
+import com.github.starcats.blinkydome.util.SCAbstractFixture;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * Model of a strip of points between two vectors
+ * Model for a straight strip of LED points between two vector positions
+ *
+ * LED positions are padded, meaning the LED's won't start AT start, but rather will have a half spacing between start
+ * and first one.
+ * ie if start is 0, end is 1, and numPoints is 4, will create 4 LEDs at 0.125, 0.375, 0.625, and 0.875
+ *
+ * @param <P> The type of LXPoint used for this fixture (
  */
-public class VectorStripModel extends LXModel {
+public class VectorStripModel<P extends LXPoint> extends SCAbstractFixture {
   public final LXVector start;
   public final LXVector end;
 
-  public VectorStripModel(LXVector start, LXVector end, int numPoints) {
-    super(new PaddedPointsFixture(start, end, numPoints));
+  private final List<P> typedPoints;
+
+  public interface PointFactory<P extends LXPoint> {
+    P constructPoint(float x, float y, float z);
+  }
+
+  public static final PointFactory<LXPoint> GENERIC_POINT_FACTORY = LXPoint::new;
+
+  public VectorStripModel(LXVector start, LXVector end, PointFactory<P> pointFactory, int numPoints) {
     this.start = start;
     this.end = end;
+    this.typedPoints = new ArrayList<>(numPoints);
+
+    float lerpInc = 1f/(float)numPoints;
+    float lerpI = lerpInc / 2;
+
+    for (int i=0; i<numPoints; i++) {
+      LXVector newPoint = start.copy().lerp(end, lerpI);
+      P pt = pointFactory.constructPoint(newPoint.x, newPoint.y, newPoint.z);
+
+      // lose generic typing; fast to avoid incremental centroid calcs
+      addPointFast(pt);
+
+      // fighting non-generic'd LX interfaces: also save typed point
+      typedPoints.add(pt);
+
+      lerpI += lerpInc;
+    }
+
+    this.initCentroid();
   }
 
   @Override
@@ -38,20 +73,11 @@ public class VectorStripModel extends LXModel {
   }
 
   /**
-   * Fixture for a line of LEDs between two vectors.
-   * Padded means the LED's won't start AT start, but rather will have a half spacing between start and first one.
-   * ie if start is 0, end is 1, and numPoints is 4, will create 4 LEDs at 0.125, 0.375, 0.625, and 0.875
+   * Like {@link #getPoints()} but without losing type information in LX interfaces
    */
-  private static class PaddedPointsFixture extends LXAbstractFixture {
-    private PaddedPointsFixture(LXVector start, LXVector end, int numPoints) {
-      float lerpInc = 1f/(float)numPoints;
-      float lerpI = lerpInc / 2;
-
-      for (int i=0; i<numPoints; i++) {
-        LXVector newPoint = start.copy().lerp(end, lerpI);
-        addPoint(new LXPoint(newPoint.x, newPoint.y, newPoint.z));
-        lerpI += lerpInc;
-      }
-    }
+  public List<P> getPointsTyped() {
+    return Collections.unmodifiableList(this.typedPoints);
   }
+
+
 }
