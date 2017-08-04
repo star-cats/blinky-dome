@@ -31,7 +31,7 @@ public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxG
     this.ui = ui;
 
     // Add modulator UI's
-    ui.rightPane.registerModulatorUI(
+    ui.registry.registerModulatorUI(
         MinimBeatTriggers.class,
         UIMinimModulator::new
     );
