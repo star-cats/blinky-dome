@@ -21,7 +21,8 @@ public class TestHarnessFactory {
             new LXVector(0, 0, 0),
             LEN_SIDE, 0,
             up, right,
-            true, 0, 1, 0, 0, 0
+            BlinkyTriangle.V.V3, BlinkyTriangle.V.V1,
+            0, 1, 0, 0, 0
         ),
 
         // Overlapping 1st and 3rd, a bit forward
@@ -29,7 +30,8 @@ public class TestHarnessFactory {
             new LXVector(LEN_SIDE * 0.8f, 0, -4),
             LEN_SIDE, 0,
             up, right,
-            true, 0, 1, BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 1, 0
+            BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
+            0, 1, BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 1, 0
         ),
 
         // v1 is behind 2nd triangle and in line with 1st, but rotated forward a bit
@@ -37,7 +39,8 @@ public class TestHarnessFactory {
             new LXVector(LEN_SIDE * 1.6f, 0, 0),
             LEN_SIDE, 0,
             up, new LXVector(1, 0, -1),
-            true, 0, 1, 2 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 2, 0
+            BlinkyTriangle.V.V3, BlinkyTriangle.V.V1,
+            0, 1, 2 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 2, 0
         ),
 
         // Rotated 90 deg relative to first
@@ -45,7 +48,8 @@ public class TestHarnessFactory {
             new LXVector(LEN_SIDE * 1.8f, 0, -LEN_SIDE*2/3),
             LEN_SIDE, 0,
             up, new LXVector(0, 0, -1),
-            true, 0, 1, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 3, 0
+            BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
+            0, 1, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 3, 0
         )
     ));
   }

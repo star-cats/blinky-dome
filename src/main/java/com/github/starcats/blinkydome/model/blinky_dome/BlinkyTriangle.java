@@ -54,7 +54,8 @@ public class BlinkyTriangle extends SCAbstractFixture {
    * @param rotation Rotation to apply to the triangle.  0 means the v3-->v1 side is at a right angle to trianglePlaneUp (ie ▲)
    * @param trianglePlaneUp The "up" direction of the triangle plane.
    * @param trianglePlaneRight The "right" direction of the triangle plane.
-   * @param reversed Constructor pass-through (false: wired as v1->v2->v3->v1, true as v1->v3->v2->v1)
+   * @param firstV Constructor pass-through
+   * @param secondV Constructor pass-through
    * @param ppGroup Constructor pass-through
    * @param ppPort Constructor pass-through
    * @param firstPpIndex Constructor pass-through
@@ -66,7 +67,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
       LXVector v1Position,
       float lenSide, float rotation,
       LXVector trianglePlaneUp, LXVector trianglePlaneRight,
-      boolean reversed,
+      V firstV, V secondV,
       int ppGroup, int ppPort, int firstPpIndex,
       int domeGroup, int domeGroupIndex
   ) {
@@ -84,29 +85,37 @@ public class BlinkyTriangle extends SCAbstractFixture {
         .add(v1Position);
 
     return new BlinkyTriangle(
-        v1Position, v2, v3, reversed,
+        v1Position, v2, v3, firstV, secondV,
         ppGroup, ppPort, firstPpIndex,
         domeGroup, domeGroupIndex
     );
 
   }
 
+  /** Enum used to specify vertex ordering for the triangle strip */
+  public enum V {
+    V1,
+    V2,
+    V3
+  }
 
-  /** Convenience constructor -- excludes the reversed parameter */
+
+  /** Convenience constructor -- does default V1 --> V2 --> V3 --> V1 vertex ordering */
   public BlinkyTriangle(
       LXVector v1, LXVector v2, LXVector v3,
       int ppGroup, int ppPort, int firstPpIndex,
       int domeGroup, int domeGroupIndex
   ) {
-    this(v1, v2, v3, false, ppGroup, ppPort, firstPpIndex, domeGroup, domeGroupIndex);
+    this(v1, v2, v3, V.V1, V.V2, ppGroup, ppPort, firstPpIndex, domeGroup, domeGroupIndex);
   }
 
   /**
    * Constructor
-   * @param v1 Starting and ending vertex for the LED strip
-   * @param v2 Second vertex
-   * @param v3 Third vertex
-   * @param reversed False for v1 -> v2 -> v3 -> v1 triangle; true for v1 -> v3 -> v2 -> v1
+   * @param v1 One vertex
+   * @param v2 Another vertex
+   * @param v3 And the third vertex to define the triangle
+   * @param firstV The vertex at which the first LED is wired
+   * @param secondV The next vertex according to LED strip dataline direction
    * @param ppGroup Which ppGroup this triangle is wired to
    * @param ppPort Which ppPort this triangle is wired to
    * @param firstPpIndex The index of the triangle's first LED on the ppPort harness; generally a multiple of NUM_LEDS_PER_TRIANGLE
@@ -114,16 +123,29 @@ public class BlinkyTriangle extends SCAbstractFixture {
    * @param domeGroupIndex Dome geometry metadata: the index of the triangle in this triangle group
    */
   public BlinkyTriangle(
-      LXVector v1, LXVector v2, LXVector v3, boolean reversed,
+      LXVector v1, LXVector v2, LXVector v3,
+      V firstV, V secondV,
       int ppGroup, int ppPort, int firstPpIndex,
       int domeGroup, int domeGroupIndex
   ) {
     this.domeGroup = domeGroup;
     this.domeGroupIndex = domeGroupIndex;
 
-    this.vA = v1;
-    this.vB = reversed ? v3 : v2;
-    this.vC = reversed ? v2 : v3;
+    if (firstV == V.V1) {
+      this.vA = v1;
+      this.vB = secondV == V.V2 ? v2 : v3;
+      this.vC = secondV == V.V2 ? v3 : v2;
+
+    } else if (firstV == V.V2) {
+      this.vA = v2;
+      this.vB = secondV == V.V3 ? v3 : v1;
+      this.vC = secondV == V.V3 ? v1 : v3;
+
+    } else {
+      this.vA = v3;
+      this.vB = secondV == V.V1 ? v1 : v2;
+      this.vC = secondV == V.V1 ? v2 : v1;
+    }
 
     // Note this factory keeps state on ppIndex -- increments it for every new LED created
     BlinkyPointFactory ledFactory = new BlinkyPointFactory(ppGroup, ppPort, firstPpIndex);
