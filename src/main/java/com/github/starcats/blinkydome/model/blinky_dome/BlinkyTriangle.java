@@ -3,6 +3,7 @@ package com.github.starcats.blinkydome.model.blinky_dome;
 import com.github.starcats.blinkydome.model.util.VectorStripModel;
 import com.github.starcats.blinkydome.util.SCAbstractFixture;
 import heronarts.lx.transform.LXVector;
+import processing.core.PVector;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,8 +19,15 @@ public class BlinkyTriangle extends SCAbstractFixture {
   public static final int NUM_LEDS_PER_TRIANGLE = 3 * NUM_LEDS_PER_SIDE;
 
 
+  // Geometry metadata:
   public final int domeGroup;
   public final int domeGroupIndex;
+
+  /** Angular position of triangle in XZ (floor) plane */
+  public final float thetaRad;
+
+  /** Angular position of triangle in XY (up/down) plane */
+  public final float phiRad;
 
   // Triangle vertices in 3D space
   public final LXVector vA, vB, vC;
@@ -82,6 +90,15 @@ public class BlinkyTriangle extends SCAbstractFixture {
     this.sY.getPointsTyped().forEach(this::addPointFast);
     this.sZ.getPointsTyped().forEach(this::addPointFast);
     this.initCentroid();
+
+    this.thetaRad = PVector.angleBetween(
+        new PVector(1f, 0f, 1f),
+        this.getCentroid()
+    );
+    this.phiRad = PVector.angleBetween(
+        new PVector(1f, 1f, 0f),
+        this.getCentroid()
+    );
 
     pointsTyped = Stream.of(
         sX.getPointsTyped(),

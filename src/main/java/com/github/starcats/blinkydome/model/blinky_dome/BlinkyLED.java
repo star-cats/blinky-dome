@@ -2,12 +2,19 @@ package com.github.starcats.blinkydome.model.blinky_dome;
 
 import com.github.starcats.blinkydome.pixelpusher.PixelPushableLED;
 import heronarts.lx.model.LXPoint;
+import processing.core.PVector;
 
 /**
  * BlinkyDome's LED definition
  */
 public class BlinkyLED extends LXPoint implements PixelPushableLED {
   final public int ppGroup, ppPort, ppIndex;
+
+  /** Angular position of triangle in XZ (floor) plane */
+  public final float thetaRad;
+
+  /** Angular position of triangle in XY (up/down) plane */
+  public final float phiRad;
 
   /**
    * @param x global x-position
@@ -23,6 +30,15 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
     this.ppGroup = ppGroup;
     this.ppPort = ppPort;
     this.ppIndex = ppIndex;
+
+    this.thetaRad = PVector.angleBetween(
+        new PVector(1f, 0f, 1f),
+        new PVector(x, y, z)
+    );
+    this.phiRad = PVector.angleBetween(
+        new PVector(1f, 1f, 0f),
+        new PVector(x, y, z)
+    );
   }
 
   @Override

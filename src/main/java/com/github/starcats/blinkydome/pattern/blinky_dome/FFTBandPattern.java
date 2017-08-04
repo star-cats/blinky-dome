@@ -35,8 +35,7 @@ public class FFTBandPattern extends AbstractSimplePattern {
         float phiPos = this.getRingPhi();
 
         for (BlinkyLED led : this.model.leds) {
-            // TODO: add phi to BlinkyLED?  float dist = angluarDistance(led.phi, phiPos);
-            float dist = 1;
+            float dist = angluarDistance(led.phiRad, phiPos);
 
             if (dist < 0.3) {
                 int d = LXColor.lerp(c, 0, dist / 0.3);
