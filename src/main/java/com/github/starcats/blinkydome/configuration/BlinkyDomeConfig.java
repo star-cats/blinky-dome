@@ -2,7 +2,8 @@ package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
+import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -41,9 +42,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Headless configuration for the {@link BlinkyDome} model
+ * Headless configuration for the {@link BlinkyModel} model
  */
-public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
+public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   // Components
   private StarCatFFT starCatFFT;
@@ -61,12 +62,13 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   }
 
   @Override
-  protected BlinkyDome makeModel() {
-    return BlinkyDome.makeModel(p);
+  protected BlinkyModel makeModel() {
+//    return BlinkyDomeFactory.makeModel(p);
+    return TestHarnessFactory.makeModel();
   }
 
   @Override
-  protected void initComponents(PApplet p, LX lx, BlinkyDome model) {
+  protected void initComponents(PApplet p, LX lx, BlinkyModel model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
 
     gradientColorSource = new ImageColorSampler(p, lx, "gradients.png");
@@ -81,7 +83,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
   }
 
   @Override
-  protected List<LXModulator> constructModulators(PApplet p, LX lx, BlinkyDome model) {
+  protected List<LXModulator> constructModulators(PApplet p, LX lx, BlinkyModel model) {
     kickModulator = CommonScLxConfigUtils.Modulators.makeKickModulator(lx);
     colorMappingLFO = CommonScLxConfigUtils.Modulators.makeColorMappingLFO();
 
@@ -157,7 +159,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
   private List<LXPattern> makeMasks() {
     Mask_RollingBouncingDisc mask_disc = new Mask_RollingBouncingDisc(lx,
-        new LXVector(0, model.yMin, 0),
+        new LXVector(model.cx, model.yMin, model.cz),
         new LXVector(0, model.yMax - model.yMin, 0),
         new LXVector(1, 0, 0)
     )
@@ -205,7 +207,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
 
   }
 
-  /** Creates standard set of BlinkyDome patterns */
+  /** Creates standard set of BlinkyModel patterns */
   private List<LXPattern> makeStandardPatterns() {
 
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
@@ -216,7 +218,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyDome> {
         );
 
 
-    // PerlinNoisePattern: apply defaults appropriate for BlinkyDome mapping size
+    // PerlinNoisePattern: apply defaults appropriate for BlinkyModel mapping size
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
 

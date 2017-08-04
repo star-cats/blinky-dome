@@ -45,6 +45,53 @@ public class BlinkyTriangle extends SCAbstractFixture {
   private final List<BlinkyLED> pointsTyped;
 
 
+  /**
+   * Helper method that creates a BlinkyTriangle positioned in 3D space given the position of the initial vertex
+   * and two vectors that define the plane in which the triangle lies.
+   *
+   * @param v1Position Position of first vertex (initial LED)
+   * @param lenSide The length of a triangle side, in the same units as the v1Position vector
+   * @param rotation Rotation to apply to the triangle.  0 means the v3-->v1 side is at a right angle to trianglePlaneUp (ie ▲)
+   * @param trianglePlaneUp The "up" direction of the triangle plane.
+   * @param trianglePlaneRight The "right" direction of the triangle plane.
+   * @param reversed Constructor pass-through (false: wired as v1->v2->v3->v1, true as v1->v3->v2->v1)
+   * @param ppGroup Constructor pass-through
+   * @param ppPort Constructor pass-through
+   * @param firstPpIndex Constructor pass-through
+   * @param domeGroup Constructor pass-through
+   * @param domeGroupIndex Constructor pass-through
+   * @return
+   */
+  public static BlinkyTriangle positionIn3DSpace(
+      LXVector v1Position,
+      float lenSide, float rotation,
+      LXVector trianglePlaneUp, LXVector trianglePlaneRight,
+      boolean reversed,
+      int ppGroup, int ppPort, int firstPpIndex,
+      int domeGroup, int domeGroupIndex
+  ) {
+    LXVector vertexRotationAxis = trianglePlaneUp.copy().cross(trianglePlaneRight);
+    float rL = vertexRotationAxis.x;
+    float rM = vertexRotationAxis.y;
+    float rN = vertexRotationAxis.z;
+
+    LXVector v2 = trianglePlaneUp.copy().setMag(lenSide)
+        .rotate((float) Math.PI / 6f + rotation, rL, rM, rN) // 30 degrees, so inside angle relative to planeRight is 60
+        .add(v1Position);
+
+    LXVector v3 = trianglePlaneUp.copy().setMag(lenSide)
+        .rotate((float) Math.PI / 2f + rotation, rL, rM, rN) // 90 degrees
+        .add(v1Position);
+
+    return new BlinkyTriangle(
+        v1Position, v2, v3, reversed,
+        ppGroup, ppPort, firstPpIndex,
+        domeGroup, domeGroupIndex
+    );
+
+  }
+
+
   /** Convenience constructor -- excludes the reversed parameter */
   public BlinkyTriangle(
       LXVector v1, LXVector v2, LXVector v3,

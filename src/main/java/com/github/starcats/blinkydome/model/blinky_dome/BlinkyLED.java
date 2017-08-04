@@ -5,7 +5,7 @@ import heronarts.lx.model.LXPoint;
 import processing.core.PVector;
 
 /**
- * BlinkyDome's LED definition
+ * BlinkyModel's LED definition
  */
 public class BlinkyLED extends LXPoint implements PixelPushableLED {
   final public int ppGroup, ppPort, ppIndex;

@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.pattern.blinky_dome;
 
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyLED;
 import com.github.starcats.blinkydome.pattern.AbstractSimplePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
@@ -12,12 +12,12 @@ import heronarts.lx.modulator.Accelerator;
  * Created by akesich on 6/27/17.
  */
 public class FFTBandPattern extends AbstractSimplePattern {
-    private final BlinkyDome model;
+    private final BlinkyModel model;
     private final StarCatFFT fft;
 
     private Accelerator ringPhi;
 
-    public FFTBandPattern(LX lx, BlinkyDome model, StarCatFFT fft) {
+    public FFTBandPattern(LX lx, BlinkyModel model, StarCatFFT fft) {
         super(lx);
 
         this.model = model;
