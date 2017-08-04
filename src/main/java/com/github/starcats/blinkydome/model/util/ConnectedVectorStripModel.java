@@ -16,7 +16,7 @@ public class ConnectedVectorStripModel extends VectorStripModel {
 
   public ConnectedVectorStripModel(LXVector start, List<ConnectedVectorStripModel> startNode,
                                    LXVector end, List<ConnectedVectorStripModel> endNode, int numPoints) {
-    super(start, end, numPoints);
+    super(start, end, VectorStripModel.GENERIC_POINT_FACTORY, numPoints);
     this.startNode = startNode;
     this.endNode = endNode;
   }

@@ -188,9 +188,10 @@ public class FibonocciPetalsModel extends LXModel {
   }
 
   private static void addTail(List<LXFixture> allFixtures, List<LXFixture> tails, int numLeds) {
-    LXFixture tail = new VectorStripModel(
+    LXFixture tail = new VectorStripModel<>(
         origin,
         new LXVector(0, (float)numLeds * -ALPHA/3f, 0),
+        VectorStripModel.GENERIC_POINT_FACTORY,
         numLeds
     );
 

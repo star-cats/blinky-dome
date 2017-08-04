@@ -47,15 +47,15 @@ public class PixelPusherOutput extends LXOutput {
   }
 
   public void onSend(int[] colors) {
-    for (PixelPushableLed led : model.getPpLeds()) {
+    for (PixelPushableLED led : model.getPpLeds()) {
       if (led.getPpGroup() == -1) continue;
-      if (led.getPpStripIndex() == -1) continue;
+      if (led.getPpPortIndex() == -1) continue;
       if (led.getPpLedIndex() == -1) continue;
 
       List<Strip> ppStrips = ppRegistry.getStrips(led.getPpGroup());
-      if (ppStrips.size() < led.getPpStripIndex()) continue;
+      if (ppStrips.size() < led.getPpPortIndex()) continue;
 
-      Strip strip = ppStrips.get(led.getPpStripIndex() - 1);
+      Strip strip = ppStrips.get(led.getPpPortIndex() - 1);
       strip.setPixel(
           colors[ led.getPoint().index ],
           led.getPpLedIndex()

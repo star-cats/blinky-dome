@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.configuration;
 
-import com.github.starcats.blinkydome.model.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDome;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
 import com.github.starcats.blinkydome.ui.RollingBouncingDiscAxisViz;

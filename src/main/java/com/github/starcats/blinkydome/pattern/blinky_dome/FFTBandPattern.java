@@ -1,6 +1,7 @@
 package com.github.starcats.blinkydome.pattern.blinky_dome;
 
-import com.github.starcats.blinkydome.model.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDome;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyLED;
 import com.github.starcats.blinkydome.pattern.AbstractSimplePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
@@ -33,8 +34,9 @@ public class FFTBandPattern extends AbstractSimplePattern {
 
         float phiPos = this.getRingPhi();
 
-        for (BlinkyDome.LED led : this.model.leds) {
-            float dist = angluarDistance(led.phi, phiPos);
+        for (BlinkyLED led : this.model.leds) {
+            float dist = angluarDistance(led.phiRad, phiPos);
+
             if (dist < 0.3) {
                 int d = LXColor.lerp(c, 0, dist / 0.3);
                 setLEDColor(led, d);

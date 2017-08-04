@@ -22,7 +22,6 @@ public abstract class AbstractFixtureSelectorPattern<M extends LXModel, E extend
   private final DiscreteParameter fixtureSelector;
 
   private E currentlySelectedFamily;
-  private Object currentlySelectedKey;
 
   private List<? extends LXFixture> currentFixtures = Collections.emptyList();
 
@@ -43,10 +42,7 @@ public abstract class AbstractFixtureSelectorPattern<M extends LXModel, E extend
 
 
     // Wire up action listeners
-    LXParameterListener onFixtureSelectorChange = parameter -> {
-      currentlySelectedKey = ((DiscreteParameter) parameter).getObject();
-      currentFixtures = getFixturesByKey(currentlySelectedFamily, currentlySelectedKey);
-    };
+    LXParameterListener onFixtureSelectorChange = parameter -> updateFixtures();
 
     fixtureFamily.addListener(parameter -> {
       currentlySelectedFamily = ((EnumParameter<E>) parameter).getEnum();
@@ -62,8 +58,11 @@ public abstract class AbstractFixtureSelectorPattern<M extends LXModel, E extend
 
     // Select defaults
     currentlySelectedFamily = fixtureFamily.getEnum();
-    currentlySelectedKey = fixtureSelector.getObject();
-    currentFixtures = getFixturesByKey(currentlySelectedFamily, currentlySelectedKey);
+    updateFixtures();
+  }
+
+  protected void updateFixtures() {
+    currentFixtures = getFixturesByKey(currentlySelectedFamily, fixtureSelector.getObject());
   }
 
   public void run(double deltaMs) {
