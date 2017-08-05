@@ -27,7 +27,7 @@ public class Mask_RollingBouncingDisc extends LXPattern {
   public final CompoundParameter position = new CompoundParameter("pos", 0., 0., 1.)
       .setDescription("Current position along the direction vector");
 
-  public final CompoundParameter pitch = new CompoundParameter("pitch", 0., -Math.PI, Math.PI)
+  public final CompoundParameter pitch = new CompoundParameter("pitch", 0., 0, Math.PI / 2)
       .setDescription("Tilt angle off the travel direction vector (radians)");
 
   public final CompoundParameter roll = new CompoundParameter("roll", 0., 0, 2. * Math.PI)
@@ -117,6 +117,7 @@ public class Mask_RollingBouncingDisc extends LXPattern {
     VariableLFO posModulator = (VariableLFO) new VariableLFO("pos")
         .setDescription("Modulates the position up and down");
     posModulator.period.setValue(1000);
+    posModulator.period.setExponent(2);
     posModulator.start();
     this.modulation.addModulator(posModulator);
 
@@ -131,6 +132,7 @@ public class Mask_RollingBouncingDisc extends LXPattern {
         .setDescription("Modulates the rotation around and around");
     rollModulator.waveshape.setValue(LXWaveshape.UP);
     rollModulator.period.setValue(925);
+    rollModulator.period.setExponent(2);
     rollModulator.start();
     this.modulation.addModulator(rollModulator);
 
