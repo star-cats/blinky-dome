@@ -43,6 +43,9 @@ public class Mask_Perlin extends LXPattern {
     addParameter(this.speed);
     addParameter(this.zoom);
 
+    colorizer = new MaskingColorizer(perlinNoise);
+    addParameter(colorizer.levelCurveParam);
+
     randomizeDirection.addListener(param -> {
       if (param.getValue() != 1) return;
 
@@ -50,7 +53,6 @@ public class Mask_Perlin extends LXPattern {
     });
     addParameter(randomizeDirection);
 
-    colorizer = new MaskingColorizer(perlinNoise);
   }
 
   @Override
