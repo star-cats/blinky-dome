@@ -5,12 +5,18 @@ import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer
 import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseExplorer;
 import com.github.starcats.blinkydome.util.BooleanParameterImpulse;
 import heronarts.lx.LX;
+import heronarts.lx.LXModulationEngine;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.VariableLFO;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXCompoundModulation;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 
@@ -167,18 +173,28 @@ public class PerlinBreathing extends LXPattern {
       defaultBreathEasings.add(breathEasingSupplier);
     }
 
+    LXModulationEngine.LXModulatorFactory<SyncedVariableLFO> modulatorsFactory = (lx2, label) -> {
+      if (label.equals("breath position")) {
+        return new SyncedVariableLFO(syncer, "breath position",
+            defaultBreathEasings.stream().map(BreathEasingSupplier::getPosition).toArray(LXWaveshape[]::new)
+        );
+      } else if (label.equals("breath speed")) {
+        return new SyncedVariableLFO(syncer, "breath speed",
+            defaultBreathEasings.stream().map(BreathEasingSupplier::getSpeed).toArray(LXWaveshape[]::new)
+        );
+      }
+
+      throw new RuntimeException("Unknown label to create: " + label);
+    };
+
     // Use VariableLFO's to have P3LX give waveform visualization.
-    positionLFO = new SyncedVariableLFO(syncer, "breath position",
-        defaultBreathEasings.stream().map(BreathEasingSupplier::getPosition).toArray(LXWaveshape[]::new)
-    );
+    // (add as a user modulator so that shows up in P3LX)
+    positionLFO = this.modulation.addModulator(SyncedVariableLFO.class, modulatorsFactory, "breath position");
     positionLFO.waveshape.setValue(breathEasingSupplier.getPosition());
     positionLFO.start();
-    this.modulation.addModulator(positionLFO); // add as a user modulator so that shows up in P3LX
 
 
-    speedLFO = new SyncedVariableLFO(syncer, "breath speed",
-        defaultBreathEasings.stream().map(BreathEasingSupplier::getSpeed).toArray(LXWaveshape[]::new)
-    );
+    speedLFO = modulatorsFactory.build(lx, "breath speed");
     speedLFO.waveshape.setValue(breathEasingSupplier.getSpeed());
     speedLFO.start();
     this.modulation.addModulator(speedLFO);

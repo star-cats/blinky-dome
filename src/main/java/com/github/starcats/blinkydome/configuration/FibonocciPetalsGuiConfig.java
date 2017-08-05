@@ -57,7 +57,12 @@ public class FibonocciPetalsGuiConfig extends FibonocciPetalsConfig implements S
           continue;
         }
 
-        RollingBouncingDiscAxisViz viz = new RollingBouncingDiscAxisViz();
+        RollingBouncingDiscAxisViz viz = new RollingBouncingDiscAxisViz() {
+          @Override
+          protected void dispose() {
+            ui.preview.removeComponent(this);
+          }
+        };
         ((Mask_RollingBouncingDisc) pattern).setMonitor(viz);
         ui.preview.addComponent(viz);
       }

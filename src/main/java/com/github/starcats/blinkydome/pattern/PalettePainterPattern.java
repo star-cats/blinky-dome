@@ -16,6 +16,10 @@ public class PalettePainterPattern extends LXPattern {
   private final LXPalette palette;
   public final CompoundParameter brightnessParam;
 
+  public PalettePainterPattern(LX lx) {
+    this(lx, lx.palette);
+  }
+
   public PalettePainterPattern(LX lx, LXPalette palette) {
     super(lx);
 

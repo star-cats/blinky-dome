@@ -57,7 +57,12 @@ public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxG
           continue;
         }
 
-        RollingBouncingDiscAxisViz viz = new RollingBouncingDiscAxisViz();
+        RollingBouncingDiscAxisViz viz = new RollingBouncingDiscAxisViz() {
+          @Override
+          protected void dispose() {
+            ui.preview.removeComponent(this);
+          }
+        };
         ((Mask_RollingBouncingDisc) pattern).setMonitor(viz);
         ui.preview.addComponent(viz);
       }
