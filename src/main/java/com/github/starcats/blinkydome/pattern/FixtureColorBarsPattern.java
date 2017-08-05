@@ -6,10 +6,14 @@ import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.model.LXPoint;
+import heronarts.lx.modulator.LXTriggerSource;
+import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXCompoundModulation;
 import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXTriggerModulation;
 import heronarts.p3lx.ui.UITriggerTarget;
 
 import java.util.Collection;
@@ -70,6 +74,45 @@ public class FixtureColorBarsPattern extends LXPattern implements UITriggerTarge
     .setMode(BooleanParameter.Mode.MOMENTARY)
     .addListener(parameter -> this.triggerNewBar());
     this.addParameter(newBarTrigger);
+  }
+
+  public FixtureColorBarsPattern initModulations(LXTriggerSource newBarTrigger) {
+    // Create an LFO that modulates the colorSourceI input to change colors over time
+    VariableLFO colorMappingSourceLfo = new VariableLFO("ColorMappingSource LFO");
+    colorMappingSourceLfo.setDescription("LFO to be used as a modulation against the ColorMappingSource input");
+    colorMappingSourceLfo.running.setValue(true);
+    colorMappingSourceLfo.period.setValue(3000);
+    this.modulation.addModulator(colorMappingSourceLfo);
+
+    // Do the modulation for it
+    LXCompoundModulation fcbpColorModulation = new LXCompoundModulation(
+        colorMappingSourceLfo, this.colorSourceI
+    );
+    this.colorSourceI.setValue(0.0);
+    fcbpColorModulation.range.setValue(1.0);
+    this.modulation.addModulation(fcbpColorModulation);
+
+
+    // Make the filled size of the bars proportional to audio input
+    LXCompoundModulation fcbpAudioModulation = new LXCompoundModulation(
+        lx.engine.audio.meter, this.visibleRange
+    );
+    this.visibleRange.setValue(0.25);
+    fcbpAudioModulation.range.setValue(0.75);
+    lx.engine.modulation.addModulation(fcbpAudioModulation);
+
+
+    // Create new bars
+    if (newBarTrigger != null) {
+      lx.engine.modulation.addTrigger(
+          new LXTriggerModulation(
+              newBarTrigger.getTriggerSource(), this.getTriggerTarget()
+          )
+      );
+    }
+
+
+    return this;
   }
 
   private static class ColorBar {

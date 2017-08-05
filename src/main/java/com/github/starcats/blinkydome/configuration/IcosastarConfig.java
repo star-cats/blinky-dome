@@ -3,7 +3,11 @@ package com.github.starcats.blinkydome.configuration;
 import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
 import com.github.starcats.blinkydome.model.Icosastar;
 import com.github.starcats.blinkydome.model.util.ConnectedVectorStripModel;
-import com.github.starcats.blinkydome.pattern.*;
+import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
+import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
+import com.github.starcats.blinkydome.pattern.PerlinBreathing;
+import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
+import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
@@ -11,7 +15,6 @@ import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.transform.LXVector;
@@ -32,7 +35,6 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
   // Modulators
   private BandGate kickModulator;
-  private VariableLFO colorMappingLFO;
 
   public IcosastarConfig(PApplet p) {
     super(p);
@@ -59,11 +61,9 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
   @Override
   protected List<LXModulator> constructModulators(PApplet p, LX lx, Icosastar model) {
     kickModulator = CommonScLxConfigUtils.Modulators.makeKickModulator(lx);
-    colorMappingLFO = CommonScLxConfigUtils.Modulators.makeColorMappingLFO();
 
     return Arrays.asList(
-        kickModulator,
-        colorMappingLFO
+        kickModulator
     );
   }
 
@@ -76,10 +76,8 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     allSpokes.addAll(model.innerSpokeLeds);
     allSpokes.addAll(model.outerSpokeLeds);
     allSpokes.addAll(model.ring1Leds);
-    FixtureColorBarsPattern fixtureColorBarsPattern =
-        CommonScLxConfigUtils.Patterns.wireUpFixtureColorBarsPattern(
-            lx, allSpokes, colorSampler, colorMappingLFO, kickModulator
-        );
+    FixtureColorBarsPattern fixtureColorBarsPattern = new FixtureColorBarsPattern(lx, allSpokes, colorSampler)
+        .initModulations(kickModulator);
 
     // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
     // --------------------

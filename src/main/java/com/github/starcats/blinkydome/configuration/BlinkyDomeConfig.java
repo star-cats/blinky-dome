@@ -28,7 +28,6 @@ import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
@@ -51,11 +50,10 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
   protected ImageColorSamplerGroup colorSampler;
   protected ImageColorSampler gradientColorSource;
   protected ImageColorSampler patternColorSource;
-  protected MinimBeatTriggers minimBeatTriggers;
 
   // Modulators
+  protected MinimBeatTriggers minimBeatTriggers;
   private BandGate kickModulator;
-  private VariableLFO colorMappingLFO;
 
   public BlinkyDomeConfig(PApplet p) {
     super(p);
@@ -77,19 +75,16 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
         gradientColorSource,
         patternColorSource
     });
-
-    minimBeatTriggers = new MinimBeatTriggers(lx, starCatFFT);
-    lx.engine.modulation.addModulator(minimBeatTriggers);
   }
 
   @Override
   protected List<LXModulator> constructModulators(PApplet p, LX lx, BlinkyModel model) {
+    minimBeatTriggers = new MinimBeatTriggers(lx, starCatFFT);
     kickModulator = CommonScLxConfigUtils.Modulators.makeKickModulator(lx);
-    colorMappingLFO = CommonScLxConfigUtils.Modulators.makeColorMappingLFO();
 
     return Arrays.asList(
-        kickModulator,
-        colorMappingLFO
+        minimBeatTriggers,
+        kickModulator
     );
   }
 
@@ -212,10 +207,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
-    FixtureColorBarsPattern fixtureColorBarsPattern =
-        CommonScLxConfigUtils.Patterns.wireUpFixtureColorBarsPattern(
-            lx, model.allTriangles, colorSampler, colorMappingLFO, kickModulator
-        );
+    FixtureColorBarsPattern fixtureColorBarsPattern = new FixtureColorBarsPattern(lx, model.allTriangles, colorSampler)
+        .initModulations(() -> minimBeatTriggers.kickTrigger);
 
 
     // PerlinNoisePattern: apply defaults appropriate for BlinkyModel mapping size
