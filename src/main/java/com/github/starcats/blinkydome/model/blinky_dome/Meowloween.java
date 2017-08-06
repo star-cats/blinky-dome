@@ -46,7 +46,7 @@ public class Meowloween {
                     new LXVector(-117, 87, -27),
                     LEN_SIDE, 0,
                     up, southWallLeft,
-                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
                     0, 1, BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
             ),
 
@@ -64,7 +64,7 @@ public class Meowloween {
                     new LXVector(-117, 87, -58),
                     LEN_SIDE, 0,
                     up, southWallLeft,
-                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
                     0, 1, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
             ),
 
@@ -74,15 +74,15 @@ public class Meowloween {
 
             // windows 1
             BlinkyTriangle.positionIn3DSpace(
-                    new LXVector(-15, 90, 206),
-                    LEN_SIDE, 0,
-                    up, windowsRight,
-                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+                    new LXVector(49, 90, 176),
+                    LEN_SIDE, - (float) Math.PI + DEG_60,
+                    up, southWallLeft,
+                    BlinkyTriangle.V.V3, BlinkyTriangle.V.V2,
                     1, 1, 0 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
             ),
 
             BlinkyTriangle.positionIn3DSpace(
-                    new LXVector(-15, 90, 206),
+                    new LXVector(39, 90, 206),
                     LEN_SIDE, 0,
                     up, windowsLeft,
                     BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
@@ -90,18 +90,18 @@ public class Meowloween {
             ),
 
             BlinkyTriangle.positionIn3DSpace(
-                    new LXVector(39, 90, 206),
+                    new LXVector(-15, 90, 206),
                     LEN_SIDE, 0,
                     up, windowsRight,
-                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
                     1, 1, 2 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
             ),
 
             BlinkyTriangle.positionIn3DSpace(
-                    new LXVector(39, 90, 206),
+                    new LXVector(-15, 90, 206),
                     LEN_SIDE, 0,
                     up, windowsLeft,
-                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
                     1, 1, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
             ),
 
@@ -121,7 +121,7 @@ public class Meowloween {
                     new LXVector(22, 95, -19),
                     LEN_SIDE, -DEG_60,
                     up, loftWallRight,
-                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
                     1, 2, 1 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
             ),
 
@@ -129,13 +129,13 @@ public class Meowloween {
                     new LXVector(22, 95, -26),
                     LEN_SIDE, 0,
                     up, loftWallRight,
-                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+                    BlinkyTriangle.V.V1, BlinkyTriangle.V.V3,
                     1, 2, 2 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
             ),
 
             BlinkyTriangle.positionIn3DSpace(
                     new LXVector(33, 95, -60),
-                    LEN_SIDE, 0,
+                    LEN_SIDE, -DEG_60,
                     up, loftMirrorRight,
                     BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
                     1, 2, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE, 0, 0
