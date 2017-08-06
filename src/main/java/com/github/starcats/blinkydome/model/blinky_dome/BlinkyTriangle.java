@@ -77,11 +77,11 @@ public class BlinkyTriangle extends SCAbstractFixture {
     float rN = vertexRotationAxis.z;
 
     LXVector v2 = trianglePlaneUp.copy().setMag(lenSide)
-        .rotate((float) Math.PI / 6f + rotation, rL, rM, rN) // 30 degrees, so inside angle relative to planeRight is 60
+        .rotate((float) Math.PI / 6.f + rotation, rL, rM, rN) // 30 degrees, so inside angle relative to planeRight is 60
         .add(v1Position);
 
     LXVector v3 = trianglePlaneUp.copy().setMag(lenSide)
-        .rotate((float) Math.PI / 2f + rotation, rL, rM, rN) // 90 degrees
+        .rotate((float) Math.PI / 2.f + rotation, rL, rM, rN) // 90 degrees
         .add(v1Position);
 
     return new BlinkyTriangle(
