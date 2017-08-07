@@ -2,6 +2,7 @@ package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.Meowloween;
 import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
@@ -62,9 +63,9 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   protected BlinkyModel makeModel() {
-//    return BlinkyDomeFactory.makeModel(p);
+    return BlinkyDomeFactory.makeModel(p);
 //    return TestHarnessFactory.makeModel();
-    return Meowloween.makeModel();
+//    return Meowloween.makeModel();
   }
 
   @Override
