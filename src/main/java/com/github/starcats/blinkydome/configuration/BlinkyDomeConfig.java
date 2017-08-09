@@ -4,8 +4,6 @@ import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
-import com.github.starcats.blinkydome.model.blinky_dome.Meowloween;
-import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -18,6 +16,7 @@ import com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep;
 import com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost;
 import com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine;
 import com.github.starcats.blinkydome.pattern.mask.Mask_Perlin;
+import com.github.starcats.blinkydome.pattern.mask.Mask_PerlinLineTranslator;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
 import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
@@ -151,7 +150,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
     if (channelNum == 3) {
       // Select default mask2
-      channel.goIndex(3);
+      channel.goIndex(4);
     }
   }
 
@@ -192,6 +191,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     List<LXPattern> patterns = new ArrayList<>();
     patterns.add(mask_disc);
     patterns.add(mask_perlin);
+    patterns.add(new Mask_PerlinLineTranslator(lx, p, model.allTriangles).initModulations());
     patterns.add(mask_bbb);
     patterns.add(new Mask_FixtureDottedLine(lx, model.allTriangles));
     patterns.add(new Mask_AngleSweep(lx, new PVector(1, 0, 0), model.allTriangles, lx.tempo));
