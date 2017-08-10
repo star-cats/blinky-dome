@@ -26,6 +26,7 @@ import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
+import heronarts.lx.LXModulationEngine;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
@@ -33,6 +34,8 @@ import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXCompoundModulation;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -77,6 +80,11 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
         gradientColorSource,
         patternColorSource
     });
+
+    LXModulationEngine.LXModulatorFactory<MinimBeatTriggers> minimFactory =
+        (LX lx2, String label) -> new MinimBeatTriggers(lx2, starCatFFT);
+    lx.engine.modulation.getModulatorFactoryRegistry().register(MinimBeatTriggers.class, minimFactory);
+    minimBeatTriggers = lx.engine.modulation.addModulator(MinimBeatTriggers.class, "minim triggers");
   }
 
   @Override
@@ -154,25 +162,29 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     }
   }
 
-  private List<LXPattern> makeMasks() {
-    // Any non-standard LX constructors need their own factory registered
-
-
-    LX.LXPatternFactory<Mask_RollingBouncingDisc> rbdFactory = (lx2) -> new Mask_RollingBouncingDisc(
+  protected LX.LXPatternFactory<Mask_RollingBouncingDisc> getRollingBouncingDiscFactory() {
+    return (lx2, ch, l) -> new Mask_RollingBouncingDisc(
         lx2,
         new LXVector(model.cx, model.yMin, model.cz),
         new LXVector(0, model.yMax - model.yMin, 0),
         new LXVector(1, 0, 0)
     );
-    lx.patternFactoryRegistry.register(Mask_RollingBouncingDisc.class, rbdFactory);
-    Mask_RollingBouncingDisc mask_disc = rbdFactory.build(lx)
+  }
+
+  private List<LXPattern> makeMasks() {
+    // Any non-standard LX constructors need their own factory registered
+
+
+    LX.LXPatternFactory<Mask_RollingBouncingDisc> rbdFactory = getRollingBouncingDiscFactory();
+    lx.registerPatternFactory(Mask_RollingBouncingDisc.class, rbdFactory);
+    Mask_RollingBouncingDisc mask_disc = quickBuild(rbdFactory)
         .addDemoBounce();
     mask_disc.discThicknessRad.setValue(0.15);
 
 
-    LX.LXPatternFactory<Mask_Perlin> perlinFactory = (lx2) -> new Mask_Perlin(lx2, p);
-    lx.patternFactoryRegistry.register(Mask_Perlin.class, perlinFactory);
-    Mask_Perlin mask_perlin = perlinFactory.build(lx);
+    LX.LXPatternFactory<Mask_Perlin> perlinFactory = (lx2, ch, l) -> new Mask_Perlin(lx2, p);
+    lx.registerPatternFactory(Mask_Perlin.class, perlinFactory);
+    Mask_Perlin mask_perlin = quickBuild(perlinFactory);
     mask_perlin.speed.setValue(0.02);
     mask_perlin.zoom.setValue(0.2);
     // Bias noise to be mostly going up/down
@@ -187,9 +199,9 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
 
     LX.LXPatternFactory<Mask_RandomFixtureSelector> rfsFactory =
-        (lx2) -> new Mask_RandomFixtureSelector(lx2, model.allTriangles);
-    lx.patternFactoryRegistry.register(Mask_RandomFixtureSelector.class, rfsFactory);
-    Mask_RandomFixtureSelector randomFixtureMask = rfsFactory.build(lx);
+        (lx2, ch, l) -> new Mask_RandomFixtureSelector(lx2, model.allTriangles);
+    lx.registerPatternFactory(Mask_RandomFixtureSelector.class, rfsFactory);
+    Mask_RandomFixtureSelector randomFixtureMask = quickBuild(rfsFactory);
     minimBeatTriggers.triggerWithKick(randomFixtureMask);
 
 
@@ -199,13 +211,13 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
 
     LX.LXPatternFactory<Mask_FixtureDottedLine> fdlFactory =
-        (lx2) -> new Mask_FixtureDottedLine(lx2, model.allTriangles);
-    lx.patternFactoryRegistry.register(Mask_FixtureDottedLine.class, fdlFactory);
+        (lx2, ch, l) -> new Mask_FixtureDottedLine(lx2, model.allTriangles);
+    lx.registerPatternFactory(Mask_FixtureDottedLine.class, fdlFactory);
 
 
     LX.LXPatternFactory<Mask_AngleSweep> angleSweepFactory =
-        (lx2) -> new Mask_AngleSweep(lx2, new PVector(1, 0, 0), model.allTriangles, lx.tempo);
-    lx.patternFactoryRegistry.register(Mask_AngleSweep.class, angleSweepFactory);
+        (lx2, ch, l) -> new Mask_AngleSweep(lx2, new PVector(1, 0, 0), model.allTriangles, lx.tempo);
+    lx.registerPatternFactory(Mask_AngleSweep.class, angleSweepFactory);
 
 
     List<LXPattern> patterns = new ArrayList<>();
@@ -213,8 +225,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     patterns.add(mask_perlin);
     patterns.add(new Mask_PerlinLineTranslator(lx, p, model.allTriangles).initModulations());
     patterns.add(mask_bbb);
-    patterns.add(fdlFactory.build(lx));
-    patterns.add(angleSweepFactory.build(lx));
+    patterns.add(quickBuild(fdlFactory));
+    patterns.add(quickBuild(angleSweepFactory));
     patterns.add(randomFixtureMask);
     patterns.add(wipeMask);
     patterns.add(new Mask_XyzFilter(lx));
@@ -225,6 +237,10 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   }
 
+  private <T extends LXPattern> T quickBuild(LX.LXPatternFactory<T> factory) {
+    return factory.build(lx, null, null);
+  }
+
   /** Creates standard set of BlinkyModel patterns */
   private List<LXPattern> makeStandardPatterns() {
     // Need to build and register factories for any patterns that don't have standard LX constructor
@@ -232,15 +248,15 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
     LX.LXPatternFactory<FixtureColorBarsPattern> fcbpFactory =
-        (lx2) -> new FixtureColorBarsPattern(lx2, model.allTriangles, colorSampler)
+        (lx2, channel, label) -> new FixtureColorBarsPattern(lx2, model.allTriangles, colorSampler)
             .initModulations(() -> minimBeatTriggers.kickTrigger);
-    lx.patternFactoryRegistry.register(FixtureColorBarsPattern.class, fcbpFactory);
-    FixtureColorBarsPattern fcbp = fcbpFactory.build(lx);
+    lx.registerPatternFactory(FixtureColorBarsPattern.class, fcbpFactory);
+    FixtureColorBarsPattern fcbp = quickBuild(fcbpFactory);
 
 
     // PerlinNoisePattern: apply defaults appropriate for BlinkyModel mapping size
     // --------------------
-    LX.LXPatternFactory<PerlinNoisePattern> perlinNoisePatternFactory = (lx2) -> {
+    LX.LXPatternFactory<PerlinNoisePattern> perlinNoisePatternFactory = (lx2, ch, l) -> {
       PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx2, p, starCatFFT.beat, colorSampler);
 
       // If the color sampler changes, adjust perlin settings to be appropriate for selected color sampler family
@@ -253,60 +269,70 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
           hueSpeedDefaultsBySampler[1] = param.getValue();
         }
       });
-      colorSampler.samplerSelector.addListener(param -> {
-        if (perlinNoisePattern.getChannel().getActivePattern() != perlinNoisePattern) {
-          return;
-        }
+      colorSampler.samplerSelector.addListener(new LXParameterListener() {
+        @Override
+        public void onParameterChanged(LXParameter param) {
+          if (perlinNoisePattern.getChannel() == null) {
+            // Remove stale listeners (eg if pattern was unloaded
+            colorSampler.samplerSelector.removeListener(this);
+            return;
+          }
 
-        DiscreteParameter parameter = (DiscreteParameter) param;
-        if (parameter.getObject() == gradientColorSource) {
-          perlinNoisePattern.hueSpeed.setValue(hueSpeedDefaultsBySampler[0]);
-        } else if (parameter.getObject() == patternColorSource) {
-          perlinNoisePattern.hueSpeed.setValue(hueSpeedDefaultsBySampler[1]);
+          if (perlinNoisePattern.getChannel().getActivePattern() != perlinNoisePattern) {
+            return;
+          }
+
+          DiscreteParameter parameter = (DiscreteParameter) param;
+          if (parameter.getObject() == gradientColorSource) {
+            perlinNoisePattern.hueSpeed.setValue(hueSpeedDefaultsBySampler[0]);
+          } else if (parameter.getObject() == patternColorSource) {
+            perlinNoisePattern.hueSpeed.setValue(hueSpeedDefaultsBySampler[1]);
+          }
         }
       });
+
       perlinNoisePattern.hueSpeed.setValue(0.25);
 
       return perlinNoisePattern;
     };
-    lx.patternFactoryRegistry.register(PerlinNoisePattern.class, perlinNoisePatternFactory);
+    lx.registerPatternFactory(PerlinNoisePattern.class, perlinNoisePatternFactory);
 
 
     // PerlinBreathingPattern
     // --------------------
     LX.LXPatternFactory<PerlinBreathing> perlinBreathingFactory =
-        (lx2) -> new PerlinBreathing(lx2, p, model.getPoints(), colorSampler,
+        (lx2, ch, l) -> new PerlinBreathing(lx2, p, model.getPoints(), colorSampler,
             new LXVector(0, -1, 0), // mapping seems reversed... 'up' is y:-1
             new LXVector(0, 1, 0),
             PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
         );
-    lx.patternFactoryRegistry.register(PerlinBreathing.class, perlinBreathingFactory);
+    lx.registerPatternFactory(PerlinBreathing.class, perlinBreathingFactory);
 
 
     // FFTBandPattern
     // ------------------
     LX.LXPatternFactory<FFTBandPattern> fftBandPatternFactory =
-        (lx2) -> new FFTBandPattern(lx2, model, starCatFFT);
-    lx.patternFactoryRegistry.register(FFTBandPattern.class, fftBandPatternFactory);
+        (lx2, ch, l) -> new FFTBandPattern(lx2, model, starCatFFT);
+    lx.registerPatternFactory(FFTBandPattern.class, fftBandPatternFactory);
 
 
     // BlinkyDomeFixtureSelectorPattern
     // ---------------------
     LX.LXPatternFactory<BlinkyDomeFixtureSelectorPattern> bdfspFactory =
-        (lx2) -> new BlinkyDomeFixtureSelectorPattern(lx2, model);
-    lx.patternFactoryRegistry.register(BlinkyDomeFixtureSelectorPattern.class, bdfspFactory);
+        (lx2, ch, l) -> new BlinkyDomeFixtureSelectorPattern(lx2, model);
+    lx.registerPatternFactory(BlinkyDomeFixtureSelectorPattern.class, bdfspFactory);
 
 
     // Normal patterns
     // --------------------
     return Arrays.asList(
-        perlinNoisePatternFactory.build(lx),
-        perlinBreathingFactory.build(lx),
+        quickBuild(perlinNoisePatternFactory),
+        quickBuild(perlinBreathingFactory).initModulators(),
         fcbp,
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx), // by default uses Studio's palette UI)
-        fftBandPatternFactory.build(lx),
-        bdfspFactory.build(lx)
+        quickBuild(fftBandPatternFactory),
+        quickBuild(bdfspFactory)
     );
   }
 

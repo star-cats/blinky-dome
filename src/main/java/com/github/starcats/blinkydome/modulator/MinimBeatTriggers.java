@@ -69,7 +69,7 @@ public class MinimBeatTriggers extends LXModulator {
   /**
    * Wires up a new trigger modulation to make a target trigger when a kick-drum hits
    * @param target param to modulate
-   * @return The modulation object.  Don't need to do anything with it if you're never going to .dispose() it.
+   * @return The modulation object.  Don't need to do anything with it if you're never going to .onDispose() it.
    */
   public LXTriggerModulation triggerWithKick(BooleanParameter target) {
     LXTriggerModulation trigger = new LXTriggerModulation(kickTrigger, target);

@@ -53,7 +53,12 @@ public abstract class RollingBouncingDiscAxisViz extends UI3dComponent implement
     this.principalMagnitude = principalMagnitude;
   }
 
-  protected abstract void dispose();
+  private void dispose() {
+    this.monitoree = null; // clear out references for GC
+    this.onDispose();
+  }
+
+  protected abstract void onDispose();
 
   @Override
   protected void onDraw(UI ui, PGraphics p) {
@@ -69,7 +74,7 @@ public abstract class RollingBouncingDiscAxisViz extends UI3dComponent implement
 
     // Idle
     if (monitoree.getChannel().getActivePattern() != monitoree) {
-      return; // nothing to do, move along
+      return; // inactive. Nothing to do, move along
     }
 
     Mask_RollingBouncingDisc.MonitorDetailLevel detailLevel = monitoree.detailLevel.getEnum();

@@ -59,7 +59,7 @@ public class FibonocciPetalsGuiConfig extends FibonocciPetalsConfig implements S
 
         RollingBouncingDiscAxisViz viz = new RollingBouncingDiscAxisViz() {
           @Override
-          protected void dispose() {
+          protected void onDispose() {
             ui.preview.removeComponent(this);
           }
         };
