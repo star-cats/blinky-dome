@@ -5,16 +5,23 @@ import com.github.starcats.blinkydome.pattern.perlin.ColorMappingSourceColorizer
 import com.github.starcats.blinkydome.pattern.perlin.PerlinNoiseExplorer;
 import com.github.starcats.blinkydome.util.BooleanParameterImpulse;
 import heronarts.lx.LX;
+import heronarts.lx.LXModulationEngine;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.VariableLFO;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXCompoundModulation;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,7 +31,6 @@ public class PerlinBreathing extends LXPattern {
 
   public final CompoundParameter perlinNoiseFieldZoom;
   public final CompoundParameter breathingPeriodMs;
-  public final BoundedParameter speedModulationAmount;
   public final EnumParameter<LedFilterType> ledFilteringParam;
   public final CompoundParameter rotateColorProbability;
 
@@ -104,16 +110,19 @@ public class PerlinBreathing extends LXPattern {
     boolean isNegative(double basis);
   }
 
+  private static final String LABEL_BREATH_POSITION = "breath position";
+  private static final String LABEL_BREATH_SPEED = "breath speed";
+
 
   private final PerlinNoiseExplorer perlinNoiseField;
   private final ColorMappingSourceClan colorSource;
   private final BooleanParameterImpulse colorSourceRandomSourceTrigger;
-  private final SyncedVariableLFO positionLFO;
-  private final SyncedVariableLFO speedLFO;
   private final List<? extends LXPoint> points;
   private final ColorMappingSourceColorizer colorizer;
   private final double[] positionLfoValueProvider;
   private boolean lastWasNegative = false;
+  private SyncedVariableLFO _positionLFO;
+  private SyncedVariableLFO _speedLFO;
 
   private final LXVector up;
   private final LXVector down;
@@ -167,24 +176,31 @@ public class PerlinBreathing extends LXPattern {
       defaultBreathEasings.add(breathEasingSupplier);
     }
 
-    // Use VariableLFO's to have P3LX give waveform visualization.
-    positionLFO = new SyncedVariableLFO(syncer, "breath position",
-        defaultBreathEasings.stream().map(BreathEasingSupplier::getPosition).toArray(LXWaveshape[]::new)
-    );
-    positionLFO.waveshape.setValue(breathEasingSupplier.getPosition());
-    positionLFO.start();
-    this.modulation.addModulator(positionLFO); // add as a user modulator so that shows up in P3LX
+    LXModulationEngine.LXModulatorFactory<SyncedVariableLFO> modulatorsFactory = (lx2, label) -> {
+      SyncedVariableLFO lfo;
+      if (label.equals(LABEL_BREATH_POSITION)) {
+        lfo = new SyncedVariableLFO(syncer, LABEL_BREATH_POSITION,
+            defaultBreathEasings.stream().map(BreathEasingSupplier::getPosition).toArray(LXWaveshape[]::new)
+        );
+        lfo.waveshape.setValue(breathEasingSupplier.getPosition());
 
+      } else if (label.equals(LABEL_BREATH_SPEED)) {
+        lfo = new SyncedVariableLFO(syncer, LABEL_BREATH_SPEED,
+            defaultBreathEasings.stream().map(BreathEasingSupplier::getSpeed).toArray(LXWaveshape[]::new)
+        );
+        lfo.waveshape.setValue(breathEasingSupplier.getSpeed());
 
-    speedLFO = new SyncedVariableLFO(syncer, "breath speed",
-        defaultBreathEasings.stream().map(BreathEasingSupplier::getSpeed).toArray(LXWaveshape[]::new)
-    );
-    speedLFO.waveshape.setValue(breathEasingSupplier.getSpeed());
-    speedLFO.start();
-    this.modulation.addModulator(speedLFO);
+      } else {
+        throw new RuntimeException("Unknown label to create: " + label);
+      }
 
-    // Link the modulators together
-    syncer.syncModulators( Arrays.asList(positionLFO, speedLFO) );
+      lfo.start();
+      return lfo;
+    };
+
+    // Teach modulation engine how to create these
+    this.modulation.getModulatorFactoryRegistry().register(SyncedVariableLFO.class, modulatorsFactory);
+
 
 
     perlinNoiseField = new PerlinNoiseExplorer(p, points, "br", "breathing");
@@ -199,21 +215,12 @@ public class PerlinBreathing extends LXPattern {
             "speed' modulator")
         .setValue(0);
 
-    LXCompoundModulation speedModulation = new LXCompoundModulation(speedLFO, perlinNoiseField.noiseSpeed);
-    speedModulation.label.setValue("speed modulation");
-    this.modulation.addModulation(speedModulation); // add it to modulator UI in P3LX
-    speedModulation.range.setValue(0.20);
+
     addParameter(perlinNoiseField.noiseSpeed); // adding it to see value of modulation, but not needed.
-    speedModulationAmount = speedModulation.range;
 
 
     // init speed direction
-    lastWasNegative = isSpeedNegative();
-    if (lastWasNegative) {
-      perlinNoiseField.getTravelVector().set(down);
-    } else {
-      perlinNoiseField.getTravelVector().set(up);
-    }
+    perlinNoiseField.getTravelVector().set(up);
 
 
     // provide a memoized reference to each tick's positionLFO.getValue() so can reference it inside colorizer without
@@ -261,13 +268,34 @@ public class PerlinBreathing extends LXPattern {
     addParameter(rotateColorProbability);
   }
 
-  private boolean isSpeedNegative() {
-    return ((SpeedWaveshape) speedLFO.waveshape.getObject()).isNegative(speedLFO.getBasis());
+  /**
+   * Initializes the breathing modulators.  To be called on initial construction... construction by JSON deserialization
+   * should create them automatically.
+   * @return this, for chaining
+   */
+  public PerlinBreathing initModulators() {
+    // Use VariableLFO's to have P3LX give waveform visualization.
+    // (add as a user modulator so that shows up in P3LX)
+    // modulatorFactory in constructor taught the engine how to construct these classes
+    this.modulation.addModulator(SyncedVariableLFO.class, LABEL_BREATH_POSITION);
+    SyncedVariableLFO speedLFO = this.modulation.addModulator(SyncedVariableLFO.class, LABEL_BREATH_SPEED);
+
+    LXCompoundModulation speedModulation = new LXCompoundModulation(speedLFO, perlinNoiseField.noiseSpeed);
+    speedModulation.label.setValue("speed modulation");
+    this.modulation.addModulation(speedModulation); // add it to modulator UI in P3LX
+    speedModulation.range.setValue(0.20);
+
+    return this;
   }
+
+  private boolean isSpeedNegative() {
+    return ((SpeedWaveshape) getSpeedLFO().waveshape.getObject()).isNegative(getSpeedLFO().getBasis());
+  }
+
 
   @Override
   protected void run(double deltaMs) {
-    positionLfoValueProvider[0] = positionLFO.getValue();
+    positionLfoValueProvider[0] = getPositionLFO().getValue();
 
     boolean isNegative = isSpeedNegative();
     if (lastWasNegative != isNegative) {
@@ -286,11 +314,37 @@ public class PerlinBreathing extends LXPattern {
       setColor(point.index, colorizer.getColor(point));
     }
 
-    if (positionLFO.loop() && Math.random() < rotateColorProbability.getValue()) {
+    if (getPositionLFO().loop() && Math.random() < rotateColorProbability.getValue()) {
       colorSourceRandomSourceTrigger.trigger();
     }
 
   }
+
+  public SyncedVariableLFO getPositionLFO() {
+    // _positionLFO may be created manually or from deserialization.  Either way, memoize on first access
+    if (_positionLFO == null) {
+      _positionLFO = (SyncedVariableLFO) this.modulation.getModulator(LABEL_BREATH_POSITION);
+    }
+
+    return _positionLFO;
+  }
+
+  public SyncedVariableLFO getSpeedLFO() {
+    // _speedLFO may be created manually or from deserialization.  Either way, memoize on first access
+    if (_speedLFO == null) {
+      _speedLFO = (SyncedVariableLFO) this.modulation.getModulator(LABEL_BREATH_SPEED);
+    }
+
+    return _speedLFO;
+  }
+
+  /**
+   * @return the modulation range for the noise speed modulator.  Used to tweak speed per model
+   */
+  public BoundedParameter getSpeedModulationRange() {
+    return perlinNoiseField.noiseSpeed.modulations.get(0).range;
+  }
+
 
   private enum DefaultPositionWaveshape implements LXWaveshape {
     SIN {
@@ -480,6 +534,7 @@ public class PerlinBreathing extends LXPattern {
     public SyncedVariableLFO(ModulatorSyncer syncer, String label, LXWaveshape[] waveshapes) {
       super(label, waveshapes, syncer.clonePeriodParam());
       this.syncer = syncer;
+      syncer.syncModulator(this);
     }
 
     @Override
@@ -503,7 +558,7 @@ public class PerlinBreathing extends LXPattern {
     private boolean loopLock = false;
     private boolean changeRunningLock = false;
 
-    private List<SyncedVariableLFO> modulators = null;
+    private List<SyncedVariableLFO> modulators = new LinkedList<>();
 
     public ModulatorSyncer(CompoundParameter commonPeriodMs) {
       this.commonPeriodMs = commonPeriodMs;
@@ -573,18 +628,12 @@ public class PerlinBreathing extends LXPattern {
       changePeriodLock = false;
     }
 
-    public void syncModulators(List<SyncedVariableLFO> modulators) {
-      if (this.modulators != null) {
-        throw new UnsupportedOperationException("Can only sync once, multiple syncs will cause mem leaks and dupes");
-      }
+    public void syncModulator(SyncedVariableLFO modulator) {
+      this.modulators.add(modulator);
 
-      this.modulators = modulators;
-
-      for (VariableLFO modulator : this.modulators) {
-        modulator.period.setValue(commonPeriodMs.getValue());
-        modulator.period.addListener(parameter -> this.onChangePeriodMs(modulator, parameter.getValue()));
-        modulator.running.addListener(parameter -> this.onChangeRunning(modulator, ((BooleanParameter)parameter).getValueb()));
-      }
+      modulator.period.setValue(commonPeriodMs.getValue());
+      modulator.period.addListener(parameter -> this.onChangePeriodMs(modulator, parameter.getValue()));
+      modulator.running.addListener(parameter -> this.onChangeRunning(modulator, ((BooleanParameter)parameter).getValueb()));
     }
   }
 }

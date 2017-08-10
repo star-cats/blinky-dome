@@ -90,9 +90,9 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
         new LXVector(0, 0, -1),
         new LXVector(0, 0, 1),
         PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
-    );
+    ).initModulators();
     perlinBreathing.perlinNoiseFieldZoom.setValue(0.02);
-    perlinBreathing.speedModulationAmount.setValue(0.20);
+    perlinBreathing.getSpeedModulationRange().setValue(0.20);
 
 
     channel.setPatterns(new LXPattern[] {

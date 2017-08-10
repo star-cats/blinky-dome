@@ -10,7 +10,7 @@ import processing.core.PGraphics;
 /**
  * Principal axis visualization for {@link Mask_RollingBouncingDisc}
  */
-public class RollingBouncingDiscAxisViz extends UI3dComponent implements Mask_RollingBouncingDisc.RollingBouncingDiscMonitor {
+public abstract class RollingBouncingDiscAxisViz extends UI3dComponent implements Mask_RollingBouncingDisc.RollingBouncingDiscMonitor {
 
   private LXVector origin = new LXVector(0, 0, 0);
   private LXVector direction = new LXVector(0, 0, 0);
@@ -53,10 +53,28 @@ public class RollingBouncingDiscAxisViz extends UI3dComponent implements Mask_Ro
     this.principalMagnitude = principalMagnitude;
   }
 
+  private void dispose() {
+    this.monitoree = null; // clear out references for GC
+    this.onDispose();
+  }
+
+  protected abstract void onDispose();
+
   @Override
   protected void onDraw(UI ui, PGraphics p) {
-    if (monitoree == null || monitoree.getChannel().getActivePattern() != monitoree) {
-      return; // nothing to do, move along
+    if (monitoree == null) {
+      return;
+    }
+
+    if (monitoree.getChannel() == null) {
+      // Disconnected pattern (eg removed from channel), I'll show myself out.
+      dispose();
+      return;
+    }
+
+    // Idle
+    if (monitoree.getChannel().getActivePattern() != monitoree) {
+      return; // inactive. Nothing to do, move along
     }
 
     Mask_RollingBouncingDisc.MonitorDetailLevel detailLevel = monitoree.detailLevel.getEnum();
