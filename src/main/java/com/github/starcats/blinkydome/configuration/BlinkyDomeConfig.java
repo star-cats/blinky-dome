@@ -2,8 +2,8 @@ package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
+import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -12,15 +12,7 @@ import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
-import com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep;
-import com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost;
-import com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine;
-import com.github.starcats.blinkydome.pattern.mask.Mask_Perlin;
-import com.github.starcats.blinkydome.pattern.mask.Mask_PerlinLineTranslator;
-import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
-import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
-import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
-import com.github.starcats.blinkydome.pattern.mask.Mask_XyzFilter;
+import com.github.starcats.blinkydome.pattern.mask.*;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
@@ -65,8 +57,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   protected BlinkyModel makeModel() {
-    return BlinkyDomeFactory.makeModel(p);
-//    return TestHarnessFactory.makeModel();
+//    return BlinkyDomeFactory.makeModel(p);
+    return TestHarnessFactory.makeModel();
 //    return Meowloween.makeModel();
   }
 
@@ -174,7 +166,6 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
   private List<LXPattern> makeMasks() {
     // Any non-standard LX constructors need their own factory registered
 
-
     LX.LXPatternFactory<Mask_RollingBouncingDisc> rbdFactory = getRollingBouncingDiscFactory();
     lx.registerPatternFactory(Mask_RollingBouncingDisc.class, rbdFactory);
     Mask_RollingBouncingDisc mask_disc = quickBuild(rbdFactory)
@@ -192,6 +183,14 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     mask_perlin.perlinNoise.xNegBias.setValue(0.2);
     mask_perlin.perlinNoise.zPosBias.setValue(0.2);
     mask_perlin.perlinNoise.zNegBias.setValue(0.2);
+
+
+    LX.LXPatternFactory<Mask_PerlinLineTranslator> perlinLineTranslatorFactory =
+        (lx2, ch, l) -> new Mask_PerlinLineTranslator(lx, p, model.allTriangles);
+
+
+    LX.LXPatternFactory<TMask_Starlight> starlightFactory = (lx2, ch, l) -> new TMask_Starlight(p, lx2, 3);
+    lx.registerPatternFactory(TMask_Starlight.class, starlightFactory);
 
 
     Mask_BrightnessBeatBoost mask_bbb = new Mask_BrightnessBeatBoost(lx);
@@ -223,7 +222,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     List<LXPattern> patterns = new ArrayList<>();
     patterns.add(mask_disc);
     patterns.add(mask_perlin);
-    patterns.add(new Mask_PerlinLineTranslator(lx, p, model.allTriangles).initModulations());
+    patterns.add(quickBuild(perlinLineTranslatorFactory).initModulations());
+    patterns.add(quickBuild(starlightFactory));
     patterns.add(mask_bbb);
     patterns.add(quickBuild(fdlFactory));
     patterns.add(quickBuild(angleSweepFactory));

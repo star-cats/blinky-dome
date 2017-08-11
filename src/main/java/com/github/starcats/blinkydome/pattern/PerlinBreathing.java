@@ -33,6 +33,7 @@ public class PerlinBreathing extends LXPattern {
   public final CompoundParameter breathingPeriodMs;
   public final EnumParameter<LedFilterType> ledFilteringParam;
   public final CompoundParameter rotateColorProbability;
+  public final CompoundParameter minBrightness;
 
   /**
    * When breathing, we can also filter LEDs with the breath
@@ -203,7 +204,13 @@ public class PerlinBreathing extends LXPattern {
 
 
 
-    perlinNoiseField = new PerlinNoiseExplorer(p, points, "br", "breathing");
+    perlinNoiseField = new PerlinNoiseExplorer(
+        p, points, "", "breathing",
+        new CompoundParameter("speed", .5)
+            .setDescription("The speed of the perlin noise pattern used for breathing mapping"),
+        new CompoundParameter("zoom", 0.05, 0.005, 0.1)
+            .setDescription("Multiplier ('zoom') of the perlin noise pattern used for breathing mapping")
+    );
     perlinNoiseFieldZoom = perlinNoiseField.noiseZoom; // expose publicly
     addParameter(perlinNoiseField.noiseZoom);
 
@@ -232,6 +239,10 @@ public class PerlinBreathing extends LXPattern {
         colorSource.getRandomSourceTrigger(), this, "trigger random source"
     );
 
+    minBrightness = new CompoundParameter("min brightness", 0.2, 0., 1.)
+        .setDescription("Minimum brightness on an out-breath");
+    addParameter(minBrightness);
+
     this.colorizer = new ColorMappingSourceColorizer(perlinNoiseField, colorSource) {
       @Override
       public int getColor(LXPoint point) {
@@ -247,14 +258,14 @@ public class PerlinBreathing extends LXPattern {
         {
           return LXColor.scaleBrightness(
               color,
-              Math.min(1f, (float) (pos * (1 - (noiseValue - pos))))
+              Math.min(1f, Math.max(minBrightness.getValuef(), (float) (pos * (1 - (noiseValue - pos)))))
           );
 
         } else if (ledFilteringParam.getEnum() == LedFilterType.CUTOFF_DISCRETE && noiseValue > pos) {
-          return LXColor.BLACK;
+          return LXColor.scaleBrightness(color, minBrightness.getValuef());
 
         } else if (ledFilteringParam.getEnum() == LedFilterType.BREATH_FADE) {
-          return LXColor.scaleBrightness(color, (float) pos);
+          return LXColor.scaleBrightness(color, Math.max(minBrightness.getValuef(), (float) pos));
         }
 
         return color;
