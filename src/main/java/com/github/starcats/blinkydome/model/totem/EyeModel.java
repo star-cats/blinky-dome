@@ -7,7 +7,10 @@ import heronarts.lx.transform.LXVector;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Totem eye
@@ -17,27 +20,72 @@ public class EyeModel extends LXModel {
   private static final float PX_SPACE_CM = 100f / EYE_DENSITY_PER_M; // ~0.7cm
   private static final float PX_WIDTH_CM = 1.2f; // 1.2cm
 
+  /** Convenience class that offers an offset view for referencing the eye grid*/
+  public static class EyeGridView {
+    private int startX;
+    private int startY;
+    private EyeModel eyeGrid;
+
+    public EyeGridView(EyeModel eyeGrid) {
+      this.eyeGrid = eyeGrid;
+    }
+
+    public EyeGridView reset(int x, int y) {
+      this.startX = x;
+      this.startY = y;
+      return this;
+    }
+
+    public Optional<LXPoint> getEyePx(int x, int y) {
+      return this.eyeGrid.getEyePx(startX + x, startY + y);
+    }
+
+  }
+
   /**
-   * an EyeModel consists of a bunch of columns of tightly-packed LEDs
+   * An EyeModel consists of a not-quite-square grid bunch of tightly-packed LEDs
+   *
+   * Pixels are addressed with 0,0 being in the bottom-left of the not-quite-square's bounding box.
    */
   public static class EyeColumn implements LXFixture {
     private List<LXPoint> points;
+    private List< Optional<LXPoint> > optionals; // memoize Optional instances so not creating them every loop
 
-    public EyeColumn(LXPoint[] points) {
-      this(points, false);
+    /** Position of the bottommost pixel in the full eye grid */
+    private final int offsetY;
+
+    public EyeColumn(int offsetY, LXPoint[] points) {
+      this(offsetY, points, false);
     }
 
-    public EyeColumn(LXPoint[] points, boolean reversed) {
+    public EyeColumn(int offsetY, LXPoint[] points, boolean reversed) {
+      this.offsetY = offsetY;
       this.points = Arrays.asList(points);
 
       if (reversed) {
         Collections.reverse(this.points);
       }
+
+      this.optionals = this.points.stream().map(Optional::of).collect(Collectors.toList());
+    }
+
+    public int getOffsetY() {
+      return offsetY;
     }
 
     @Override
     public List<LXPoint> getPoints() {
       return points;
+    }
+
+    /**
+     * @return The full-grid point, if it exists in this column
+     */
+    public Optional<LXPoint> getPointY(int y) {
+      if (y < offsetY || y >= offsetY + points.size()) {
+        return Optional.empty();
+      }
+      return optionals.get(y - offsetY);
     }
   }
 
@@ -85,12 +133,12 @@ public class EyeModel extends LXModel {
 
     return new EyeModel( new EyeColumn[] {
         // Reverse every other column so fixtures are logically indexed top-to-bottom
-        new EyeColumn(col0, true),
-        new EyeColumn(col1, false),
-        new EyeColumn(col2, true),
-        new EyeColumn(col3, false),
-        new EyeColumn(col4, true),
-        new EyeColumn(col5, false)
+        new EyeColumn(4, col0, false),
+        new EyeColumn(2, col1, true),
+        new EyeColumn(0, col2, false),
+        new EyeColumn(0, col3, true),
+        new EyeColumn(2, col4, false),
+        new EyeColumn(4, col5, true)
     } );
 
   }
@@ -113,6 +161,7 @@ public class EyeModel extends LXModel {
     colPos.add(nextColShift);
   }
 
+
   private List<EyeColumn> eyeColumns;
 
   /** Constructor (use factory) */
@@ -124,5 +173,21 @@ public class EyeModel extends LXModel {
 
   public List<EyeColumn> getEyeColumns() {
     return eyeColumns;
+  }
+
+  public Optional<LXPoint> getEyePx(int x, int y) {
+    if (x < 0 || x >= eyeColumns.size()) {
+      return Optional.empty();
+    }
+
+    return eyeColumns.get(x).getPointY(y);
+  }
+
+  public int getNumX() {
+    return eyeColumns.size();
+  }
+
+  public int getNumY() {
+    return eyeColumns.stream().map(eyeC -> eyeC.getPoints().size()).max(Comparator.naturalOrder()).get();
   }
 }

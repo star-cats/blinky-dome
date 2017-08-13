@@ -8,6 +8,7 @@ import com.github.starcats.blinkydome.pattern.PerlinBreathing;
 import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
+import com.github.starcats.blinkydome.pattern.totem.Mask_EyePattern;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
@@ -66,16 +67,34 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
   }
 
   @Override
+  protected int getNumChannels() {
+    return 2;
+  }
+
+  @Override
   protected void configChannel(int channelNum, LXChannel channel) {
+    if (channelNum == 1) {
+      configColorPatterns(channel);
+    } else {
+      configMaskPatterns(channel);
+    }
+  }
+
+  private void configMaskPatterns(LXChannel channel) {
+    channel.setPatterns(new LXPattern[] {
+        new Mask_EyePattern(lx, model)
+    });
+  }
+
+  private void configColorPatterns(LXChannel channel) {
+    // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
+    // --------------------
+    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
 
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
     FixtureColorBarsPattern fixtureColorBarsPattern = new FixtureColorBarsPattern(lx, model.fixtures, colorSampler)
         .initModulations(kickModulator);
-
-    // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
-    // --------------------
-    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
 
 
     // PerlinNoisePattern: apply defaults appropriate for BlinkyDomeModel mapping size
