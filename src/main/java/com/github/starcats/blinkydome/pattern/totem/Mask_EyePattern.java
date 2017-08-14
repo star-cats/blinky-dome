@@ -4,20 +4,24 @@ import com.github.starcats.blinkydome.model.totem.TotemModel;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.modulator.VariableLFO;
+import heronarts.lx.parameter.LXCompoundModulation;
 
 /**
- * Created by dlopuch on 8/12/17.
+ * Mask pattern that generates two eye masks
  */
 public class Mask_EyePattern extends LXPattern {
 
   private final TotemModel model;
+  private final EyePatternLayer leftEye;
+  private final EyePatternLayer rightEye;
 
   public Mask_EyePattern(LX lx, TotemModel totemModel) {
     super(lx);
     this.model = totemModel;
 
-    EyePatternLayer leftEye = new EyePatternLayer(lx, totemModel.leftEye, "l ");
-    EyePatternLayer rightEye = new EyePatternLayer(lx, totemModel.rightEye, "r ").setLockableEye(leftEye);
+    leftEye = new EyePatternLayer(lx, totemModel.leftEye, "l ");
+    rightEye = new EyePatternLayer(lx, totemModel.rightEye, "r ").setLockableEye(leftEye);
 
     addLayer(leftEye);
     addLayer(rightEye);
@@ -27,9 +31,24 @@ public class Mask_EyePattern extends LXPattern {
     addParameter(leftEye.eyeType);
 
     addParameter(rightEye.lockToOther);
+    rightEye.lockToOther.setValue(true);
     addParameter(rightEye.posX);
     addParameter(rightEye.posY);
     addParameter(rightEye.eyeType);
+  }
+
+  public Mask_EyePattern initModulators() {
+    VariableLFO eyeXMod = new VariableLFO("eye x");
+    eyeXMod.start();
+
+    LXCompoundModulation eyeXModln = new LXCompoundModulation(eyeXMod, leftEye.posX);
+    eyeXModln.range.setValue(1);
+    leftEye.posX.setValue(0);
+
+    this.modulation.addModulator(eyeXMod);
+    this.modulation.addModulation(eyeXModln);
+
+    return this;
   }
 
   @Override

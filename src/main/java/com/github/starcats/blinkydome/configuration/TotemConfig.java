@@ -76,13 +76,17 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
     if (channelNum == 1) {
       configColorPatterns(channel);
     } else {
+      channel.label.setValue("Masks 1");
+      channel.blendMode.setValue(1); // Multiply
+      channel.fader.setValue(1);
+
       configMaskPatterns(channel);
     }
   }
 
   private void configMaskPatterns(LXChannel channel) {
     channel.setPatterns(new LXPattern[] {
-        new Mask_EyePattern(lx, model)
+        new Mask_EyePattern(lx, model).initModulators()
     });
   }
 
@@ -109,8 +113,8 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
 
 
     channel.setPatterns(new LXPattern[] {
-        perlinBreathing,
         perlinNoisePattern,
+        perlinBreathing,
         // TODO: bring in FixtureTracerPattern
         new RainbowZPattern(lx),
         new PalettePainterPattern(lx, lx.palette), // feed it LX default palette (controlled by Studio's palette UI)
