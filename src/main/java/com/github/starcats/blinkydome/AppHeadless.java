@@ -76,7 +76,12 @@ public class AppHeadless extends PApplet {
   public void draw() {
     // Wipe the frame...
     background(0x000);
-    // ...and everything else is handled by LX engine!
+
+    lx.engine.onDraw();
+
+    if (!lx.engine.isThreaded()) {
+      lx.engine.run();
+    }
   }
 
 }

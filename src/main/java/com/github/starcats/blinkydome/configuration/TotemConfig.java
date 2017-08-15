@@ -9,13 +9,13 @@ import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pattern.totem.Mask_EyePattern;
+import com.github.starcats.blinkydome.util.Apa102RpiOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
@@ -46,8 +46,12 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
 
   @Override
   protected List<LXOutput> constructOutputs(LX lx) {
+
+    lx.engine.output.brightness.setValue(0.7);
+
     return Arrays.asList(
-        new FadecandyOutput(lx, "localhost", 7890)
+//        new FadecandyOutput(lx, "localhost", 7890)
+        new Apa102RpiOutput(lx)
     );
   }
 
