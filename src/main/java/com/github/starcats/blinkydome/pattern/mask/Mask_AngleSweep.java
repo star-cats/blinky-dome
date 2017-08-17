@@ -112,9 +112,9 @@ public class Mask_AngleSweep extends LXPattern {
 
 
     if (tempo != null) {
-      TempoLock tempoLock = new TempoLock(tempo, sweepModulator);
+      TempoLock tempoLock = new TempoLock(lx, "sweep tempo lock", tempo, sweepModulator);
       sweepModulator.phase.setValue(0.5); // beats will be full-sweep "on"
-      addParameter(tempoLock.enableLock);
+      addParameter(tempoLock.enable);
     }
   }
 

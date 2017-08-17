@@ -1,5 +1,6 @@
 package com.github.starcats.blinkydome.pattern.mask;
 
+import com.github.starcats.blinkydome.util.TempoLock;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
@@ -90,6 +91,10 @@ public class Mask_RollingBouncingDisc extends LXPattern {
 
   private RollingBouncingDiscMonitor monitor;
 
+  private VariableLFO posModulator;
+  private TempoLock tempoLock;
+  private boolean tempoLockInited;
+
   public Mask_RollingBouncingDisc(LX lx, LXVector origin, LXVector direction, LXVector rollZero) {
     super(lx);
     this.origin = origin;
@@ -106,6 +111,11 @@ public class Mask_RollingBouncingDisc extends LXPattern {
     addParameter(roll);
 
     addParameter(detailLevel);
+
+    this.tempoLock = new TempoLock(lx, "position tempo lock", lx.tempo);
+    this.tempoLockInited = false; // need to wait for posModulator to be available, see initTempoLocks()
+    addParameter(this.tempoLock.enable);
+    addParameter(this.tempoLock.beatIndexTrigger);
   }
 
   /**
@@ -119,6 +129,7 @@ public class Mask_RollingBouncingDisc extends LXPattern {
     posModulator.period.setValue(1000);
     posModulator.period.setExponent(2);
     posModulator.start();
+    this.posModulator = posModulator;
     this.modulation.addModulator(posModulator);
 
     LXCompoundModulation posModulation = new LXCompoundModulation(posModulator, position);
@@ -149,8 +160,31 @@ public class Mask_RollingBouncingDisc extends LXPattern {
     return this;
   }
 
+  public Mask_RollingBouncingDisc initTempoLocks() {
+    if (posModulator != null) {
+      this.tempoLock.setModulatorToLock(posModulator);
+      tempoLockInited = true;
+    }
+
+    return this;
+  }
+
+  @Override
+  public void dispose() {
+    if (this.tempoLock != null) {
+      this.tempoLock.dispose();
+      this.tempoLock = null;
+    }
+    super.dispose();
+  }
+
   @Override
   protected void run(double deltaMs) {
+    // Init on first run for when deserializing out of json
+    if (!tempoLockInited) {
+      this.initTempoLocks();
+    }
+
     LXVector curPosOffset = new LXVector(direction).mult(position.getValuef()).add(origin);
 
     // Okay, now that we're at the starting position for the disc, lets define principal axes:
