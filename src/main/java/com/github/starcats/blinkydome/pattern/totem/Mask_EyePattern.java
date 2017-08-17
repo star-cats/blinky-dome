@@ -12,9 +12,9 @@ import heronarts.lx.parameter.LXCompoundModulation;
  */
 public class Mask_EyePattern extends LXPattern {
 
+  public final EyePatternLayer leftEye;
+  public final EyePatternLayer rightEye;
   private final TotemModel model;
-  private final EyePatternLayer leftEye;
-  private final EyePatternLayer rightEye;
 
   public Mask_EyePattern(LX lx, TotemModel totemModel) {
     super(lx);

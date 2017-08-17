@@ -9,13 +9,15 @@ import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pattern.totem.Mask_EyePattern;
-import com.github.starcats.blinkydome.util.Apa102RpiOutput;
+import com.github.starcats.blinkydome.util.AudioDetector;
+import com.github.starcats.blinkydome.util.MockBeatDetect;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
+import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
@@ -50,15 +52,19 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
     lx.engine.output.brightness.setValue(0.7);
 
     return Arrays.asList(
-//        new FadecandyOutput(lx, "localhost", 7890)
-        new Apa102RpiOutput(lx)
+        new FadecandyOutput(lx, "localhost", 7890)
+//        new Apa102RpiOutput(lx)
     );
   }
 
   @Override
   protected void initComponents(PApplet p, LX lx, TotemModel model) {
-    starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
+    // TODO: Enable real beat detection with minim
+    //starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
+    AudioDetector.init(null);
+
     colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx);
+    colorSampler.getSourceSelect().setValue(3);
   }
 
   @Override
@@ -89,15 +95,21 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
   }
 
   private void configMaskPatterns(LXChannel channel) {
+    Mask_EyePattern eyePattern = new Mask_EyePattern(lx, model).initModulators();
+    eyePattern.leftEye.posY.setValue(5);
+    eyePattern.leftEye.eyeType.setValue(1);
+
     channel.setPatterns(new LXPattern[] {
-        new Mask_EyePattern(lx, model).initModulators()
+        eyePattern
     });
   }
 
   private void configColorPatterns(LXChannel channel) {
     // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
     // --------------------
-    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
+    // TODO: Enable real beat detection with minim
+//    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
+    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, new MockBeatDetect(), colorSampler);
 
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
