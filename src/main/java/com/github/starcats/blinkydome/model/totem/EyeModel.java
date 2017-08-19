@@ -98,6 +98,15 @@ public class EyeModel extends LXModel {
    * @return the EyeModel
    */
   public static EyeModel makeModel(LXVector centerCM, LXVector left, LXVector up) {
+    return makeModel(centerCM, left, up, false);
+  }
+
+  /**
+   * Factory to produce a model
+   * @param isLazyEye "Fix it in software!" True if it's the fixture with the single burned out LED.  We skip it.
+   * @return the EyeModel
+   */
+  public static EyeModel makeModel(LXVector centerCM, LXVector left, LXVector up, boolean isLazyEye) {
     LXVector upPx = up.copy().setMag(PX_SPACE_CM);
     LXVector downPx = up.copy().setMag(-PX_SPACE_CM);
     LXVector rightPx = left.copy().setMag(-PX_WIDTH_CM);
@@ -121,10 +130,10 @@ public class EyeModel extends LXModel {
 
     // Col3: going down. -2 px spacing b/w bot3 and bot4
     LXPoint[] col3 = new LXPoint[9];
-    fillEyeCol(colPos, col3, downPx, 3, upPx, rightPx);
+    fillEyeCol(colPos, col3, downPx, isLazyEye ? 4 : 3, upPx, rightPx);
 
     // Col4: going up. -1 px spacing b/w top4 and top5
-    LXPoint[] col4 = new LXPoint[6];
+    LXPoint[] col4 = new LXPoint[isLazyEye ? 5 : 6];
     fillEyeCol(colPos, col4, upPx, 2, downPx, rightPx);
 
     // Col5: going down.
@@ -137,7 +146,7 @@ public class EyeModel extends LXModel {
         new EyeColumn(2, col1, true),
         new EyeColumn(0, col2, false),
         new EyeColumn(0, col3, true),
-        new EyeColumn(2, col4, false),
+        new EyeColumn(isLazyEye ? 3 : 2, col4, false),
         new EyeColumn(4, col5, true)
     } );
 

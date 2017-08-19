@@ -77,11 +77,16 @@ public class TotemModel extends LXModel {
     EyeModel rightEye = EyeModel.makeModel(
         new LXVector(20f, 20f, 0f),
         new LXVector(-1f, 0, 0),
-        new LXVector(0, 1f, 0)
+        new LXVector(0, 1f, 0), true
     );
 
 
-    LXFixture[] allFixtures = new LXFixture[ 6 + leftEye.getEyeColumns().size() + rightEye.getEyeColumns().size() ];
+    int NUM_WHISKER_FIXTURES = 6;
+    LXFixture[] allFixtures = new LXFixture[
+        NUM_WHISKER_FIXTURES +
+        leftEye.getEyeColumns().size() +
+        rightEye.getEyeColumns().size()
+    ];
     int i = 0;
     allFixtures[i++] = wh0a;
     allFixtures[i++] = wh0b;
