@@ -17,12 +17,15 @@ public class TrianglesOnTheFloorFactory {
     List<BlinkyTriangle> triangles = new ArrayList<>();
 
     LXVector harnessStart = new LXVector(0, 0, 0);
-    LXVector nextHarnessInc = new LXVector(LEN_SIDE, 0, 0);
+    LXVector nextHarnessInc = new LXVector(-LEN_SIDE, 0, 0);
     LXVector up = new LXVector(0, 1, 0);
-    LXVector triangleSpreadDirection = new LXVector(0, 0, -1);
+    LXVector triangleSpreadDirection = new LXVector(0, 0, 1);
+
+    Boolean FWD = true;
+    Boolean AWAY = false;
 
     makeLineOfTriangles(
-        triangles, 4,
+        triangles, new boolean[] {AWAY, FWD, AWAY, FWD},
         harnessStart, triangleSpreadDirection, up,
         0, 1, 0
     );
@@ -30,7 +33,7 @@ public class TrianglesOnTheFloorFactory {
     harnessStart.add(nextHarnessInc);
 
     makeLineOfTriangles(
-        triangles, 3,
+        triangles, new boolean[] {FWD, FWD, FWD},
         harnessStart, triangleSpreadDirection, up,
         0, 2, 0
     );
@@ -38,7 +41,7 @@ public class TrianglesOnTheFloorFactory {
     harnessStart.add(nextHarnessInc);
 
     makeLineOfTriangles(
-        triangles, 2,
+        triangles, new boolean[] {AWAY, AWAY},
         harnessStart, triangleSpreadDirection, up,
         0, 3, 0
     );
@@ -48,18 +51,20 @@ public class TrianglesOnTheFloorFactory {
   }
 
   private static void makeLineOfTriangles(
-      List<BlinkyTriangle> triangleList, int num,
+      List<BlinkyTriangle> triangleList, boolean[] triangleConnectsFacingHarnessStart,
       LXVector start, LXVector direction, LXVector up,
       int ppGroup, int ppPort, int firstPpIndex
   ) {
     start = start.copy();
     LXVector incr = direction.copy().setMag( LEN_SIDE * 1.2f );
-    for (int i=0; i<num; i++) {
+    for (int i=0; i<triangleConnectsFacingHarnessStart.length; i++) {
+      BlinkyTriangle.V firstV = triangleConnectsFacingHarnessStart[i] ? BlinkyTriangle.V.V1 : BlinkyTriangle.V.V3;
+      BlinkyTriangle.V secondV = triangleConnectsFacingHarnessStart[i] ? BlinkyTriangle.V.V3 : BlinkyTriangle.V.V1;
       triangleList.add(
           BlinkyTriangle.positionIn3DSpace(
               start, LEN_SIDE, 0,
               up, direction,
-              BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+              firstV, secondV,
               ppGroup, ppPort, firstPpIndex, ppGroup * 8 + ppPort, i
           )
       );
