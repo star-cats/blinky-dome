@@ -50,6 +50,7 @@ public class AppHeadless extends PApplet {
 
 
     // Kick it!
+    System.out.println("Starting engine!");
     lx.engine.start();
 
 
@@ -71,6 +72,8 @@ public class AppHeadless extends PApplet {
       }
     }
     ));
+
+    System.out.println("Setup complete, drawing blinks!");
   }
 
   public void draw() {

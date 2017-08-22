@@ -47,7 +47,12 @@ public abstract class AbstractStarcatsLxConfig<M extends LXModel> implements Sta
   public void init(LX lx) {
     this.lx = lx;
 
-    constructOutputs(lx).forEach(lx::addOutput);
+    System.out.println("Adding outputs...");
+    for (LXOutput output : constructOutputs(lx)) {
+      System.out.println("\tOutput: " + output.getClass().toGenericString());
+      lx.addOutput(output);
+    }
+
 
     initComponents(p, lx, model);
 

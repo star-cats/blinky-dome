@@ -11,13 +11,13 @@ import com.github.starcats.blinkydome.pattern.mask.Mask_AllWhite;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pattern.mask.TMask_Starlight;
 import com.github.starcats.blinkydome.pattern.totem.Mask_EyePattern;
+import com.github.starcats.blinkydome.util.Apa102RpiOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
@@ -52,8 +52,8 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
     lx.engine.output.brightness.setValue(0.7);
 
     return Arrays.asList(
-        new FadecandyOutput(lx, "localhost", 7890)
-//        new Apa102RpiOutput(lx)
+//        new FadecandyOutput(lx, "localhost", 7890)
+        new Apa102RpiOutput(lx)
     );
   }
 
@@ -65,7 +65,7 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
 //    AudioDetector.init(null);
 
     colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx);
-    colorSampler.getSourceSelect().setValue(3);
+    colorSampler.getSourceSelect().setValue(12);
   }
 
   @Override
@@ -130,7 +130,7 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
 //    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, new MockBeatDetect(), colorSampler);
-    perlinNoisePattern.hueSpeed.setValue(0.1);
+    perlinNoisePattern.hueSpeed.setValue(0.2);
 
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
