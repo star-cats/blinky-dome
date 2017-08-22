@@ -129,4 +129,17 @@ public class TotemModel extends LXModel {
     this.leftEye = leftEye;
     this.rightEye = rightEye;
   }
+
+  public LXFixture[] getWhiskerFixtures() {
+    LXFixture[] whiskers = new LXFixture[ leftWhiskers.size() + rightWhiskers.size() ];
+    int i = 0;
+
+    for (LXFixture whisker : leftWhiskers) {
+      whiskers[i++] = whisker;
+    }
+    for (LXFixture whisker : rightWhiskers) {
+      whiskers[i++] = whisker;
+    }
+    return whiskers;
+  }
 }

@@ -5,9 +5,15 @@ import com.github.starcats.blinkydome.util.SCTriggerable;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
 import heronarts.lx.color.LXColor;
+import heronarts.lx.model.LXFixture;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Perform a random wipe in x, y, or z direction
@@ -29,17 +35,32 @@ public class Mask_WipePattern extends LXPattern implements SCTriggerable {
 
 
   public Mask_WipePattern(LX lx) {
+    this(lx, Collections.emptyList());
+  }
+
+  public Mask_WipePattern(LX lx, LXFixture[] fixtures) {
+    this(
+        lx,
+        Arrays.stream(fixtures).flatMap(f -> f.getPoints().stream() ).collect(Collectors.toList())
+    );
+  }
+
+  public Mask_WipePattern(LX lx, List<LXPoint> points) {
     super(lx);
 
+    if (points == null || points.isEmpty()) {
+      points = lx.model.getPoints();
+    }
+
     allWipes = new WhiteWipe[] {
-        new WhiteWipe(lx, this, m -> m.yMin, m -> m.yMax, pt -> pt.y, durationMs, widthPx),
-        new WhiteWipe(lx, this, m -> m.yMax, m -> m.yMin, pt -> pt.y, durationMs, widthPx),
+        new WhiteWipe(lx, this, points, pt -> pt.y, durationMs, widthPx),
+        new WhiteWipe(lx, this, points, pt -> -pt.y, durationMs, widthPx),
 
-        new WhiteWipe(lx, this, m -> m.xMin, m -> m.xMax, pt -> pt.x, durationMs, widthPx),
-        new WhiteWipe(lx, this, m -> m.xMax, m -> m.xMin, pt -> pt.x, durationMs, widthPx),
+        new WhiteWipe(lx, this, points, pt -> pt.x, durationMs, widthPx),
+        new WhiteWipe(lx, this, points, pt -> -pt.x, durationMs, widthPx),
 
-        new WhiteWipe(lx, this, m -> m.zMin, m -> m.zMax, pt -> pt.z, durationMs, widthPx),
-        new WhiteWipe(lx, this, m -> m.zMax, m -> m.zMin, pt -> pt.z, durationMs, widthPx)
+        new WhiteWipe(lx, this, points, pt -> pt.z, durationMs, widthPx),
+        new WhiteWipe(lx, this, points, pt -> -pt.z, durationMs, widthPx)
     };
 
     addParameter(durationMs);

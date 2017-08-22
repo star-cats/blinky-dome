@@ -3,7 +3,6 @@ package com.github.starcats.blinkydome.pattern.totem;
 import com.github.starcats.blinkydome.model.totem.TotemModel;
 import heronarts.lx.LX;
 import heronarts.lx.LXPattern;
-import heronarts.lx.color.LXColor;
 import heronarts.lx.modulator.VariableLFO;
 import heronarts.lx.parameter.LXCompoundModulation;
 
@@ -53,7 +52,7 @@ public class Mask_EyePattern extends LXPattern {
 
   @Override
   protected void run(double deltaMs) {
-    model.rightWhiskers.forEach(f -> setColor(f, LXColor.WHITE));
-    model.leftWhiskers.forEach(f -> setColor(f, LXColor.WHITE));
+    //model.rightWhiskers.forEach(f -> setColor(f, LXColor.WHITE));
+    //model.leftWhiskers.forEach(f -> setColor(f, LXColor.WHITE));
   }
 }
