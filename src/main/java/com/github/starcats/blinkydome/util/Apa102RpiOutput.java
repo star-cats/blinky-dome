@@ -1,6 +1,8 @@
 package com.github.starcats.blinkydome.util;
 
 import com.github.dlopuch.apa102_java_rpi.Apa102Output;
+import com.pi4j.io.spi.SpiChannel;
+import com.pi4j.io.spi.SpiDevice;
 import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.output.LXOutput;
@@ -24,7 +26,7 @@ public class Apa102RpiOutput extends LXOutput {
     super(lx);
 
     try {
-      Apa102Output.initSpi();
+      Apa102Output.initSpi(SpiChannel.CS0, 7800000, SpiDevice.DEFAULT_SPI_MODE);
     } catch (IOException e) {
       throw new RuntimeException("Failed to initialize SPI", e);
     }
