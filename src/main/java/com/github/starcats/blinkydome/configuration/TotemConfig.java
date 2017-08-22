@@ -7,6 +7,7 @@ import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
 import com.github.starcats.blinkydome.pattern.PerlinBreathing;
 import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_AllWhite;
 import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
 import com.github.starcats.blinkydome.pattern.mask.TMask_Starlight;
 import com.github.starcats.blinkydome.pattern.totem.Mask_EyePattern;
@@ -109,6 +110,8 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
   }
 
   private void configMaskPatterns(LXChannel channel) {
+    Mask_AllWhite allWhite = new Mask_AllWhite(lx, model.getWhiskerFixtures());
+
     TMask_Starlight starlight = new TMask_Starlight(p, lx, 1);
     starlight.numStars.setValue(170);
 
@@ -116,6 +119,7 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
     wipe.widthPx.setValue(1.05);
 
     channel.setPatterns(new LXPattern[] {
+        allWhite,
         starlight,
         wipe
     });
