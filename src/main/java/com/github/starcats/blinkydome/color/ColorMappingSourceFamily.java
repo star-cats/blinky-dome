@@ -18,9 +18,14 @@ public interface ColorMappingSourceFamily extends ColorMappingSource {
   DiscreteParameter getSourceSelect();
 
   /**
-   * Changes the sourceSelect to a random source
+   * Provides a triggerable BooleanParameter that basically calls {@link #setRandomSource()}
    */
   BooleanParameter getRandomSourceTrigger();
+
+  /**
+   * Changes the sourceSelect to a random source
+   */
+  void setRandomSource();
 
   /**
    * Returns how many sources this group contains

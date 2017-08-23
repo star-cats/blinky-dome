@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.configuration;
 
-import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
+import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.model.totem.TotemModel;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -32,7 +32,7 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
 
   // Components
   private StarCatFFT starCatFFT;
-  protected ImageColorSamplerGroup colorSampler;
+  protected GenericColorMappingSourceClan colorSampler;
 
   // Modulators
   private BandGate kickModulator;

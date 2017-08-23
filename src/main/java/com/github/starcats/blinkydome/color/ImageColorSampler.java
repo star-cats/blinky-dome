@@ -108,7 +108,8 @@ public class ImageColorSampler extends LXComponent implements ColorMappingSource
     return randomSourceTrigger;
   }
 
-  protected void setRandomSource() {
+  @Override
+  public void setRandomSource() {
     patternSelect.setValue(
         patternSelect.getMinValue() +
         (int)(Math.random() * patternSelect.getRange())

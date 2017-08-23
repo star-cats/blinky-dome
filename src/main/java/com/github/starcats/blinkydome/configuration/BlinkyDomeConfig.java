@@ -1,7 +1,9 @@
 package com.github.starcats.blinkydome.configuration;
 
+import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
+import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
-import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
+import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
@@ -43,7 +45,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   // Components
   private StarCatFFT starCatFFT;
-  protected ImageColorSamplerGroup colorSampler;
+  protected GenericColorMappingSourceClan colorSampler;
   protected ImageColorSampler gradientColorSource;
   protected ImageColorSampler patternColorSource;
 
@@ -68,9 +70,10 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
     gradientColorSource = new ImageColorSampler(p, lx, "gradients.png");
     patternColorSource = new ImageColorSampler(p, lx, "patterns.png");
-    colorSampler = new ImageColorSamplerGroup(lx, "color samplers", new ImageColorSampler[] {
+    colorSampler = new GenericColorMappingSourceClan(lx, "color samplers", new ColorMappingSourceFamily[] {
         gradientColorSource,
-        patternColorSource
+        patternColorSource,
+        new RotatingHueColorMappingSourceFamily(lx)
     });
 
     LXModulationEngine.LXModulatorFactory<MinimBeatTriggers> minimFactory =
@@ -263,18 +266,18 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
       // Start with mapping-appropriate defaults, but if user changes them, use the last sampler's param
       double[] hueSpeedDefaultsBySampler = new double[] { 0.25, 0.10 };
       perlinNoisePattern.hueSpeed.addListener(param -> {
-        if (colorSampler.samplerSelector.getObject() == gradientColorSource) {
+        if (colorSampler.familySelector.getObject() == gradientColorSource) {
           hueSpeedDefaultsBySampler[0] = param.getValue();
-        } else if (colorSampler.samplerSelector.getObject() == patternColorSource) {
+        } else if (colorSampler.familySelector.getObject() == patternColorSource) {
           hueSpeedDefaultsBySampler[1] = param.getValue();
         }
       });
-      colorSampler.samplerSelector.addListener(new LXParameterListener() {
+      colorSampler.familySelector.addListener(new LXParameterListener() {
         @Override
         public void onParameterChanged(LXParameter param) {
           if (perlinNoisePattern.getChannel() == null) {
             // Remove stale listeners (eg if pattern was unloaded
-            colorSampler.samplerSelector.removeListener(this);
+            colorSampler.familySelector.removeListener(this);
             return;
           }
 
