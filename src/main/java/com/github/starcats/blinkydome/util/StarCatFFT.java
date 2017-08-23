@@ -34,7 +34,28 @@ public class StarCatFFT {
     // 44hz is 2x 22hz (nyquist on human hearing).
     // However, for music-reactive stuff, most stuff happens lower down.  Do only 3/4 of 44hz to get finer resolution
     // on the frequencies we care about
-    this.in = minim.getLineIn(Minim.MONO, 1024, 44100);
+    int ttl = 5;
+    AudioInput in = null;
+    while (in == null && ttl >= 0) {
+      in = minim.getLineIn(Minim.MONO, 1024, 44100);
+
+      if (in == null) {
+        System.out.println("No audio input found, sleeping for 500ms to try again (tries left: " + ttl);
+        ttl--;
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          throw new RuntimeException("InterruptedException while sleeping! ", e);
+        }
+      }
+    }
+    this.in = in;
+
+    if (in == null) {
+      System.out.println("No input found, doing mock beatDetect");
+      this.beat = new MockBeatDetect();
+      return;
+    }
 
     // TODO: Turned off to get some extra processing?  No effect  :(
     //this.fft = new FFT(in.bufferSize(), in.sampleRate());

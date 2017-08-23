@@ -24,7 +24,7 @@ public class CommonScLxConfigUtils {
      */
     public static StarCatFFT makeStarcatFft(LX lx) {
       StarCatFFT starCatFFT = new StarCatFFT(lx);
-      AudioDetector.init(starCatFFT.in.mix);
+      AudioDetector.init(starCatFFT.in);
       return starCatFFT;
     }
 

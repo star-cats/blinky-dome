@@ -1,6 +1,7 @@
 package com.github.starcats.blinkydome.util;
 
 import ddf.minim.AudioBuffer;
+import ddf.minim.AudioInput;
 
 /**
  * Detects if audio is running or not. (The PS3 Eye camera/mic is jenky as all hell on linux)
@@ -15,8 +16,8 @@ public class AudioDetector {
   private float maxAudioLevel = 0;
   private double msAccumulator;
 
-  public static void init(AudioBuffer audioBuffer) {
-    LINE_IN = new AudioDetector(audioBuffer);
+  public static void init(AudioInput in) {
+    LINE_IN = new AudioDetector(in != null ? in.mix : null);
   }
 
   private AudioDetector(AudioBuffer audioBuffer) {
@@ -46,11 +47,11 @@ public class AudioDetector {
   }
 
   public float getMaxLevel() {
-    if (audioBuffer != null) {
-      return maxAudioLevel;
-    } else {
+    if (audioBuffer == null) {
       return -1;
     }
+
+    return maxAudioLevel;
   }
 
   public boolean isRunning() {
