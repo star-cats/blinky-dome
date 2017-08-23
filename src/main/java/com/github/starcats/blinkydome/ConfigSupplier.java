@@ -1,7 +1,7 @@
 package com.github.starcats.blinkydome;
 
+import com.github.starcats.blinkydome.configuration.BlinkyDomeGuiConfig;
 import com.github.starcats.blinkydome.configuration.StarcatsLxConfig;
-import com.github.starcats.blinkydome.configuration.TotemGuiConfig;
 import processing.core.PApplet;
 
 /**
@@ -18,9 +18,9 @@ public class ConfigSupplier {
 //    return new FibonocciPetalsConfig(p);
 
     // GUI:
-//    return new BlinkyDomeGuiConfig(p);
+    return new BlinkyDomeGuiConfig(p);
 //    return new IcosastarGuiConfig(p);
 //    return new FibonocciPetalsGuiConfig(p);
-    return new TotemGuiConfig(p);
+//    return new TotemGuiConfig(p);
   }
 }
