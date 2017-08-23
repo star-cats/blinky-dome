@@ -18,22 +18,24 @@ public class TrianglesOnTheFloorFactory {
 
     LXVector harnessStart = new LXVector(0, 0, 0);
     LXVector nextHarnessInc = new LXVector(-LEN_SIDE, 0, 0);
+    LXVector negNextHarnessInc = new LXVector(LEN_SIDE, 0, 0);
     LXVector up = new LXVector(0, 1, 0);
     LXVector triangleSpreadDirection = new LXVector(0, 0, 1);
+    LXVector negTriangleSpreadDirection = new LXVector(0, 0, -1);
 
     Boolean FWD = true;
     Boolean AWAY = false;
 
     makeLineOfTriangles(
-        triangles, new boolean[] {AWAY, FWD, AWAY, FWD},
-        harnessStart, triangleSpreadDirection, up,
-        0, 1, 0
+            triangles, new boolean[] {FWD, FWD, FWD, FWD},
+            harnessStart, triangleSpreadDirection, up,
+            0, 1, 0
     );
 
     harnessStart.add(nextHarnessInc);
 
     makeLineOfTriangles(
-        triangles, new boolean[] {FWD, FWD, FWD},
+        triangles, new boolean[] {AWAY, FWD, AWAY, FWD},
         harnessStart, triangleSpreadDirection, up,
         0, 2, 0
     );
@@ -41,10 +43,78 @@ public class TrianglesOnTheFloorFactory {
     harnessStart.add(nextHarnessInc);
 
     makeLineOfTriangles(
-        triangles, new boolean[] {AWAY, AWAY},
+        triangles, new boolean[] {AWAY, FWD, AWAY, AWAY},
         harnessStart, triangleSpreadDirection, up,
         0, 3, 0
     );
+
+    harnessStart.add(nextHarnessInc);
+
+    makeLineOfTriangles(
+            triangles, new boolean[] {AWAY, AWAY, AWAY, AWAY},
+            harnessStart, triangleSpreadDirection, up,
+            0, 4, 0
+    );
+
+    harnessStart.add(nextHarnessInc);
+
+    makeLineOfTriangles(
+            triangles, new boolean[] {AWAY, FWD, AWAY, FWD},
+            harnessStart, triangleSpreadDirection, up,
+            0, 5, 0
+    );
+
+    harnessStart.add(nextHarnessInc);
+
+    makeLineOfTriangles(
+            triangles, new boolean[] {AWAY, AWAY, AWAY, FWD},
+            harnessStart, triangleSpreadDirection, up,
+            0, 6, 0
+    );
+
+
+    // Start ad-hoc grid
+
+    // 4 inline with grid but offset
+    makeLineOfTriangles(
+            triangles, new boolean[] {FWD, AWAY, FWD, AWAY},
+            harnessStart.add(negNextHarnessInc).add(negNextHarnessInc), negTriangleSpreadDirection, up,
+            1, 1, 0
+    );
+
+    // 3 inline with grid but offset
+    makeLineOfTriangles(
+            triangles, new boolean[] {FWD, AWAY, FWD},
+            harnessStart.copy().add(negNextHarnessInc), negTriangleSpreadDirection, up,
+            1, 4, 0
+    );
+
+    // 4 on floor along back
+    makeLineOfTriangles(
+            triangles, new boolean[] {FWD, FWD, FWD, FWD},
+            new LXVector(0, 0, LEN_SIDE * 1.2f * 4f + LEN_SIDE).add(nextHarnessInc.copy().setMag(4 * nextHarnessInc.mag())),
+            negNextHarnessInc, up,
+            1, 2, 0
+    );
+
+    // 4 on windows
+    makeLineOfTriangles(
+            triangles, new boolean[] {FWD, FWD, FWD, FWD},
+            new LXVector(0, 7 * 12, LEN_SIDE * 1.2f * 4f + LEN_SIDE).add(nextHarnessInc.copy().setMag(4 * nextHarnessInc.mag())),
+            negNextHarnessInc, up,
+            1, 5, 0
+    );
+
+    // 4 on loft
+    makeLineOfTriangles(
+            triangles, new boolean[] {FWD, AWAY, FWD, AWAY},
+            harnessStart
+                    .add( negTriangleSpreadDirection.copy().setMag(LEN_SIDE * 5f * 1.2f) )
+                    .add( new LXVector(0, 7 * 12, 0) ),
+            negTriangleSpreadDirection, up,
+            1, 3, 0
+    );
+
 
     return BlinkyModel.makeModel(triangles);
 
