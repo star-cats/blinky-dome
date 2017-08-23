@@ -194,6 +194,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
     LX.LXPatternFactory<Mask_PerlinLineTranslator> perlinLineTranslatorFactory =
         (lx2, ch, l) -> new Mask_PerlinLineTranslator(lx, p, model.allTriangles);
+    lx.registerPatternFactory(Mask_PerlinLineTranslator.class, perlinLineTranslatorFactory);
 
 
     LX.LXPatternFactory<TMask_Starlight> starlightFactory = (lx2, ch, l) -> new TMask_Starlight(p, lx2, 3);
