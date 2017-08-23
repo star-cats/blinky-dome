@@ -72,7 +72,7 @@ public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxG
     // Add custom gradient selector
     UI2dScrollContext container = ui.leftPane.global;
     UIColorMappingSource uiColorMappingSource = new UIColorMappingSource(
-        ui, colorSampler, 0, 0, container.getContentWidth());
+        ui, colorMappingSources, 0, 0, container.getContentWidth());
     uiColorMappingSource.addToContainer(container);
 
 

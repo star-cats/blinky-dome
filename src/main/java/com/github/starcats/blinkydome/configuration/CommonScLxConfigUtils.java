@@ -1,7 +1,9 @@
 package com.github.starcats.blinkydome.configuration;
 
+import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
+import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
-import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
+import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
 import com.github.starcats.blinkydome.util.AudioDetector;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import heronarts.lx.LX;
@@ -30,14 +32,19 @@ public class CommonScLxConfigUtils {
      * @return A {@link com.github.starcats.blinkydome.color.ColorMappingSource} compromising of gradient and pattern
      *   color samplers
      */
-    public static ImageColorSamplerGroup makeColorSampler(PApplet p, LX lx) {
+    public static GenericColorMappingSourceClan makeColorSampler(PApplet p, LX lx, StarCatFFT starCatFFT) {
       // Color Samplers
       ImageColorSampler gradientColorSource = new ImageColorSampler(p, lx, "gradients.png");
       ImageColorSampler patternColorSource = new ImageColorSampler(p, lx, "patterns.png");
-      return new ImageColorSamplerGroup(lx, "color samplers", new ImageColorSampler[] {
-          gradientColorSource,
-          patternColorSource
-      });
+      return new GenericColorMappingSourceClan(
+          lx, "color mapping sources",
+          new ColorMappingSourceFamily[] {
+              gradientColorSource,
+              patternColorSource,
+              new RotatingHueColorMappingSourceFamily(lx)
+          },
+          starCatFFT.beat
+      );
     }
   }
 

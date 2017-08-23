@@ -1,6 +1,6 @@
 package com.github.starcats.blinkydome.configuration;
 
-import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
+import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.model.FibonocciPetalsModel;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.PerlinBreathing;
@@ -40,7 +40,7 @@ public class FibonocciPetalsConfig extends AbstractStarcatsLxConfig<FibonocciPet
 
   // Components
   private StarCatFFT starCatFFT;
-  protected ImageColorSamplerGroup colorSampler;
+  protected GenericColorMappingSourceClan colorSampler;
   protected MinimBeatTriggers minimBeatTriggers;
 
 
@@ -67,7 +67,7 @@ public class FibonocciPetalsConfig extends AbstractStarcatsLxConfig<FibonocciPet
   @Override
   protected void initComponents(PApplet p, LX lx, FibonocciPetalsModel model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
-    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx);
+    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx, starCatFFT);
 
     minimBeatTriggers = new MinimBeatTriggers(lx, starCatFFT);
   }

@@ -1,7 +1,9 @@
 package com.github.starcats.blinkydome.configuration;
 
+import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
+import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
-import com.github.starcats.blinkydome.color.ImageColorSamplerGroup;
+import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
@@ -43,7 +45,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   // Components
   private StarCatFFT starCatFFT;
-  protected ImageColorSamplerGroup colorSampler;
+  protected GenericColorMappingSourceClan colorMappingSources;
   protected ImageColorSampler gradientColorSource;
   protected ImageColorSampler patternColorSource;
 
@@ -68,10 +70,15 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
     gradientColorSource = new ImageColorSampler(p, lx, "gradients.png");
     patternColorSource = new ImageColorSampler(p, lx, "patterns.png");
-    colorSampler = new ImageColorSamplerGroup(lx, "color samplers", new ImageColorSampler[] {
-        gradientColorSource,
-        patternColorSource
-    });
+    colorMappingSources = new GenericColorMappingSourceClan(
+        lx, "color mapping sources",
+        new ColorMappingSourceFamily[] {
+            gradientColorSource,
+            patternColorSource,
+            new RotatingHueColorMappingSourceFamily(lx)
+        },
+        starCatFFT.beat
+    );
 
     LXModulationEngine.LXModulatorFactory<MinimBeatTriggers> minimFactory =
         (LX lx2, String label) -> new MinimBeatTriggers(lx2, starCatFFT);
@@ -248,7 +255,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
     LX.LXPatternFactory<FixtureColorBarsPattern> fcbpFactory =
-        (lx2, channel, label) -> new FixtureColorBarsPattern(lx2, model.allTriangles, colorSampler)
+        (lx2, channel, label) -> new FixtureColorBarsPattern(lx2, model.allTriangles, colorMappingSources)
             .initModulations(() -> minimBeatTriggers.kickTrigger);
     lx.registerPatternFactory(FixtureColorBarsPattern.class, fcbpFactory);
     FixtureColorBarsPattern fcbp = quickBuild(fcbpFactory);
@@ -257,24 +264,24 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     // PerlinNoisePattern: apply defaults appropriate for BlinkyModel mapping size
     // --------------------
     LX.LXPatternFactory<PerlinNoisePattern> perlinNoisePatternFactory = (lx2, ch, l) -> {
-      PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx2, p, starCatFFT.beat, colorSampler);
+      PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx2, p, starCatFFT.beat, colorMappingSources);
 
       // If the color sampler changes, adjust perlin settings to be appropriate for selected color sampler family
       // Start with mapping-appropriate defaults, but if user changes them, use the last sampler's param
       double[] hueSpeedDefaultsBySampler = new double[] { 0.25, 0.10 };
       perlinNoisePattern.hueSpeed.addListener(param -> {
-        if (colorSampler.samplerSelector.getObject() == gradientColorSource) {
+        if (colorMappingSources.familySelector.getObject() == gradientColorSource) {
           hueSpeedDefaultsBySampler[0] = param.getValue();
-        } else if (colorSampler.samplerSelector.getObject() == patternColorSource) {
+        } else if (colorMappingSources.familySelector.getObject() == patternColorSource) {
           hueSpeedDefaultsBySampler[1] = param.getValue();
         }
       });
-      colorSampler.samplerSelector.addListener(new LXParameterListener() {
+      colorMappingSources.familySelector.addListener(new LXParameterListener() {
         @Override
         public void onParameterChanged(LXParameter param) {
           if (perlinNoisePattern.getChannel() == null) {
             // Remove stale listeners (eg if pattern was unloaded
-            colorSampler.samplerSelector.removeListener(this);
+            colorMappingSources.familySelector.removeListener(this);
             return;
           }
 
@@ -301,7 +308,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     // PerlinBreathingPattern
     // --------------------
     LX.LXPatternFactory<PerlinBreathing> perlinBreathingFactory =
-        (lx2, ch, l) -> new PerlinBreathing(lx2, p, model.getPoints(), colorSampler,
+        (lx2, ch, l) -> new PerlinBreathing(lx2, p, model.getPoints(), colorMappingSources,
             new LXVector(0, -1, 0), // mapping seems reversed... 'up' is y:-1
             new LXVector(0, 1, 0),
             PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
