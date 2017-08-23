@@ -64,7 +64,7 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
     // For fake beat detection
 //    AudioDetector.init(null);
 
-    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx);
+    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx, starCatFFT);
     colorSampler.getSourceSelect().setValue(12);
   }
 
@@ -129,7 +129,7 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
     // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
     // --------------------
     PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
-//    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, new MockBeatDetect(), colorSampler);
+//    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, new MockBeatDetect(), colorMappingSources);
     perlinNoisePattern.hueSpeed.setValue(0.2);
 
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources

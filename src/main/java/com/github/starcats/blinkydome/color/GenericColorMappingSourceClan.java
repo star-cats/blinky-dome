@@ -1,18 +1,27 @@
 package com.github.starcats.blinkydome.color;
 
+import com.github.starcats.blinkydome.util.AudioDetector;
+import ddf.minim.analysis.BeatDetect;
 import heronarts.lx.LX;
-import heronarts.lx.LXComponent;
+import heronarts.lx.LXModulatorComponent;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 
 /**
  * A generic implementation of {@link ColorMappingSourceClan}
+ *
+ * Also supports changing to a random new source on a beat (see {@link #probabilityRandom})
  */
-public class GenericColorMappingSourceClan extends LXComponent implements ColorMappingSourceClan {
+public class GenericColorMappingSourceClan extends LXModulatorComponent implements ColorMappingSourceClan {
 
   /** Selects which {@link ColorMappingSourceFamily} from the sources passed to constructor is active */
   public final DiscreteParameter familySelector;
+
+  public final CompoundParameter probabilityRandom = (CompoundParameter) new CompoundParameter("p(rand)", 0.05, 0, 1)
+      .setDescription("Probability we change to a random source on a beat (set to 0 to disable)")
+      .setExponent(2);
 
   private final BooleanParameter shuffle = new BooleanParameter("shuffle")
       .setDescription("Select a random source from the currently-selected source family")
@@ -27,9 +36,17 @@ public class GenericColorMappingSourceClan extends LXComponent implements ColorM
   private final int totalNumSources;
   private final double[] weightsBySourceFamily;
 
-  public GenericColorMappingSourceClan(LX lx, String label, ColorMappingSourceFamily[] cmsFamilies) {
+  private final BeatDetect beat;
+  private double timeSinceLastRotate = 0;
+  private final LX lx;
+
+  public GenericColorMappingSourceClan(LX lx, String label, ColorMappingSourceFamily[] cmsFamilies, BeatDetect beat) {
     super(lx, label);
     this.cmsFamilies = cmsFamilies;
+
+    this.beat = beat;
+    this.lx = lx;
+    lx.engine.addLoopTask(this);
 
     this.familySelector = new DiscreteParameter("families", cmsFamilies);
     this.familySelector.setDescription("Select which source family to use");
@@ -68,6 +85,31 @@ public class GenericColorMappingSourceClan extends LXComponent implements ColorM
       weightsBySourceFamily[i] = (double) totalNumSources / this.totalNumSources;
     }
     this.weightsBySourceFamily = weightsBySourceFamily;
+  }
+
+  @Override
+  public void loop(double deltaMs) {
+    super.loop(deltaMs);
+
+    boolean doRotate;
+    if (AudioDetector.LINE_IN.isRunning()) {
+      doRotate = beat.isKick() && Math.random() < probabilityRandom.getValue();
+    } else {
+      // No audio?  Rotate probabilistically
+      doRotate = Math.random() * 1_000_000 < timeSinceLastRotate;
+    }
+    if (doRotate) {
+      this.setRandomFamilyAndSource();
+      timeSinceLastRotate = 0;
+    } else {
+      timeSinceLastRotate += deltaMs;
+    }
+  }
+
+  @Override
+  public void dispose() {
+    super.dispose();
+    lx.engine.removeLoopTask(this);
   }
 
   @Override

@@ -55,7 +55,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
   @Override
   protected void initComponents(PApplet p, LX lx, Icosastar model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
-    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx);
+    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx, starCatFFT);
   }
 
   @Override

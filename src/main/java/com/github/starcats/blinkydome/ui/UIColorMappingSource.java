@@ -2,6 +2,7 @@ package com.github.starcats.blinkydome.ui;
 
 import com.github.starcats.blinkydome.color.ColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
+import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
 import heronarts.lx.parameter.DiscreteParameter;
@@ -54,6 +55,12 @@ public class UIColorMappingSource extends UICollapsibleSection {
     new UISwitch(UISwitch.WIDTH, 0)
         .setParameter(cmsClan.getRandomSourceTrigger())
         .addToContainer(this);
+
+    if (cmsClan instanceof GenericColorMappingSourceClan) {
+      new UIKnob(UISwitch.WIDTH * 2, 0)
+          .setParameter( ((GenericColorMappingSourceClan) cmsClan).probabilityRandom )
+          .addToContainer(this);
+    }
 
 
     // Second row: group select buttons

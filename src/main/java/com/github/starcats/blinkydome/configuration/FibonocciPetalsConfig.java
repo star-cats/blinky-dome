@@ -67,7 +67,7 @@ public class FibonocciPetalsConfig extends AbstractStarcatsLxConfig<FibonocciPet
   @Override
   protected void initComponents(PApplet p, LX lx, FibonocciPetalsModel model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
-    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx);
+    colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx, starCatFFT);
 
     minimBeatTriggers = new MinimBeatTriggers(lx, starCatFFT);
   }
