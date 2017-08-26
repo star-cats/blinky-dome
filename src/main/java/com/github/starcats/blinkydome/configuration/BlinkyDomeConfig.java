@@ -282,7 +282,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
         public void onParameterChanged(LXParameter param) {
           if (perlinNoisePattern.getChannel() == null) {
             // Remove stale listeners (eg if pattern was unloaded
-            colorMappingSources.familySelector.removeListener(this);
+            // TODO: When loading lx presents, this causes concurrent write exceptions.  Memory leak, but just leave it
+//            colorMappingSources.familySelector.removeListener(this);
             return;
           }
 
