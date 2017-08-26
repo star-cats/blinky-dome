@@ -6,6 +6,9 @@ import heronarts.lx.color.LXPalette;
 import heronarts.lx.output.LXOutput;
 import processing.core.PApplet;
 
+import java.io.File;
+import java.util.Optional;
+
 /**
  * Headless app that runs some model/configuration
  *
@@ -48,6 +51,18 @@ public class AppHeadless extends PApplet {
     lx.palette.period.setValue(10000); // 10sec
     lx.palette.range.setValue(130); // to about green
 
+    Optional<String> lxProjectToLoad = scConfig.getLxProjectToLoad();
+    if (!lxProjectToLoad.isPresent()) {
+      System.out.println("No defined presets, not loading anything");
+    } else {
+      File file = p.saveFile(lxProjectToLoad.get());
+      if (!file.exists()) {
+        System.out.println("Presets file '" + lxProjectToLoad.get() + "' not found! Not loading presets!");
+      } else {
+        lx.openProject(file);
+        System.out.println("Successfully loaded presets: " + lxProjectToLoad.get());
+      }
+    }
 
     // Kick it!
     System.out.println("Starting engine!");

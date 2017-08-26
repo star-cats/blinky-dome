@@ -3,6 +3,8 @@ package com.github.starcats.blinkydome.configuration;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 
+import java.util.Optional;
+
 /**
  * Defines a LX configuration to be used by our apps
  */
@@ -22,4 +24,6 @@ public interface StarcatsLxConfig<M extends LXModel> {
    * @param lx LX instance
    */
   void init(LX lx);
+
+  Optional<String> getLxProjectToLoad();
 }

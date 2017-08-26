@@ -1,7 +1,9 @@
 package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.model.totem.TotemModel;
+import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.ui.UIColorMappingSource;
+import com.github.starcats.blinkydome.ui.UIMinimModulator;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.UI2dScrollContext;
 import processing.core.PApplet;
@@ -18,6 +20,11 @@ public class TotemGuiConfig extends TotemConfig implements StarcatsLxGuiConfig<T
   @Override
   public void initUI(LXStudio lx, LXStudio.UI ui) {
     // no-op
+    // Add modulator UI's
+    ui.registry.registerModulatorUI(
+            MinimBeatTriggers.class,
+            UIMinimModulator::new
+    );
   }
 
   @Override

@@ -8,6 +8,7 @@ import heronarts.lx.output.LXOutput;
 import processing.core.PApplet;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Template for how to configure LX against a particular model.
@@ -109,4 +110,9 @@ public abstract class AbstractStarcatsLxConfig<M extends LXModel> implements Sta
    * @param channel The Channel instance
    */
   protected abstract void configChannel(int channelNum, LXChannel channel);
+
+  @Override
+  public Optional<String> getLxProjectToLoad() {
+    return Optional.empty();
+  }
 }
