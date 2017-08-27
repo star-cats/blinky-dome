@@ -4,6 +4,7 @@ import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
 import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
@@ -37,6 +38,7 @@ import processing.core.PVector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Headless configuration for the {@link BlinkyModel} model
@@ -59,9 +61,14 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   protected BlinkyModel makeModel() {
-//    return BlinkyDomeFactory.makeModel(p);
-    return TestHarnessFactory.makeModel();
+    return BlinkyDomeFactory.makeModel(p);
+//    return TestHarnessFactory.makeModel();
 //    return Meowloween.makeModel();
+  }
+
+  @Override
+  public Optional<String> getLxProjectToLoad() {
+    return Optional.of("/etc/starcats/icosastar/blinky-dome-beats.lxp");
   }
 
   @Override
@@ -107,7 +114,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     ppRegistry.setAntiLog(true);
 
     return Arrays.asList(
-        new FadecandyOutput(lx, "localhost", 7890),
+//        new FadecandyOutput(lx, "localhost", 7890),
         new PixelPusherOutput(lx, getModel(), ppRegistry)
             .addDebugOutput()
     );
