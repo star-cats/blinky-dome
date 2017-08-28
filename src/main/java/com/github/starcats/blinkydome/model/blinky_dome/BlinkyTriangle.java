@@ -44,6 +44,9 @@ public class BlinkyTriangle extends SCAbstractFixture {
 
   private final List<BlinkyLED> pointsTyped;
 
+  public final int ppGroup;
+  public final int ppPort;
+
 
   /**
    * Helper method that creates a BlinkyTriangle positioned in 3D space given the position of the initial vertex
@@ -130,6 +133,9 @@ public class BlinkyTriangle extends SCAbstractFixture {
   ) {
     this.domeGroup = domeGroup;
     this.domeGroupIndex = domeGroupIndex;
+
+    this.ppGroup = ppGroup;
+    this.ppPort = ppPort;
 
     if (firstV == V.V1) {
       this.vA = v1;

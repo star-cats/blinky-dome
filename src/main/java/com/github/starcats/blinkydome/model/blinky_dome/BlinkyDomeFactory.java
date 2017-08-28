@@ -32,36 +32,9 @@ public class BlinkyDomeFactory {
       // Eventually these params should be specified in the CSV itself
       int domeGroup = row.getInt("index");
       int domeGroupIndex = row.getInt("sub_index");
-      int ppGroup;
-      int ppPort;
-      int ppIndex;
-      if (domeGroup == 1 && domeGroupIndex == 9) {
-        ppGroup = 0;
-        ppPort = 1;
-        ppIndex = 0;
-
-      } else if (domeGroup == 1 && domeGroupIndex == 5) {
-        ppGroup = 0;
-        ppPort = 1;
-        ppIndex = BlinkyTriangle.NUM_LEDS_PER_TRIANGLE;
-
-      } else if (domeGroup == 0 && domeGroupIndex == 1) {
-        ppGroup = 0;
-        ppPort = 1;
-        ppIndex = 2 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE;
-
-      } else if (domeGroup == 0 && domeGroupIndex == 9) {
-        ppGroup = 0;
-        ppPort = 1;
-        ppIndex = 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE;
-
-      } else {
-        ppGroup = -1;
-        ppPort = -1;
-        ppIndex = -1;
-      }
-      // END TODO
-
+      int ppGroup = row.getInt("pp_group");
+      int ppPort = row.getInt("pp_strip");
+      int ppFirstLedOffset = row.getInt("pp_led_index_offset");
 
       allTriangles.add(new BlinkyTriangle(
           // Note: y and z dimensions are switched in mapping...
@@ -71,7 +44,7 @@ public class BlinkyDomeFactory {
           new LXVector( row.getFloat("vertex_3_x"), row.getFloat("vertex_3_z"), row.getFloat("vertex_3_y") ),
           ppGroup,
           ppPort,
-          ppIndex,
+          ppFirstLedOffset,
           domeGroup,
           domeGroupIndex
       ));

@@ -23,6 +23,7 @@ public class BlinkyDomeFixtureSelectorPattern
 
   public enum BlinkyDomeFixtureType {
     GROUP,
+    PP_GROUP,
     TRIANGLE,
     ALL
   }
@@ -54,6 +55,9 @@ public class BlinkyDomeFixtureSelectorPattern
     Set<Integer> keys;
     if (fixtureFamily == BlinkyDomeFixtureType.GROUP) {
       keys = model.getTriangleGroupsKeys();
+    } else if (fixtureFamily == BlinkyDomeFixtureType.PP_GROUP) {
+      return model.getPPGroupKeys().toArray();
+
     } else if (fixtureFamily == BlinkyDomeFixtureType.TRIANGLE) {
       keys = new HashSet<>();
       for (int i=0; i<model.allTriangles.size(); i++) {
@@ -71,19 +75,25 @@ public class BlinkyDomeFixtureSelectorPattern
 
   @Override
   protected List<? extends LXFixture> getFixturesByKey(BlinkyDomeFixtureType fixtureFamily, Object keyObj) {
-    Integer key = (Integer) keyObj;
+
 
     List<BlinkyTriangle> fixtures;
 
     if (fixtureFamily == BlinkyDomeFixtureType.GROUP) {
+      Integer key = (Integer) keyObj;
       fixtures = model.getTrianglesByGroup(key);
 
     } else if (fixtureFamily == BlinkyDomeFixtureType.TRIANGLE) {
+      Integer key = (Integer) keyObj;
       BlinkyTriangle triangle = model.allTriangles.get(key);
       System.out.println("Selected triangle: " + triangle.toString());
       fixtures = Collections.singletonList(triangle);
     } else if (fixtureFamily == BlinkyDomeFixtureType.ALL) {
       fixtures = model.allTriangles;
+
+    } else if (fixtureFamily == BlinkyDomeFixtureType.PP_GROUP) {
+      String key = (String) keyObj;
+      fixtures = model.getTriangleByPPGroupKey(key);
 
     } else {
       throw new RuntimeException("Unsupported fixture type: " + fixtureFamily);

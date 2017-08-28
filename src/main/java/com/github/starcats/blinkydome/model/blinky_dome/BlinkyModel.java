@@ -4,14 +4,7 @@ import com.github.starcats.blinkydome.pixelpusher.PixelPushableLED;
 import com.github.starcats.blinkydome.pixelpusher.PixelPushableModel;
 import heronarts.lx.model.LXModel;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -77,5 +70,26 @@ public class BlinkyModel extends LXModel implements PixelPushableModel {
   @Override
   public List<? extends PixelPushableLED> getPpLeds() {
     return leds;
+  }
+
+  public List<String> getPPGroupKeys() {
+    Set<String> keys = new HashSet<>();
+
+    for (BlinkyTriangle triangle : allTriangles) {
+      keys.add(triangle.ppGroup + "-" + triangle.ppPort);
+    }
+
+    List<String> keysList = new ArrayList<>(keys);
+    keysList.sort(Comparator.naturalOrder());
+    return keysList;
+  }
+
+  public List<BlinkyTriangle> getTriangleByPPGroupKey(String key) {
+    int ppGroup = Integer.valueOf(key.substring(0,1));
+    int ppPort = Integer.valueOf(key.substring(2,3));
+
+    return allTriangles.stream().filter(
+            triangle -> triangle.ppGroup == ppGroup && triangle.ppPort == ppPort
+    ).collect(Collectors.toList());
   }
 }
