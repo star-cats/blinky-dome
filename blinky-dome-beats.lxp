@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "timestamp": 1503898099506,
+  "timestamp": 1503899789775,
   "engine": {
     "id": 1,
     "class": "heronarts.lx.LXEngine",
@@ -82,60 +82,6 @@
             "modulation": {
               "modulators": [],
               "modulations": [],
-              "triggers": []
-            }
-          },
-          {
-            "id": 41,
-            "class": "com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern",
-            "parameters": {
-              "label": "FixtureColorBars",
-              "period": 2000.0,
-              "color": 0.0,
-              "range": 1.0,
-              "new bar": false
-            },
-            "modulation": {
-              "modulators": [
-                {
-                  "id": 43,
-                  "class": "heronarts.lx.modulator.VariableLFO",
-                  "parameters": {
-                    "label": "ColorMappingSource LFO",
-                    "running": true,
-                    "trigger": false,
-                    "color/hue": 118.82353210449219,
-                    "color/brightness": 100.0,
-                    "color/saturation": 100.0,
-                    "color": -16384256,
-                    "loop": true,
-                    "wave": 0,
-                    "period": 3000.0,
-                    "skew": 0.0,
-                    "shape": 0.0,
-                    "phase": 0.0,
-                    "exp": 0.0
-                  }
-                }
-              ],
-              "modulations": [
-                {
-                  "source": {
-                    "id": 43
-                  },
-                  "target": {
-                    "componentId": 41,
-                    "parameterPath": "color"
-                  },
-                  "id": 44,
-                  "class": "heronarts.lx.parameter.LXCompoundModulation",
-                  "parameters": {
-                    "label": "",
-                    "Polarity": 0,
-                    "Range": 1.0
-                  }
-                }
-              ],
               "triggers": []
             }
           },
@@ -843,7 +789,7 @@
           "Band-5": 0.0,
           "Band-6": 0.0,
           "Band-7": 0.0,
-          "Band-8": 0.03597862052823908,
+          "Band-8": 0.0,
           "Band-9": 0.0,
           "Band-10": 0.0,
           "Band-11": 0.0,
@@ -943,28 +889,12 @@
             "minFreq": 60.0,
             "maxFreq": 120.0,
             "gate": false,
-            "average": 0.255588309436498,
+            "average": 0.14612738978768725,
             "tap": false
           }
         }
       ],
       "modulations": [
-        {
-          "source": {
-            "id": 23
-          },
-          "target": {
-            "componentId": 41,
-            "parameterPath": "range"
-          },
-          "id": 45,
-          "class": "heronarts.lx.parameter.LXCompoundModulation",
-          "parameters": {
-            "label": "",
-            "Polarity": 0,
-            "Range": 0.75
-          }
-        },
         {
           "source": {
             "id": 23
@@ -1015,21 +945,6 @@
         }
       ],
       "triggers": [
-        {
-          "source": {
-            "componentId": 39,
-            "parameterPath": "kick"
-          },
-          "target": {
-            "componentId": 41,
-            "parameterPath": "new bar"
-          },
-          "id": 46,
-          "class": "heronarts.lx.parameter.LXTriggerModulation",
-          "parameters": {
-            "label": ""
-          }
-        },
         {
           "source": {
             "componentId": 39,

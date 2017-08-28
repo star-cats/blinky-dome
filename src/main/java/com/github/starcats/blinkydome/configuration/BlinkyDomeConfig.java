@@ -268,10 +268,9 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     // FixtureColorBarsPattern: Wire it up to engine-wide modulation sources
     // --------------------
     LX.LXPatternFactory<FixtureColorBarsPattern> fcbpFactory =
-        (lx2, channel, label) -> new FixtureColorBarsPattern(lx2, model.allTriangles, colorMappingSources)
-            .initModulations(() -> minimBeatTriggers.kickTrigger);
+        (lx2, channel, label) -> new FixtureColorBarsPattern(lx2, model.allTriangles, colorMappingSources);
     lx.registerPatternFactory(FixtureColorBarsPattern.class, fcbpFactory);
-    FixtureColorBarsPattern fcbp = quickBuild(fcbpFactory);
+    FixtureColorBarsPattern fcbp = quickBuild(fcbpFactory).initModulations(() -> minimBeatTriggers.kickTrigger);
 
 
     // PerlinNoisePattern: apply defaults appropriate for BlinkyModel mapping size
