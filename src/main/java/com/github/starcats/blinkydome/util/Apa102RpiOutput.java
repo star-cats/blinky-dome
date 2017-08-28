@@ -28,7 +28,13 @@ public class Apa102RpiOutput extends LXOutput {
     try {
       Apa102Output.initSpi(SpiChannel.CS0, 7800000, SpiDevice.DEFAULT_SPI_MODE);
     } catch (IOException e) {
-      throw new RuntimeException("Failed to initialize SPI", e);
+      System.out.println("ERROR: Error initializing APA output (probably no sudo or not a raspi).  Ignoring APA output and moving on:");
+      System.out.println(e);
+
+      this.output = null;
+      this.outputRgbBuffer = null;
+
+      return;
     }
     output = new Apa102Output(lx.model.points.length);
     outputRgbBuffer = new byte[ lx.model.points.length * 3 ];
@@ -37,6 +43,9 @@ public class Apa102RpiOutput extends LXOutput {
 
   @Override
   protected void onSend(int[] colors) {
+    if (this.output == null) {
+      return;
+    }
     // we assume colors is same length as model.points array that we initialized buffer against
 
     if (colors.length * 3 != outputRgbBuffer.length) {

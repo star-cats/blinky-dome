@@ -64,7 +64,8 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
 
   @Override
   public Optional<String> getLxProjectToLoad() {
-    return Optional.of("totem-beats.lxp");
+    return Optional.of("/etc/starcats/icosastar/totem-beats.lxp");
+//    return Optional.of("./totem-beats.lxp");
   }
 
   @Override
