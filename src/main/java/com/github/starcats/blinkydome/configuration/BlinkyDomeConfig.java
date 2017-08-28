@@ -204,7 +204,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     lx.registerPatternFactory(Mask_PerlinLineTranslator.class, perlinLineTranslatorFactory);
 
 
-    LX.LXPatternFactory<TMask_Starlight> starlightFactory = (lx2, ch, l) -> new TMask_Starlight(p, lx2, 3);
+    LX.LXPatternFactory<TMask_Starlight> starlightFactory = (lx2, ch, l) -> new TMask_Starlight(p, lx2, 2);
     lx.registerPatternFactory(TMask_Starlight.class, starlightFactory);
 
 
@@ -233,6 +233,10 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
         (lx2, ch, l) -> new Mask_AngleSweep(lx2, new PVector(1, 0, 0), model.allTriangles, lx.tempo);
     lx.registerPatternFactory(Mask_AngleSweep.class, angleSweepFactory);
 
+    LX.LXPatternFactory<Mask_AllWhite> allWhiteFactory =
+            (lx2, ch, l) -> new Mask_AllWhite(lx);
+    lx.registerPatternFactory(Mask_AllWhite.class, allWhiteFactory);
+
 
     List<LXPattern> patterns = new ArrayList<>();
     patterns.add(mask_disc);
@@ -245,6 +249,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     patterns.add(randomFixtureMask);
     patterns.add(wipeMask);
     patterns.add(new Mask_XyzFilter(lx));
+    patterns.add(quickBuild(allWhiteFactory));
 
     // patterns.addAll(makeStandardPatterns());
 
