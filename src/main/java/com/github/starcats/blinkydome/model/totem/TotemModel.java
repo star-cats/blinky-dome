@@ -24,15 +24,16 @@ public class TotemModel extends LXModel {
 
   public static TotemModel makeModel() {
     LXVector nose = new LXVector(0, 10f, 0);
+    LXVector mouth = new LXVector(0, 0f, 0);
     float whiskerOutZ = -10f;
 
     float whisker0Y = 6f;
     float whisker1Y = 3f;
-    float whisker2Y = 0f;
+    float whisker2Y = 21f;
 
     float whisker0X = solveForX(WHISKER_LEN_CM, nose, whisker0Y, whiskerOutZ);
     float whisker1X = solveForX(WHISKER_LEN_CM, nose, whisker0Y, whiskerOutZ);
-    float whisker2X = solveForX(WHISKER_LEN_CM, nose, whisker0Y, whiskerOutZ);
+    float whisker2X = solveForX(WHISKER_LEN_CM, mouth, whisker0Y, whiskerOutZ);
 
     VectorStripModel<LXPoint> wh0a = new VectorStripModel<>(
         new LXVector(-whisker0X, whisker0Y, whiskerOutZ),
@@ -58,11 +59,11 @@ public class TotemModel extends LXModel {
 
     VectorStripModel<LXPoint> wh2a = new VectorStripModel<>(
         new LXVector(-whisker2X, whisker2Y, whiskerOutZ),
-        nose,
+        mouth,
         VectorStripModel.GENERIC_POINT_FACTORY, PX_PER_WHISKER
     );
     VectorStripModel<LXPoint> wh2b = new VectorStripModel<>(
-        nose,
+        mouth,
         new LXVector(whisker2X, whisker2Y, whiskerOutZ),
         VectorStripModel.GENERIC_POINT_FACTORY, PX_PER_WHISKER
     );

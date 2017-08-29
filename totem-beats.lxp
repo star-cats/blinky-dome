@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "timestamp": 1503957146751,
+  "timestamp": 1503965328827,
   "engine": {
     "id": 1,
     "class": "heronarts.lx.LXEngine",
@@ -66,7 +66,7 @@
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 0,
+        "patternIndex": 3,
         "patterns": [
           {
             "id": 39,
@@ -262,7 +262,7 @@
               "label": "Mask_FixtureDottedLine",
               "num": 3.0,
               "pos": 0.0,
-              "on pct": 0.5,
+              "on pct": 0.0,
               "jitter": 0.0
             },
             "modulation": {
@@ -292,7 +292,7 @@
                   "class": "heronarts.lx.modulator.VariableLFO",
                   "parameters": {
                     "label": "on-pct modn",
-                    "running": false,
+                    "running": true,
                     "trigger": false,
                     "color/hue": 326.1176452636719,
                     "color/brightness": 100.0,
@@ -300,7 +300,7 @@
                     "color": -65392,
                     "loop": true,
                     "wave": 0,
-                    "period": 1000.0,
+                    "period": 5995.472654948623,
                     "skew": 0.0,
                     "shape": 0.0,
                     "phase": 0.25,
@@ -357,8 +357,8 @@
                   "class": "heronarts.lx.parameter.LXCompoundModulation",
                   "parameters": {
                     "label": "",
-                    "Polarity": 1,
-                    "Range": 0.5
+                    "Polarity": 0,
+                    "Range": 0.8800000000000003
                   }
                 },
                 {
@@ -732,6 +732,11 @@
     "audio": {
       "id": 20,
       "class": "heronarts.lx.audio.LXAudioEngine",
+      "parameters": {
+        "label": "Audio",
+        "enabled": true,
+        "mode": 0
+      },
       "meter": {
         "id": 23,
         "class": "heronarts.lx.audio.GraphicMeter",
@@ -828,18 +833,18 @@
             "color/brightness": 100.0,
             "color/saturation": 100.0,
             "color": -6487809,
-            "gain": 30.0,
+            "gain": 38.64000000000001,
             "range": 36.0,
             "attack": 10.0,
             "release": 100.0,
             "slope": 4.5,
-            "threshold": 0.8,
-            "floor": 0.9,
-            "decay": 400.0,
+            "threshold": 0.74,
+            "floor": 0.9500000000000001,
+            "decay": 495.9999978542328,
             "minFreq": 60.0,
             "maxFreq": 120.0,
             "gate": false,
-            "average": 0.0038026867536977704,
+            "average": 0.0,
             "tap": false
           }
         }
