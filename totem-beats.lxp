@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "timestamp": 1503965328827,
+  "timestamp": 1504059354351,
   "engine": {
     "id": 1,
     "class": "heronarts.lx.LXEngine",
@@ -60,13 +60,13 @@
           "fader": 1.0,
           "crossfadeGroup": 0,
           "blendMode": 0,
-          "transitionEnabled": false,
+          "transitionEnabled": true,
           "transitionTimeSecs": 5.0,
           "transitionBlendMode": 0
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 3,
+        "patternIndex": 2,
         "patterns": [
           {
             "id": 39,
@@ -262,7 +262,7 @@
               "label": "Mask_FixtureDottedLine",
               "num": 3.0,
               "pos": 0.0,
-              "on pct": 0.0,
+              "on pct": 0.1599999964237213,
               "jitter": 0.0
             },
             "modulation": {
@@ -393,18 +393,18 @@
           "cue": false,
           "midiMonitor": false,
           "midiChannel": 16,
-          "autoCycleEnabled": false,
-          "autoCycleTimeSecs": 20.0,
+          "autoCycleEnabled": true,
+          "autoCycleTimeSecs": 17.0,
           "fader": 0.0,
           "crossfadeGroup": 0,
           "blendMode": 0,
-          "transitionEnabled": false,
-          "transitionTimeSecs": 1.0999999999999996,
+          "transitionEnabled": true,
+          "transitionTimeSecs": 0.1,
           "transitionBlendMode": 0
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 4,
+        "patternIndex": 1,
         "patterns": [
           {
             "id": 98,
@@ -413,7 +413,7 @@
               "label": "TMask_Starlight",
               "speed": 300.0,
               "variance": 0.8280000016093254,
-              "numStars": 66.34999957308173
+              "numStars": 89.26999906077981
             },
             "modulation": {
               "modulators": [],
@@ -732,11 +732,6 @@
     "audio": {
       "id": 20,
       "class": "heronarts.lx.audio.LXAudioEngine",
-      "parameters": {
-        "label": "Audio",
-        "enabled": true,
-        "mode": 0
-      },
       "meter": {
         "id": 23,
         "class": "heronarts.lx.audio.GraphicMeter",
@@ -819,7 +814,8 @@
             "color": -16757249,
             "kick": false,
             "snare": false,
-            "hihat": false
+            "hihat": false,
+            "kick decay": 0.017243229853300804
           }
         },
         {
@@ -852,13 +848,14 @@
       "modulations": [
         {
           "source": {
-            "id": 38
+            "componentId": 37,
+            "parameterPath": "kick decay"
           },
           "target": {
             "componentId": 30,
             "parameterPath": "fader"
           },
-          "id": 125,
+          "id": 206,
           "class": "heronarts.lx.parameter.LXCompoundModulation",
           "parameters": {
             "label": "",
@@ -868,13 +865,14 @@
         },
         {
           "source": {
-            "id": 38
+            "componentId": 37,
+            "parameterPath": "kick decay"
           },
           "target": {
             "componentId": 74,
             "parameterPath": "fader"
           },
-          "id": 126,
+          "id": 207,
           "class": "heronarts.lx.parameter.LXCompoundModulation",
           "parameters": {
             "label": "",

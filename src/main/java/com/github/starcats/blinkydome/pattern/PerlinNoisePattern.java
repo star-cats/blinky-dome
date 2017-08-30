@@ -124,12 +124,13 @@ public class PerlinNoisePattern extends LXPattern {
 //      gradientColorSource.patternSelect.setValue(Math.floor(gradientAutoselect.getValue()));
 //    }
 
-    time += deltaMs;
-    if (time > 1000) {
-      time = 0;
-      System.out.println("Audio engine enabled? " + this.lx.engine.audio.enabled.getValueb());
-      System.out.println("Band 2 level: " + this.lx.engine.audio.meter.getDecibels(2));
-    }
+    // HEYDAN Debugging audio
+//    time += deltaMs;
+//    if (time > 1000) {
+//      time = 0;
+//      System.out.println("Audio engine enabled? " + this.lx.engine.audio.enabled.getValueb());
+//      System.out.println("Band 2 level: " + this.lx.engine.audio.meter.getDecibels(2));
+//    }
 
     for (LXPoint p : this.model.points) {
       colors[p.index] = this.colorMappingColorizer.getColor(p);

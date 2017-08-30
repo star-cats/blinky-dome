@@ -128,7 +128,7 @@ public class MinimBeatTriggers extends LXModulator {
         return;
       }
 
-      setValue(this.getValue() * Math.pow(0.99, deltaMs));
+      setValue(this.getValue() * Math.pow(0.993, deltaMs));
     }
   }
 }
