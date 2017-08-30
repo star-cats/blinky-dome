@@ -15,8 +15,14 @@ public class UIMinimModulator extends UIModulator {
 
   private static final int HEIGHT = 15 + UISwitch.SWITCH_SIZE + 13;
 
+  private final MinimBeatTriggers minimTriggers;
+  private final UIModulationSource kickDecaySource;
+
   public UIMinimModulator(UI ui, LX lx, MinimBeatTriggers minimTriggers, float x, float y, float w) {
     super(ui, lx, minimTriggers, true, x, y, w, HEIGHT);
+
+    this.minimTriggers = minimTriggers;
+    this.kickDecaySource = () -> minimTriggers.getKickDecay();
 
     new UITriggerModulationButton(ui, lx, minimTriggers.kickTrigger,
         UISwitch.WIDTH - UISwitch.SWITCH_MARGIN - TRIGGER_WIDTH, 0, TRIGGER_WIDTH, 12
@@ -46,8 +52,7 @@ public class UIMinimModulator extends UIModulator {
 
   @Override
   protected UIModulationSource getModulationSourceUI() {
-    // Not really a modulator per-say, just a bunch of triggers that can be trigger-modulated
-    // Leaving this one null
-    return null;
+    // TEMP HACK: always modulate on kick
+    return kickDecaySource;
   }
 }

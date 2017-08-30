@@ -7,6 +7,8 @@ import heronarts.lx.LX;
 import heronarts.lx.LXModulationEngine;
 import heronarts.lx.modulator.LXModulator;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXTriggerModulation;
 
 /**
@@ -24,6 +26,8 @@ public class MinimBeatTriggers extends LXModulator {
   public final BooleanParameter hihatTrigger = new BooleanParameter("hihat")
       .setMode(BooleanParameter.Mode.MOMENTARY)
       .setDescription("Triggers on minim-detected hi-hats");
+
+  private final MinimTriggeredDecay kickDecay = new MinimTriggeredDecay("kick decay");
 
   private final LXModulationEngine modulationEngine;
 
@@ -49,6 +53,7 @@ public class MinimBeatTriggers extends LXModulator {
     this.addParameter(kickTrigger);
     this.addParameter(snareTrigger);
     this.addParameter(hihatTrigger);
+    this.addParameter(kickDecay);
 
     lx.engine.addLoopTask(deltaMs -> {
       if (!this.isRunning()) return;
@@ -56,6 +61,11 @@ public class MinimBeatTriggers extends LXModulator {
       kickTrigger.setValue(minim.isKick());
       snareTrigger.setValue(minim.isSnare());
       hihatTrigger.setValue(minim.isHat());
+
+      if (minim.isKick()) {
+        kickDecay.setValue(1.0);
+      }
+      kickDecay.tick(deltaMs);
     });
 
     this.running.setValue(true);
@@ -77,8 +87,48 @@ public class MinimBeatTriggers extends LXModulator {
     return trigger;
   }
 
+  public LXNormalizedParameter getKickDecay() {
+    return this.kickDecay;
+  }
+
   @Override
   protected double computeValue(double deltaMs) {
     return kickTrigger.getValue();
+  }
+
+  private class MinimTriggeredDecay extends LXListenableNormalizedParameter {
+
+    public MinimTriggeredDecay(String label) {
+      super(label, 0);
+    }
+
+    @Override
+    public LXNormalizedParameter setNormalized(double value) {
+      throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
+    public double getNormalized() {
+      return this.getValue();
+    }
+
+    @Override
+    public float getNormalizedf() {
+      return (float) this.getValuef();
+    }
+
+    @Override
+    protected double updateValue(double value) {
+      return value;
+    }
+
+    void tick(double deltaMs) {
+      if (getValue() < 0.01) {
+        this.setValue(0);
+        return;
+      }
+
+      setValue(this.getValue() * Math.pow(0.99, deltaMs));
+    }
   }
 }

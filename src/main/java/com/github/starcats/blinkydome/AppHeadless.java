@@ -51,18 +51,7 @@ public class AppHeadless extends PApplet {
     lx.palette.period.setValue(10000); // 10sec
     lx.palette.range.setValue(130); // to about green
 
-    Optional<String> lxProjectToLoad = scConfig.getLxProjectToLoad();
-    if (!lxProjectToLoad.isPresent()) {
-      System.out.println("No defined presets, not loading anything");
-    } else {
-      File file = p.saveFile(lxProjectToLoad.get());
-      if (!file.exists()) {
-        System.out.println("Presets file '" + lxProjectToLoad.get() + "' not found! Not loading presets!");
-      } else {
-        lx.openProject(file);
-        System.out.println("Successfully loaded presets: " + lxProjectToLoad.get());
-      }
-    }
+    loadDefaultProject(p, scConfig);
 
     // Kick it!
     System.out.println("Starting engine!");
@@ -89,6 +78,21 @@ public class AppHeadless extends PApplet {
     ));
 
     System.out.println("Setup complete, drawing blinks!");
+  }
+
+  private void loadDefaultProject(AppHeadless p, StarcatsLxConfig scConfig) {
+    Optional<String> lxProjectToLoad = scConfig.getLxProjectToLoad();
+    if (!lxProjectToLoad.isPresent()) {
+      System.out.println("No defined presets, not loading anything");
+    } else {
+      File file = p.saveFile(lxProjectToLoad.get());
+      if (!file.exists()) {
+        System.out.println("Presets file '" + lxProjectToLoad.get() + "' not found! Not loading presets!");
+      } else {
+        lx.openProject(file);
+        System.out.println("Successfully loaded presets: " + lxProjectToLoad.get());
+      }
+    }
   }
 
   public void draw() {
