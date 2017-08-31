@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "timestamp": 1503899789775,
+  "timestamp": 1504080280417,
   "engine": {
     "id": 1,
     "class": "heronarts.lx.LXEngine",
@@ -14,7 +14,7 @@
       "crossfader": 0.5,
       "crossfaderBlendMode": 0,
       "speed": 1.0,
-      "focusedChannel": 0,
+      "focusedChannel": 1,
       "cueA": false,
       "cueB": false,
       "multithreaded": false,
@@ -66,14 +66,14 @@
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 0,
+        "patternIndex": 1,
         "patterns": [
           {
             "id": 47,
             "class": "com.github.starcats.blinkydome.pattern.PerlinNoisePattern",
             "parameters": {
               "label": "PerlinNoise",
-              "h speed": 0.1,
+              "h speed": 0.25,
               "h zoom": 0.01,
               "randir": false,
               "doWipe": false,
@@ -133,7 +133,7 @@
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 2,
+        "patternIndex": 0,
         "patterns": [
           {
             "id": 70,
@@ -141,7 +141,7 @@
             "parameters": {
               "label": "Mask_RollingBouncingDisc",
               "pos": 0.0,
-              "thcknss": 0.15,
+              "thcknss": 0.018669263347295358,
               "pitch": 0.5327433325032753,
               "roll": 0.0,
               "detail": 2
@@ -161,7 +161,7 @@
                     "color": -65024,
                     "loop": true,
                     "wave": 0,
-                    "period": 1487.3084112423371,
+                    "period": 7868.7093889140815,
                     "skew": 0.0,
                     "shape": 0.0,
                     "phase": 0.0,
@@ -181,7 +181,27 @@
                     "color": -65280,
                     "loop": true,
                     "wave": 3,
-                    "period": 1383.20830052395,
+                    "period": 9099.035569037698,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 369,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "LFO",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 60.39703244428701,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -131328,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 12915.69677384018,
                     "skew": 0.0,
                     "shape": 0.0,
                     "phase": 0.0,
@@ -220,6 +240,22 @@
                     "label": "",
                     "Polarity": 0,
                     "Range": 1.0
+                  }
+                },
+                {
+                  "source": {
+                    "id": 369
+                  },
+                  "target": {
+                    "componentId": 70,
+                    "parameterPath": "thcknss"
+                  },
+                  "id": 370,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 0.48000000000000015
                   }
                 }
               ],
@@ -437,21 +473,6 @@
             }
           },
           {
-            "id": 81,
-            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector",
-            "parameters": {
-              "label": "Mask_RandomFixtureSelector",
-              "Trigger": false,
-              "probability": 0.39999999664723873,
-              "brightness": 100.0
-            },
-            "modulation": {
-              "modulators": [],
-              "modulations": [],
-              "triggers": []
-            }
-          },
-          {
             "id": 249,
             "class": "com.github.starcats.blinkydome.pattern.mask.Mask_AllWhite",
             "parameters": {
@@ -471,13 +492,13 @@
         "parameters": {
           "label": "Masks 2",
           "arm": false,
-          "enabled": true,
-          "cue": true,
+          "enabled": false,
+          "cue": false,
           "midiMonitor": false,
           "midiChannel": 16,
           "autoCycleEnabled": true,
           "autoCycleTimeSecs": 15.0,
-          "fader": 0.1,
+          "fader": 0.0,
           "crossfadeGroup": 0,
           "blendMode": 1,
           "transitionEnabled": true,
@@ -486,7 +507,7 @@
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 2,
+        "patternIndex": 3,
         "patterns": [
           {
             "id": 110,
@@ -848,7 +869,8 @@
             "color": -10092800,
             "kick": false,
             "snare": false,
-            "hihat": false
+            "hihat": false,
+            "kick decay": 0.628999645522144
           }
         },
         {
@@ -864,7 +886,8 @@
             "color": -11075329,
             "kick": false,
             "snare": false,
-            "hihat": false
+            "hihat": false,
+            "kick decay": 0.628999645522144
           }
         },
         {
@@ -889,7 +912,7 @@
             "minFreq": 60.0,
             "maxFreq": 120.0,
             "gate": false,
-            "average": 0.14612738978768725,
+            "average": 0.4068094813087675,
             "tap": false
           }
         }
@@ -945,21 +968,6 @@
         }
       ],
       "triggers": [
-        {
-          "source": {
-            "componentId": 39,
-            "parameterPath": "kick"
-          },
-          "target": {
-            "componentId": 81,
-            "parameterPath": "Trigger"
-          },
-          "id": 83,
-          "class": "heronarts.lx.parameter.LXTriggerModulation",
-          "parameters": {
-            "label": ""
-          }
-        },
         {
           "source": {
             "componentId": 39,
