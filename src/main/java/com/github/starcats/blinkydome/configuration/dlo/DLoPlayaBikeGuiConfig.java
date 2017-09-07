@@ -2,7 +2,9 @@ package com.github.starcats.blinkydome.configuration.dlo;
 
 import com.github.starcats.blinkydome.configuration.StarcatsLxGuiConfig;
 import com.github.starcats.blinkydome.model.dlo.DLoPlayaBikeModel;
+import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.ui.UIColorMappingSource;
+import com.github.starcats.blinkydome.ui.UIMinimModulator;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.UI2dScrollContext;
 import processing.core.PApplet;
@@ -24,6 +26,11 @@ public class DLoPlayaBikeGuiConfig extends DLoPlayaBikeConfig implements Starcat
   @Override
   public void initUI(LXStudio lx, LXStudio.UI ui) {
     // no-op
+    // Add modulator UI's
+    ui.registry.registerModulatorUI(
+            MinimBeatTriggers.class,
+            UIMinimModulator::new
+    );
   }
 
   @Override
