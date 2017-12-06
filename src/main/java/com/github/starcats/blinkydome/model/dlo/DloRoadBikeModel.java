@@ -77,9 +77,40 @@ public class DloRoadBikeModel extends LXModel {
     List<LXFixture> framePieces = new ArrayList<>();
 
 
+    // STRIP 0
+    // -----------
+    LXFixture fixture = new VectorStripModel<>(seatpostStripH, handlebarsTop, VectorStripModel.GENERIC_POINT_FACTORY, LEN_SEATPOST_HANDLEBARS);
+    allFixtures.add(fixture);
+    framePieces.add(fixture);
+
+
+    // "Headlight" spiral: make two loops of LEDs spiraling from handlebarsTop to handlebarsBottom
+    List<LXPoint> headlightSpiralPoints = new ArrayList<>(HEADLIGHT_NUM_LEDS);
+    float thetaInc = (float)Math.PI*4 / HEADLIGHT_NUM_LEDS; // Spiral is 2 loops, so 4*PI
+    LXVector headlightSpiralRadial = new LXVector(-HEADLIGHT_SPIRAL_R, 0, 0); // will rotate in y axis
+    float deltaY = (handlebarsBottom.y - handlebarsTop.y) / HEADLIGHT_NUM_LEDS;
+    float y = headlightSpiralC.y;
+    for (int i=0; i<HEADLIGHT_NUM_LEDS; i++) {
+      LXVector led = headlightSpiralC.copy().add(headlightSpiralRadial);
+      headlightSpiralPoints.add(new LXPoint(led.x, y, led.z));
+      y += deltaY;
+      headlightSpiralRadial.rotate(thetaInc, 0, 1, 0);
+    }
+    LXFixture headlightSpiral = () -> headlightSpiralPoints;
+    allFixtures.add(headlightSpiral);
+
+
+    fixture = new VectorStripModel<>(handlebarsBottom, strip1End, VectorStripModel.GENERIC_POINT_FACTORY, LEN_HANDLEBARS_PEDALS_HALF);
+    allFixtures.add(fixture);
+    List<LXPoint> handlebarsToPedalHalf = fixture.getPoints().stream().collect(Collectors.toList());
+    // Don't add to framePieces because we'll join this into one piece below
+
+
+    // STRIP 1
+    // ---------
     // Topmost seatpost loop: circle in Y-axis
     List<LXPoint> seatpostLoopPoints = new ArrayList<>(SEATPOST_LOOP_NUM_LEDS);
-    float thetaInc = (float)Math.PI * 2 / SEATPOST_LOOP_NUM_LEDS;
+    thetaInc = (float)Math.PI * 2 / SEATPOST_LOOP_NUM_LEDS;
     LXVector seatpostLoopRadial = new LXVector(SEATPOST_LOOP_R, 0, SEATPOST_LOOP_R); // will rotate in y axis
     for (int i=0; i<SEATPOST_LOOP_NUM_LEDS; i++) {
       LXVector led = seatpostLoopC.copy().add(seatpostLoopRadial);
@@ -103,7 +134,7 @@ public class DloRoadBikeModel extends LXModel {
     allFixtures.add(brakeBlob);
 
 
-    LXFixture fixture = new VectorStripModel<>(seatpostStripV, pedals, VectorStripModel.GENERIC_POINT_FACTORY, LEN_SEATPOST_PEDALS);
+    fixture = new VectorStripModel<>(seatpostStripV, pedals, VectorStripModel.GENERIC_POINT_FACTORY, LEN_SEATPOST_PEDALS);
     allFixtures.add(fixture);
     framePieces.add(fixture);
 
@@ -113,33 +144,8 @@ public class DloRoadBikeModel extends LXModel {
     // Don't add to framePieces because we'll join this into one piece below
 
 
-    fixture = new VectorStripModel<>(seatpostStripH, handlebarsTop, VectorStripModel.GENERIC_POINT_FACTORY, LEN_SEATPOST_HANDLEBARS);
-    allFixtures.add(fixture);
-    framePieces.add(fixture);
-
-
-    // "Headlight" spiral: make two loops of LEDs spiraling from handlebarsTop to handlebarsBottom
-    List<LXPoint> headlightSpiralPoints = new ArrayList<>(HEADLIGHT_NUM_LEDS);
-    thetaInc = (float)Math.PI*4 / HEADLIGHT_NUM_LEDS; // Spiral is 2 loops, so 4*PI
-    LXVector headlightSpiralRadial = new LXVector(-HEADLIGHT_SPIRAL_R, 0, 0); // will rotate in y axis
-    float deltaY = (handlebarsBottom.y - handlebarsTop.y) / HEADLIGHT_NUM_LEDS;
-    float y = headlightSpiralC.y;
-    for (int i=0; i<HEADLIGHT_NUM_LEDS; i++) {
-      LXVector led = headlightSpiralC.copy().add(headlightSpiralRadial);
-      headlightSpiralPoints.add(new LXPoint(led.x, y, led.z));
-      y += deltaY;
-      headlightSpiralRadial.rotate(thetaInc, 0, 1, 0);
-    }
-    LXFixture headlightSpiral = () -> headlightSpiralPoints;
-    allFixtures.add(headlightSpiral);
-
-
-    fixture = new VectorStripModel<>(handlebarsBottom, strip1End, VectorStripModel.GENERIC_POINT_FACTORY, LEN_HANDLEBARS_PEDALS_HALF);
-    allFixtures.add(fixture);
-    List<LXPoint> handlebarsToPedalHalf = fixture.getPoints().stream().collect(Collectors.toList());
-    // Don't add to framePieces because we'll join this into one piece below
-
-
+    // MISC
+    // ---------
     // Join the two pedals<-->handlebars halves into one fixture
     List<LXPoint> handlesbarsToPedalsSecondHalf = new ArrayList<>(pedalsToHandlebarsHalf);
     Collections.reverse(handlesbarsToPedalsSecondHalf);
