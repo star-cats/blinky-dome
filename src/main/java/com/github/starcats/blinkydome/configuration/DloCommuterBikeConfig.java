@@ -2,8 +2,9 @@ package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.model.Icosastar;
-import com.github.starcats.blinkydome.model.dlo.DloCommuterBikeModel;
+import com.github.starcats.blinkydome.model.dlo.DloRoadBikeModel;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
+import com.github.starcats.blinkydome.pattern.HazardStripesPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
 import com.github.starcats.blinkydome.pattern.PerlinBreathing;
 import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Standard config for {@link Icosastar} model
  */
-public class DloCommuterBikeConfig extends AbstractStarcatsLxConfig<DloCommuterBikeModel> {
+public class DloCommuterBikeConfig extends AbstractStarcatsLxConfig<DloRoadBikeModel> {
 
   // Components
   private StarCatFFT starCatFFT;
@@ -40,8 +41,8 @@ public class DloCommuterBikeConfig extends AbstractStarcatsLxConfig<DloCommuterB
   }
 
   @Override
-  protected DloCommuterBikeModel makeModel() {
-    return DloCommuterBikeModel.makeModel(false);
+  protected DloRoadBikeModel makeModel() {
+    return DloRoadBikeModel.makeModel(false);
   }
 
   @Override
@@ -52,13 +53,13 @@ public class DloCommuterBikeConfig extends AbstractStarcatsLxConfig<DloCommuterB
   }
 
   @Override
-  protected void initComponents(PApplet p, LX lx, DloCommuterBikeModel model) {
+  protected void initComponents(PApplet p, LX lx, DloRoadBikeModel model) {
     starCatFFT = CommonScLxConfigUtils.Components.makeStarcatFft(lx);
     colorSampler = CommonScLxConfigUtils.Components.makeColorSampler(p, lx, starCatFFT);
   }
 
   @Override
-  protected List<LXModulator> constructModulators(PApplet p, LX lx, DloCommuterBikeModel model) {
+  protected List<LXModulator> constructModulators(PApplet p, LX lx, DloRoadBikeModel model) {
     kickModulator = CommonScLxConfigUtils.Modulators.makeKickModulator(lx);
 
     return Arrays.asList(
@@ -91,6 +92,7 @@ public class DloCommuterBikeConfig extends AbstractStarcatsLxConfig<DloCommuterB
 
 
     channel.setPatterns(new LXPattern[] {
+        new HazardStripesPattern(lx),
         perlinBreathing,
         perlinNoisePattern,
         // TODO: bring in FixtureTracerPattern
