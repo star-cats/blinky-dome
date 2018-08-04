@@ -40,7 +40,9 @@ public class Meowloween {
   }
 
   public static BlinkyModel makeModel() {
+
     LXVector negativeYUnitVector = new LXVector(0, -1, 0);
+    LXVector positiveYUnitVector = new LXVector(0, 1, 0);
 
     LXVector right = new LXVector(1, 0, 0);
 
@@ -53,6 +55,9 @@ public class Meowloween {
     LXVector loftWindowRight = new LXVector(-1, 0, -1);
     LXVector loftWallRight = new LXVector(1, 0, -1);
     LXVector loftMirrorRight = new LXVector(-1, 0, -1);
+
+    LXVector chrisRoomDoorWall = new LXVector(1, 1, 0);
+    LXVector chrisRoomDoorWallB = new LXVector(0, 1, 1);
 
     ArrayList<BlinkyTriangle> triangles = new ArrayList<>();
 
@@ -114,15 +119,45 @@ public class Meowloween {
         DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 4
     ));
 
-
+    // Left bottom big triangle
     triangles.add(BlinkyTriangle.positionIn3DSpace(
-        new LXVector(southWallX, southWallY - 42, -129 + 35),
-        TRIANGLE_SIDE_LENGTH, DEG_180+DEG_120,
-        Y_UNIT_VECTOR, southWallLeft,
+        new LXVector(southWallX, southWallY - 49, -129 + 26),
+        TRIANGLE_SIDE_LENGTH, DEG_180,
+        negativeYUnitVector, southWallLeft,
         BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
         1, 1, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
         DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 5
     ));
+
+    // Right bottom big triangle
+    triangles.add(BlinkyTriangle.positionIn3DSpace(
+            new LXVector(southWallX, southWallY - 49, -129 + 64),
+            TRIANGLE_SIDE_LENGTH, DEG_180+DEG_60+DEG_180,
+            negativeYUnitVector, southWallLeft,
+            BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+            1, 2, 0 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
+            DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 6
+    ));
+
+    // same wall as chris' room door
+    triangles.add(BlinkyTriangle.positionIn3DSpace(
+            new LXVector(southWallX, southWallY + 15, -129 + 115),
+            TRIANGLE_SIDE_LENGTH, DEG_180+DEG_60,
+            loftWindowRight, loftMirrorRight,
+            BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+            0, 2, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
+            DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 7
+    ));
+
+//    // same wall as chris' room door
+//    triangles.add(BlinkyTriangle.positionIn3DSpace(
+//            new LXVector(southWallX, southWallY - 10, -129 + 84),
+//            TRIANGLE_SIDE_LENGTH, DEG_180+DEG_60,
+//            loftMirrorRight, loftWallRight,
+//            BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+//            0, 2, 2 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
+//            DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 8
+//    ));
 
 
 
