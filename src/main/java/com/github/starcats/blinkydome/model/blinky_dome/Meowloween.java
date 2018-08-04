@@ -104,13 +104,24 @@ public class Meowloween {
         DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 3
     ));
 
+    // Top of the three big triangles
     triangles.add(BlinkyTriangle.positionIn3DSpace(
         new LXVector(southWallX, southWallY - 16, (int)(-129 + (2.5 * TRIANGLE_SIDE_LENGTH))),
         TRIANGLE_SIDE_LENGTH, DEG_180 + DEG_120,
         negativeYUnitVector, southWallLeft,
         BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
         1, 3, 0 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
-        DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 1
+        DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 4
+    ));
+
+
+    triangles.add(BlinkyTriangle.positionIn3DSpace(
+        new LXVector(southWallX, southWallY - 42, -129 + 35),
+        TRIANGLE_SIDE_LENGTH, DEG_180+DEG_120,
+        Y_UNIT_VECTOR, southWallLeft,
+        BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+        1, 1, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
+        DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 5
     ));
 
 
