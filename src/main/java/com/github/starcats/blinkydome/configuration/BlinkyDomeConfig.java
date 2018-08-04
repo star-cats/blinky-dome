@@ -4,9 +4,8 @@ import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
 import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
-import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
+import com.github.starcats.blinkydome.model.blinky_dome.Meowloween;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -15,7 +14,17 @@ import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
-import com.github.starcats.blinkydome.pattern.mask.*;
+import com.github.starcats.blinkydome.pattern.mask.Mask_AllWhite;
+import com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep;
+import com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost;
+import com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine;
+import com.github.starcats.blinkydome.pattern.mask.Mask_Perlin;
+import com.github.starcats.blinkydome.pattern.mask.Mask_PerlinLineTranslator;
+import com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector;
+import com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc;
+import com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern;
+import com.github.starcats.blinkydome.pattern.mask.Mask_XyzFilter;
+import com.github.starcats.blinkydome.pattern.mask.TMask_Starlight;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
@@ -25,20 +34,18 @@ import heronarts.lx.LXModulationEngine;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXCompoundModulation;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import heronarts.lx.transform.LXVector;
-import processing.core.PApplet;
-import processing.core.PVector;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import processing.core.PApplet;
+import processing.core.PVector;
 
 /**
  * Headless configuration for the {@link BlinkyModel} model
@@ -61,9 +68,9 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   protected BlinkyModel makeModel() {
-    return BlinkyDomeFactory.makeModel(p);
+    //return BlinkyDomeFactory.makeModel(p);
 //    return TestHarnessFactory.makeModel();
-//    return Meowloween.makeModel();
+    return Meowloween.makeModel();
   }
 
   @Override
@@ -180,9 +187,9 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
   private List<LXPattern> makeMasks() {
     // Any non-standard LX constructors need their own factory registered
 
-    LX.LXPatternFactory<Mask_RollingBouncingDisc> rbdFactory = getRollingBouncingDiscFactory();
-    lx.registerPatternFactory(Mask_RollingBouncingDisc.class, rbdFactory);
-    Mask_RollingBouncingDisc mask_disc = quickBuild(rbdFactory)
+    LX.LXPatternFactory<Mask_RollingBouncingDisc> bouncingDiscFactory = getRollingBouncingDiscFactory();
+    lx.registerPatternFactory(Mask_RollingBouncingDisc.class, bouncingDiscFactory);
+    Mask_RollingBouncingDisc mask_disc = quickBuild(bouncingDiscFactory)
         .addDemoBounce();
     mask_disc.discThicknessRad.setValue(0.15);
 
