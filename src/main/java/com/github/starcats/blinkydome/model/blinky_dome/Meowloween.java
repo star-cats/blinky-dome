@@ -75,7 +75,6 @@ public class Meowloween {
         1, 3, 3 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
         DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 0
     ));
-
     // bottom hour glass
     triangles.add(BlinkyTriangle.positionIn3DSpace(
         new LXVector(southWallX, southWallY, -129),
@@ -85,6 +84,36 @@ public class Meowloween {
         1, 2, 1 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
         DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 1
     ));
+
+    // Touching bottom hour glass
+    triangles.add(BlinkyTriangle.positionIn3DSpace(
+        new LXVector(southWallX, southWallY - 31, -129 + 16),
+        TRIANGLE_SIDE_LENGTH, DEG_120,
+        negativeYUnitVector, southWallLeft,
+        BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+        1, 3, 2 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
+        DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 2
+    ));
+    // Butted up against the one touching the bottom hour glass
+    triangles.add(BlinkyTriangle.positionIn3DSpace(
+        new LXVector(southWallX, southWallY - 31, -129 + 16),
+        TRIANGLE_SIDE_LENGTH, DEG_180,
+        negativeYUnitVector, southWallLeft,
+        BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+        1, 3, 1 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
+        DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 3
+    ));
+
+    triangles.add(BlinkyTriangle.positionIn3DSpace(
+        new LXVector(southWallX, southWallY - 16, (int)(-129 + (2.5 * TRIANGLE_SIDE_LENGTH))),
+        TRIANGLE_SIDE_LENGTH, DEG_180 + DEG_120,
+        negativeYUnitVector, southWallLeft,
+        BlinkyTriangle.V.V1, BlinkyTriangle.V.V2,
+        1, 3, 0 * BlinkyTriangle.NUM_LEDS_PER_TRIANGLE,
+        DomeGroup.SOUTH_WALL_LEFT_CLUSTER.getDomeGroup(), 1
+    ));
+
+
 
     triangles.addAll(getHazardSignShape(new LXVector(southWallX, southWallY, -19),
         new LXVector(-1, 0, 0), DomeGroup.SOUTH_WALL_RIGHT_CLUSTER, 1, 1));
