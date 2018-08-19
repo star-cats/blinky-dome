@@ -18,8 +18,8 @@ public class ConfigSupplier {
 //    return new TotemConfig(p);
 
     // GUI:
-    return new BlinkyDomeGuiConfig(p);
-//    return new IcosastarGuiConfig(p);
+//    return new BlinkyDomeGuiConfig(p);
+    return new IcosastarGuiConfig(p);
 //    return new FibonocciPetalsGuiConfig(p);
 //    return new TotemGuiConfig(p);
   }

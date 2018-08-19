@@ -1,7 +1,9 @@
 package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.model.Icosastar;
+import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.ui.UIColorMappingSource;
+import com.github.starcats.blinkydome.ui.UIMinimModulator;
 import heronarts.p3lx.LXStudio;
 import heronarts.p3lx.ui.UI2dScrollContext;
 import processing.core.PApplet;
@@ -17,7 +19,11 @@ public class IcosastarGuiConfig extends IcosastarConfig implements StarcatsLxGui
 
   @Override
   public void initUI(LXStudio lx, LXStudio.UI ui) {
-    // no-op
+    // Add modulator UI's
+    ui.registry.registerModulatorUI(
+            MinimBeatTriggers.class,
+            UIMinimModulator::new
+    );
   }
 
   @Override
@@ -31,7 +37,5 @@ public class IcosastarGuiConfig extends IcosastarConfig implements StarcatsLxGui
 
     // Enable audio support
     lx.engine.audio.enabled.setValue(true);
-
-    lx.engine.output.brightness.setValue(0.75); // don't trip power supply breakers
   }
 }

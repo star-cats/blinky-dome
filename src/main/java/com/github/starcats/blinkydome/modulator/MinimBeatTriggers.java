@@ -14,7 +14,7 @@ import heronarts.lx.parameter.LXTriggerModulation;
 /**
  * Triggers for various minim detection events
  */
-public class MinimBeatTriggers extends LXModulator {
+public class MinimBeatTriggers extends LXModulator implements LXNormalizedParameter {
   public final BooleanParameter kickTrigger = new BooleanParameter("kick")
       .setMode(BooleanParameter.Mode.MOMENTARY)
       .setDescription("Triggers on minim-detected kicks");
@@ -94,6 +94,29 @@ public class MinimBeatTriggers extends LXModulator {
   @Override
   protected double computeValue(double deltaMs) {
     return kickTrigger.getValue();
+  }
+
+
+  // LXNormalizedParameter interface
+  @Override
+  public LXNormalizedParameter setNormalized(double value) {
+    // Really this should implement LXListenableNormalizedParameter
+    throw new UnsupportedOperationException("Not implemented -- shouldnt call");
+  }
+
+  @Override
+  public double getNormalized() {
+    return this.kickDecay.getNormalized();
+  }
+
+  @Override
+  public float getNormalizedf() {
+    return this.kickDecay.getNormalizedf();
+  }
+
+  @Override
+  public double getExponent() {
+    return this.kickDecay.getExponent();
   }
 
   private class MinimTriggeredDecay extends LXListenableNormalizedParameter {
