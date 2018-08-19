@@ -1,6 +1,7 @@
 package com.github.starcats.blinkydome.configuration;
 
 import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
+import com.github.starcats.blinkydome.configuration.dlo.DloRaspiGpio;
 import com.github.starcats.blinkydome.model.Icosastar;
 import com.github.starcats.blinkydome.model.util.ConnectedVectorStripModel;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
@@ -73,7 +74,19 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     lx.engine.modulation.getModulatorFactoryRegistry().register(MinimBeatTriggers.class, minimFactory);
 
     // don't trip power supply breakers
-    lx.engine.output.brightness.setValue(0.75);
+    float MAX_BRIGHTNESS = 0.75f;
+    lx.engine.output.brightness.setValue(MAX_BRIGHTNESS);
+
+
+    // Raspi GPIO
+    DloRaspiGpio.init(lx.engine.output);
+
+    DloRaspiGpio.DipSwitchListener defaultDipSwitchListener = (float dipValuef) -> {
+      lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipValuef);
+      System.out.println("Setting brightness to " + MAX_BRIGHTNESS * dipValuef + " (input: " + dipValuef + ")");
+    };
+    defaultDipSwitchListener.onDipSwitchChange(DloRaspiGpio.getDipValuef());
+    DloRaspiGpio.addDipSwitchListener(defaultDipSwitchListener);
   }
 
   @Override
