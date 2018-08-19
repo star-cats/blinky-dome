@@ -9,6 +9,7 @@ import com.github.starcats.blinkydome.pattern.PerlinBreathing;
 import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.mask.*;
+import com.github.starcats.blinkydome.pattern.totem.Mask_EyeBeats;
 import com.github.starcats.blinkydome.pattern.totem.Mask_EyePattern;
 import com.github.starcats.blinkydome.util.Apa102RpiOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
@@ -121,8 +122,13 @@ public class TotemConfig extends AbstractStarcatsLxConfig<TotemModel> {
       eyePattern.leftEye.posY.setValue(5);
       eyePattern.leftEye.eyeType.setValue(1);
 
+      LX.LXPatternFactory<Mask_EyeBeats> eyeBeatsFactory = (lx2, ch, l) -> new Mask_EyeBeats(lx2, model);
+      lx.registerPatternFactory(Mask_EyeBeats.class, eyeBeatsFactory);
+      Mask_EyeBeats eyeBeatsPattern = quickBuild(eyeBeatsFactory);
+
       channel.setPatterns(new LXPattern[] {
-          eyePattern
+          eyePattern,
+          eyeBeatsPattern,
       });
 
     } else {

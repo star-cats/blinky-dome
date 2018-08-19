@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 /**
  * Draws eyes on the {@link com.github.starcats.blinkydome.model.totem.EyeModel} grid
  */
-public class EyePatternLayer extends LXLayer {
+public class EyePainterLayer extends LXLayer {
 
   public final CompoundParameter posX;
   public final CompoundParameter posY;
@@ -35,9 +35,9 @@ public class EyePatternLayer extends LXLayer {
   private final EyeModel.EyeGridView eyeView;
   private final List<EyePainter> eyePainters;
 
-  private EyePatternLayer lockableEye;
+  private EyePainterLayer lockableEye;
 
-  public EyePatternLayer(LX lx, EyeModel eye, String prefix) {
+  public EyePainterLayer(LX lx, EyeModel eye, String prefix) {
     super(lx);
 
     EyePainter[] eyePainters = new EyePainter[]{
@@ -61,7 +61,7 @@ public class EyePatternLayer extends LXLayer {
         .setDescription("Set true to lock to another eye");
   }
 
-  public EyePatternLayer setLockableEye(EyePatternLayer lockableEye) {
+  public EyePainterLayer setLockableEye(EyePainterLayer lockableEye) {
     this.lockableEye = lockableEye;
     return this;
   }
