@@ -69,6 +69,99 @@
         "patternIndex": 0,
         "patterns": [
           {
+              "id": 39,
+              "class": "com.github.starcats.blinkydome.pattern.PerlinNoisePattern",
+              "parameters": {
+                "label": "PerlinNoise",
+                "h speed": 0.5,
+                "h zoom": 0.01,
+                "randir": false,
+                "doWipe": false,
+                "sparkle": false
+              },
+              "modulation": {
+                "modulators": [],
+                "modulations": [],
+                "triggers": []
+              }
+            },
+            {
+              "id": 41,
+              "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing",
+              "parameters": {
+                "label": "PerlinBreathing",
+                "period": 10000.0,
+                "led filter": 2,
+                "zoom": 0.02,
+                "speed": 0.0,
+                "min brightness": 0.2,
+                "rotate color": 0.25
+              },
+              "modulation": {
+                "modulators": [
+                  {
+                    "id": 44,
+                    "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing$SyncedVariableLFO",
+                    "parameters": {
+                      "label": "breath position",
+                      "running": true,
+                      "trigger": false,
+                      "color/hue": 86.35294342041016,
+                      "color/brightness": 100.0,
+                      "color/saturation": 100.0,
+                      "color": -7340288,
+                      "loop": true,
+                      "wave": 2,
+                      "period": 10000.0,
+                      "skew": 0.0,
+                      "shape": 0.0,
+                      "phase": 0.0,
+                      "exp": 0.0
+                    }
+                  },
+                  {
+                    "id": 45,
+                    "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing$SyncedVariableLFO",
+                    "parameters": {
+                      "label": "breath speed",
+                      "running": true,
+                      "trigger": false,
+                      "color/hue": 65.4117660522461,
+                      "color/brightness": 100.0,
+                      "color/saturation": 100.0,
+                      "color": -1507584,
+                      "loop": true,
+                      "wave": 2,
+                      "period": 10000.0,
+                      "skew": 0.0,
+                      "shape": 0.0,
+                      "phase": 0.0,
+                      "exp": 0.0
+                    }
+                  }
+                ],
+                "modulations": [
+                  {
+                    "source": {
+                      "id": 45
+                    },
+                    "target": {
+                      "componentId": 41,
+                      "parameterPath": "speed"
+                    },
+                    "id": 46,
+                    "class": "heronarts.lx.parameter.LXCompoundModulation",
+                    "parameters": {
+                      "label": "speed modulation",
+                      "Polarity": 0,
+                      "Range": 0.2
+                    }
+                  }
+                ],
+                "triggers": []
+              }
+            },
+          {
             "id": 47,
             "class": "com.github.starcats.blinkydome.pattern.RainbowZPattern",
             "parameters": {

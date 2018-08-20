@@ -165,18 +165,27 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
   private LXPattern[] makeColorizerPatterns(LX lx) {
     // PerlinNoisePattern: apply defaults appropriate for Icosastar mapping size
     // --------------------
-    PerlinNoisePattern perlinNoisePattern = new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
+    LX.LXPatternFactory<PerlinNoisePattern> perlinNoisePatternFactory = (lx2, ch, l) ->
+            new PerlinNoisePattern(lx, p, starCatFFT.beat, colorSampler);
+    lx.registerPatternFactory(PerlinNoisePattern.class, perlinNoisePatternFactory);
+    PerlinNoisePattern perlinNoisePattern = quickBuild(perlinNoisePatternFactory);
 
 
-    // PerlinNoisePattern: apply defaults appropriate for BlinkyDomeModel mapping size
+    // PerlinBreathing
     // --------------------
-    PerlinBreathing perlinBreathing = new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
-            new LXVector(0, 0, -1),
-            new LXVector(0, 0, 1),
-            PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
-    ).initModulators();
-    perlinBreathing.perlinNoiseFieldZoom.setValue(0.02);
-    perlinBreathing.getSpeedModulationRange().setValue(0.20);
+    LX.LXPatternFactory<PerlinBreathing> perlinBreathingFactory = (lx2, ch, l) -> {
+      PerlinBreathing pattern = new PerlinBreathing(lx, p, model.getPoints(), colorSampler,
+              new LXVector(0, 0, -1),
+              new LXVector(0, 0, 1),
+              PerlinBreathing.BreathEasingSupplier.EXP_OUT_CUBIC_INOUT
+      );
+      pattern.initModulators();
+      pattern.perlinNoiseFieldZoom.setValue(0.02);
+      pattern.getSpeedModulationRange().setValue(0.20);
+      return pattern;
+    };
+    lx.registerPatternFactory(PerlinBreathing.class, perlinBreathingFactory);
+    PerlinBreathing perlinBreathing = quickBuild(perlinBreathingFactory);
 
     return new LXPattern[] {
             perlinNoisePattern,
