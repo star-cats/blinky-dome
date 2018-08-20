@@ -12,6 +12,8 @@ import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.mask.*;
 import com.github.starcats.blinkydome.util.StarCatFFT;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXModulationEngine;
@@ -25,6 +27,7 @@ import heronarts.lx.transform.LXVector;
 import processing.core.PApplet;
 import processing.core.PVector;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +37,10 @@ import java.util.Optional;
  * Standard config for {@link com.github.starcats.blinkydome.model.Icosastar} model
  */
 public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
+
+  private static final String CONFIG_BEATS = "/etc/starcats/icosastar/icosastar-2018-beats.lxp";
+  private static final String CONFIG_CALM = "/etc/starcats/icosastar/icosastar-2018-calm.lxp";
+
 
   // Components
   private StarCatFFT starCatFFT;
@@ -61,8 +68,11 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
   @Override
   public Optional<String> getLxProjectToLoad() {
-//    return Optional.of("icosastar.lxp");
-    return Optional.of("/etc/starcats/icosastar/icosastar-2018-beats.lxp");
+    if (DloRaspiGpio.isActive()) {
+      return Optional.of(DloRaspiGpio.isToggle() ? CONFIG_BEATS : CONFIG_CALM);
+    }
+
+    return Optional.of(CONFIG_BEATS);
   }
 
   @Override
@@ -82,13 +92,23 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     // Raspi GPIO
     DloRaspiGpio.init(lx.engine.output);
 
+    // Dip Switches: Adjust brightness
     DloRaspiGpio.DipSwitchListener defaultDipSwitchListener = (float dipValuef) -> {
       lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipValuef);
       System.out.println("Setting brightness to " + MAX_BRIGHTNESS * dipValuef + " (input: " + dipValuef + ")");
     };
     DloRaspiGpio.addDipSwitchListener(defaultDipSwitchListener);
+
+    // Toggle switch: Load the BEATS or CALM config
+    GpioPinListenerDigital toggleSwitchListener = (GpioPinDigitalStateChangeEvent event) -> {
+      loadConfig(event.getState().isHigh());
+    };
+
     if (DloRaspiGpio.isActive()) {
       defaultDipSwitchListener.onDipSwitchChange(DloRaspiGpio.getDipValuef());
+
+      DloRaspiGpio.toggle.addListener(toggleSwitchListener);
+      // Don't do the toggleSwitchListener behavior -- that's effectively done in getLxProjectToLoad()
     }
   }
 
@@ -284,5 +304,27 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
     return patterns.toArray(new LXPattern[0]);
 
+  }
+
+  protected void loadConfig(boolean loadBeats) {
+    String lxProjectToLoad = loadBeats ? CONFIG_BEATS : CONFIG_CALM;
+
+
+    System.out.println("Loading preset: " + lxProjectToLoad);
+
+
+    File file = p.saveFile(lxProjectToLoad);
+    if (!file.exists()) {
+      System.out.println("Presets file '" + lxProjectToLoad + "' not found! Not loading presets!");
+    } else {
+
+      lx.engine.addTask(new Runnable() {
+        public void run() {
+          lx.openProject(file);
+        }
+      });
+
+      System.out.println("Successfully loaded presets: " + lxProjectToLoad);
+    }
   }
 }
