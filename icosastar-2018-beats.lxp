@@ -1,0 +1,843 @@
+{
+  "version": "0.1",
+  "timestamp": 1534725282953,
+  "engine": {
+    "id": 1,
+    "class": "heronarts.lx.LXEngine",
+    "parameters": {
+      "label": "Engine",
+      "scene-1": false,
+      "scene-2": false,
+      "scene-3": false,
+      "scene-4": false,
+      "scene-5": false,
+      "crossfader": 0.5,
+      "crossfaderBlendMode": 0,
+      "speed": 1.0,
+      "focusedChannel": 0,
+      "cueA": false,
+      "cueB": false,
+      "multithreaded": false,
+      "channelMultithreaded": false,
+      "networkMultithreaded": false
+    },
+    "palette": {
+      "id": 2,
+      "class": "heronarts.lx.color.LXPalette",
+      "parameters": {
+        "label": "",
+        "cue": false,
+        "hueMode": 1,
+        "color/hue": 0.0,
+        "color/brightness": 100.0,
+        "color/saturation": 100.0,
+        "color": -65536,
+        "period": 10000.0,
+        "range": 130.0,
+        "spreadX": 0.0,
+        "spreadY": 0.0,
+        "spreadZ": 0.0,
+        "spreadR": 0.0,
+        "offsetX": 0.0,
+        "offsetY": 0.0,
+        "offsetZ": 0.0,
+        "mirror": true
+      }
+    },
+    "channels": [
+      {
+        "id": 30,
+        "class": "heronarts.lx.LXChannel",
+        "parameters": {
+          "label": "Colorizer",
+          "arm": false,
+          "enabled": true,
+          "cue": false,
+          "midiMonitor": false,
+          "midiChannel": 16,
+          "autoCycleEnabled": false,
+          "autoCycleTimeSecs": 60.0,
+          "fader": 1.0,
+          "crossfadeGroup": 0,
+          "blendMode": 0,
+          "transitionEnabled": false,
+          "transitionTimeSecs": 5.0,
+          "transitionBlendMode": 0
+        },
+        "effects": [],
+        "clips": [],
+        "patternIndex": 0,
+        "patterns": [
+          {
+              "id": 39,
+              "class": "com.github.starcats.blinkydome.pattern.PerlinNoisePattern",
+              "parameters": {
+                "label": "PerlinNoise",
+                "h speed": 0.5,
+                "h zoom": 0.01,
+                "randir": false,
+                "doWipe": false,
+                "sparkle": false
+              },
+              "modulation": {
+                "modulators": [],
+                "modulations": [],
+                "triggers": []
+              }
+            },
+            {
+              "id": 41,
+              "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing",
+              "parameters": {
+                "label": "PerlinBreathing",
+                "period": 10000.0,
+                "led filter": 2,
+                "zoom": 0.02,
+                "speed": 0.0,
+                "min brightness": 0.2,
+                "rotate color": 0.25
+              },
+              "modulation": {
+                "modulators": [
+                  {
+                    "id": 44,
+                    "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing$SyncedVariableLFO",
+                    "parameters": {
+                      "label": "breath position",
+                      "running": true,
+                      "trigger": false,
+                      "color/hue": 86.35294342041016,
+                      "color/brightness": 100.0,
+                      "color/saturation": 100.0,
+                      "color": -7340288,
+                      "loop": true,
+                      "wave": 2,
+                      "period": 10000.0,
+                      "skew": 0.0,
+                      "shape": 0.0,
+                      "phase": 0.0,
+                      "exp": 0.0
+                    }
+                  },
+                  {
+                    "id": 45,
+                    "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing$SyncedVariableLFO",
+                    "parameters": {
+                      "label": "breath speed",
+                      "running": true,
+                      "trigger": false,
+                      "color/hue": 65.4117660522461,
+                      "color/brightness": 100.0,
+                      "color/saturation": 100.0,
+                      "color": -1507584,
+                      "loop": true,
+                      "wave": 2,
+                      "period": 10000.0,
+                      "skew": 0.0,
+                      "shape": 0.0,
+                      "phase": 0.0,
+                      "exp": 0.0
+                    }
+                  }
+                ],
+                "modulations": [
+                  {
+                    "source": {
+                      "id": 45
+                    },
+                    "target": {
+                      "componentId": 41,
+                      "parameterPath": "speed"
+                    },
+                    "id": 46,
+                    "class": "heronarts.lx.parameter.LXCompoundModulation",
+                    "parameters": {
+                      "label": "speed modulation",
+                      "Polarity": 0,
+                      "Range": 0.2
+                    }
+                  }
+                ],
+                "triggers": []
+              }
+            },
+          {
+            "id": 47,
+            "class": "com.github.starcats.blinkydome.pattern.RainbowZPattern",
+            "parameters": {
+              "label": "RainbowZ"
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          }
+        ]
+      },
+      {
+        "id": 52,
+        "class": "heronarts.lx.LXChannel",
+        "parameters": {
+          "label": "Pattern Masks",
+          "arm": false,
+          "enabled": true,
+          "cue": false,
+          "midiMonitor": false,
+          "midiChannel": 16,
+          "autoCycleEnabled": true,
+          "autoCycleTimeSecs": 11.0,
+          "fader": 1.0,
+          "crossfadeGroup": 0,
+          "blendMode": 1,
+          "transitionEnabled": true,
+          "transitionTimeSecs": 3.0,
+          "transitionBlendMode": 0
+        },
+        "effects": [],
+        "clips": [],
+        "patternIndex": 1,
+        "patterns": [
+          {
+            "id": 53,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc",
+            "parameters": {
+              "label": "Mask_RollingBouncingDisc",
+              "pos": 0.0,
+              "thcknss": 0.2627892560235972,
+              "pitch": 0.0,
+              "roll": 0.0,
+              "detail": 2
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 55,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "pos",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 110.35294342041016,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -14024960,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 999.9999999999998,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 57,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "roll",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 338.3529357910156,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -65444,
+                    "loop": true,
+                    "wave": 3,
+                    "period": 1583.2206371512384,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 110,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "LFO",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 91.99999237060547,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -8913152,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 5995.472654948623,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [
+                {
+                  "source": {
+                    "id": 55
+                  },
+                  "target": {
+                    "componentId": 53,
+                    "parameterPath": "pos"
+                  },
+                  "id": 56,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                },
+                {
+                  "source": {
+                    "id": 57
+                  },
+                  "target": {
+                    "componentId": 53,
+                    "parameterPath": "roll"
+                  },
+                  "id": 58,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                }
+              ],
+              "triggers": []
+            }
+          },
+          {
+            "id": 59,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_Perlin",
+            "parameters": {
+              "label": "Mask_Perlin",
+              "m speed": 0.02,
+              "m zoom": 0.2,
+              "levels": 3,
+              "ran dir": false
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 70,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Starlight",
+            "parameters": {
+              "label": "TMask_Starlight",
+              "speed": 1082.9999824985862,
+              "variance": 0.6799999959766865,
+              "numStars": 42.77999973669648
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 64,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector",
+            "parameters": {
+              "label": "Mask_RandomFixtureSelector",
+              "Trigger": false,
+              "probability": 0.25,
+              "brightness": 100.0
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          }
+        ]
+      },
+      {
+        "id": 82,
+        "class": "heronarts.lx.LXChannel",
+        "parameters": {
+          "label": "Beat Masks",
+          "arm": false,
+          "enabled": true,
+          "cue": false,
+          "midiMonitor": false,
+          "midiChannel": 16,
+          "autoCycleEnabled": true,
+          "autoCycleTimeSecs": 7.0,
+          "fader": 0.0,
+          "crossfadeGroup": 0,
+          "blendMode": 1,
+          "transitionEnabled": true,
+          "transitionTimeSecs": 1.1,
+          "transitionBlendMode": 0
+        },
+        "effects": [],
+        "clips": [],
+        "patternIndex": 4,
+        "patterns": [
+          {
+            "id": 83,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc",
+            "parameters": {
+              "label": "Mask_RollingBouncingDisc",
+              "pos": 0.0,
+              "thcknss": 0.15,
+              "pitch": 0.25,
+              "roll": 0.0,
+              "detail": 2
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 85,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "pos",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 173.88233947753906,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -16711707,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 730.2662874809808,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 87,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "roll",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 155.05880737304688,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -16711787,
+                    "loop": true,
+                    "wave": 3,
+                    "period": 1112.309954746217,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [
+                {
+                  "source": {
+                    "id": 85
+                  },
+                  "target": {
+                    "componentId": 83,
+                    "parameterPath": "pos"
+                  },
+                  "id": 86,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                },
+                {
+                  "source": {
+                    "id": 87
+                  },
+                  "target": {
+                    "componentId": 83,
+                    "parameterPath": "roll"
+                  },
+                  "id": 88,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                }
+              ],
+              "triggers": []
+            }
+          },
+          {
+            "id": 91,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost",
+            "parameters": {
+              "label": "Mask_BrightnessBeatBoost",
+              "trigger": false,
+              "baseBrightness": 0.3,
+              "decay": 0.998
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 102,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep",
+            "parameters": {
+              "label": "Mask_AngleSweep",
+              "Trigger": false,
+              "x": 0,
+              "y": 0,
+              "z": 1,
+              "randomize": false,
+              "do rand": 0.3,
+              "tempoLck": false
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 104,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "Sweep",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 331.5293884277344,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -65415,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 1000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.5,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 94,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector",
+            "parameters": {
+              "label": "Mask_RandomFixtureSelector",
+              "Trigger": false,
+              "probability": 0.25,
+              "brightness": 100.0
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 97,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern",
+            "parameters": {
+              "label": "Mask_Wipe",
+              "durationMs": 210.00000424683094,
+              "width": 20.0,
+              "Trigger": false
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          }
+        ]
+      }
+    ],
+    "master": {
+      "id": 18,
+      "class": "heronarts.lx.LXMasterChannel",
+      "parameters": {
+        "label": "Master",
+        "arm": false
+      },
+      "effects": [],
+      "clips": []
+    },
+    "audio": {
+      "id": 20,
+      "class": "heronarts.lx.audio.LXAudioEngine",
+      "parameters": {
+        "label": "Audio",
+        "enabled": false,
+        "mode": 0
+      },
+      "meter": {
+        "id": 23,
+        "class": "heronarts.lx.audio.GraphicMeter",
+        "parameters": {
+          "label": "Meter",
+          "running": false,
+          "trigger": false,
+          "color/hue": 230.11766052246094,
+          "color/brightness": 100.0,
+          "color/saturation": 100.0,
+          "color": -16766209,
+          "gain": 0.0,
+          "range": 48.0,
+          "attack": 10.0,
+          "release": 100.0,
+          "slope": 4.5,
+          "Band-1": 0.11947176396413683,
+          "Band-2": 0.11957011301975617,
+          "Band-3": 0.08382253430749798,
+          "Band-4": 0.039155246555449996,
+          "Band-5": 0.3992034298538142,
+          "Band-6": 0.5712616752389164,
+          "Band-7": 0.37903863884103106,
+          "Band-8": 0.23428784742561737,
+          "Band-9": 0.19936661887088591,
+          "Band-10": 0.11854868345601799,
+          "Band-11": 0.0,
+          "Band-12": 0.02257893452591786,
+          "Band-13": 0.10488891232612618,
+          "Band-14": 0.0892215459579987,
+          "Band-15": 0.016333089495575437,
+          "Band-16": 0.0
+        }
+      },
+      "input": {
+        "id": 21,
+        "class": "heronarts.lx.audio.LXAudioInput",
+        "parameters": {
+          "label": "Audio Input",
+          "device": 0
+        }
+      },
+      "output": {
+        "id": 22,
+        "class": "heronarts.lx.audio.LXAudioOutput",
+        "parameters": {
+          "label": "Audio Output",
+          "play": false,
+          "trigger": false,
+          "looping": false,
+          "file": ""
+        }
+      }
+    },
+    "output": {
+      "id": 19,
+      "class": "heronarts.lx.LXEngine$Output",
+      "parameters": {
+        "label": "Output",
+        "enabled": true,
+        "mode": 0,
+        "fps": 0.0,
+        "gamma": 0,
+        "brightness": 0.75
+      }
+    },
+    "components": {},
+    "modulation": {
+      "modulators": [
+        {
+          "id": 37,
+          "class": "com.github.starcats.blinkydome.modulator.MinimBeatTriggers",
+          "parameters": {
+            "label": "Minim",
+            "running": true,
+            "trigger": false,
+            "color/hue": 310.8235168457031,
+            "color/brightness": 100.0,
+            "color/saturation": 100.0,
+            "color": -65327,
+            "kick": false,
+            "snare": false,
+            "hihat": false,
+            "kick decay": 0.21024862583634463
+          }
+        },
+        {
+          "id": 38,
+          "class": "heronarts.lx.audio.BandGate",
+          "parameters": {
+            "label": "Kick beat detect",
+            "running": true,
+            "trigger": false,
+            "color/hue": 323.0588073730469,
+            "color/brightness": 100.0,
+            "color/saturation": 100.0,
+            "color": -65379,
+            "gain": 30.0,
+            "range": 36.0,
+            "attack": 10.0,
+            "release": 100.0,
+            "slope": 4.5,
+            "threshold": 0.8,
+            "floor": 0.9,
+            "decay": 400.0,
+            "minFreq": 60.0,
+            "maxFreq": 120.0,
+            "gate": false,
+            "average": 0.5683318330646248,
+            "tap": false
+          }
+        }
+      ],
+      "modulations": [
+        {
+          "source": {
+            "id": 37
+          },
+          "target": {
+            "componentId": 52,
+            "parameterPath": "fader"
+          },
+          "id": 79,
+          "class": "heronarts.lx.parameter.LXCompoundModulation",
+          "parameters": {
+            "label": "",
+            "Polarity": 0,
+            "Range": -1.0
+          }
+        },
+        {
+          "source": {
+            "id": 37
+          },
+          "target": {
+            "componentId": 82,
+            "parameterPath": "fader"
+          },
+          "id": 109,
+          "class": "heronarts.lx.parameter.LXCompoundModulation",
+          "parameters": {
+            "label": "",
+            "Polarity": 0,
+            "Range": 1.0
+          }
+        },
+        {
+          "source": {
+            "id": 110
+          },
+          "target": {
+            "componentId": 53,
+            "parameterPath": "pitch"
+          },
+          "id": 111,
+          "class": "heronarts.lx.parameter.LXCompoundModulation",
+          "parameters": {
+            "label": "",
+            "Polarity": 0,
+            "Range": 0.5375000080093741
+          }
+        }
+      ],
+      "triggers": [
+        {
+          "source": {
+            "componentId": 37,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 64,
+            "parameterPath": "Trigger"
+          },
+          "id": 66,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        },
+        {
+          "source": {
+            "componentId": 37,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 91,
+            "parameterPath": "trigger"
+          },
+          "id": 93,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        },
+        {
+          "source": {
+            "componentId": 37,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 94,
+            "parameterPath": "Trigger"
+          },
+          "id": 96,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        },
+        {
+          "source": {
+            "componentId": 37,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 97,
+            "parameterPath": "Trigger"
+          },
+          "id": 99,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        }
+      ]
+    },
+    "osc": {
+      "id": 24,
+      "class": "heronarts.lx.osc.LXOscEngine",
+      "parameters": {
+        "label": "OSC",
+        "receiveHost": "0.0.0.0",
+        "receivePort": 3030,
+        "receiveActive": false,
+        "transmitHost": "localhost",
+        "transmitPort": 3131,
+        "transmitActive": false
+      }
+    },
+    "midi": {
+      "inputs": [],
+      "surfaces": [],
+      "mapping": []
+    }
+  },
+  "externals": {
+    "ui": {
+      "audioExpanded": true,
+      "paletteExpanded": true,
+      "engineExpanded": true,
+      "clipViewVisible": false,
+      "modulatorExpanded": {
+        "110": true,
+        "37": true,
+        "38": true
+      },
+      "preview": {
+        "radius": 138.01541137695312,
+        "theta": 0.044999999999999984,
+        "phi": -1.1827166738510186
+      }
+    }
+  }
+}
