@@ -18,6 +18,7 @@ public class Icosastar extends LXModel {
   public final List<ConnectedVectorStripModel> innerSpokeLeds;
   public final List<ConnectedVectorStripModel> outerSpokeLeds;
   public final List<ConnectedVectorStripModel> ring1Leds;
+  public final List<ConnectedVectorStripModel> allSegments;
 
   public static final float a = 50;
   public static final float RING_R = a * (float)Math.cos(Math.toRadians(26.57));
@@ -145,5 +146,10 @@ public class Icosastar extends LXModel {
     this.innerSpokeLeds = innerSpokeLeds;
     this.outerSpokeLeds = outerSpokeLeds;
     this.ring1Leds = ring1Leds;
+
+    this.allSegments = new LinkedList<>();
+    this.allSegments.addAll(this.innerSpokeLeds);
+    this.allSegments.addAll(this.outerSpokeLeds);
+    this.allSegments.addAll(this.ring1Leds);
   }
 }
