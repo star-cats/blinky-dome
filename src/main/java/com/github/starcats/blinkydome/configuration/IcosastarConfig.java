@@ -106,6 +106,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
     // Raspi GPIO
     // =============================================
+    // =============================================
     DloRaspiGpio.init(lx.engine.output);
 
 
@@ -145,6 +146,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
 
     // Add listeners only if GPIO enabled (otherwise NPE's)
+    // ------------------
     if (DloRaspiGpio.isActive()) {
       defaultDipSwitchListener.onDipSwitchChange(DloRaspiGpio.getDipValuef());
 
@@ -323,6 +325,15 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     lx.registerPatternFactory(Mask_AllWhite.class, allWhiteFactory);
 
 
+    LX.LXPatternFactory<TMask_Waves> wavesFactory =
+            (lx2, ch, l) -> new TMask_Waves(lx);
+    lx.registerPatternFactory(TMask_Waves.class, wavesFactory);
+
+    LX.LXPatternFactory<TMask_Borealis> borealisFactory =
+            (lx2, ch, l) -> new TMask_Borealis(lx, p);
+    lx.registerPatternFactory(TMask_Borealis.class, borealisFactory);
+
+
     // TODO: Legacy patterns
     // ================================
 //    FixtureColorBarsPattern fixtureColorBarsPattern = new FixtureColorBarsPattern(lx, model.allSegments, colorSampler)
@@ -340,6 +351,8 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     patterns.add(quickBuild(angleSweepFactory));
     patterns.add(randomFixtureMask);
     patterns.add(wipeMask);
+    patterns.add(quickBuild(borealisFactory));
+    patterns.add(quickBuild(wavesFactory));
     patterns.add(new Mask_XyzFilter(lx));
     patterns.add(quickBuild(allWhiteFactory));
 

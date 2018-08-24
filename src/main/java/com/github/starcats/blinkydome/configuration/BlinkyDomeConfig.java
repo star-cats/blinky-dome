@@ -238,9 +238,20 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     lx.registerPatternFactory(Mask_AllWhite.class, allWhiteFactory);
 
 
+    LX.LXPatternFactory<TMask_Waves> wavesFactory =
+            (lx2, ch, l) -> new TMask_Waves(lx);
+    lx.registerPatternFactory(TMask_Waves.class, wavesFactory);
+
+    LX.LXPatternFactory<TMask_Borealis> borealisFactory =
+            (lx2, ch, l) -> new TMask_Borealis(lx, p);
+    lx.registerPatternFactory(TMask_Borealis.class, borealisFactory);
+
+
     List<LXPattern> patterns = new ArrayList<>();
     patterns.add(mask_disc);
     patterns.add(mask_perlin);
+    patterns.add(quickBuild(borealisFactory));
+    patterns.add(quickBuild(wavesFactory));
     patterns.add(quickBuild(perlinLineTranslatorFactory).initModulations());
     patterns.add(quickBuild(starlightFactory));
     patterns.add(mask_bbb);

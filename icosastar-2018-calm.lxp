@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "timestamp": 1534729032694,
+  "timestamp": 1535096888174,
   "engine": {
     "id": 1,
     "class": "heronarts.lx.LXEngine",
@@ -182,7 +182,7 @@
           "label": "Pattern Masks",
           "arm": false,
           "enabled": true,
-          "cue": false,
+          "cue": true,
           "midiMonitor": false,
           "midiChannel": 16,
           "autoCycleEnabled": true,
@@ -345,6 +345,43 @@
               "speed": 4736.999900825322,
               "variance": 0.6799999959766865,
               "numStars": 53.31999950110912
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 234,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Borealis",
+            "parameters": {
+              "label": "TMask_Borealis",
+              "speed": 0.866299991812557,
+              "scale": 0.1,
+              "spread": 1.1889999756589533,
+              "base": 0.29200000464916226,
+              "contrast": 1.8099999818950891
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 236,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Waves",
+            "parameters": {
+              "label": "TMask_Waves",
+              "rate": 7054.339084647028,
+              "size": 19.19999970495701,
+              "amp1": 1.6339999746531249,
+              "amp2": 1.5799999959766864,
+              "amp3": 0.7879999935626985,
+              "len1": 1.7299999658018348,
+              "len2": 1.879999975860119,
+              "len3": 1.751999994367361
             },
             "modulation": {
               "modulators": [],
@@ -637,7 +674,7 @@
         "mode": 0,
         "fps": 0.0,
         "gamma": 0,
-        "brightness": 0.75
+        "brightness": 0.5642857132479548
       }
     },
     "components": {},
@@ -657,7 +694,7 @@
             "kick": false,
             "snare": false,
             "hihat": false,
-            "kick decay": 0.08376926769155406
+            "kick decay": 0.15653144802242927
           }
         },
         {
