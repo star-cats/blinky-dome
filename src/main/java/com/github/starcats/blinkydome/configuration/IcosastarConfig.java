@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Standard config for {@link com.github.starcats.blinkydome.model.Icosastar} model
@@ -90,16 +91,44 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
 
 
     // Raspi GPIO
+    // =============================================
     DloRaspiGpio.init(lx.engine.output);
 
-    // Dip Switches: Adjust brightness
+
+    // GPIO Brightness:
+    // ------------------
+    // 2 methods: DIP switches to set max brightness, then push button for quick toggling
+    final FloatContainer quickToggleMultiplier = new FloatContainer(1f);
+    final FloatContainer dipMultiplier = new FloatContainer(1f);
+
+    // Dip Switches: Adjust brightness, reset quickToggle
     DloRaspiGpio.DipSwitchListener defaultDipSwitchListener = (float dipValuef) -> {
-      lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipValuef);
-      System.out.println("Setting brightness to " + MAX_BRIGHTNESS * dipValuef + " (input: " + dipValuef + ")");
+      quickToggleMultiplier.set(1f);
+      dipMultiplier.set(dipValuef);
+      lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipMultiplier.get());
+//      System.out.println("Setting brightness to " + MAX_BRIGHTNESS * dipValuef + " (input: " + dipValuef + ")");
     };
     DloRaspiGpio.addDipSwitchListener(defaultDipSwitchListener);
 
+    // Black moment: Decrease brightness by 25%
+    GpioPinListenerDigital quickBrightnessListener = (GpioPinDigitalStateChangeEvent event) -> {
+      if (!event.getState().isHigh()) {
+        return; // release
+      }
+
+      if (quickToggleMultiplier.get() > 0) {
+        quickToggleMultiplier.set(quickToggleMultiplier.get() - 0.25f);
+      } else {
+        quickToggleMultiplier.set(1);
+      }
+
+      lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipMultiplier.get() * quickToggleMultiplier.get());
+    };
+    DloRaspiGpio.yellowMoment.addListener(quickBrightnessListener);
+
+
     // Toggle switch: Load the BEATS or CALM config
+    // ------------------
     GpioPinListenerDigital toggleSwitchListener = (GpioPinDigitalStateChangeEvent event) -> {
       loadConfig(event.getState().isHigh());
     };
@@ -325,6 +354,23 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
       });
 
       System.out.println("Successfully loaded presets: " + lxProjectToLoad);
+    }
+  }
+
+  /** Small float container-class to get around lambdas-need-to-reference-finals */
+  private final class FloatContainer {
+    private float value;
+
+    public FloatContainer(float initialValue) {
+      this.value = initialValue;
+    }
+
+    public float get() {
+      return this.value;
+    }
+
+    public void set(float newValue) {
+      this.value = newValue;
     }
   }
 }
