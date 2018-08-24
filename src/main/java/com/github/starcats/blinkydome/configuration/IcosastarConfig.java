@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 /**
  * Standard config for {@link com.github.starcats.blinkydome.model.Icosastar} model
@@ -47,6 +48,16 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
   private StarCatFFT starCatFFT;
   protected GenericColorMappingSourceClan colorSampler;
 
+
+  // GPIO Brightness:
+
+  private static final float MAX_BRIGHTNESS = 0.75f;  // power supply breakers trip above this
+
+  // 2 brightness modifiers: DIP switches to set max brightness, then push button for quick toggling
+  private final FloatContainer quickToggleMultiplier = new FloatContainer(1f);
+  private final FloatContainer dipMultiplier = new FloatContainer(1f);
+
+
   // Modulators
   protected MinimBeatTriggers minimBeatTriggers;
   private BandGate kickModulator;
@@ -58,6 +69,10 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
   @Override
   protected Icosastar makeModel() {
     return Icosastar.makeModel();
+  }
+
+  private void setOverallBrightness(LX lx) {
+    lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipMultiplier.get() * quickToggleMultiplier.get());
   }
 
   @Override
@@ -85,9 +100,8 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
             (LX lx2, String label) -> new MinimBeatTriggers(lx2, starCatFFT);
     lx.engine.modulation.getModulatorFactoryRegistry().register(MinimBeatTriggers.class, minimFactory);
 
-    // don't trip power supply breakers
-    float MAX_BRIGHTNESS = 0.75f;
-    lx.engine.output.brightness.setValue(MAX_BRIGHTNESS);
+
+    this.setOverallBrightness(lx);
 
 
     // Raspi GPIO
@@ -98,14 +112,11 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
     // GPIO Brightness:
     // ------------------
     // 2 methods: DIP switches to set max brightness, then push button for quick toggling
-    final FloatContainer quickToggleMultiplier = new FloatContainer(1f);
-    final FloatContainer dipMultiplier = new FloatContainer(1f);
-
     // Dip Switches: Adjust brightness, reset quickToggle
     DloRaspiGpio.DipSwitchListener defaultDipSwitchListener = (float dipValuef) -> {
       quickToggleMultiplier.set(1f);
       dipMultiplier.set(dipValuef);
-      lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipMultiplier.get());
+      setOverallBrightness(lx);
 //      System.out.println("Setting brightness to " + MAX_BRIGHTNESS * dipValuef + " (input: " + dipValuef + ")");
     };
     DloRaspiGpio.addDipSwitchListener(defaultDipSwitchListener);
@@ -122,9 +133,8 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
         quickToggleMultiplier.set(1);
       }
 
-      lx.engine.output.brightness.setValue(MAX_BRIGHTNESS * dipMultiplier.get() * quickToggleMultiplier.get());
+      setOverallBrightness(lx);
     };
-    DloRaspiGpio.yellowMoment.addListener(quickBrightnessListener);
 
 
     // Toggle switch: Load the BEATS or CALM config
@@ -133,8 +143,12 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
       loadConfig(event.getState().isHigh());
     };
 
+
+    // Add listeners only if GPIO enabled (otherwise NPE's)
     if (DloRaspiGpio.isActive()) {
       defaultDipSwitchListener.onDipSwitchChange(DloRaspiGpio.getDipValuef());
+
+      DloRaspiGpio.yellowMoment.addListener(quickBrightnessListener);
 
       DloRaspiGpio.toggle.addListener(toggleSwitchListener);
       // Don't do the toggleSwitchListener behavior -- that's effectively done in getLxProjectToLoad()
@@ -350,6 +364,7 @@ public class IcosastarConfig extends AbstractStarcatsLxConfig<Icosastar> {
       lx.engine.addTask(new Runnable() {
         public void run() {
           lx.openProject(file);
+          setOverallBrightness(lx);
         }
       });
 
