@@ -4,6 +4,7 @@ import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
 import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
+import com.github.starcats.blinkydome.configuration.dlo.BlinkyDomeOdroidGpio;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
@@ -19,6 +20,8 @@ import com.github.starcats.blinkydome.pattern.mask.*;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXModulationEngine;
@@ -68,7 +71,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   public Optional<String> getLxProjectToLoad() {
-    return Optional.of("/etc/starcats/icosastar/blinky-dome-beats.lxp");
+    return Optional.of("/etc/starcats/icosastar/blinky-dome-2018-calm.lxp");
   }
 
   @Override
@@ -91,6 +94,24 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
         (LX lx2, String label) -> new MinimBeatTriggers(lx2, starCatFFT);
     lx.engine.modulation.getModulatorFactoryRegistry().register(MinimBeatTriggers.class, minimFactory);
     minimBeatTriggers = lx.engine.modulation.addModulator(MinimBeatTriggers.class, "minim triggers");
+
+
+    // ODroid GPIO
+    // ================
+    BlinkyDomeOdroidGpio.init();
+
+    GpioPinListenerDigital pinPressListener = (GpioPinDigitalStateChangeEvent event) -> {
+      System.out.println("Pin change! " + event.getPin().getName() + " went " + event.getState().isHigh());
+    };
+
+    if (BlinkyDomeOdroidGpio.isActive()) {
+      BlinkyDomeOdroidGpio.orange.addListener(pinPressListener);
+      BlinkyDomeOdroidGpio.yellow.addListener(pinPressListener);
+      BlinkyDomeOdroidGpio.green.addListener(pinPressListener);
+      BlinkyDomeOdroidGpio.blue.addListener(pinPressListener);
+      BlinkyDomeOdroidGpio.pink.addListener(pinPressListener);
+      //    BlinkyDomeOdroidGpio.brown.addListener(pinPressListener);
+    }
   }
 
   @Override
