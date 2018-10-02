@@ -12,7 +12,7 @@ public class ConfigSupplier {
 
   public static StarcatsLxConfig getConfig(PApplet p) {
     // Headless:
-    return new BlinkyDomeConfig(p);
+//    return new BlinkyDomeConfig(p);
 //    return new IcosastarConfig(p);
 //    return new FibonocciPetalsConfig(p);
 //    return new TotemConfig(p);
