@@ -88,14 +88,14 @@ public class HazardStripesPattern extends LXPattern {
         );
       }
 
-      for (LXPoint p : ((DloRoadBikeModel)model).brakeBlob.getPoints()) {
+      for (LXPoint p : ((DloRoadBikeModel)model).leftRearSupport.getPoints()) {
         colors[p.index] = LXColor.hsb(
             color.getValuef(),
             100,
             flasher ? 100 : 0
         );
       }
-      for (LXPoint p : ((DloRoadBikeModel)model).seatpostLoop.getPoints()) {
+      for (LXPoint p : ((DloRoadBikeModel)model).rightRearSupport.getPoints()) {
         colors[p.index] = LXColor.hsb(
             color.getValuef(),
             100,

@@ -16,13 +16,13 @@ public class ConfigSupplier {
 //    return new IcosastarConfig(p);
 //    return new FibonocciPetalsConfig(p);
 //    return new TotemConfig(p);
-//    return new DloCommuterBikeConfig(p);
+    return new DloCommuterBikeConfig(p);
 
     // GUI:
 //    return new BlinkyDomeGuiConfig(p);
 //    return new IcosastarGuiConfig(p);
 //    return new FibonocciPetalsGuiConfig(p);
 //    return new TotemGuiConfig(p);
-    return new DloCommuterBikeGuiConfig(p);
+//    return new DloCommuterBikeGuiConfig(p);
   }
 }
