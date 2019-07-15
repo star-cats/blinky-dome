@@ -85,26 +85,52 @@ for details.
 Want to contribute?  Checkout the code and fire up your IDE (we use IntelliJ, anything that integrates Gradle builds
 should work.
 
+## Install Java
+
+```
+brew tap AdoptOpenJDK/openjdk
+brew cask install adoptopenjdk8
+```
+
+macOS has a neat utility called java_home, where you can list all of the javas you have. It's like a not very helpful nvm. List all of your javas like this
+
+```
+/usr/libexec/java_home -V
+```
+
+Then in your `.bash_profile` or `.zprofile`, set a JAVA_HOME like this
+
+```
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+```
+
 ## IntelliJ Setup
-Project is built with Gradle, so IntelliJ should automagically configure and Just Work(TM).
 
-Note: use latest version of IntelliJ.  2016.1 was a bit glitchy with this newer version of Gradle, try at least 2017.1
+Project is built with Gradle, so IntelliJ should automagically configure and Just Work(TM) lol really?
 
-- Checkout repo with Git submodule initialization as described above
-- File > New > Project From Existing Sources
+- From the home IntelliJ IDEA screen, select "Import Project"
 - Select blinky-dome directory
 - Hit "Import project from existing model" > "Gradle"
-- Defaults should be fine
-- Hit "Finish".
-- Let Gradle init scripts load everything, index, do initial linking build, etc.
+- Ignore the warning that Gradle home will be missing. Select "Use Gradle 'wrapper' task configuration". Also, make sure your JVM is the 1.8 we just set before.
+- Mash "Finish".
+
+You should now see IntelliJ start indexing all of the build scripts and stuff.
+
 - Create run configuration from Gradle scripts:
-  - View > Tool Windows > Gradle
-  - Open up blinky-dome > Tasks > application
-  - Right click on "run"
-  - Hit "Run 'blinky-dome [run]'"
+  - Run > Edit Configurations...
+  - Hit the "+" and add a "Gradle" configuration
+  - On the right, mash the folder button with the blue square for registered projects
+  - Select the "blinky-dome" project (not :lib, or :lib:lx, or any of those)
+  - Type "run" in the task name.
+  - Hit "OK"
+
+- Try running
+  - Run > "Run blinky-dome[run]"
   - P3LX window should appear
   - You now have an IntelliJ run configuration.  You can hit the green Run triangle or green Debug bug to start it up.
+
 - Optional: Create run configuration for headless mode
+  - TODO: fix this...?
   - The headless run config is useful for attaching debugger to headless (non-P3LX) runs (see "Headless/Embedded" section above)
   - Same steps as above, but in the Gradle tool window, buried in blinky-dome > Tasks > other > headlessRun
   - Since it's a headless run, you won't see any window appear, but you should see application output in run console.

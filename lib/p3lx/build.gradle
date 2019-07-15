@@ -26,7 +26,7 @@ jar {
 }
 
 dependencies {
-    compile project(':lib:lx')
+    implementation project(':lib:lx')
 
     // Need processing to compile, but don't include it in fatjar -- downstream should bring it in
     compile group: 'org.processing', name: 'video', version: '3.2.3'

@@ -66,28 +66,29 @@ mainClassName = 'com.github.starcats.blinkydome.AppGui'
 // -------------
 
 // Application plugin: just run AppHeadless
-task headlessRun(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'com.github.starcats.blinkydome.AppHeadless'
-}
+//task headlessRun(type: JavaExec) {
+//    classpath = sourceSets.main.runtimeClasspath
+//    main = 'com.github.starcats.blinkydome.AppHeadless'
+//    mainClassName = 'com.github.starcats.blinkydome.AppHeadless'
+//}
 
-// Builds a shadow jar with AppHeadless
-// (see https://github.com/johnrengelman/shadow/issues/108 )
-task headlessShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    manifest.attributes 'Main-Class': 'com.github.starcats.blinkydome.AppHeadless'
-    group = "shadow"
-    description = "Headless blinky-dome"
-    classifier = 'headless-all'
-    from(project.convention.getPlugin(JavaPluginConvention).sourceSets.main.output)
-    configurations = [project.configurations.runtime]
-    exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
-
-    // AppHeadless shouldn't be using any p3lx stuff, so exclude it from shadowjar
-    // TODO: Still have a few headless config dependencies on p3lx stuff... should clean that up.
-//    dependencies {
-//        exclude(project(':lib:p3lx'))
-//    }
-}
+//// Builds a shadow jar with AppHeadless
+//// (see https://github.com/johnrengelman/shadow/issues/108 )
+//task headlessShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+//    manifest.attributes 'Main-Class': 'com.github.starcats.blinkydome.AppHeadless'
+//    group = "shadow"
+//    description = "Headless blinky-dome"
+//    classifier = 'headless-all'
+//    from(project.convention.getPlugin(JavaPluginConvention).sourceSets.main.output)
+//    configurations = [project.configurations.runtime]
+//    exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
+//
+//    // AppHeadless shouldn't be using any p3lx stuff, so exclude it from shadowjar
+//    // TODO: Still have a few headless config dependencies on p3lx stuff... should clean that up.
+////    dependencies {
+////        exclude(project(':lib:p3lx'))
+////    }
+//}
 
 // AppHeadless Unused: these (should?) do Application plugin distributions with AppHeadless, but since we use shadowJar,
 // we don't really care about those distros
