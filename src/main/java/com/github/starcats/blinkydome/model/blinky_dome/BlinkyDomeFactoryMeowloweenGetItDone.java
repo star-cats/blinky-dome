@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Model of StarCats dome
  */
-public class BlinkyDomeFactory {
+public class BlinkyDomeFactoryMeowloweenGetItDone {
 
   /**
    * Factory to construct a new instance from CSV LED position map
@@ -25,12 +25,7 @@ public class BlinkyDomeFactory {
       throw new RuntimeException("Error: could not load LED position data");
     }
 
-    int i = -1;
-
-    int G1_P1 = 4;
-    int G1_P2 = 3;
-    int G1_P3 = 3;
-    int G1_P3 = 3;
+    int i = 0;
 
     List<BlinkyTriangle> allTriangles = new ArrayList<>(triangleTable.getRowCount());
     for (TableRow row : triangleTable.rows()) {
@@ -45,10 +40,22 @@ public class BlinkyDomeFactory {
       int ppPort = row.getInt("pp_strip");
       int ppFirstLedOffset = row.getInt("pp_led_index_offset");
 
-      if (i < (4+3+3+4)) {
+      if (i < (4*4)) {
+        ppGroup = 0;
+
+        ppPort = 1 + i/4;
+
+        ppFirstLedOffset = BlinkyTriangle.NUM_LEDS_PER_TRIANGLE * (i%4);
+      } else if (i < 16 * 2) {
         ppGroup = 1;
 
-        ppPort =
+        ppPort = 1 + i/4 - 4;
+        ppFirstLedOffset = BlinkyTriangle.NUM_LEDS_PER_TRIANGLE * (i%4);
+      } else {
+        ppGroup = 2;
+
+        ppPort = 1 + i/4 - 8;
+        ppFirstLedOffset = BlinkyTriangle.NUM_LEDS_PER_TRIANGLE * (i%4);
       }
 
 

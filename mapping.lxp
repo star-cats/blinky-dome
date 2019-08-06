@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "timestamp": 1564900440572,
+  "timestamp": 1564884462484,
   "engine": {
     "id": 1,
     "class": "heronarts.lx.LXEngine",
@@ -14,7 +14,7 @@
       "crossfader": 0.5,
       "crossfaderBlendMode": 0,
       "speed": 1.0,
-      "focusedChannel": 2,
+      "focusedChannel": 1,
       "cueA": false,
       "cueB": false,
       "multithreaded": false,
@@ -28,12 +28,12 @@
         "label": "",
         "cue": false,
         "hueMode": 1,
-        "color/hue": 56.52804374694824,
+        "color/hue": 0.0,
         "color/brightness": 100.0,
         "color/saturation": 100.0,
-        "color": -4096,
+        "color": -65536,
         "period": 10000.0,
-        "range": 247.2093048095703,
+        "range": 130.0,
         "spreadX": 0.0,
         "spreadY": 0.0,
         "spreadZ": 0.0,
@@ -55,21 +55,21 @@
           "cue": false,
           "midiMonitor": false,
           "midiChannel": 16,
-          "autoCycleEnabled": true,
-          "autoCycleTimeSecs": 121.0,
+          "autoCycleEnabled": false,
+          "autoCycleTimeSecs": 60.0,
           "fader": 1.0,
           "crossfadeGroup": 0,
           "blendMode": 0,
-          "transitionEnabled": true,
+          "transitionEnabled": false,
           "transitionTimeSecs": 5.0,
           "transitionBlendMode": 0
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 1,
+        "patternIndex": 3,
         "patterns": [
           {
-            "id": 47,
+            "id": 46,
             "class": "com.github.starcats.blinkydome.pattern.PerlinNoisePattern",
             "parameters": {
               "label": "PerlinNoise",
@@ -86,7 +86,137 @@
             }
           },
           {
-            "id": 55,
+            "id": 48,
+            "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing",
+            "parameters": {
+              "label": "PerlinBreathing",
+              "period": 10000.0,
+              "led filter": 2,
+              "zoom": 0.05,
+              "speed": 0.0,
+              "min brightness": 0.2,
+              "rotate color": 0.25
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 51,
+                  "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing$SyncedVariableLFO",
+                  "parameters": {
+                    "label": "breath position",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 97.8823471069336,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -10551552,
+                    "loop": true,
+                    "wave": 2,
+                    "period": 10000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 52,
+                  "class": "com.github.starcats.blinkydome.pattern.PerlinBreathing$SyncedVariableLFO",
+                  "parameters": {
+                    "label": "breath speed",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 151.05882263183594,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -16711804,
+                    "loop": true,
+                    "wave": 2,
+                    "period": 10000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [
+                {
+                  "source": {
+                    "id": 52
+                  },
+                  "target": {
+                    "componentId": 48,
+                    "parameterPath": "speed"
+                  },
+                  "id": 53,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 0.2
+                  }
+                }
+              ],
+              "triggers": []
+            }
+          },
+          {
+            "id": 40,
+            "class": "com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern",
+            "parameters": {
+              "label": "FixtureColorBars",
+              "period": 2000.0,
+              "color": 0.0,
+              "range": 0.25,
+              "new bar": false
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 42,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "ColorMappingSource LFO",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 277.4117736816406,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -6356737,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 3000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [
+                {
+                  "source": {
+                    "id": 42
+                  },
+                  "target": {
+                    "componentId": 40,
+                    "parameterPath": "color"
+                  },
+                  "id": 43,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                }
+              ],
+              "triggers": []
+            }
+          },
+          {
+            "id": 54,
             "class": "com.github.starcats.blinkydome.pattern.RainbowZPattern",
             "parameters": {
               "label": "RainbowZ"
@@ -98,11 +228,38 @@
             }
           },
           {
-            "id": 58,
+            "id": 57,
             "class": "com.github.starcats.blinkydome.pattern.PalettePainterPattern",
             "parameters": {
               "label": "PalettePainter",
-              "brightness": 100.0
+              "brightness": 10.0
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 60,
+            "class": "com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern",
+            "parameters": {
+              "label": "FFTBand"
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 63,
+            "class": "com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern",
+            "parameters": {
+              "label": "BlinkyDomeFixtureSelector",
+              "class": 0,
+              "fixture": 0,
+              "Triangle leg": 0
             },
             "modulation": {
               "modulators": [],
@@ -113,7 +270,7 @@
         ]
       },
       {
-        "id": 68,
+        "id": 67,
         "class": "heronarts.lx.LXChannel",
         "parameters": {
           "label": "Masks 1",
@@ -122,46 +279,46 @@
           "cue": false,
           "midiMonitor": false,
           "midiChannel": 16,
-          "autoCycleEnabled": true,
+          "autoCycleEnabled": false,
           "autoCycleTimeSecs": 60.0,
           "fader": 1.0,
           "crossfadeGroup": 0,
           "blendMode": 1,
-          "transitionEnabled": true,
+          "transitionEnabled": false,
           "transitionTimeSecs": 5.0,
           "transitionBlendMode": 0
         },
         "effects": [],
         "clips": [],
-        "patternIndex": 5,
+        "patternIndex": 13,
         "patterns": [
           {
-            "id": 70,
+            "id": 69,
             "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc",
             "parameters": {
               "label": "Mask_RollingBouncingDisc",
               "pos": 0.0,
-              "thcknss": 0.07535028556619208,
-              "pitch": 0.5327433325032753,
+              "thcknss": 0.15,
+              "pitch": 0.25,
               "roll": 0.0,
               "detail": 2
             },
             "modulation": {
               "modulators": [
                 {
-                  "id": 72,
+                  "id": 71,
                   "class": "heronarts.lx.modulator.VariableLFO",
                   "parameters": {
                     "label": "pos",
                     "running": true,
                     "trigger": false,
-                    "color/hue": 0.47058820724487305,
+                    "color/hue": 5.882352828979492,
                     "color/brightness": 100.0,
                     "color/saturation": 100.0,
-                    "color": -65024,
+                    "color": -59136,
                     "loop": true,
                     "wave": 0,
-                    "period": 1794.4401199776264,
+                    "period": 1000.0,
                     "skew": 0.0,
                     "shape": 0.0,
                     "phase": 0.0,
@@ -169,39 +326,19 @@
                   }
                 },
                 {
-                  "id": 74,
+                  "id": 73,
                   "class": "heronarts.lx.modulator.VariableLFO",
                   "parameters": {
                     "label": "roll",
                     "running": true,
                     "trigger": false,
-                    "color/hue": 0.23529410362243652,
+                    "color/hue": 286.1176452636719,
                     "color/brightness": 100.0,
                     "color/saturation": 100.0,
-                    "color": -65280,
+                    "color": -3931905,
                     "loop": true,
                     "wave": 3,
-                    "period": 9099.035569037698,
-                    "skew": 0.0,
-                    "shape": 0.0,
-                    "phase": 0.0,
-                    "exp": 0.0
-                  }
-                },
-                {
-                  "id": 369,
-                  "class": "heronarts.lx.modulator.VariableLFO",
-                  "parameters": {
-                    "label": "LFO",
-                    "running": true,
-                    "trigger": false,
-                    "color/hue": 60.47059631347656,
-                    "color/brightness": 100.0,
-                    "color/saturation": 100.0,
-                    "color": -131328,
-                    "loop": true,
-                    "wave": 0,
-                    "period": 12915.69677384018,
+                    "period": 925.0,
                     "skew": 0.0,
                     "shape": 0.0,
                     "phase": 0.0,
@@ -212,13 +349,13 @@
               "modulations": [
                 {
                   "source": {
-                    "id": 72
+                    "id": 71
                   },
                   "target": {
-                    "componentId": 70,
+                    "componentId": 69,
                     "parameterPath": "pos"
                   },
-                  "id": 73,
+                  "id": 72,
                   "class": "heronarts.lx.parameter.LXCompoundModulation",
                   "parameters": {
                     "label": "",
@@ -228,34 +365,18 @@
                 },
                 {
                   "source": {
-                    "id": 74
+                    "id": 73
                   },
                   "target": {
-                    "componentId": 70,
+                    "componentId": 69,
                     "parameterPath": "roll"
                   },
-                  "id": 75,
+                  "id": 74,
                   "class": "heronarts.lx.parameter.LXCompoundModulation",
                   "parameters": {
                     "label": "",
                     "Polarity": 0,
                     "Range": 1.0
-                  }
-                },
-                {
-                  "source": {
-                    "id": 369
-                  },
-                  "target": {
-                    "componentId": 70,
-                    "parameterPath": "thcknss"
-                  },
-                  "id": 370,
-                  "class": "heronarts.lx.parameter.LXCompoundModulation",
-                  "parameters": {
-                    "label": "",
-                    "Polarity": 0,
-                    "Range": 0.48000000000000015
                   }
                 }
               ],
@@ -263,7 +384,7 @@
             }
           },
           {
-            "id": 76,
+            "id": 75,
             "class": "com.github.starcats.blinkydome.pattern.mask.Mask_Perlin",
             "parameters": {
               "label": "Mask_Perlin",
@@ -279,66 +400,15 @@
             }
           },
           {
-            "id": 87,
-            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_PerlinLineTranslator",
+            "id": 86,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Borealis",
             "parameters": {
-              "label": "Mask_PerlinLineTranslator",
-              "mzoom": 1.0,
-              "mspeed": 0.1599999964237213,
-              "m angle": 0.0
-            },
-            "modulation": {
-              "modulators": [
-                {
-                  "id": 89,
-                  "class": "heronarts.lx.modulator.VariableLFO",
-                  "parameters": {
-                    "label": "rotation",
-                    "running": true,
-                    "trigger": false,
-                    "color/hue": 158.11764526367188,
-                    "color/brightness": 100.0,
-                    "color/saturation": 100.0,
-                    "color": -16711774,
-                    "loop": true,
-                    "wave": 3,
-                    "period": 10000.0,
-                    "skew": 0.0,
-                    "shape": 0.0,
-                    "phase": 0.0,
-                    "exp": 0.0
-                  }
-                }
-              ],
-              "modulations": [
-                {
-                  "source": {
-                    "id": 89
-                  },
-                  "target": {
-                    "componentId": 87,
-                    "parameterPath": "m angle"
-                  },
-                  "id": 90,
-                  "class": "heronarts.lx.parameter.LXCompoundModulation",
-                  "parameters": {
-                    "label": "",
-                    "Polarity": 0,
-                    "Range": 1.0
-                  }
-                }
-              ],
-              "triggers": []
-            }
-          },
-          {
-            "id": 91,
-            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Starlight",
-            "parameters": {
-              "label": "TMask_Starlight",
-              "speed": 2565.0000097230077,
-              "variance": 0.6169999973848462,
-              "numStars": 1455.3000191040337
+              "label": "TMask_Borealis",
+              "speed": 0.5,
+              "scale": 0.5,
+              "spread": 6.0,
+              "base": 0.5,
+              "contrast": 1.0
             },
             "modulation": {
               "modulators": [],
@@ -347,145 +417,7 @@
             }
           },
           {
-            "id": 93,
-            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine",
-            "parameters": {
-              "label": "Mask_FixtureDottedLine",
-              "num": 3.0,
-              "pos": 0.0,
-              "on pct": 0.5,
-              "jitter": 0.0
-            },
-            "modulation": {
-              "modulators": [
-                {
-                  "id": 95,
-                  "class": "heronarts.lx.modulator.VariableLFO",
-                  "parameters": {
-                    "label": "position modn",
-                    "running": true,
-                    "trigger": false,
-                    "color/hue": 328.9411926269531,
-                    "color/brightness": 100.0,
-                    "color/saturation": 100.0,
-                    "color": -65404,
-                    "loop": true,
-                    "wave": 3,
-                    "period": 5000.0,
-                    "skew": 0.0,
-                    "shape": 0.0,
-                    "phase": 0.0,
-                    "exp": 0.0
-                  }
-                },
-                {
-                  "id": 97,
-                  "class": "heronarts.lx.modulator.VariableLFO",
-                  "parameters": {
-                    "label": "on-pct modn",
-                    "running": true,
-                    "trigger": false,
-                    "color/hue": 184.23529052734375,
-                    "color/brightness": 100.0,
-                    "color/saturation": 100.0,
-                    "color": -16716289,
-                    "loop": true,
-                    "wave": 0,
-                    "period": 7363.6898927315715,
-                    "skew": 0.0,
-                    "shape": 0.0,
-                    "phase": 0.25,
-                    "exp": 0.0
-                  }
-                },
-                {
-                  "id": 99,
-                  "class": "heronarts.lx.modulator.VariableLFO",
-                  "parameters": {
-                    "label": "jitter modn",
-                    "running": true,
-                    "trigger": false,
-                    "color/hue": 322.8235168457031,
-                    "color/brightness": 100.0,
-                    "color/saturation": 100.0,
-                    "color": -65378,
-                    "loop": true,
-                    "wave": 0,
-                    "period": 3556.2040115569753,
-                    "skew": 0.0,
-                    "shape": 0.0,
-                    "phase": 0.0,
-                    "exp": 0.0
-                  }
-                }
-              ],
-              "modulations": [
-                {
-                  "source": {
-                    "id": 95
-                  },
-                  "target": {
-                    "componentId": 93,
-                    "parameterPath": "pos"
-                  },
-                  "id": 96,
-                  "class": "heronarts.lx.parameter.LXCompoundModulation",
-                  "parameters": {
-                    "label": "",
-                    "Polarity": 0,
-                    "Range": 1.0
-                  }
-                },
-                {
-                  "source": {
-                    "id": 97
-                  },
-                  "target": {
-                    "componentId": 93,
-                    "parameterPath": "on pct"
-                  },
-                  "id": 98,
-                  "class": "heronarts.lx.parameter.LXCompoundModulation",
-                  "parameters": {
-                    "label": "",
-                    "Polarity": 1,
-                    "Range": 0.5
-                  }
-                },
-                {
-                  "source": {
-                    "id": 99
-                  },
-                  "target": {
-                    "componentId": 93,
-                    "parameterPath": "jitter"
-                  },
-                  "id": 100,
-                  "class": "heronarts.lx.parameter.LXCompoundModulation",
-                  "parameters": {
-                    "label": "",
-                    "Polarity": 0,
-                    "Range": 1.0
-                  }
-                }
-              ],
-              "triggers": []
-            }
-          },
-          {
-            "id": 249,
-            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_AllWhite",
-            "parameters": {
-              "label": "Mask_AllWhite"
-            },
-            "modulation": {
-              "modulators": [],
-              "modulations": [],
-              "triggers": []
-            }
-          },
-          {
-            "id": 637,
+            "id": 88,
             "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Waves",
             "parameters": {
               "label": "TMask_Waves",
@@ -505,94 +437,30 @@
             }
           },
           {
-            "id": 647,
-            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Borealis",
+            "id": 98,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_PerlinLineTranslator",
             "parameters": {
-              "label": "TMask_Borealis",
-              "speed": 1.0,
-              "scale": 0.973000000603497,
-              "spread": 0.1,
-              "base": 0.5840000092983246,
-              "contrast": 1.9700000006705523
-            },
-            "modulation": {
-              "modulators": [],
-              "modulations": [],
-              "triggers": []
-            }
-          }
-        ]
-      },
-      {
-        "id": 108,
-        "class": "heronarts.lx.LXChannel",
-        "parameters": {
-          "label": "Masks 2",
-          "arm": false,
-          "enabled": true,
-          "cue": false,
-          "midiMonitor": false,
-          "midiChannel": 16,
-          "autoCycleEnabled": true,
-          "autoCycleTimeSecs": 15.0,
-          "fader": 0.0,
-          "crossfadeGroup": 0,
-          "blendMode": 1,
-          "transitionEnabled": true,
-          "transitionTimeSecs": 3.1,
-          "transitionBlendMode": 0
-        },
-        "effects": [],
-        "clips": [],
-        "patternIndex": 0,
-        "patterns": [
-          {
-            "id": 110,
-            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc",
-            "parameters": {
-              "label": "Mask_RollingBouncingDisc",
-              "pos": 0.0,
-              "thcknss": 0.15,
-              "pitch": 0.25,
-              "roll": 0.0,
-              "detail": 2
+              "label": "Mask_PerlinLineTranslator",
+              "mzoom": 1.0,
+              "mspeed": 0.0,
+              "m angle": 0.0
             },
             "modulation": {
               "modulators": [
                 {
-                  "id": 112,
+                  "id": 100,
                   "class": "heronarts.lx.modulator.VariableLFO",
                   "parameters": {
-                    "label": "pos",
+                    "label": "rotation",
                     "running": true,
                     "trigger": false,
-                    "color/hue": 84.00000762939453,
+                    "color/hue": 33.64706039428711,
                     "color/brightness": 100.0,
                     "color/saturation": 100.0,
-                    "color": -6684928,
-                    "loop": true,
-                    "wave": 0,
-                    "period": 811.3101869069156,
-                    "skew": 0.0,
-                    "shape": 0.0,
-                    "phase": 0.0,
-                    "exp": 0.0
-                  }
-                },
-                {
-                  "id": 114,
-                  "class": "heronarts.lx.modulator.VariableLFO",
-                  "parameters": {
-                    "label": "roll",
-                    "running": true,
-                    "trigger": false,
-                    "color/hue": 44.47058868408203,
-                    "color/brightness": 100.0,
-                    "color/saturation": 100.0,
-                    "color": -17152,
+                    "color": -28928,
                     "loop": true,
                     "wave": 3,
-                    "period": 925.0,
+                    "period": 10000.0,
                     "skew": 0.0,
                     "shape": 0.0,
                     "phase": 0.0,
@@ -603,29 +471,13 @@
               "modulations": [
                 {
                   "source": {
-                    "id": 112
+                    "id": 100
                   },
                   "target": {
-                    "componentId": 110,
-                    "parameterPath": "pos"
+                    "componentId": 98,
+                    "parameterPath": "m angle"
                   },
-                  "id": 113,
-                  "class": "heronarts.lx.parameter.LXCompoundModulation",
-                  "parameters": {
-                    "label": "",
-                    "Polarity": 0,
-                    "Range": 1.0
-                  }
-                },
-                {
-                  "source": {
-                    "id": 114
-                  },
-                  "target": {
-                    "componentId": 110,
-                    "parameterPath": "roll"
-                  },
-                  "id": 115,
+                  "id": 101,
                   "class": "heronarts.lx.parameter.LXCompoundModulation",
                   "parameters": {
                     "label": "",
@@ -638,13 +490,13 @@
             }
           },
           {
-            "id": 118,
-            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost",
+            "id": 102,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Starlight",
             "parameters": {
-              "label": "Mask_BrightnessBeatBoost",
-              "trigger": false,
-              "baseBrightness": 0.3,
-              "decay": 0.9938600000925362
+              "label": "TMask_Starlight",
+              "speed": 3000.0,
+              "variance": 0.5,
+              "numStars": 105.0
             },
             "modulation": {
               "modulators": [],
@@ -653,7 +505,22 @@
             }
           },
           {
-            "id": 133,
+            "id": 77,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost",
+            "parameters": {
+              "label": "Mask_BrightnessBeatBoost",
+              "trigger": false,
+              "baseBrightness": 0.3,
+              "decay": 0.998
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 104,
             "class": "com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine",
             "parameters": {
               "label": "Mask_FixtureDottedLine",
@@ -665,18 +532,18 @@
             "modulation": {
               "modulators": [
                 {
-                  "id": 135,
+                  "id": 106,
                   "class": "heronarts.lx.modulator.VariableLFO",
                   "parameters": {
                     "label": "position modn",
                     "running": true,
                     "trigger": false,
-                    "color/hue": 112.94116973876953,
+                    "color/hue": 195.2941131591797,
                     "color/brightness": 100.0,
                     "color/saturation": 100.0,
-                    "color": -14745856,
+                    "color": -16728321,
                     "loop": true,
-                    "wave": 3,
+                    "wave": 0,
                     "period": 5000.0,
                     "skew": 0.0,
                     "shape": 0.0,
@@ -685,36 +552,36 @@
                   }
                 },
                 {
-                  "id": 137,
+                  "id": 108,
                   "class": "heronarts.lx.modulator.VariableLFO",
                   "parameters": {
                     "label": "on-pct modn",
                     "running": false,
                     "trigger": false,
-                    "color/hue": 341.8823547363281,
+                    "color/hue": 47.29412078857422,
                     "color/brightness": 100.0,
                     "color/saturation": 100.0,
-                    "color": -65459,
-                    "loop": false,
+                    "color": -14080,
+                    "loop": true,
                     "wave": 0,
                     "period": 1000.0,
                     "skew": 0.0,
                     "shape": 0.0,
-                    "phase": 0.0,
+                    "phase": 0.25,
                     "exp": 0.0
                   }
                 },
                 {
-                  "id": 139,
+                  "id": 110,
                   "class": "heronarts.lx.modulator.VariableLFO",
                   "parameters": {
                     "label": "jitter modn",
                     "running": false,
                     "trigger": false,
-                    "color/hue": 159.05882263183594,
+                    "color/hue": 70.5882339477539,
                     "color/brightness": 100.0,
                     "color/saturation": 100.0,
-                    "color": -16711770,
+                    "color": -2949376,
                     "loop": true,
                     "wave": 0,
                     "period": 1000.0,
@@ -728,13 +595,13 @@
               "modulations": [
                 {
                   "source": {
-                    "id": 135
+                    "id": 106
                   },
                   "target": {
-                    "componentId": 133,
+                    "componentId": 104,
                     "parameterPath": "pos"
                   },
-                  "id": 136,
+                  "id": 107,
                   "class": "heronarts.lx.parameter.LXCompoundModulation",
                   "parameters": {
                     "label": "",
@@ -744,13 +611,13 @@
                 },
                 {
                   "source": {
-                    "id": 137
+                    "id": 108
                   },
                   "target": {
-                    "componentId": 133,
+                    "componentId": 104,
                     "parameterPath": "on pct"
                   },
-                  "id": 138,
+                  "id": 109,
                   "class": "heronarts.lx.parameter.LXCompoundModulation",
                   "parameters": {
                     "label": "",
@@ -760,13 +627,13 @@
                 },
                 {
                   "source": {
-                    "id": 139
+                    "id": 110
                   },
                   "target": {
-                    "componentId": 133,
+                    "componentId": 104,
                     "parameterPath": "jitter"
                   },
-                  "id": 140,
+                  "id": 111,
                   "class": "heronarts.lx.parameter.LXCompoundModulation",
                   "parameters": {
                     "label": "",
@@ -779,7 +646,47 @@
             }
           },
           {
-            "id": 121,
+            "id": 112,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep",
+            "parameters": {
+              "label": "Mask_AngleSweep",
+              "Trigger": false,
+              "x": 0,
+              "y": 1,
+              "z": 1,
+              "randomize": false,
+              "do rand": 0.3,
+              "tempoLck": false
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 114,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "Sweep",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 61.882354736328125,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -524544,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 1000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.5,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 80,
             "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector",
             "parameters": {
               "label": "Mask_RandomFixtureSelector",
@@ -794,13 +701,530 @@
             }
           },
           {
-            "id": 124,
+            "id": 83,
             "class": "com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern",
             "parameters": {
               "label": "Mask_Wipe",
               "durationMs": 400.0,
-              "width": 8.24916514943252,
+              "width": 20.0,
               "Trigger": false
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 115,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_XyzFilter",
+            "parameters": {
+              "label": "Mask_XyzFilter",
+              "x": -69.0,
+              "y": 74.36597442626953,
+              "z": -55.634037017822266
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 117,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_AllWhite",
+            "parameters": {
+              "label": "Mask_AllWhite"
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 173,
+            "class": "com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern",
+            "parameters": {
+              "label": "BlinkyDomeFixtureSelector",
+              "class": 2,
+              "fixture": 4,
+              "Triangle leg": 0
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          }
+        ]
+      },
+      {
+        "id": 121,
+        "class": "heronarts.lx.LXChannel",
+        "parameters": {
+          "label": "Masks 2",
+          "arm": false,
+          "enabled": true,
+          "cue": false,
+          "midiMonitor": false,
+          "midiChannel": 16,
+          "autoCycleEnabled": false,
+          "autoCycleTimeSecs": 60.0,
+          "fader": 0.1,
+          "crossfadeGroup": 0,
+          "blendMode": 1,
+          "transitionEnabled": false,
+          "transitionTimeSecs": 5.0,
+          "transitionBlendMode": 0
+        },
+        "effects": [],
+        "clips": [],
+        "patternIndex": 4,
+        "patterns": [
+          {
+            "id": 123,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RollingBouncingDisc",
+            "parameters": {
+              "label": "Mask_RollingBouncingDisc",
+              "pos": 0.0,
+              "thcknss": 0.15,
+              "pitch": 0.25,
+              "roll": 0.0,
+              "detail": 2
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 125,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "pos",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 288.0,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -3407617,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 1000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 127,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "roll",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 223.058837890625,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -16758529,
+                    "loop": true,
+                    "wave": 3,
+                    "period": 925.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [
+                {
+                  "source": {
+                    "id": 125
+                  },
+                  "target": {
+                    "componentId": 123,
+                    "parameterPath": "pos"
+                  },
+                  "id": 126,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                },
+                {
+                  "source": {
+                    "id": 127
+                  },
+                  "target": {
+                    "componentId": 123,
+                    "parameterPath": "roll"
+                  },
+                  "id": 128,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                }
+              ],
+              "triggers": []
+            }
+          },
+          {
+            "id": 129,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_Perlin",
+            "parameters": {
+              "label": "Mask_Perlin",
+              "m speed": 0.02,
+              "m zoom": 0.2,
+              "levels": 3,
+              "ran dir": false
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 140,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Borealis",
+            "parameters": {
+              "label": "TMask_Borealis",
+              "speed": 0.5,
+              "scale": 0.5,
+              "spread": 6.0,
+              "base": 0.5,
+              "contrast": 1.0
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 142,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Waves",
+            "parameters": {
+              "label": "TMask_Waves",
+              "rate": 6000.0,
+              "size": 48.0,
+              "amp1": 0.5,
+              "amp2": 1.4,
+              "amp3": 0.5,
+              "len1": 1.0,
+              "len2": 0.8,
+              "len3": 1.5
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 152,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_PerlinLineTranslator",
+            "parameters": {
+              "label": "Mask_PerlinLineTranslator",
+              "mzoom": 1.0,
+              "mspeed": 0.0,
+              "m angle": 0.0
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 154,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "rotation",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 229.6470489501953,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -16765697,
+                    "loop": true,
+                    "wave": 3,
+                    "period": 10000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [
+                {
+                  "source": {
+                    "id": 154
+                  },
+                  "target": {
+                    "componentId": 152,
+                    "parameterPath": "m angle"
+                  },
+                  "id": 155,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                }
+              ],
+              "triggers": []
+            }
+          },
+          {
+            "id": 156,
+            "class": "com.github.starcats.blinkydome.pattern.mask.TMask_Starlight",
+            "parameters": {
+              "label": "TMask_Starlight",
+              "speed": 3000.0,
+              "variance": 0.5,
+              "numStars": 105.0
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 131,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_BrightnessBeatBoost",
+            "parameters": {
+              "label": "Mask_BrightnessBeatBoost",
+              "trigger": false,
+              "baseBrightness": 0.3,
+              "decay": 0.998
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 158,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_FixtureDottedLine",
+            "parameters": {
+              "label": "Mask_FixtureDottedLine",
+              "num": 3.0,
+              "pos": 0.0,
+              "on pct": 0.5,
+              "jitter": 0.0
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 160,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "position modn",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 197.6470489501953,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -16730881,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 5000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 162,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "on-pct modn",
+                    "running": false,
+                    "trigger": false,
+                    "color/hue": 3.529411554336548,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -61696,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 1000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.25,
+                    "exp": 0.0
+                  }
+                },
+                {
+                  "id": 164,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "jitter modn",
+                    "running": false,
+                    "trigger": false,
+                    "color/hue": 333.8823547363281,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -65425,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 1000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.0,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [
+                {
+                  "source": {
+                    "id": 160
+                  },
+                  "target": {
+                    "componentId": 158,
+                    "parameterPath": "pos"
+                  },
+                  "id": 161,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                },
+                {
+                  "source": {
+                    "id": 162
+                  },
+                  "target": {
+                    "componentId": 158,
+                    "parameterPath": "on pct"
+                  },
+                  "id": 163,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 1,
+                    "Range": 0.5
+                  }
+                },
+                {
+                  "source": {
+                    "id": 164
+                  },
+                  "target": {
+                    "componentId": 158,
+                    "parameterPath": "jitter"
+                  },
+                  "id": 165,
+                  "class": "heronarts.lx.parameter.LXCompoundModulation",
+                  "parameters": {
+                    "label": "",
+                    "Polarity": 0,
+                    "Range": 1.0
+                  }
+                }
+              ],
+              "triggers": []
+            }
+          },
+          {
+            "id": 166,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_AngleSweep",
+            "parameters": {
+              "label": "Mask_AngleSweep",
+              "Trigger": false,
+              "x": 0,
+              "y": 1,
+              "z": 1,
+              "randomize": false,
+              "do rand": 0.3,
+              "tempoLck": false
+            },
+            "modulation": {
+              "modulators": [
+                {
+                  "id": 168,
+                  "class": "heronarts.lx.modulator.VariableLFO",
+                  "parameters": {
+                    "label": "Sweep",
+                    "running": true,
+                    "trigger": false,
+                    "color/hue": 345.64703369140625,
+                    "color/brightness": 100.0,
+                    "color/saturation": 100.0,
+                    "color": -65475,
+                    "loop": true,
+                    "wave": 0,
+                    "period": 1000.0,
+                    "skew": 0.0,
+                    "shape": 0.0,
+                    "phase": 0.5,
+                    "exp": 0.0
+                  }
+                }
+              ],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 134,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_RandomFixtureSelector",
+            "parameters": {
+              "label": "Mask_RandomFixtureSelector",
+              "Trigger": false,
+              "probability": 0.25,
+              "brightness": 100.0
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 137,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_WipePattern",
+            "parameters": {
+              "label": "Mask_Wipe",
+              "durationMs": 400.0,
+              "width": 20.0,
+              "Trigger": false
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 169,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_XyzFilter",
+            "parameters": {
+              "label": "Mask_XyzFilter",
+              "x": -69.0,
+              "y": 74.36597442626953,
+              "z": -55.634037017822266
+            },
+            "modulation": {
+              "modulators": [],
+              "modulations": [],
+              "triggers": []
+            }
+          },
+          {
+            "id": 171,
+            "class": "com.github.starcats.blinkydome.pattern.mask.Mask_AllWhite",
+            "parameters": {
+              "label": "Mask_AllWhite"
             },
             "modulation": {
               "modulators": [],
@@ -836,29 +1260,29 @@
           "label": "Meter",
           "running": true,
           "trigger": false,
-          "color/hue": 227.76470947265625,
+          "color/hue": 176.4705810546875,
           "color/brightness": 100.0,
           "color/saturation": 100.0,
-          "color": -16763649,
-          "gain": -0.9599999999999991,
+          "color": -16711696,
+          "gain": 0.0,
           "range": 48.0,
           "attack": 10.0,
           "release": 100.0,
           "slope": 4.5,
           "Band-1": 0.0,
-          "Band-2": 0.06893942048655732,
-          "Band-3": 0.20814337771979086,
-          "Band-4": 0.3286455311665265,
-          "Band-5": 0.3307700515896962,
-          "Band-6": 0.3659563922639192,
-          "Band-7": 0.3699761574611661,
-          "Band-8": 0.4341593142734598,
-          "Band-9": 0.40416341440777204,
-          "Band-10": 0.5285229886623395,
-          "Band-11": 0.3591453009997494,
-          "Band-12": 0.33107981306404366,
-          "Band-13": 0.30257806655881625,
-          "Band-14": 0.1373374248603202,
+          "Band-2": 0.0,
+          "Band-3": 0.0,
+          "Band-4": 0.0,
+          "Band-5": 0.0,
+          "Band-6": 0.0,
+          "Band-7": 0.0,
+          "Band-8": 0.0,
+          "Band-9": 0.0,
+          "Band-10": 0.0,
+          "Band-11": 0.0,
+          "Band-12": 0.0,
+          "Band-13": 0.0,
+          "Band-14": 0.0,
           "Band-15": 0.0,
           "Band-16": 0.0
         }
@@ -899,62 +1323,62 @@
     "modulation": {
       "modulators": [
         {
+          "id": 37,
+          "class": "com.github.starcats.blinkydome.modulator.MinimBeatTriggers",
+          "parameters": {
+            "label": "Minim",
+            "running": true,
+            "trigger": false,
+            "color/hue": 32.9411735534668,
+            "color/brightness": 100.0,
+            "color/saturation": 100.0,
+            "color": -29696,
+            "kick": false,
+            "snare": false,
+            "hihat": false,
+            "kick decay": 0.0
+          }
+        },
+        {
           "id": 38,
           "class": "com.github.starcats.blinkydome.modulator.MinimBeatTriggers",
           "parameters": {
             "label": "Minim",
             "running": true,
             "trigger": false,
-            "color/hue": 96.23529815673828,
+            "color/hue": 141.88233947753906,
             "color/brightness": 100.0,
             "color/saturation": 100.0,
-            "color": -10092800,
+            "color": -16711843,
             "kick": false,
             "snare": false,
             "hihat": false,
-            "kick decay": 0.029205994102454374
+            "kick decay": 0.0
           }
         },
         {
           "id": 39,
-          "class": "com.github.starcats.blinkydome.modulator.MinimBeatTriggers",
-          "parameters": {
-            "label": "Minim",
-            "running": true,
-            "trigger": false,
-            "color/hue": 260.4705810546875,
-            "color/brightness": 100.0,
-            "color/saturation": 100.0,
-            "color": -11075329,
-            "kick": false,
-            "snare": false,
-            "hihat": false,
-            "kick decay": 0.029205994102454374
-          }
-        },
-        {
-          "id": 40,
           "class": "heronarts.lx.audio.BandGate",
           "parameters": {
             "label": "Kick beat detect",
             "running": true,
             "trigger": false,
-            "color/hue": 358.35296630859375,
+            "color/hue": 99.05883026123047,
             "color/brightness": 100.0,
             "color/saturation": 100.0,
-            "color": -65529,
-            "gain": 4.079999999999985,
-            "range": 44.999999999999986,
+            "color": -10879232,
+            "gain": 30.0,
+            "range": 36.0,
             "attack": 10.0,
-            "release": 87.75088962417475,
+            "release": 100.0,
             "slope": 4.5,
-            "threshold": 0.74,
-            "floor": 0.9500000000000001,
-            "decay": 623.9999949932098,
+            "threshold": 0.8,
+            "floor": 0.9,
+            "decay": 400.0,
             "minFreq": 60.0,
             "maxFreq": 120.0,
             "gate": false,
-            "average": 0.14999775620655087,
+            "average": 0.0,
             "tap": false
           }
         }
@@ -965,10 +1389,26 @@
             "id": 23
           },
           "target": {
-            "componentId": 58,
+            "componentId": 40,
+            "parameterPath": "range"
+          },
+          "id": 44,
+          "class": "heronarts.lx.parameter.LXCompoundModulation",
+          "parameters": {
+            "label": "",
+            "Polarity": 0,
+            "Range": 0.75
+          }
+        },
+        {
+          "source": {
+            "id": 23
+          },
+          "target": {
+            "componentId": 57,
             "parameterPath": "brightness"
           },
-          "id": 60,
+          "id": 59,
           "class": "heronarts.lx.parameter.LXCompoundModulation",
           "parameters": {
             "label": "",
@@ -978,13 +1418,13 @@
         },
         {
           "source": {
-            "id": 40
+            "id": 39
           },
           "target": {
-            "componentId": 68,
+            "componentId": 67,
             "parameterPath": "fader"
           },
-          "id": 69,
+          "id": 68,
           "class": "heronarts.lx.parameter.LXCompoundModulation",
           "parameters": {
             "label": "",
@@ -994,13 +1434,13 @@
         },
         {
           "source": {
-            "id": 40
+            "id": 39
           },
           "target": {
-            "componentId": 108,
+            "componentId": 121,
             "parameterPath": "fader"
           },
-          "id": 109,
+          "id": 122,
           "class": "heronarts.lx.parameter.LXCompoundModulation",
           "parameters": {
             "label": "",
@@ -1012,14 +1452,29 @@
       "triggers": [
         {
           "source": {
-            "componentId": 39,
+            "componentId": 38,
             "parameterPath": "kick"
           },
           "target": {
-            "componentId": 118,
+            "componentId": 40,
+            "parameterPath": "new bar"
+          },
+          "id": 45,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        },
+        {
+          "source": {
+            "componentId": 38,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 77,
             "parameterPath": "trigger"
           },
-          "id": 120,
+          "id": 79,
           "class": "heronarts.lx.parameter.LXTriggerModulation",
           "parameters": {
             "label": ""
@@ -1027,14 +1482,14 @@
         },
         {
           "source": {
-            "componentId": 39,
+            "componentId": 38,
             "parameterPath": "kick"
           },
           "target": {
-            "componentId": 121,
+            "componentId": 80,
             "parameterPath": "Trigger"
           },
-          "id": 123,
+          "id": 82,
           "class": "heronarts.lx.parameter.LXTriggerModulation",
           "parameters": {
             "label": ""
@@ -1042,14 +1497,59 @@
         },
         {
           "source": {
-            "componentId": 39,
+            "componentId": 38,
             "parameterPath": "kick"
           },
           "target": {
-            "componentId": 124,
+            "componentId": 83,
             "parameterPath": "Trigger"
           },
-          "id": 126,
+          "id": 85,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        },
+        {
+          "source": {
+            "componentId": 38,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 131,
+            "parameterPath": "trigger"
+          },
+          "id": 133,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        },
+        {
+          "source": {
+            "componentId": 38,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 134,
+            "parameterPath": "Trigger"
+          },
+          "id": 136,
+          "class": "heronarts.lx.parameter.LXTriggerModulation",
+          "parameters": {
+            "label": ""
+          }
+        },
+        {
+          "source": {
+            "componentId": 38,
+            "parameterPath": "kick"
+          },
+          "target": {
+            "componentId": 137,
+            "parameterPath": "Trigger"
+          },
+          "id": 139,
           "class": "heronarts.lx.parameter.LXTriggerModulation",
           "parameters": {
             "label": ""
@@ -1084,14 +1584,14 @@
       "clipViewVisible": false,
       "modulatorExpanded": {
         "23": true,
+        "37": true,
         "38": true,
-        "39": true,
-        "40": true
+        "39": true
       },
       "preview": {
-        "radius": 352.5448407508045,
-        "theta": 0.0,
-        "phi": 0.0
+        "radius": 77.90925887509417,
+        "theta": 1.0379999999999967,
+        "phi": 0.017999999999999912
       }
     }
   }

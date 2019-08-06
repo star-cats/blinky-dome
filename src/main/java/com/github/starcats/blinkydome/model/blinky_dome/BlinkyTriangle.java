@@ -95,6 +95,17 @@ public class BlinkyTriangle extends SCAbstractFixture {
 
   }
 
+  public static BlinkyTriangle positionIn3DSpace(
+          LXVector v1Position,
+          float lenSide, float rotation,
+          LXVector trianglePlaneUp, LXVector trianglePlaneRight,
+          V firstV, V secondV,
+          int ppGroup, int ppPort, int triangleChainSequence
+          ) {
+    return BlinkyTriangle.positionIn3DSpace(v1Position, lenSide, rotation, trianglePlaneUp, trianglePlaneRight, firstV, secondV, ppGroup, ppPort,
+            BlinkyTriangle.NUM_LEDS_PER_TRIANGLE * triangleChainSequence, 0, 0);
+  }
+
   /** Enum used to specify vertex ordering for the triangle strip */
   public enum V {
     V1,

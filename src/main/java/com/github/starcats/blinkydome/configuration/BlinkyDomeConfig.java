@@ -5,9 +5,7 @@ import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
 import com.github.starcats.blinkydome.configuration.dlo.BlinkyDomeOdroidGpio;
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
-import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
-import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
+import com.github.starcats.blinkydome.model.blinky_dome.*;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -64,9 +62,10 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   protected BlinkyModel makeModel() {
-    return BlinkyDomeFactory.makeModel(p);
+    return BlinkyDomeFactoryMeowloweenGetItDone.makeModel(p);
 //    return TestHarnessFactory.makeModel();
 //    return Meowloween.makeModel();
+//    return Meowloween2019.makeModel();
   }
 
   @Override
