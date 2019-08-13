@@ -8,7 +8,7 @@ import java.util.Arrays;
  * Creates a {@link BlinkyModel} consisting of 4 triangles arranged in a simple "on the floor" geometry,
  * the geometry being interesting enough to show you how to use {@link BlinkyTriangle#positionIn3DSpace}
  */
-public class Meowloween {
+public class Meowloween2019 {
 
   static final public float LEN_SIDE = 18; // lets call it inches
   static final private float DEG_30 = (float) Math.PI / 6.0f;

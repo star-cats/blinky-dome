@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Model of StarCats dome
  */
-public class BlinkyDomeFactory {
+public class BlinkyDomeFactoryMeowloweenGetItDone {
 
   /**
    * Factory to construct a new instance from CSV LED position map
@@ -30,7 +30,7 @@ public class BlinkyDomeFactory {
     int G1_P1 = 4;
     int G1_P2 = 3;
     int G1_P3 = 3;
-    int G1_P3 = 3;
+//    int G1_P3 = 3;
 
     List<BlinkyTriangle> allTriangles = new ArrayList<>(triangleTable.getRowCount());
     for (TableRow row : triangleTable.rows()) {
@@ -48,7 +48,7 @@ public class BlinkyDomeFactory {
       if (i < (4+3+3+4)) {
         ppGroup = 1;
 
-        ppPort =
+        ppPort = 1;
       }
 
 
