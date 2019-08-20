@@ -15,6 +15,7 @@ public class BlinkyDomeFactory {
 
   /**
    * Factory to construct a new instance from CSV LED position map
+   *
    * @param p processing instance
    * @return new BlinkyModel instance
    */
@@ -28,26 +29,37 @@ public class BlinkyDomeFactory {
     List<BlinkyTriangle> allTriangles = new ArrayList<>(triangleTable.getRowCount());
     for (TableRow row : triangleTable.rows()) {
 
-      // TODO: These are demo triangle mappings for a quick pixel pusher harness containing four 'random' triangles
+      // TODO: These are demo triangle mappings for a quick pixel pusher harness
+      // containing four 'random' triangles
       // Eventually these params should be specified in the CSV itself
-      int domeGroup = row.getInt("index");
-      int domeGroupIndex = row.getInt("sub_index");
-      int ppGroup = row.getInt("pp_group");
-      int ppPort = row.getInt("pp_strip");
-      int ppFirstLedOffset = row.getInt("pp_led_index_offset");
+      int domeGroup = row.getInt("domeGroup");
+      int domeIndex = row.getInt("domeIndex");
+      int ppGroup = row.getInt("ppGroup");
+      int ppPort = row.getInt("ppPort");
+      int ppFirstLedOffset = row.getInt("ppFirstLedOffset");
 
-      allTriangles.add(new BlinkyTriangle(
+      float vertex1x = row.getFloat("vertex_1_x");
+      float vertex1z = row.getFloat("vertex_1_z");
+      float vertex1y = row.getFloat("vertex_1_y");
+      float vertex2x = row.getFloat("vertex_2_x");
+      float vertex2z = row.getFloat("vertex_2_z");
+      float vertex2y = row.getFloat("vertex_2_y");
+      float vertex3x = row.getFloat("vertex_3_x");
+      float vertex3z = row.getFloat("vertex_3_z");
+      float vertex3y = row.getFloat("vertex_3_y");
+
+      System.out.println(domeGroup + "\t" + domeIndex + "\t" + ppGroup + "\t" + ppPort + "\t" + ppFirstLedOffset + "\t"
+          + vertex1x + "\t" + vertex1z + "\t" + vertex1y + "\t" + vertex2x + "\t" + vertex2z + "\t" + vertex2y + "\t"
+          + vertex3x + "\t" + vertex3z + "\t" + vertex3y);
+
+      BlinkyTriangle newTriangle = new BlinkyTriangle(
           // Note: y and z dimensions are switched in mapping...
-          // "up/down" should be along y axis per processing 3D conventions, mapped as z.  So we swap.
-          new LXVector( row.getFloat("vertex_1_x"), row.getFloat("vertex_1_z"), row.getFloat("vertex_1_y") ),
-          new LXVector( row.getFloat("vertex_2_x"), row.getFloat("vertex_2_z"), row.getFloat("vertex_2_y") ),
-          new LXVector( row.getFloat("vertex_3_x"), row.getFloat("vertex_3_z"), row.getFloat("vertex_3_y") ),
-          ppGroup,
-          ppPort,
-          ppFirstLedOffset,
-          domeGroup,
-          domeGroupIndex
-      ));
+          // "up/down" should be along y axis per processing 3D conventions, mapped as z.
+          // So we swap.
+          new LXVector(vertex1x, vertex1z, vertex1y), new LXVector(vertex2x, vertex2z, vertex2y),
+          new LXVector(vertex3x, vertex3z, vertex3y), ppGroup, ppPort, ppFirstLedOffset, domeGroup, domeIndex);
+
+      allTriangles.add(newTriangle);
     }
 
     return BlinkyModel.makeModel(allTriangles);
