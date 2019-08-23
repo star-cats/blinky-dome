@@ -85,7 +85,7 @@ my-dev-machine$ ssh starcat@192.168.1.100
 stratocat:~$ sudo service sc-icosa-jar stop
 
 # run the new jar manually
-stratocat:~$ sudo DISPLAY=":1" java -jar blinky-dome-2019.jar
+stratocat:~$ sudo DISPLAY=":1" java -jar ~/blinky-dome-2019.jar
 
 # Wait until you see the line 'LXEngine Render Thread started'
 
@@ -101,10 +101,10 @@ stratocat:~$ vim /etc/init.d/sc-icosa-jar
 
 # Don't have to read the whole script, just look at the first uncommented line. It should be something like:
 #   SCRIPT="...."
-# That tells you which jar the script is targetting. Note the path
+# That tells you which jar the script is targetting. Note the jar name, or change it to current year/config/etc.
 
-# Now replace it with your jar
-stratocat:~$ sudo mv blinky-dome-2019.jar /etc/starcats/icosastar/blinky-dome-2019.jar
+# Now replace the target with your jar
+stratocat:~$ sudo mv ~/blinky-dome-2019.jar /etc/starcats/icosastar/blinky-dome-2019.jar
 ```
 
 Finally, run the JAR
