@@ -4,23 +4,23 @@ This file describes how to run and debug our JARs on our odroid and raspi images
 
 Namings:
 
-    - `stratocat`: The name of the odroid machine (first iteration was a cloud... get it?)
-    - `starcat`: The user on the odroid machine image.
-    - `icosa` / `icosastar`:  The original name for this project was `icosastar`, so some scripts and directories 
-      reference the orig name.
+- `stratocat`: The name of the odroid machine (first iteration was a cloud... get it?)
+- `starcat`: The user on the odroid machine image.
+- `icosa` / `icosastar`:  The original name for this project was `icosastar`, so some scripts and directories 
+  reference the orig name.
 
 
 # Where are things?
 
 Startup scripts:
 
-    - `/etc/init.d/sc-Xvfb`: Starts up virtual frame buffer (headless processing dependency)
-    - `/etc/init.d/sc-pulseaudio`: Starts up pulseaudio server for sound reactivity
-    - `/etc/init.d/sc-icosa-jar`: Starts up the headless Java app
+- `/etc/init.d/sc-Xvfb`: Starts up virtual frame buffer (headless processing dependency)
+- `/etc/init.d/sc-pulseaudio`: Starts up pulseaudio server for sound reactivity
+- `/etc/init.d/sc-icosa-jar`: Starts up the headless Java app
 
 JARs and resources:
 
-    - `/etc/starcats/icosastar/`: Where the various jars live.
+- `/etc/starcats/icosastar/`: Where the various jars live.
 
 Basically, the `sc-icosa-jar` init.d script fires up one of the JARs in `/etc/starcats/icosastar/`.
 
@@ -62,8 +62,9 @@ sudo DISPLAY=":1" java -jar blinky-dome-2019-headless.jar
 Now lets combine all our knowledge to 'install' a new version of the app onto the odroid.
 
 First, make sure you're compiling the headless configuration (no P3LX):
-    1. Open up `ConfigSupplier.java`
-    1. Uncomment the 'headless' config: `return new BlinkyDomeConfig(p);`. Make the `GuiConfig()` commented out.
+
+1. Open up `ConfigSupplier.java`
+1. Uncomment the 'headless' config: `return new BlinkyDomeConfig(p);`. Make the `GuiConfig()` commented out.
 
 Next, compile and get the headless fat jar up onto the odroid.
 
