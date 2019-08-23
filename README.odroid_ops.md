@@ -73,7 +73,7 @@ say it's on `192.168.1.100`
 
 ```sh
 my-dev-machine$ ./gradlew headlessShadowJar
-my-dev-machine$ scp ./build/libs/blinky-dome-headless-all.jar starcat@192.168.1.100:~/blinky-dome-some-name-like-2019-bm.jar'
+my-dev-machine$ scp ./build/libs/blinky-dome-headless-all.jar starcat@192.168.1.100:~/blinky-dome-2019.jar
 ```
 
 Next, get onto the odroid and make sure it runs:
@@ -85,7 +85,7 @@ my-dev-machine$ ssh starcat@192.168.1.100
 stratocat:~$ sudo service sc-icosa-jar stop
 
 # run the new jar manually
-stratocat:~$ sudo DISPLAY=":1" java -jar blinky-dome-some-name-like-2019-bm.jar
+stratocat:~$ sudo DISPLAY=":1" java -jar blinky-dome-2019.jar
 
 # Wait until you see the line 'LXEngine Render Thread started'
 
@@ -104,7 +104,7 @@ stratocat:~$ vim /etc/init.d/sc-icosa-jar
 # That tells you which jar the script is targetting. Note the path
 
 # Now replace it with your jar
-stratocat:~$ sudo mv blinky-dome-some-name-like-2019-bm.jar /etc/starcats/icosastar/blinky-dome-2019.jar
+stratocat:~$ sudo mv blinky-dome-2019.jar /etc/starcats/icosastar/blinky-dome-2019.jar
 ```
 
 Finally, run the JAR
