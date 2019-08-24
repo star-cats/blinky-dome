@@ -42,10 +42,11 @@ public class BlinkyTriangle extends SCAbstractFixture {
   /** Strip from vC to vA */
   private VectorStripModel<BlinkyLED> sZ;
 
-  private final List<BlinkyLED> pointsTyped;
+  private List<BlinkyLED> pointsTyped;
 
   public final int ppGroup;
   public final int ppPort;
+  public final int firstPpIndex;
 
   /**
    * Helper method that creates a BlinkyTriangle positioned in 3D space given the
@@ -130,6 +131,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
 
     this.ppGroup = ppGroup;
     this.ppPort = ppPort;
+    this.firstPpIndex = firstPpIndex;
 
     if (firstV == V.V1) {
       this.vA = v1;
@@ -169,10 +171,10 @@ public class BlinkyTriangle extends SCAbstractFixture {
   }
 
   /**
-   * Like {@link #getPoints()} but without losing type information in LX
-   * interfaces
+   * Like {@link #getPoints()}, but returns the points in order of the triangle pixel chain (ie how they're connected
+   * on the pixelpusher). Will be reordered as a result of .rotate() or .flip().
    */
-  public List<BlinkyLED> getPointsTyped() {
+  public List<BlinkyLED> getPixelChain() {
     return Collections.unmodifiableList(pointsTyped);
   }
 
@@ -181,14 +183,11 @@ public class BlinkyTriangle extends SCAbstractFixture {
   }
 
   /**
-   * Changes the coordinates of the points in this triangle to rotate their sides.
+   * Rotates the LED's in the triangle.
    *
-   * WARNING: NOT TO BE USED DURING MODEL CONSTRUCTION! ie use the V-enum param to set initial rotation!
-   * THIS IS FOR CALIBRATION PATTERNS, NOT FOR INITIAL POSITIONING!
-   *
-   * Why? This method creates dummy LXPoints which are thrown away, but LX doesn't handle "throwing away" well for
-   * initial model construction (color indicies stuff). This should be fine to use after model is constructed and
-   * initialized, but don't use it as a shortcut to construct the model in the right way.
+   * Leaves the underlying pixels in place, but changes the fixture abstractions and re-numbers how they're mapped on
+   * the pixelpusher output chain. In other words, of the triangle pixels, we change which corner has the 'first'
+   * pixel on the chain.
    */
   public void rotate() {
     // A-->B, B-->C, C-->A
@@ -197,26 +196,19 @@ public class BlinkyTriangle extends SCAbstractFixture {
     this.vC = this.vB;
     this.vB = prevA;
 
-    // Now to reposition the points.
-    // Note: we can't create new point instances, since the way LX works is points are registered at model creation
-    // time. So we need to be careful to use the existing point instances and just feed them new coordinates.
-
-    // We're gonna move sZ to sX's positions, but by then the sX instances will be repositioned.
-    // Need to save their positions for the final repositioning
-    List<LXPoint> origSXPositions = sX.getPointsTyped().stream()
-            .map(blinkyLED -> new LXPoint(blinkyLED.x, blinkyLED.y, blinkyLED.z))
+    // start the pp ordering at y: y, z, x
+    List<BlinkyLED> newOrdering = Stream.of(sY.getPointsTyped(), sZ.getPointsTyped(), sX.getPointsTyped())
+            .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
-    VectorStripModel.PointProducer<BlinkyLED> x2y = new RepositioningBlinkyPointProducer(
-            sX.getPointsTyped(), sY.getPointsTyped());
-    VectorStripModel.PointProducer<BlinkyLED> y2z = new RepositioningBlinkyPointProducer(
-            sY.getPointsTyped(), sZ.getPointsTyped());
-    VectorStripModel.PointProducer<BlinkyLED> z2x = new RepositioningBlinkyPointProducer(
-            sZ.getPointsTyped(), origSXPositions);
+    PPReorderingPointProducer newPPOrdering = new PPReorderingPointProducer(newOrdering, this.firstPpIndex);
 
-    this.sY = new VectorStripModel<>(vB, vC, x2y, NUM_LEDS_PER_SIDE);
-    this.sZ = new VectorStripModel<>(vC, vA, y2z, NUM_LEDS_PER_SIDE);
-    this.sX = new VectorStripModel<>(vA, vB, z2x, NUM_LEDS_PER_SIDE);
+    // Now we redefine our fixture abstractions while producing the existing pixels in the new reordering
+    this.sX = new VectorStripModel<>(vA, vB, newPPOrdering, NUM_LEDS_PER_SIDE);
+    this.sY = new VectorStripModel<>(vB, vC, newPPOrdering, NUM_LEDS_PER_SIDE);
+    this.sZ = new VectorStripModel<>(vC, vA, newPPOrdering, NUM_LEDS_PER_SIDE);
+
+    this.pointsTyped = newOrdering;
 
     // Leave the centroid, thetaRad, and phiRad unchanged -- we rearranged points, but set of positions remains same
     // so those params should be unchanged (and it lets us avoid LX point registration complications of recomputing
@@ -224,14 +216,11 @@ public class BlinkyTriangle extends SCAbstractFixture {
   }
 
   /**
-   * Changes the coordinates of the points in this triangle as if the triangle was flipped -- makes CW leds go CCW.
+   * Flips the LED's in the triangle -- if the pixel chain was going CW, makes the chain go CCW.
    *
-   * WARNING: NOT TO BE USED DURING MODEL CONSTRUCTION! ie use the V-enum param to set initial rotation!
-   * THIS IS FOR CALIBRATION PATTERNS, NOT FOR INITIAL POSITIONING!
-   *
-   * Why? This method creates dummy LXPoints which are thrown away, but LX doesn't handle "throwing away" well for
-   * initial model construction (color indicies stuff). This should be fine to use after model is constructed and
-   * initialized, but don't use it as a shortcut to construct the model in the right way.
+   * Leaves the underlying pixels in place, but changes the fixture abstractions and re-numbers how they're mapped on
+   * the pixelpusher output chain. In other words, of the triangle pixels, we change which corner has the 'first'
+   * pixel on the chain.
    */
   public void flip() {
     // We're going to flip on the A-vertex axis, so
@@ -240,18 +229,20 @@ public class BlinkyTriangle extends SCAbstractFixture {
     this.vC = this.vB;
     this.vB = prevC;
 
-    // Now to reposition the points.
-    // Note: we can't create new point instances, since the way LX works is points are registered at model creation
-    // time. So we need to be careful to use the existing point instances and just feed them new coordinates.
+    // to flip: same x, y, z ordering, but reverse it. That way x --> z', y --> y', z --> x' (where '==reversed)
+    List<BlinkyLED> newOrdering = Stream.of(sX.getPointsTyped(), sY.getPointsTyped(), sZ.getPointsTyped())
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    Collections.reverse(newOrdering);
 
-    SimpleRepositioningBlinkyPointProducer origX = new SimpleRepositioningBlinkyPointProducer(sX.getPointsTyped());
-    SimpleRepositioningBlinkyPointProducer origY = new SimpleRepositioningBlinkyPointProducer(sY.getPointsTyped());
-    SimpleRepositioningBlinkyPointProducer origZ = new SimpleRepositioningBlinkyPointProducer(sZ.getPointsTyped());
+    PPReorderingPointProducer newPPOrdering = new PPReorderingPointProducer(newOrdering, this.firstPpIndex);
 
+    // Now we redefine our fixture abstractions while producing the existing pixels in the new reordering
+    this.sX = new VectorStripModel<>(vA, vB, newPPOrdering, NUM_LEDS_PER_SIDE);
+    this.sY = new VectorStripModel<>(vB, vC, newPPOrdering, NUM_LEDS_PER_SIDE);
+    this.sZ = new VectorStripModel<>(vC, vA, newPPOrdering, NUM_LEDS_PER_SIDE);
 
-    this.sX = new VectorStripModel<>(vA, vB, origX, NUM_LEDS_PER_SIDE);
-    this.sY = new VectorStripModel<>(vB, vC, origY, NUM_LEDS_PER_SIDE);
-    this.sZ = new VectorStripModel<>(vC, vA, origZ, NUM_LEDS_PER_SIDE);
+    this.pointsTyped = newOrdering;
 
     // Leave the centroid, thetaRad, and phiRad unchanged -- we rearranged points, but set of positions remains same
     // so those params should be unchanged (and it lets us avoid LX point registration complications of recomputing
@@ -302,52 +293,33 @@ public class BlinkyTriangle extends SCAbstractFixture {
   }
 
   /**
-   * VectorStripModel.PointProducer that produces points from a list of existing points, but on its way out,
-   * each existing point is repositioned according to a mapping list of new positions.
+   * Bit of a hack to shimmy reordering (rotation and flipping) into existing structures.
+   * Here we have a producer that doesn't produce NEW pixels instances, only produces a list of existing instances.
+   * But, on their way out, their pixelpusher output changes, so effectively we're changing the mapping between
+   * virtual space and physical space -- we're mapping different virtual pixels to the same physical pixels.
    */
-  private static class RepositioningBlinkyPointProducer implements VectorStripModel.PointProducer<BlinkyLED> {
+  private static class PPReorderingPointProducer implements VectorStripModel.PointProducer<BlinkyLED> {
     private final List<BlinkyLED> ledsToProduce;
-    private final List<? extends LXPoint> newPositions;
-    private int ledI = 0;
+    private int i = 0;
+    private int ppOffset;
 
-    RepositioningBlinkyPointProducer(List<BlinkyLED> ledsToProduce, List<? extends LXPoint> newPositions) {
-      if (ledsToProduce.size() != newPositions.size()) {
-        throw new RuntimeException("newPositions map list must be same size as ledsToProduce!");
-      }
-      this.ledsToProduce = ledsToProduce;
-      this.newPositions = newPositions;
+    PPReorderingPointProducer(List<BlinkyLED> ledsToReorder, int initialPPOfset) {
+      this.ledsToProduce = ledsToReorder;
+      ppOffset = initialPPOfset;
     }
 
     @Override
     public BlinkyLED constructPoint(float x, float y, float z) {
-      BlinkyLED repositionedPoint = ledsToProduce.get(ledI);
-      LXPoint newPosition = newPositions.get(ledI);
+      // We're not producing any new instances, so we do nothing with x,y,z.  This is a bit of a hack to fit into
+      // existing patterns.
+      
+      BlinkyLED reorder = ledsToProduce.get(this.i);
+      reorder.setPpIndex(ppOffset);
 
-      repositionedPoint.reposition(newPosition);
+      ppOffset += 1;
+      i += 1;
 
-      ledI += 1;
-
-      return repositionedPoint;
-    }
-  }
-
-
-  private static class SimpleRepositioningBlinkyPointProducer implements VectorStripModel.PointProducer<BlinkyLED> {
-    private final List<BlinkyLED> ledsToProduce;
-    private int ledI = 0;
-
-    SimpleRepositioningBlinkyPointProducer(List<BlinkyLED> ledsToProduce) {
-      this.ledsToProduce = ledsToProduce;
-    }
-
-    @Override
-    public BlinkyLED constructPoint(float x, float y, float z) {
-      BlinkyLED repositionedPoint = ledsToProduce.get(ledI);
-      ledI += 1;
-
-      repositionedPoint.reposition(x, y, z);
-
-      return repositionedPoint;
+      return reorder;
     }
   }
 

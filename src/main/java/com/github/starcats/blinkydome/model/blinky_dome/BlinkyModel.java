@@ -27,7 +27,7 @@ public class BlinkyModel extends LXModel implements PixelPushableModel {
 
     // Separate LED's into a single flat list (needed for LXModel constructor)
     List<BlinkyLED> allLeds = allTriangles.stream()
-        .map(BlinkyTriangle::getPointsTyped)
+        .map(BlinkyTriangle::getPixelChain)
 
         .flatMap(Collection::stream)
         .collect(Collectors.toList());

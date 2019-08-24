@@ -5,7 +5,6 @@ import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyTriangle;
 import com.github.starcats.blinkydome.pattern.AbstractFixtureSelectorPattern;
 import heronarts.lx.LX;
-import heronarts.lx.LXPattern;
 import heronarts.lx.model.LXFixture;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
@@ -82,28 +81,6 @@ public class BlinkyDomeTriangleRotatorPattern
 
     // For every selected triangle, we paint each side a different red, green, or blue.
     // We fade the colors down the length of the sides to visualize directionality.
-//    int colorStep = 255 / BlinkyTriangle.NUM_LEDS_PER_SIDE;
-//    for (LXFixture fixture : getCurrentFixtures()) {
-//      BlinkyTriangle triangle = (BlinkyTriangle) fixture;
-//
-//      int color = 255;
-//      for (LXPoint point : triangle.getSX().getPoints()) {
-//        setColor(point.index, LX.rgb(color, 0, 0));
-//        color -= colorStep;
-//      }
-//
-//      color = 255;
-//      for (LXPoint point : triangle.getSY().getPoints()) {
-//        setColor(point.index, LX.rgb(0, color, 0));
-//        color -= colorStep;
-//      }
-//
-//      color = 255;
-//      for (LXPoint point : triangle.getSZ().getPoints()) {
-//        setColor(point.index, LX.rgb(0, 0, color));
-//        color -= colorStep;
-//      }
-//    }
 
     int colorStep = 255 / BlinkyTriangle.NUM_LEDS_PER_SIDE;
     for (LXFixture fixture : getCurrentFixtures()) {
@@ -111,7 +88,7 @@ public class BlinkyDomeTriangleRotatorPattern
 
       int color = 255;
       int i = 0;
-      for (BlinkyLED point : triangle.getPointsTyped()) {
+      for (BlinkyLED point : triangle.getPixelChain()) {
         // Iterate over all the pointsTyped, which is the LEDs in pixelpusher string order
 
         // First side: Red

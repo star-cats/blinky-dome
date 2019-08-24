@@ -1,6 +1,5 @@
 package com.github.starcats.blinkydome.model.blinky_dome;
 
-import com.github.starcats.blinkydome.model.util.RepositionableLXPoint;
 import com.github.starcats.blinkydome.pixelpusher.PixelPushableLED;
 import heronarts.lx.model.LXPoint;
 import processing.core.PVector;
@@ -8,8 +7,8 @@ import processing.core.PVector;
 /**
  * BlinkyModel's LED definition
  */
-public class BlinkyLED extends RepositionableLXPoint implements PixelPushableLED {
-  final public int ppGroup, ppPort, ppIndex;
+public class BlinkyLED extends LXPoint implements PixelPushableLED {
+  private int ppGroup, ppPort, ppIndex;
 
   /** Angular position of triangle in XZ (floor) plane */
   public float thetaRad;
@@ -47,20 +46,6 @@ public class BlinkyLED extends RepositionableLXPoint implements PixelPushableLED
   }
 
   //
-  // RepositionableLXPoint overrides to include angular positioning:
-  @Override
-  public void reposition(LXPoint newPosition) {
-    this.reposition(newPosition.x, newPosition.y, newPosition.z);
-    this.calculateAngularPositions(newPosition.x, newPosition.y, newPosition.z);
-  }
-
-  @Override
-  public void reposition(float newX, float newY, float newZ) {
-    super.reposition(newX, newY, newZ);
-    this.calculateAngularPositions(newX, newY, newZ);
-  }
-
-  //
   // PixelPushableLED implementations:
   @Override
   public int getPpGroup() {
@@ -75,6 +60,18 @@ public class BlinkyLED extends RepositionableLXPoint implements PixelPushableLED
   @Override
   public int getPpLedIndex() {
     return ppIndex;
+  }
+
+  public void setPpGroup(int ppGroup) {
+    this.ppGroup = ppGroup;
+  }
+
+  public void setPpPort(int ppPort) {
+    this.ppPort = ppPort;
+  }
+
+  public void setPpIndex(int ppIndex) {
+    this.ppIndex = ppIndex;
   }
 
   @Override
