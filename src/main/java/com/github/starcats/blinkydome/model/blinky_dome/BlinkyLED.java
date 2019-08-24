@@ -11,10 +11,10 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
   private int ppGroup, ppPort, ppIndex;
 
   /** Angular position of triangle in XZ (floor) plane */
-  public float thetaRad;
+  public final float thetaRad;
 
   /** Angular position of triangle in XY (up/down) plane */
-  public float phiRad;
+  public final float phiRad;
 
   /**
    * @param x global x-position
@@ -31,17 +31,13 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
     this.ppPort = ppPort;
     this.ppIndex = ppIndex;
 
-    this.calculateAngularPositions(x, y, z);
-  }
-
-  private void calculateAngularPositions(float x, float y, float z) {
     this.thetaRad = PVector.angleBetween(
-            new PVector(1f, 0f, 1f),
-            new PVector(x, y, z)
+        new PVector(1f, 0f, 1f),
+        new PVector(x, y, z)
     );
     this.phiRad = PVector.angleBetween(
-            new PVector(1f, 1f, 0f),
-            new PVector(x, y, z)
+        new PVector(1f, 1f, 0f),
+        new PVector(x, y, z)
     );
   }
 
