@@ -8,7 +8,7 @@ import processing.core.PVector;
  * BlinkyModel's LED definition
  */
 public class BlinkyLED extends LXPoint implements PixelPushableLED {
-  final public int ppGroup, ppPort, ppIndex;
+  private int ppGroup, ppPort, ppIndex;
 
   /** Angular position of triangle in XZ (floor) plane */
   public final float thetaRad;
@@ -41,6 +41,8 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
     );
   }
 
+  //
+  // PixelPushableLED implementations:
   @Override
   public int getPpGroup() {
     return ppGroup;
@@ -54,6 +56,18 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
   @Override
   public int getPpLedIndex() {
     return ppIndex;
+  }
+
+  public void setPpGroup(int ppGroup) {
+    this.ppGroup = ppGroup;
+  }
+
+  public void setPpPort(int ppPort) {
+    this.ppPort = ppPort;
+  }
+
+  public void setPpIndex(int ppIndex) {
+    this.ppIndex = ppIndex;
   }
 
   @Override

@@ -23,13 +23,14 @@ public class VectorStripModel<P extends LXPoint> extends SCAbstractFixture {
 
   private final List<P> typedPoints;
 
-  public interface PointFactory<P extends LXPoint> {
+  /** Interface for some mechanism of producing new LXPoint implementations given a coordinate */
+  public interface PointProducer<P extends LXPoint> {
     P constructPoint(float x, float y, float z);
   }
 
-  public static final PointFactory<LXPoint> GENERIC_POINT_FACTORY = LXPoint::new;
+  public static final PointProducer<LXPoint> GENERIC_POINT_FACTORY = LXPoint::new;
 
-  public VectorStripModel(LXVector start, LXVector end, PointFactory<P> pointFactory, int numPoints) {
+  public VectorStripModel(LXVector start, LXVector end, PointProducer<P> pointProducer, int numPoints) {
     this.start = start;
     this.end = end;
     this.typedPoints = new ArrayList<>(numPoints);
@@ -39,7 +40,7 @@ public class VectorStripModel<P extends LXPoint> extends SCAbstractFixture {
 
     for (int i=0; i<numPoints; i++) {
       LXVector newPoint = start.copy().lerp(end, lerpI);
-      P pt = pointFactory.constructPoint(newPoint.x, newPoint.y, newPoint.z);
+      P pt = pointProducer.constructPoint(newPoint.x, newPoint.y, newPoint.z);
 
       // lose generic typing; fast to avoid incremental centroid calcs
       addPointFast(pt);

@@ -104,11 +104,11 @@ public class BlinkyDomeFixtureSelectorPattern
     if (subfixtureParam == null) {
       return fixtures;
     } else if (subfixtureParam.getEnum() == BlinkyDomeSubfixtureType.X) {
-      return fixtures.stream().map(f -> f.sX).collect(Collectors.toList());
+      return fixtures.stream().map(BlinkyTriangle::getSX).collect(Collectors.toList());
     } else if (subfixtureParam.getEnum() == BlinkyDomeSubfixtureType.Y) {
-      return fixtures.stream().map(f -> f.sY).collect(Collectors.toList());
+      return fixtures.stream().map(BlinkyTriangle::getSY).collect(Collectors.toList());
     } else if (subfixtureParam.getEnum() == BlinkyDomeSubfixtureType.Z) {
-      return fixtures.stream().map(f -> f.sZ).collect(Collectors.toList());
+      return fixtures.stream().map(BlinkyTriangle::getSZ).collect(Collectors.toList());
     }
 
     return fixtures;

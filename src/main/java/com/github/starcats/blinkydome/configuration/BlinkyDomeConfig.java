@@ -15,6 +15,7 @@ import com.github.starcats.blinkydome.pattern.PerlinBreathing;
 import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
+import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeTriangleRotatorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.mask.*;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
@@ -373,6 +374,13 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
     LX.LXPatternFactory<BlinkyDomeFixtureSelectorPattern> bdfspFactory =
         (lx2, ch, l) -> new BlinkyDomeFixtureSelectorPattern(lx2, model);
     lx.registerPatternFactory(BlinkyDomeFixtureSelectorPattern.class, bdfspFactory);
+
+
+    // BlinkyDomeTriangleRotatorPattern
+    // ---------------------
+    LX.LXPatternFactory<BlinkyDomeTriangleRotatorPattern> bdtrpFactory =
+            (lx2, ch, l) -> new BlinkyDomeTriangleRotatorPattern(lx2, model);
+    lx.registerPatternFactory(BlinkyDomeTriangleRotatorPattern.class, bdtrpFactory);
 
 
     // Normal patterns
