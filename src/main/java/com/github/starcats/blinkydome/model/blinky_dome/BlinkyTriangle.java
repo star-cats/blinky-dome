@@ -6,6 +6,7 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import processing.core.PVector;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +42,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
   /** Strip from vC to vA */
   private VectorStripModel<BlinkyLED> sZ;
 
-  private List<BlinkyLED> pointsTyped;
+  private final List<BlinkyLED> pointsTyped;
 
   public final int ppGroup;
   public final int ppPort;
@@ -163,7 +164,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
     this.thetaRad = PVector.angleBetween(new PVector(1f, 0f, 1f), this.getCentroid());
     this.phiRad = PVector.angleBetween(new PVector(1f, 1f, 0f), this.getCentroid());
 
-    pointsTyped = Stream.of(sX.getPointsTyped(), sY.getPointsTyped(), sZ.getPointsTyped()).flatMap(Collection::stream)
+    this.pointsTyped = Stream.of(sX.getPointsTyped(), sY.getPointsTyped(), sZ.getPointsTyped()).flatMap(Collection::stream)
         .collect(Collectors.toList());
   }
 
@@ -216,6 +217,41 @@ public class BlinkyTriangle extends SCAbstractFixture {
     this.sY = new VectorStripModel<>(vB, vC, x2y, NUM_LEDS_PER_SIDE);
     this.sZ = new VectorStripModel<>(vC, vA, y2z, NUM_LEDS_PER_SIDE);
     this.sX = new VectorStripModel<>(vA, vB, z2x, NUM_LEDS_PER_SIDE);
+
+    // Leave the centroid, thetaRad, and phiRad unchanged -- we rearranged points, but set of positions remains same
+    // so those params should be unchanged (and it lets us avoid LX point registration complications of recomputing
+    // those)
+  }
+
+  /**
+   * Changes the coordinates of the points in this triangle as if the triangle was flipped -- makes CW leds go CCW.
+   *
+   * WARNING: NOT TO BE USED DURING MODEL CONSTRUCTION! ie use the V-enum param to set initial rotation!
+   * THIS IS FOR CALIBRATION PATTERNS, NOT FOR INITIAL POSITIONING!
+   *
+   * Why? This method creates dummy LXPoints which are thrown away, but LX doesn't handle "throwing away" well for
+   * initial model construction (color indicies stuff). This should be fine to use after model is constructed and
+   * initialized, but don't use it as a shortcut to construct the model in the right way.
+   */
+  public void flip() {
+    // We're going to flip on the A-vertex axis, so
+    // B-->C, C-->B
+    LXVector prevC = this.vC;
+    this.vC = this.vB;
+    this.vB = prevC;
+
+    // Now to reposition the points.
+    // Note: we can't create new point instances, since the way LX works is points are registered at model creation
+    // time. So we need to be careful to use the existing point instances and just feed them new coordinates.
+
+    SimpleRepositioningBlinkyPointProducer origX = new SimpleRepositioningBlinkyPointProducer(sX.getPointsTyped());
+    SimpleRepositioningBlinkyPointProducer origY = new SimpleRepositioningBlinkyPointProducer(sY.getPointsTyped());
+    SimpleRepositioningBlinkyPointProducer origZ = new SimpleRepositioningBlinkyPointProducer(sZ.getPointsTyped());
+
+
+    this.sX = new VectorStripModel<>(vA, vB, origX, NUM_LEDS_PER_SIDE);
+    this.sY = new VectorStripModel<>(vB, vC, origY, NUM_LEDS_PER_SIDE);
+    this.sZ = new VectorStripModel<>(vC, vA, origZ, NUM_LEDS_PER_SIDE);
 
     // Leave the centroid, thetaRad, and phiRad unchanged -- we rearranged points, but set of positions remains same
     // so those params should be unchanged (and it lets us avoid LX point registration complications of recomputing
@@ -288,7 +324,28 @@ public class BlinkyTriangle extends SCAbstractFixture {
       LXPoint newPosition = newPositions.get(ledI);
 
       repositionedPoint.reposition(newPosition);
+
       ledI += 1;
+
+      return repositionedPoint;
+    }
+  }
+
+
+  private static class SimpleRepositioningBlinkyPointProducer implements VectorStripModel.PointProducer<BlinkyLED> {
+    private final List<BlinkyLED> ledsToProduce;
+    private int ledI = 0;
+
+    SimpleRepositioningBlinkyPointProducer(List<BlinkyLED> ledsToProduce) {
+      this.ledsToProduce = ledsToProduce;
+    }
+
+    @Override
+    public BlinkyLED constructPoint(float x, float y, float z) {
+      BlinkyLED repositionedPoint = ledsToProduce.get(ledI);
+      ledI += 1;
+
+      repositionedPoint.reposition(x, y, z);
 
       return repositionedPoint;
     }

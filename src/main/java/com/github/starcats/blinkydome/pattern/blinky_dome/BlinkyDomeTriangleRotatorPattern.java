@@ -1,5 +1,6 @@
 package com.github.starcats.blinkydome.pattern.blinky_dome;
 
+import com.github.starcats.blinkydome.model.blinky_dome.BlinkyLED;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyTriangle;
 import com.github.starcats.blinkydome.pattern.AbstractFixtureSelectorPattern;
@@ -28,11 +29,13 @@ public class BlinkyDomeTriangleRotatorPattern
   }
 
   public final BooleanParameter rotateSelected;
+  public final BooleanParameter flipSelected;
 
 
   public BlinkyDomeTriangleRotatorPattern(LX lx, BlinkyModel model) {
     super(lx, model);
 
+    // Button to trigger triangle rotation
     this.rotateSelected = new BooleanParameter("rotate", false)
             .setMode(BooleanParameter.Mode.MOMENTARY)
             .setDescription("Rotate the pixels in the underlying triangle to match visualized mapping");
@@ -43,12 +46,31 @@ public class BlinkyDomeTriangleRotatorPattern
 
       this.rotateSelectedTriangles();
     });
+
+    // Button to trigger triangle flipping
+    this.flipSelected = new BooleanParameter("flip", false)
+            .setMode(BooleanParameter.Mode.MOMENTARY)
+            .setDescription("Flip the pixels in the underlying triangle (eg CW to CCW)");
+    addParameter(this.flipSelected);
+
+    this.flipSelected.addListener(param -> {
+      if (param.getValue() == 0) return;
+
+      this.flipSelectedTriangles();
+    });
   }
 
   private void rotateSelectedTriangles() {
     for (LXFixture fixture : getCurrentFixtures()) {
       BlinkyTriangle triangle = (BlinkyTriangle) fixture;
       triangle.rotate();
+    }
+  }
+
+  private void flipSelectedTriangles() {
+    for (LXFixture fixture : getCurrentFixtures()) {
+      BlinkyTriangle triangle = (BlinkyTriangle) fixture;
+      triangle.flip();
     }
   }
 
@@ -60,26 +82,57 @@ public class BlinkyDomeTriangleRotatorPattern
 
     // For every selected triangle, we paint each side a different red, green, or blue.
     // We fade the colors down the length of the sides to visualize directionality.
+//    int colorStep = 255 / BlinkyTriangle.NUM_LEDS_PER_SIDE;
+//    for (LXFixture fixture : getCurrentFixtures()) {
+//      BlinkyTriangle triangle = (BlinkyTriangle) fixture;
+//
+//      int color = 255;
+//      for (LXPoint point : triangle.getSX().getPoints()) {
+//        setColor(point.index, LX.rgb(color, 0, 0));
+//        color -= colorStep;
+//      }
+//
+//      color = 255;
+//      for (LXPoint point : triangle.getSY().getPoints()) {
+//        setColor(point.index, LX.rgb(0, color, 0));
+//        color -= colorStep;
+//      }
+//
+//      color = 255;
+//      for (LXPoint point : triangle.getSZ().getPoints()) {
+//        setColor(point.index, LX.rgb(0, 0, color));
+//        color -= colorStep;
+//      }
+//    }
+
     int colorStep = 255 / BlinkyTriangle.NUM_LEDS_PER_SIDE;
     for (LXFixture fixture : getCurrentFixtures()) {
       BlinkyTriangle triangle = (BlinkyTriangle) fixture;
 
       int color = 255;
-      for (LXPoint point : triangle.getSX().getPoints()) {
-        setColor(point.index, LX.rgb(color, 0, 0));
-        color -= colorStep;
-      }
+      int i = 0;
+      for (BlinkyLED point : triangle.getPointsTyped()) {
+        // Iterate over all the pointsTyped, which is the LEDs in pixelpusher string order
 
-      color = 255;
-      for (LXPoint point : triangle.getSY().getPoints()) {
-        setColor(point.index, LX.rgb(0, color, 0));
-        color -= colorStep;
-      }
+        // First side: Red
+        if (i < BlinkyTriangle.NUM_LEDS_PER_SIDE) {
+          setColor(point.index, LX.rgb(color, 0, 0));
 
-      color = 255;
-      for (LXPoint point : triangle.getSZ().getPoints()) {
-        setColor(point.index, LX.rgb(0, 0, color));
-        color -= colorStep;
+        // Middle side: Green
+        } else if (i < BlinkyTriangle.NUM_LEDS_PER_SIDE * 2) {
+          setColor(point.index, LX.rgb(0, color, 0));
+
+        // Last side: Blue
+        } else {
+          setColor(point.index, LX.rgb(0, 0, color));
+        }
+
+        i += 1;
+        if (i % BlinkyTriangle.NUM_LEDS_PER_SIDE == 0) {
+          color = 255;
+        } else {
+          color -= colorStep;
+        }
       }
     }
   }
