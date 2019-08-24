@@ -65,6 +65,10 @@ public abstract class AbstractFixtureSelectorPattern<M extends LXModel, E extend
     currentFixtures = getFixturesByKey(currentlySelectedFamily, fixtureSelector.getObject());
   }
 
+  public List<? extends LXFixture> getCurrentFixtures() {
+    return this.currentFixtures;
+  }
+
   public void run(double deltaMs) {
     for (LXPoint point : model.points) {
       setColor(point.index, LX.hsb(0, 0, 0));
