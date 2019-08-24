@@ -29,10 +29,12 @@ public class BlinkyDomeTriangleRotatorPattern
 
   public final BooleanParameter rotateSelected;
   public final BooleanParameter flipSelected;
+  public final BooleanParameter dumpButton;
 
 
   public BlinkyDomeTriangleRotatorPattern(LX lx, BlinkyModel model) {
     super(lx, model);
+
 
     // Button to trigger triangle rotation
     this.rotateSelected = new BooleanParameter("rotate", false)
@@ -46,6 +48,7 @@ public class BlinkyDomeTriangleRotatorPattern
       this.rotateSelectedTriangles();
     });
 
+
     // Button to trigger triangle flipping
     this.flipSelected = new BooleanParameter("flip", false)
             .setMode(BooleanParameter.Mode.MOMENTARY)
@@ -56,6 +59,19 @@ public class BlinkyDomeTriangleRotatorPattern
       if (param.getValue() == 0) return;
 
       this.flipSelectedTriangles();
+    });
+
+
+    // Button to dump mappings
+    this.dumpButton = new BooleanParameter("DUMP", false)
+            .setMode(BooleanParameter.Mode.MOMENTARY)
+            .setDescription("Dump the triangle mappings into a new csv format! (Check console output!)");
+    addParameter(this.dumpButton);
+
+    this.dumpButton.addListener(param -> {
+      if (param.getValue() == 0) return;
+
+      this.dumpNewVertexLocationsCsv();
     });
   }
 
@@ -188,5 +204,52 @@ public class BlinkyDomeTriangleRotatorPattern
     }
 
     return fixtures;
+  }
+
+  public void dumpNewVertexLocationsCsv() {
+    System.out.println("\n\n\nDUMPING NEW vertex-locations.csv!");
+    System.out.println("--------------------");
+    System.out.println("domeGroup,domeIndex,vertex_1_x,vertex_1_y,vertex_1_z,vertex_2_x,vertex_2_y,vertex_2_z,vertex_3_x,vertex_3_y,vertex_3_z,ppGroup,ppPort,ppFirstLedOffset");
+
+    for (BlinkyTriangle tri : model.allTriangles) {
+      System.out.print(tri.domeGroup);
+      System.out.print(",");
+      System.out.print(tri.domeGroupIndex);
+      System.out.print(",");
+
+      // Heads up! In BlinkyDomeFactory, note that y and z dimensions are switched in mapping.
+      // We need to make that same switch here so when it's reloaded, things are good.
+      // HEY DEVELOPER: Make sure this switch stays consistent with BlinkyDomeFactory!
+
+      System.out.print(tri.getVA().x);
+      System.out.print(",");
+      System.out.print(tri.getVA().z); // Note z and y switched
+      System.out.print(",");
+      System.out.print(tri.getVA().y);
+      System.out.print(",");
+
+      System.out.print(tri.getVB().x);
+      System.out.print(",");
+      System.out.print(tri.getVB().z); // Note z and y switched
+      System.out.print(",");
+      System.out.print(tri.getVB().y);
+      System.out.print(",");
+
+      System.out.print(tri.getVC().x);
+      System.out.print(",");
+      System.out.print(tri.getVC().z);  // Note z and y switched
+      System.out.print(",");
+      System.out.print(tri.getVC().y);
+      System.out.print(",");
+
+
+      System.out.print(tri.ppGroup);
+      System.out.print(",");
+      System.out.print(tri.ppPort);
+      System.out.print(",");
+      System.out.print(tri.firstPpIndex);
+
+      System.out.print("\n");
+    }
   }
 }

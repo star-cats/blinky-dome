@@ -56,6 +56,7 @@ public class BlinkyDomeFactory {
           // Note: y and z dimensions are switched in mapping...
           // "up/down" should be along y axis per processing 3D conventions, mapped as z.
           // So we swap.
+          // HEY DEVELOPER: If changing this, make same change in BlinkyDomeTriangleRotatorPattern::dumpNewCsv()!!!
           new LXVector(vertex1x, vertex1z, vertex1y), new LXVector(vertex2x, vertex2z, vertex2y),
           new LXVector(vertex3x, vertex3z, vertex3y), ppGroup, ppPort, ppFirstLedOffset, domeGroup, domeIndex);
 

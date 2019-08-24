@@ -261,6 +261,18 @@ public class BlinkyTriangle extends SCAbstractFixture {
     return sZ;
   }
 
+  public LXVector getVA() {
+    return vA;
+  }
+
+  public LXVector getVB() {
+    return vB;
+  }
+
+  public LXVector getVC() {
+    return vC;
+  }
+
   //
   // -----------------------
   // VectorStripModel.PointProducer implementations for BlinkyLED / BlinkyTriangle use-cases
@@ -312,7 +324,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
     public BlinkyLED constructPoint(float x, float y, float z) {
       // We're not producing any new instances, so we do nothing with x,y,z.  This is a bit of a hack to fit into
       // existing patterns.
-      
+
       BlinkyLED reorder = ledsToProduce.get(this.i);
       reorder.setPpIndex(ppOffset);
 
