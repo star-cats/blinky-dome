@@ -1,5 +1,6 @@
 package com.github.starcats.blinkydome.model.blinky_dome;
 
+import com.github.starcats.blinkydome.model.util.PixelPushablePointProducer;
 import com.github.starcats.blinkydome.model.util.VectorStripModel;
 import com.github.starcats.blinkydome.util.SCAbstractFixture;
 import heronarts.lx.model.LXPoint;
@@ -151,7 +152,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
 
     // Note this factory keeps state on ppIndex -- increments it for every new LED
     // created
-    BlinkyPointProducer ledFactory = new BlinkyPointProducer(ppGroup, ppPort, firstPpIndex);
+    VectorStripModel.PointProducer<BlinkyLED> ledFactory = new PixelPushablePointProducer(ppGroup, ppPort, firstPpIndex);
 
     this.sX = new VectorStripModel<>(vA, vB, ledFactory, NUM_LEDS_PER_SIDE);
     this.sY = new VectorStripModel<>(vB, vC, ledFactory, NUM_LEDS_PER_SIDE);
@@ -277,32 +278,6 @@ public class BlinkyTriangle extends SCAbstractFixture {
   // -----------------------
   // VectorStripModel.PointProducer implementations for BlinkyLED / BlinkyTriangle use-cases
   // -----------------------
-
-  /**
-   * BlinkyLED's used in BlinkyTriangles are pixel-pushable LXPoint's, meaning each needs to have pixelpusher
-   * params attached to it.
-   * This is a stateful producer of BlinkyLEDs (LXPoints) that increments the LED's pixel pusher position for each
-   * new LED produced.
-   */
-  private static class BlinkyPointProducer implements VectorStripModel.PointProducer<BlinkyLED> {
-
-    private final int ppGroup;
-    private final int ppPort;
-    private int ppIndex;
-
-    BlinkyPointProducer(int ppGroup, int ppPort, int firstPpIndex) {
-      this.ppGroup = ppGroup;
-      this.ppPort = ppPort;
-      this.ppIndex = firstPpIndex;
-    }
-
-    @Override
-    public BlinkyLED constructPoint(float x, float y, float z) {
-      // Increment ppIndex on every new factory constructor -- assume subsequent calls
-      // are down the strip.
-      return new BlinkyLED(x, y, z, ppGroup, ppPort, ppIndex++);
-    }
-  }
 
   /**
    * Bit of a hack to shimmy reordering (rotation and flipping) into existing structures.

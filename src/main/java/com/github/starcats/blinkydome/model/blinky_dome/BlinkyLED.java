@@ -8,7 +8,7 @@ import processing.core.PVector;
  * BlinkyModel's LED definition
  */
 public class BlinkyLED extends LXPoint implements PixelPushableLED {
-  private int ppGroup, ppPort, ppIndex;
+  private int ppGroup, ppPort, ppIndex; // remember ppGroup is 0-indexed, ppPort is 1-indexed!
 
   /** Angular position of triangle in XZ (floor) plane */
   public final float thetaRad;
@@ -21,7 +21,7 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
    * @param y global y-position
    * @param z global z-position
    * @param ppGroup Which pixelpusher group (0-indexed)
-   * @param ppPort Which pixelpusher strip/port (1-indexed)
+   * @param ppPort Which pixelpusher strip/port (REMEMBER: 1-indexed)
    * @param ppIndex The LED index on the pixelpusher strip/port
    */
   public BlinkyLED(float x, float y, float z, int ppGroup, int ppPort, int ppIndex) {
