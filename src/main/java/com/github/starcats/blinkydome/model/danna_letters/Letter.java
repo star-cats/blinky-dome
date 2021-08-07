@@ -10,29 +10,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DANNA letters: D
+ * Fixture representing a letter. Defined by a series of VectorStripModels, as defined by shortcut
+ * classes SegmentSpecification and SegmentBuilder
  */
-public abstract class AbstractLetter extends SCAbstractFixture {
-  private LXVector origin;
-
+public class Letter extends SCAbstractFixture {
   private List<VectorStripModel<BlinkyLED>> segments;
 
-  public final int ppGroup;
-  public final int ppPort;
-  public final int firstPpIndex;
-
-
-  public AbstractLetter(LXVector origin, int ppGroup, int ppPort, int firstPpIndex) {
-    this.ppGroup = ppGroup;
-    this.ppPort = ppPort;
-    this.firstPpIndex = firstPpIndex;
-
-    // Note this factory keeps state on ppIndex -- increments it for every new LED
-    // created
-    VectorStripModel.PointProducer<BlinkyLED> ledFactory = new PixelPushablePointProducer(ppGroup, ppPort, firstPpIndex);
+  /**
+   * @param ledFactory PointProducer to generate LED points for the segments
+   * @param origin Global offset for the origin point of this letter -- segment specs get added to this
+   * @param segmentSpecs Definition of internal LED strip segments
+   */
+  public Letter(VectorStripModel.PointProducer<BlinkyLED> ledFactory,
+                LXVector origin, List<SegmentSpecification> segmentSpecs) {
 
     this.segments = new ArrayList<>();
-    for (SegmentSpecification segmentSpec : getSegmentSpecs()) {
+    for (SegmentSpecification segmentSpec : segmentSpecs) {
       segments.add(new VectorStripModel<>(
           origin.copy().add(segmentSpec.startX, segmentSpec.startY),
           origin.copy().add(
@@ -51,9 +44,6 @@ public abstract class AbstractLetter extends SCAbstractFixture {
   public List<VectorStripModel<BlinkyLED>> getSegments() {
     return this.segments;
   }
-
-  /** Implementation hook for letter to define VectorStripModel specs */
-  abstract List<SegmentSpecification> getSegmentSpecs();
 
 
 
