@@ -77,7 +77,7 @@ public class BlinkyDomeGuiConfig extends BlinkyDomeConfig implements StarcatsLxG
 
 
     // Enable audio support
-    lx.engine.audio.enabled.setValue(true);
+    lx.engine.audio.enabled.setValue(false);
 
 
     // Add pattern aids
