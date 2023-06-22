@@ -1,42 +1,72 @@
 package com.github.starcats.blinkydome.starpusher;
 
-import javax.xml.crypto.Data;
+import java.io.IOError;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StarPusherDeviceRegistry {
 
+    /** StarPushers expect to be on the 10.1.1.0 subnet. Their IP address is configured
+     * statically based on their DIP switch value. The Laptop running LX Studio must have
+     * its Ethernet interface set to the static IP 10.1.1.1.
+     */
+    private static final String LX_STATIC_IP = "10.1.1.1";
+
     /** Listen for StarPusher UDP announce messages on this port. */
-    private static final int UDP_BROADCAST_PORT = 8080;
+    private static final int DISCOVERY_MULTICAST_PORT = 21059;
 
-    /** Expire any StarPushers not seen for this period of time. */
-    private static final int EXPIRY_TIME_MILLIS = 10 * 1000;
+    /** Listen for StarPusher discovery multicast messages on this port. */
+    private static final String DISCOVERY_MULTICAST_GROUP = "239.10.11.12";
 
-    private Thread udpListenerThread;
-    private UDPBroadcastListener udpListener = new UDPBroadcastListener(UDP_BROADCAST_PORT);
+    /** StarPusher's are listening for commands on this port. */
+    private static final int DEVICE_UDP_PORT = 6868;
 
-    /** Up-to-date list of all non-expired StarPusher devices. */
+    /** Thread running the StarPusher discovery listener. */
+    private Thread discoveryListenerThread;
+
+    /** The StarPusher discovery listener listens for multicast discovery messages. */
+    private DiscoveryListener discoveryListener = new DiscoveryListener(DISCOVERY_MULTICAST_PORT);
+
+    /** All active StarPusher devices, keyed by Device ID. */
     private Map<Integer, StarPusherDevice> devices = new HashMap<>();
-    /** Last seen time of all StarPusher devices. Used to trigger expiry. */
+
+    /** Last seen time of all StarPusher devices, keyed by Device ID. Used to trigger expiry. */
     private Map<Integer, Long> lastSeen = new HashMap<>();
 
-    public void setPixel(int group, int port, int index, int r, int g, int b, int w) {
+    /** Expire any StarPushers not seen for this period of time. */
+    private static final int DEVICE_EXPIRY_TIME_MILLIS = 10 * 1000;
+
+    /** Default to using a 4Mhz SPI clock speed. */
+    private static final int SPI_CLOCK_SPEED = 4000000;
+
+    /** Check for device expiry every 5 seconds. */
+    private static final int EXPIRY_CHECK_INTERVAL_MILLIS = 5 * 1000;
+
+    /** Sets the value of a pixel in a StarPusher's buffer.
+     *
+     * @param deviceId The zero-based deviceId number of the target StarPusher.
+     * @param port The one-based port on the StarPusher. This is actually a virtual port because the StarPusher has
+     *             a flat address space for pixels. This is to maintain backwards compatibility with PixelPusher code.
+     * @param index Zero-based index of the pixel on port of deviceId.
+     * @param r Red value in range 0-255.
+     * @param g Green value in range 0-255.
+     * @param b Blue value in range 0-255.
+     * @param w Brightness value in range 0-255.
+     */
+    public void setPixel(int deviceId, int port, int index, int r, int g, int b, int w) {
         synchronized (this) {
-            if (devices.containsKey(group)) {
-                StarPusherDevice device = devices.get(group);
+            if (devices.containsKey(deviceId)) {
+                StarPusherDevice device = devices.get(deviceId);
                 device.setPixel(port, index, r, g, b, w);
             }
         }
     }
 
+    /** Sends the StarPusher's pixel buffers to the pixel strips. This must be called after a sequence
+     * of calls to setPixel().
+     */
     public void sendPixelsToDevices() {
         synchronized (this) {
             for (StarPusherDevice device : devices.values()) {
@@ -45,41 +75,88 @@ public class StarPusherDeviceRegistry {
         }
     }
 
-    private record StarPusherAnnounceMessage(InetAddress address, int group) {
+    /** Periodically check for expired StarPusher devices. */
+    private class DeviceExpiry implements Runnable {
+        public void run() {
+            while (true) {
+                StarPusherDeviceRegistry.this.checkDeviceExpiry();
+                try {
+                    Thread.sleep(EXPIRY_CHECK_INTERVAL_MILLIS);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        }
     }
 
-    private class UDPBroadcastListener implements Runnable {
+    private class DiscoveryListener implements Runnable {
+        /** Listening for multicast messages on this port. */
         private int port;
 
+        /** True while the discovery listener is running. */
         private AtomicBoolean running = new AtomicBoolean(false);
 
-        private static final int PACKET_SIZE = 1024;
+        /** Maximum size, in bytes, of UDP packet to receive. */
+        private static final int MAX_PACKET_SIZE = 1024;
 
-        UDPBroadcastListener(int port) {
+        /** Size, in bytes, of the StarPusher discovery UDP packet .*/
+        private static final int DISCOVER_PACKET_SIZE = 7;
+
+        DiscoveryListener(int port) {
             this.port = port;
         }
 
-        @Override
         public void run() {
             running.set(true);
-            DatagramSocket socket;
+
             try {
-                socket = new DatagramSocket(port);
-            } catch (IOException e) {
+                boolean found = false;
+                for (NetworkInterface netif : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                    for (InetAddress addr : Collections.list(netif.getInetAddresses())) {
+                        if (addr.getHostAddress() == LX_STATIC_IP) {
+                            found = true;
+                        }
+                    }
+                }
+                if (!found) {
+                    System.err.println("Couldn't find static IP address " + LX_STATIC_IP);
+                }
+            } catch(SocketException e) {
                 return;
             }
-            DatagramPacket packet = new DatagramPacket(new byte[PACKET_SIZE], PACKET_SIZE);
-            while (running.get()) {
-                try {
+
+            MulticastSocket socket;
+            InetAddress multicastGroup;
+            try {
+                socket = new MulticastSocket(DISCOVERY_MULTICAST_PORT);
+                socket.setInterface(InetAddress.getByName(LX_STATIC_IP));
+                multicastGroup = InetAddress.getByName(DISCOVERY_MULTICAST_GROUP);
+                socket.joinGroup(multicastGroup);
+                DatagramPacket packet = new DatagramPacket(new byte[MAX_PACKET_SIZE], MAX_PACKET_SIZE);
+                while (running.get()) {
                     socket.receive(packet);
-                } catch (IOException e) {
-                    return;
+                    processPacket(packet);
                 }
-                processPacket(packet);
+                socket.leaveGroup(multicastGroup);
+                socket.close();
+            } catch (IOException e) {
+                System.err.println(e);
             }
         }
 
+        /** Processes a raw UDP packet received over multicast, parsing and handling StarPusher discovery packets. */
         private void processPacket(DatagramPacket packet) {
+            byte[] data = packet.getData();
+
+            if (packet.getLength() != DISCOVER_PACKET_SIZE) {
+                return;
+            }
+            if (data[0] != 'S' || data[1] != 'P') {
+                return;
+            }
+
+            int deviceId = data[2];
+            StarPusherDeviceRegistry.this.deviceSeen(packet.getAddress(), deviceId);
         }
 
         public void stop() {
@@ -87,12 +164,14 @@ public class StarPusherDeviceRegistry {
         }
     }
 
-    public void listenForDeviceAnnouncements() {
-        if (udpListenerThread != null) {
+    /** Start listening for StarPusher discover messages. */
+    public void startDeviceDiscovery() {
+        if (discoveryListenerThread != null) {
             throw new RuntimeException("StarPusherDeviceRegistry already started.");
         }
-        udpListenerThread = new Thread(udpListener);
-        udpListenerThread.start();
+        discoveryListenerThread = new Thread(discoveryListener);
+        discoveryListenerThread.start();
+        new Thread(new DeviceExpiry()).start();
     }
 
     /** Check if we need to expire any StarPushers we haven't seen for a while. */
@@ -103,23 +182,50 @@ public class StarPusherDeviceRegistry {
             for (Map.Entry<Integer, Long> entry :
                     lastSeen.entrySet()) {
                 long age = currentTime - entry.getValue();
-                if (age >= EXPIRY_TIME_MILLIS) {
+                if (age >= DEVICE_EXPIRY_TIME_MILLIS) {
                     expired.add(entry.getKey());
                 }
             }
 
-            for (Integer group : expired) {
-                expire(group);
+            for (Integer deviceId : expired) {
+                expire(deviceId);
             }
         }
     }
 
-    /** Expire a specific StarPusher. */
-    private void expire(int group) {
+    /** Add new devices and update the last seen time of a device. */
+    private void deviceSeen(InetAddress address, int deviceId) {
         synchronized (this) {
-            if (devices.containsKey(group)) {
-                devices.remove(group);
-                lastSeen.remove(group);
+            if (!devices.containsKey(deviceId)) {
+                onNewDevice(new StarPusherDevice(address, DEVICE_UDP_PORT, deviceId));
+            }
+            lastSeen.put(deviceId, System.currentTimeMillis());
+        }
+    }
+
+    /** Called when a new device is seen. */
+    private void onNewDevice(StarPusherDevice device) {
+        System.out.format("⭐ Discovered new StarPusher! Device ID: %d, IP Address: %s:%d\n", device.deviceId, device.address.getHostAddress(), device.port);
+
+        devices.put(device.deviceId, device);
+        try {
+            device.configureSPI(SPI_CLOCK_SPEED);
+        } catch (IOException e) {
+            System.err.format("Failed to set PixelPusher %d SPI clock speed\n", device.deviceId);
+        }
+    }
+
+    private void onExpiredDevice(StarPusherDevice device) {
+        System.out.format("ERROR StarPusher %d expired!\n", device.deviceId);
+        devices.remove(device.deviceId);
+        lastSeen.remove(device.deviceId);
+    }
+
+    /** Expire a specific StarPusher identified by its Device ID. */
+    private void expire(int deviceId) {
+        synchronized (this) {
+            if (devices.containsKey(deviceId)) {
+                onExpiredDevice(devices.get(deviceId));
             }
         }
     }

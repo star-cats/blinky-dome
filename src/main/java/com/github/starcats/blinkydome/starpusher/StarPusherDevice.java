@@ -9,38 +9,63 @@ import java.nio.ByteOrder;
 import java.util.Deque;
 import java.util.LinkedList;
 
+/** A StarPusher device.
+ *
+ * This class manages a single StarPusher device.
+ *
+ * Each StarPusher is uniquely identified by its Device ID which is set by the DIP switches on the StarPusher's
+ * StarShield. StarPusher's auto-assign themselves a static IP address of the form 10.1.1.1XX where XX is the
+ * Pusher's Device ID. (e.g. deviceId = 1 will auto-assign 10.1.1.101).
+ */
 public class StarPusherDevice {
-    /** StarPusher is configured to have 840 pixels per port. */
-    private static final int PIXELS_PER_PORT = 840;
+    /**
+     * Maximum UDP packet size.
+     */
+    private static final int MAX_UDP_PACKET_SIZE = 1400;
 
-    /** Maximum UDP packet size. */
-    private static final int MAX_UDP_PACKET_SIZE = 1500;
+    /**
+     * Static IP address of the StarPusher, discovered by listening to UDP announce messages.
+     */
+    public final InetAddress address;
 
-    /** Static IP address of the StarPusher, discovered by listening to UDP announce messages. */
-    private InetAddress address;
+    /**
+     * Port that StarPusher is listening for LED packets on.
+     */
+    public final int port;
 
-    /** Port that StarPusher is listening for LED packets on. */
-    private int port;
+    /**
+     * Group that this StarPusher represents. This is set using the DIP switched on the StarShield.
+     */
+    public final int deviceId;
 
-    /** Group that this StarPusher represents. This is set using the DIP switched on the StarShield. */
-    private int group;
-
-    /** Queue of messages to send. */
+    /**
+     * Queue of messages to send.
+     */
     private Deque<StarPusherMessage> queue = new LinkedList<>();
 
+    /** Send UDP messages using this socket. */
     private DatagramSocket socket;
-    public StarPusherDevice(InetAddress address, int port, int group) {
+
+    private static final int CONFIGURE_SPI_MESSAGE_SIZE = 8;
+
+    public StarPusherDevice(InetAddress address, int port, int deviceId) {
         this.address = address;
         this.port = port;
-        this.group = group;
+        this.deviceId = deviceId;
     }
 
-    /** An object that can be serialized to a byte array. */
+    /**
+     * An object that can be serialized to a byte array.
+     */
     private interface StarPusherMessage {
         public byte[] bytes();
     }
 
-    private record SetPixelMessage(int index, int r, int g, int b, int w) implements StarPusherMessage{
+    /** Sets the r, g, b, brightness value of the pixel at index in the StarPusher's internal buffer. Note, this does
+     * not immediately send the updated color and brightness to the pixel strip. The FlushPixelsMessage must be sent
+     * to flush the StarPusher's internal buffer to its connected pixel strips.
+     */
+    private record SetPixelMessage(int index, int r, int g, int b, int w) implements StarPusherMessage {
         private static final int MESSAGE_SIZE = 6;
         public byte[] bytes() {
             return ByteBuffer
@@ -54,8 +79,10 @@ public class StarPusherDevice {
                     .array();
         }
     }
-    private record FlushPixelsMessage() implements StarPusherMessage{
-        public byte[] bytes() {
+
+    /** Flushes the StarPusher's internal buffer to its connected pixel strips via SPI. */
+    private record FlushPixelsMessage() implements StarPusherMessage {
+        public byte[] bytes () {
             return new SetPixelMessage(0xffff, 0xff, 0xff, 0xff, 0xff).bytes();
         }
     }
@@ -66,8 +93,10 @@ public class StarPusherDevice {
                 addToQueue(new FlushPixelsMessage());
             }
             while (!queue.isEmpty()) {
-                int flushCount = Math.min(queue.size() * SetPixelMessage.MESSAGE_SIZE, MAX_UDP_PACKET_SIZE) / SetPixelMessage.MESSAGE_SIZE;
-                ByteBuffer buffer = ByteBuffer.allocate(flushCount * SetPixelMessage.MESSAGE_SIZE);
+                int flushCount = Math.min(queue.size() * SetPixelMessage.MESSAGE_SIZE, MAX_UDP_PACKET_SIZE - 2) / SetPixelMessage.MESSAGE_SIZE;
+                ByteBuffer buffer = ByteBuffer.allocate(2 + flushCount * SetPixelMessage.MESSAGE_SIZE);
+                buffer.put((byte) 'B');
+                buffer.put((byte) 'D');
                 for (int i = 0; i < flushCount; i++) {
                     StarPusherMessage message = queue.removeFirst();
                     buffer.put(message.bytes());
@@ -75,14 +104,25 @@ public class StarPusherDevice {
                 try {
                     send(buffer.array());
                 } catch (IOException e) {
+                    System.err.println(e);
                     return;
                 }
             }
         }
     }
+    public void configureSPI(long clockSpeedHz) throws IOException {
+        ByteBuffer buffer = ByteBuffer.allocate(CONFIGURE_SPI_MESSAGE_SIZE);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.put((byte)'S');
+        buffer.put((byte)'P');
+        buffer.put((byte)'I');
+        buffer.putInt((int)(clockSpeedHz&0xFFFFFFFF));
+        buffer.put((byte)0x00);
+        send(buffer.array());
+    }
 
     private void send(byte[] data) throws IOException {
-        synchronized (socket) {
+        synchronized (this) {
             if (socket == null) {
                 socket = new DatagramSocket();
             }
@@ -97,16 +137,18 @@ public class StarPusherDevice {
         }
     }
 
-    /** Queues a setLED StarPusher message. Note, this only sets the LED state in the StarPusher's buffer. The flushLEDs
+    /**
+     * Queues a setLED StarPusher message. Note, this only sets the LED state in the StarPusher's buffer. The flushLEDs
      * message must be sent to actually output the LED state to the pixel strip.
-     * @param port Output port of StarPusher (currently 0 or 1).
+     *
+     * @param port  Output port of StarPusher (currently 0 or 1).
      * @param index Index of the LED along strip on the output port.
-     * @param r Red value as an unsigned 8-bit integer in the range [0, 255]
-     * @param g Blue value as an unsigned 8-bit integer in the range [0, 255]
-     * @param b Green value as an unsigned 8-bit integer in the range [0, 255]
-     * @param w Brightness value as an unsigned 8-bit integer in the range [0, 255]
+     * @param r     Red value as an unsigned 8-bit integer in the range [0, 255]
+     * @param g     Blue value as an unsigned 8-bit integer in the range [0, 255]
+     * @param b     Green value as an unsigned 8-bit integer in the range [0, 255]
+     * @param w     Brightness value as an unsigned 8-bit integer in the range [0, 255]
      */
     public void setPixel(int port, int index, int r, int g, int b, int w) {
-        addToQueue(new SetPixelMessage(port * PIXELS_PER_PORT + index, r, g, b, w));
+        addToQueue(new SetPixelMessage(PixelPusherToStarPusherIndexMapper.calculatePixelIndex(port, index), r, g, b, w));
     }
 }

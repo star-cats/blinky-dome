@@ -10,14 +10,35 @@ public class StarPusherOutput extends LXOutput {
 
     private final StarPusherDeviceRegistry registry;
 
+    private Integer updateCount = 0;
+    private static final int FPS_CALCULATION_INTERVAL_MILLIS = 10000;
+
     public StarPusherOutput(LX lx, PixelPushableModel model, StarPusherDeviceRegistry registry) {
         super(lx);
         this.model = model;
         this.registry = registry;
+
+        new Thread(() -> {
+            while(true) {
+                try {
+                    Thread.sleep(FPS_CALCULATION_INTERVAL_MILLIS);
+                    float fps = updateCount / (FPS_CALCULATION_INTERVAL_MILLIS / 1000);
+                    System.out.println("StarPusher FPS: " + fps);
+                    synchronized (updateCount) {
+                        updateCount = 0;
+                    }
+                } catch(InterruptedException e) {
+                    break;
+                }
+            }
+        }).start();
     }
 
     @Override
     protected void onSend(int[] colors) {
+        synchronized (updateCount) {
+            updateCount++;
+        }
         for (PixelPushableLED led : model.getPpLeds()) {
             if (led.getPpGroup() == -1) continue;
             if (led.getPpPortIndex() == -1) continue;

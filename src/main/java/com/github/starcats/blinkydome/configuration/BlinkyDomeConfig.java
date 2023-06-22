@@ -142,7 +142,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
     } else if (outputDevice == BlinkyDomeOutputDevice.STAR_PUSHER) {
       StarPusherDeviceRegistry registry = new StarPusherDeviceRegistry();
-      registry.listenForDeviceAnnouncements();
+      registry.startDeviceDiscovery();
       return List.of(new StarPusherOutput(lx, getModel(), registry));
     } else {
       return List.of();
