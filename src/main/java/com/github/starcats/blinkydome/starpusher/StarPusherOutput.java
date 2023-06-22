@@ -1,0 +1,43 @@
+package com.github.starcats.blinkydome.starpusher;
+
+import com.github.starcats.blinkydome.pixelpusher.PixelPushableLED;
+import com.github.starcats.blinkydome.pixelpusher.PixelPushableModel;
+import heronarts.lx.LX;
+import heronarts.lx.output.LXOutput;
+
+public class StarPusherOutput extends LXOutput {
+    private final PixelPushableModel model;
+
+    private final StarPusherDeviceRegistry registry;
+
+    public StarPusherOutput(LX lx, PixelPushableModel model, StarPusherDeviceRegistry registry) {
+        super(lx);
+        this.model = model;
+        this.registry = registry;
+    }
+
+    @Override
+    protected void onSend(int[] colors) {
+        for (PixelPushableLED led : model.getPpLeds()) {
+            if (led.getPpGroup() == -1) continue;
+            if (led.getPpPortIndex() == -1) continue;
+            if (led.getPpLedIndex() == -1) continue;
+
+            int color = colors[led.getPoint().index];
+            int r = (color >> 16) & 0xff;
+            int g = (color >> 8) & 0xff;
+            int b = color & 0xff;
+
+            registry.setPixel(
+                    led.getPpGroup(),
+                    led.getPpPortIndex(),
+                    led.getPpLedIndex(),
+                    r,
+                    g,
+                    b,
+                    0xff);
+        }
+        // Flush all pixel buffers to StarPushers.
+        registry.sendPixelsToDevices();
+    }
+}
