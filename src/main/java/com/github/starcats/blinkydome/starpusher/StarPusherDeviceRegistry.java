@@ -38,8 +38,8 @@ public class StarPusherDeviceRegistry {
     /** Expire any StarPushers not seen for this period of time. */
     private static final int DEVICE_EXPIRY_TIME_MILLIS = 10 * 1000;
 
-    /** Default to using a 4Mhz SPI clock speed. */
-    private static final int SPI_CLOCK_SPEED = 4000000;
+    /** Default to using a 2Mhz SPI clock speed. */
+    private static final int SPI_CLOCK_SPEED = 2000000;
 
     /** Check for device expiry every 5 seconds. */
     private static final int EXPIRY_CHECK_INTERVAL_MILLIS = 5 * 1000;

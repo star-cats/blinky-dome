@@ -51,7 +51,8 @@ public class StarPusherOutput extends LXOutput {
 
             registry.setPixel(
                     led.getPpGroup(),
-                    led.getPpPortIndex(),
+                    // Pixel pusher ports are zero-based, so subtract one.
+                    led.getPpPortIndex() - 1,
                     led.getPpLedIndex(),
                     r,
                     g,

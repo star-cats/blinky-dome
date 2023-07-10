@@ -46,7 +46,7 @@ public class StarPusherDevice {
     /** Send UDP messages using this socket. */
     private DatagramSocket socket;
 
-    private static final int CONFIGURE_SPI_MESSAGE_SIZE = 8;
+    private static final int CONFIGURE_SPI_MESSAGE_SIZE = 7;
 
     public StarPusherDevice(InetAddress address, int port, int deviceId) {
         this.address = address;
@@ -61,16 +61,16 @@ public class StarPusherDevice {
         public byte[] bytes();
     }
 
-    /** Sets the r, g, b, brightness value of the pixel at index in the StarPusher's internal buffer. Note, this does
-     * not immediately send the updated color and brightness to the pixel strip. The FlushPixelsMessage must be sent
-     * to flush the StarPusher's internal buffer to its connected pixel strips.
+    /** Sets the r, g, b, brightness value of the pixel at index in the StarPusher's internal buffer. Ths StarPusher
+     * pushes its internal buffer to attached LED strips every ~16ms (60FPS).
      */
-    private record SetPixelMessage(int index, int r, int g, int b, int w) implements StarPusherMessage {
-        private static final int MESSAGE_SIZE = 6;
+    private record SetPixelMessage(int port, int index, int r, int g, int b, int w) implements StarPusherMessage {
+        private static final int MESSAGE_SIZE = 7;
         public byte[] bytes() {
             return ByteBuffer
                     .allocate(MESSAGE_SIZE)
                     .order(ByteOrder.LITTLE_ENDIAN)
+                    .put((byte) (port & 0xff))
                     .putShort((short) (index & 0xffff))
                     .put((byte) (r & 0xff))
                     .put((byte) (g & 0xff))
@@ -80,18 +80,8 @@ public class StarPusherDevice {
         }
     }
 
-    /** Flushes the StarPusher's internal buffer to its connected pixel strips via SPI. */
-    private record FlushPixelsMessage() implements StarPusherMessage {
-        public byte[] bytes () {
-            return new SetPixelMessage(0xffff, 0xff, 0xff, 0xff, 0xff).bytes();
-        }
-    }
-
     public void sendPixelsToDevice() {
         synchronized (queue) {
-            if (!queue.isEmpty()) {
-                addToQueue(new FlushPixelsMessage());
-            }
             while (!queue.isEmpty()) {
                 int flushCount = Math.min(queue.size() * SetPixelMessage.MESSAGE_SIZE, MAX_UDP_PACKET_SIZE - 2) / SetPixelMessage.MESSAGE_SIZE;
                 ByteBuffer buffer = ByteBuffer.allocate(2 + flushCount * SetPixelMessage.MESSAGE_SIZE);
@@ -117,7 +107,6 @@ public class StarPusherDevice {
         buffer.put((byte)'P');
         buffer.put((byte)'I');
         buffer.putInt((int)(clockSpeedHz&0xFFFFFFFF));
-        buffer.put((byte)0x00);
         send(buffer.array());
     }
 
@@ -141,7 +130,7 @@ public class StarPusherDevice {
      * Queues a setLED StarPusher message. Note, this only sets the LED state in the StarPusher's buffer. The flushLEDs
      * message must be sent to actually output the LED state to the pixel strip.
      *
-     * @param port  Output port of StarPusher (currently 0 or 1).
+     * @param port  Output port of StarPusher (LED0-3).
      * @param index Index of the LED along strip on the output port.
      * @param r     Red value as an unsigned 8-bit integer in the range [0, 255]
      * @param g     Blue value as an unsigned 8-bit integer in the range [0, 255]
@@ -149,6 +138,6 @@ public class StarPusherDevice {
      * @param w     Brightness value as an unsigned 8-bit integer in the range [0, 255]
      */
     public void setPixel(int port, int index, int r, int g, int b, int w) {
-        addToQueue(new SetPixelMessage(PixelPusherToStarPusherIndexMapper.calculatePixelIndex(port, index), r, g, b, w));
+        addToQueue(new SetPixelMessage(port, index, r, g, b, w));
     }
 }
