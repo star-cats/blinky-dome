@@ -113,12 +113,14 @@ function install_maven() {
 	fi
 }
 
-install_jdk
-install_maven
+if [ "$1" != "--fast" ]; then
+	install_jdk
+	install_maven
 
-build_subproject "heronarts.lx:lx:HEAD" "lib/lx"
-build_subproject "org.processing:video:HEAD" "lib/processing-video"
-build_subproject "heronarts.p3lx:p3lx:HEAD" "lib/p3lx"
-build_subproject "ddf:minim:v2.2.2" "lib/minim"
+	build_subproject "heronarts.lx:lx:HEAD" "lib/lx"
+	build_subproject "org.processing:video:HEAD" "lib/processing-video"
+	build_subproject "heronarts.p3lx:p3lx:HEAD" "lib/p3lx"
+	build_subproject "ddf:minim:v2.2.2" "lib/minim"
+fi
 
 "${MAVEN}" compile exec:java
