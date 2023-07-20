@@ -7,7 +7,6 @@ import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
 import com.github.starcats.blinkydome.configuration.dlo.BlinkyDomeOdroidGpio;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
-import com.github.starcats.blinkydome.model.blinky_dome.TestHarnessFactory;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
 import com.github.starcats.blinkydome.pattern.FixtureColorBarsPattern;
 import com.github.starcats.blinkydome.pattern.PalettePainterPattern;
@@ -19,6 +18,8 @@ import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeTriangleRota
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.mask.*;
 import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
+import com.github.starcats.blinkydome.starpusher.StarPusherDeviceRegistry;
+import com.github.starcats.blinkydome.starpusher.StarPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
 import com.heroicrobot.dropbit.registry.DeviceRegistry;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
@@ -29,7 +30,6 @@ import heronarts.lx.LXModulationEngine;
 import heronarts.lx.LXPattern;
 import heronarts.lx.audio.BandGate;
 import heronarts.lx.modulator.LXModulator;
-import heronarts.lx.output.FadecandyOutput;
 import heronarts.lx.output.LXOutput;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXCompoundModulation;
@@ -48,6 +48,8 @@ import java.util.Optional;
  * Headless configuration for the {@link BlinkyModel} model
  */
 public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
+
+  private static final BlinkyDomeOutputDevice outputDevice = BlinkyDomeOutputDevice.STAR_PUSHER;
 
   // Components
   private StarCatFFT starCatFFT;
@@ -128,18 +130,23 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   protected List<LXOutput> constructOutputs(LX lx) {
+    if (outputDevice == BlinkyDomeOutputDevice.PIXEL_PUSHER) {
+      DeviceRegistry ppRegistry = new DeviceRegistry();
+      ppRegistry.setLogging(false);
+      ppRegistry.setExtraDelay(0);
+      ppRegistry.setAutoThrottle(true);
+      ppRegistry.setAntiLog(true);
 
-    DeviceRegistry ppRegistry = new DeviceRegistry();
-    ppRegistry.setLogging(false);
-    ppRegistry.setExtraDelay(0);
-    ppRegistry.setAutoThrottle(true);
-    ppRegistry.setAntiLog(true);
+              return List.of(new PixelPusherOutput(lx, getModel(), ppRegistry)
+                      .addDebugOutput());
 
-    return Arrays.asList(
-//        new FadecandyOutput(lx, "localhost", 7890),
-        new PixelPusherOutput(lx, getModel(), ppRegistry)
-            .addDebugOutput()
-    );
+    } else if (outputDevice == BlinkyDomeOutputDevice.STAR_PUSHER) {
+      StarPusherDeviceRegistry registry = new StarPusherDeviceRegistry();
+      registry.startDeviceDiscovery();
+      return List.of(new StarPusherOutput(lx, getModel(), registry));
+    } else {
+      return List.of();
+    }
   }
 
   @Override
