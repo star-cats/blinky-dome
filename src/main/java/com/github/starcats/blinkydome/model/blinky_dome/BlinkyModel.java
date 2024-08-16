@@ -1,7 +1,7 @@
 package com.github.starcats.blinkydome.model.blinky_dome;
 
-import com.github.starcats.blinkydome.pixelpusher.PixelPushableLED;
-import com.github.starcats.blinkydome.pixelpusher.PixelPushableModel;
+import com.github.starcats.blinkydome.starpusher.StarPushableLED;
+import com.github.starcats.blinkydome.starpusher.StarPushableModel;
 import heronarts.lx.model.LXModel;
 
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * General model for some installation of a bunch of {@link BlinkyTriangle}'s
  */
-public class BlinkyModel extends LXModel implements PixelPushableModel {
+public class BlinkyModel extends LXModel implements StarPushableModel {
   /** Like LXModel.points, but up-cast to our LED class */
   public final List<BlinkyLED> leds;
 
@@ -68,15 +68,31 @@ public class BlinkyModel extends LXModel implements PixelPushableModel {
   }
 
   @Override
-  public List<? extends PixelPushableLED> getPpLeds() {
+  public List<? extends StarPushableLED> getSpLeds() {
     return leds;
   }
 
-  public List<String> getPPGroupKeys() {
+  public List<String> getStarpusherAddressKeys() {
+    Set<String> keys = new HashSet<>();
+    for (BlinkyTriangle triangle : allTriangles) {
+      keys.add(triangle.spAddress);
+    }
+    List<String> keysList = new ArrayList<>(keys);
+    keysList.sort(Comparator.naturalOrder());
+    return keysList;
+  }
+
+  public List<BlinkyTriangle> getTriangleByStarpusherAddressKey(String key) {
+    return allTriangles.stream().filter(
+            triangle -> triangle.spAddress.equals(key)
+    ).collect(Collectors.toList());
+  }
+
+  public List<String> getStarpusherPortKeys() {
     Set<String> keys = new HashSet<>();
 
     for (BlinkyTriangle triangle : allTriangles) {
-      keys.add(triangle.ppGroup + "-" + triangle.ppPort);
+      keys.add(triangle.spAddress + "-" + triangle.spPort);
     }
 
     List<String> keysList = new ArrayList<>(keys);
@@ -84,12 +100,13 @@ public class BlinkyModel extends LXModel implements PixelPushableModel {
     return keysList;
   }
 
-  public List<BlinkyTriangle> getTriangleByPPGroupKey(String key) {
-    int ppGroup = Integer.valueOf(key.substring(0,1));
-    int ppPort = Integer.valueOf(key.substring(2,3));
+  public List<BlinkyTriangle> getTriangleByStarpusherPortKey(String key) {
+    String[] parts = key.split("-", 2);
+    String spAddress = parts[0];
+    int spPort = Integer.valueOf(parts[1]);
 
     return allTriangles.stream().filter(
-            triangle -> triangle.ppGroup == ppGroup && triangle.ppPort == ppPort
+            triangle -> triangle.spAddress.equals(spAddress) && triangle.spPort == spPort
     ).collect(Collectors.toList());
   }
 }

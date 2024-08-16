@@ -2,11 +2,9 @@ package com.github.starcats.blinkydome.model.blinky_dome;
 
 import com.github.starcats.blinkydome.model.util.VectorStripModel;
 import com.github.starcats.blinkydome.util.SCAbstractFixture;
-import heronarts.lx.model.LXPoint;
 import heronarts.lx.transform.LXVector;
 import processing.core.PVector;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.stream.Stream;
  * Blinky-dome acrylic triangle fixtures
  */
 public class BlinkyTriangle extends SCAbstractFixture {
-  public static final int NUM_LEDS_PER_SIDE = 35;
+  public static final int NUM_LEDS_PER_SIDE = 11;
   public static final int NUM_LEDS_PER_TRIANGLE = 3 * NUM_LEDS_PER_SIDE;
 
   // Geometry metadata:
@@ -44,9 +42,9 @@ public class BlinkyTriangle extends SCAbstractFixture {
 
   private List<BlinkyLED> pointsTyped;
 
-  public final int ppGroup;
-  public final int ppPort;
-  public final int firstPpIndex;
+  public final String spAddress;
+  public final int spPort;
+  public final int firstSpIndex;
 
   /**
    * Helper method that creates a BlinkyTriangle positioned in 3D space given the
@@ -71,8 +69,8 @@ public class BlinkyTriangle extends SCAbstractFixture {
    * @return
    */
   public static BlinkyTriangle positionIn3DSpace(LXVector v1Position, float lenSide, float rotation,
-      LXVector trianglePlaneUp, LXVector trianglePlaneRight, V firstV, V secondV, int ppGroup, int ppPort,
-      int firstPpIndex, int domeGroup, int domeGroupIndex) {
+      LXVector trianglePlaneUp, LXVector trianglePlaneRight, V firstV, V secondV, String spAddress, int spPort,
+      int firstSpIndex, int domeGroup, int domeGroupIndex) {
     LXVector vertexRotationAxis = trianglePlaneUp.copy().cross(trianglePlaneRight);
     float rL = vertexRotationAxis.x;
     float rM = vertexRotationAxis.y;
@@ -86,7 +84,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
             // 90 degrees
         .add(v1Position);
 
-    return new BlinkyTriangle(v1Position, v2, v3, firstV, secondV, ppGroup, ppPort, firstPpIndex, domeGroup,
+    return new BlinkyTriangle(v1Position, v2, v3, firstV, secondV, spAddress, spPort, firstSpIndex, domeGroup,
         domeGroupIndex);
 
   }
@@ -100,9 +98,9 @@ public class BlinkyTriangle extends SCAbstractFixture {
    * Convenience constructor -- does default V1 --> V2 --> V3 --> V1 vertex
    * ordering
    */
-  public BlinkyTriangle(LXVector v1, LXVector v2, LXVector v3, int ppGroup, int ppPort, int firstPpIndex, int domeGroup,
+  public BlinkyTriangle(LXVector v1, LXVector v2, LXVector v3, String spAddress, int spPort, int firstSpIndex, int domeGroup,
       int domeGroupIndex) {
-    this(v1, v2, v3, V.V1, V.V2, ppGroup, ppPort, firstPpIndex, domeGroup, domeGroupIndex);
+    this(v1, v2, v3, V.V1, V.V2, spAddress, spPort, firstSpIndex, domeGroup, domeGroupIndex);
   }
 
   /**
@@ -114,24 +112,24 @@ public class BlinkyTriangle extends SCAbstractFixture {
    * @param firstV         The vertex at which the first LED is wired
    * @param secondV        The next vertex according to LED strip dataline
    *                       direction
-   * @param ppGroup        Which ppGroup this triangle is wired to
-   * @param ppPort         Which ppPort this triangle is wired to
-   * @param firstPpIndex   The index of the triangle's first LED on the ppPort
+   * @param spAddress      Address of the target Starpusher
+   * @param spPort         Which ppPort this triangle is wired to (1 is first port)
+   * @param firstSpIndex   The index of the triangle's first LED on the spPort
    *                       harness; generally a multiple of NUM_LEDS_PER_TRIANGLE
    * @param domeGroup      Dome geometry metadata: which triangle group this is
    *                       part of
    * @param domeGroupIndex Dome geometry metadata: the index of the triangle in
    *                       this triangle group
    */
-  public BlinkyTriangle(LXVector v1, LXVector v2, LXVector v3, V firstV, V secondV, int ppGroup, int ppPort,
-      int firstPpIndex, int domeGroup, int domeGroupIndex) {
-    System.out.println(ppGroup + "\t" + ppPort + "\t" + firstPpIndex + "\t" + domeGroup + "\t" + domeGroupIndex);
+  public BlinkyTriangle(LXVector v1, LXVector v2, LXVector v3, V firstV, V secondV, String spAddress, int spPort,
+      int firstSpIndex, int domeGroup, int domeGroupIndex) {
+    System.out.println(spAddress + "\t" + spPort + "\t" + firstSpIndex + "\t" + domeGroup + "\t" + domeGroupIndex);
     this.domeGroup = domeGroup;
     this.domeGroupIndex = domeGroupIndex;
 
-    this.ppGroup = ppGroup;
-    this.ppPort = ppPort;
-    this.firstPpIndex = firstPpIndex;
+    this.spAddress = spAddress;
+    this.spPort = spPort;
+    this.firstSpIndex = firstSpIndex;
 
     if (firstV == V.V1) {
       this.vA = v1;
@@ -151,7 +149,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
 
     // Note this factory keeps state on ppIndex -- increments it for every new LED
     // created
-    BlinkyPointProducer ledFactory = new BlinkyPointProducer(ppGroup, ppPort, firstPpIndex);
+    BlinkyPointProducer ledFactory = new BlinkyPointProducer(spAddress, spPort, firstSpIndex);
 
     this.sX = new VectorStripModel<>(vA, vB, ledFactory, NUM_LEDS_PER_SIDE);
     this.sY = new VectorStripModel<>(vB, vC, ledFactory, NUM_LEDS_PER_SIDE);
@@ -197,11 +195,12 @@ public class BlinkyTriangle extends SCAbstractFixture {
     this.vB = prevA;
 
     // start the pp ordering at y: y, z, x
-    List<BlinkyLED> newOrdering = Stream.of(sY.getPointsTyped(), sZ.getPointsTyped(), sX.getPointsTyped())
+    //List<BlinkyLED> newOrdering = Stream.of(sY.getPointsTyped(), sZ.getPointsTyped(), sX.getPointsTyped())
+    List<BlinkyLED> newOrdering = Stream.of(sZ.getPointsTyped(), sX.getPointsTyped(), sY.getPointsTyped())
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
 
-    PPReorderingPointProducer newPPOrdering = new PPReorderingPointProducer(newOrdering, this.firstPpIndex);
+    PPReorderingPointProducer newPPOrdering = new PPReorderingPointProducer(newOrdering, this.firstSpIndex);
 
     // Now we redefine our fixture abstractions while producing the existing pixels in the new reordering
     this.sX = new VectorStripModel<>(vA, vB, newPPOrdering, NUM_LEDS_PER_SIDE);
@@ -235,7 +234,7 @@ public class BlinkyTriangle extends SCAbstractFixture {
             .collect(Collectors.toList());
     Collections.reverse(newOrdering);
 
-    PPReorderingPointProducer newPPOrdering = new PPReorderingPointProducer(newOrdering, this.firstPpIndex);
+    PPReorderingPointProducer newPPOrdering = new PPReorderingPointProducer(newOrdering, this.firstSpIndex);
 
     // Now we redefine our fixture abstractions while producing the existing pixels in the new reordering
     this.sX = new VectorStripModel<>(vA, vB, newPPOrdering, NUM_LEDS_PER_SIDE);
@@ -286,21 +285,21 @@ public class BlinkyTriangle extends SCAbstractFixture {
    */
   private static class BlinkyPointProducer implements VectorStripModel.PointProducer<BlinkyLED> {
 
-    private final int ppGroup;
-    private final int ppPort;
-    private int ppIndex;
+    private final String spAddress;
+    private final int spPort;
+    private int spIndex;
 
-    BlinkyPointProducer(int ppGroup, int ppPort, int firstPpIndex) {
-      this.ppGroup = ppGroup;
-      this.ppPort = ppPort;
-      this.ppIndex = firstPpIndex;
+    BlinkyPointProducer(String spAddress, int spPort, int firstSpIndex) {
+      this.spAddress = spAddress;
+      this.spPort = spPort;
+      this.spIndex = firstSpIndex;
     }
 
     @Override
     public BlinkyLED constructPoint(float x, float y, float z) {
       // Increment ppIndex on every new factory constructor -- assume subsequent calls
       // are down the strip.
-      return new BlinkyLED(x, y, z, ppGroup, ppPort, ppIndex++);
+      return new BlinkyLED(x, y, z, spAddress, spPort, spIndex++);
     }
   }
 
@@ -313,11 +312,11 @@ public class BlinkyTriangle extends SCAbstractFixture {
   private static class PPReorderingPointProducer implements VectorStripModel.PointProducer<BlinkyLED> {
     private final List<BlinkyLED> ledsToProduce;
     private int i = 0;
-    private int ppOffset;
+    private int spOffset;
 
     PPReorderingPointProducer(List<BlinkyLED> ledsToReorder, int initialPPOfset) {
       this.ledsToProduce = ledsToReorder;
-      ppOffset = initialPPOfset;
+      spOffset = initialPPOfset;
     }
 
     @Override
@@ -326,9 +325,9 @@ public class BlinkyTriangle extends SCAbstractFixture {
       // existing patterns.
 
       BlinkyLED reorder = ledsToProduce.get(this.i);
-      reorder.setPpIndex(ppOffset);
+      reorder.setSpLedIndex(spOffset);
 
-      ppOffset += 1;
+      spOffset += 1;
       i += 1;
 
       return reorder;

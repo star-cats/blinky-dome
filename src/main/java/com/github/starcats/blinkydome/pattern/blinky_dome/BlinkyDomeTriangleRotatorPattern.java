@@ -10,20 +10,26 @@ import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.EnumParameter;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Calibration pattern to rotate triangles on the blinky-dome
+ * Calibration pattern to rotate triangles on the blinky-dome.
+ *
+ * Provides a DUMP button that dumps the updated geometry to /var/tmp/led-vertex-locations.csv.
  */
 public class BlinkyDomeTriangleRotatorPattern
         extends AbstractFixtureSelectorPattern<BlinkyModel, BlinkyDomeTriangleRotatorPattern.TriangleSelectorType>
 {
   public enum TriangleSelectorType {
-    DOME_GROUP,
-    DOME_INDEX,
-    PP_GROUP,
-    PP_PORT,
+    STARPUSHER,
+    PORT,
+    TRIANGLE_ALL,
     TRIANGLE
   }
 
@@ -89,115 +95,98 @@ public class BlinkyDomeTriangleRotatorPattern
     }
   }
 
+  private double animation = 0;
+
+  private void colorFixture(LXFixture fixture, boolean placeholder) {
+    BlinkyTriangle triangle = (BlinkyTriangle) fixture;
+    int colorStep = 255 / BlinkyTriangle.NUM_LEDS_PER_SIDE;
+    int color = placeholder ? 255 : (int)Math.round(255 * (animation - Math.floor(animation)));;
+    int i = 0;
+    int scale = placeholder ? 4 : 1;
+    for (BlinkyLED point : triangle.getPixelChain()) {
+      // Iterate over all the pointsTyped, which is the LEDs in pixelpusher string order
+
+      // First side: Red
+      if (i < BlinkyTriangle.NUM_LEDS_PER_SIDE) {
+        setColor(point.index, LX.rgb(color/scale, 0, 0));
+
+        // Middle side: Green
+      } else if (i < BlinkyTriangle.NUM_LEDS_PER_SIDE * 2) {
+        setColor(point.index, LX.rgb(0, color/scale, 0));
+
+        // Last side: Blue
+      } else {
+        setColor(point.index, LX.rgb(0, 0, color/scale));
+      }
+
+      i += 1;
+      if (i % BlinkyTriangle.NUM_LEDS_PER_SIDE == 0) {
+        //color = 255;
+        color = placeholder ? 255 : (int)Math.round(255 * (animation - Math.floor(animation)));
+      } else {
+        color -= colorStep;
+      }
+    }
+  }
   @Override
   public void run(double deltaMs) {
+    animation += deltaMs / 1000;
+
     for (LXPoint point : model.points) {
       setColor(point.index, LX.hsb(0, 0, 0));
+    }
+
+    if (fixtureFamily.getEnum() == TriangleSelectorType.TRIANGLE_ALL) {
+      for (BlinkyTriangle triangle : model.allTriangles) {
+        colorFixture(triangle, true);
+      }
     }
 
     // For every selected triangle, we paint each side a different red, green, or blue.
     // We fade the colors down the length of the sides to visualize directionality.
 
-    int colorStep = 255 / BlinkyTriangle.NUM_LEDS_PER_SIDE;
     for (LXFixture fixture : getCurrentFixtures()) {
-      BlinkyTriangle triangle = (BlinkyTriangle) fixture;
-
-      int color = 255;
-      int i = 0;
-      for (BlinkyLED point : triangle.getPixelChain()) {
-        // Iterate over all the pointsTyped, which is the LEDs in pixelpusher string order
-
-        // First side: Red
-        if (i < BlinkyTriangle.NUM_LEDS_PER_SIDE) {
-          setColor(point.index, LX.rgb(color, 0, 0));
-
-        // Middle side: Green
-        } else if (i < BlinkyTriangle.NUM_LEDS_PER_SIDE * 2) {
-          setColor(point.index, LX.rgb(0, color, 0));
-
-        // Last side: Blue
-        } else {
-          setColor(point.index, LX.rgb(0, 0, color));
-        }
-
-        i += 1;
-        if (i % BlinkyTriangle.NUM_LEDS_PER_SIDE == 0) {
-          color = 255;
-        } else {
-          color -= colorStep;
-        }
-      }
+      colorFixture(fixture, false);
     }
   }
 
 
   @Override
   protected EnumParameter<TriangleSelectorType> makeFixtureFamilyParameter() {
-    return new EnumParameter<>("class", TriangleSelectorType.DOME_INDEX);
+    return new EnumParameter<>("class", TriangleSelectorType.PORT);
   }
 
   @Override
   protected Object[] getFixtureKeysForFamily(TriangleSelectorType fixtureFamily) {
-    Set<Integer> keys;
-    if (fixtureFamily == TriangleSelectorType.DOME_GROUP) {
-      keys = model.getTriangleGroupsKeys();
-
-    } else if (fixtureFamily == TriangleSelectorType.DOME_INDEX) {
-      keys = model.allTriangles.stream()
-              .map(triangle -> triangle.domeGroupIndex)
-              .collect(Collectors.toSet());
-
-    } else if (fixtureFamily == TriangleSelectorType.PP_GROUP) {
-      keys = model.allTriangles.stream()
-              .map(triangle -> triangle.ppGroup)
-              .collect(Collectors.toSet());
-
-    } else if (fixtureFamily == TriangleSelectorType.PP_PORT) {
-      keys = model.allTriangles.stream()
-              .map(triangle -> triangle.ppPort)
-              .collect(Collectors.toSet());
-
-    } else if (fixtureFamily == TriangleSelectorType.TRIANGLE) {
-      keys = new HashSet<>();
+   if (fixtureFamily == TriangleSelectorType.STARPUSHER) {
+      return model.getStarpusherAddressKeys().toArray();
+    } else if (fixtureFamily == TriangleSelectorType.PORT) {
+      return model.getStarpusherPortKeys().toArray();
+    } else if (fixtureFamily == TriangleSelectorType.TRIANGLE || fixtureFamily == TriangleSelectorType.TRIANGLE_ALL) {
+      Set<Integer> keys = new HashSet<>();
       for (int i=0; i < model.allTriangles.size(); i++) {
         keys.add(i);
       }
+      List<Integer> ints = new ArrayList<>(keys);
+      ints.sort(Comparator.naturalOrder());
+      return ints.toArray();
 
     } else {
       throw new RuntimeException("Unsupported fixture type: " + fixtureFamily);
     }
 
-    List<Integer> ints = new ArrayList<>(keys);
-    ints.sort(Comparator.naturalOrder());
-
-    return ints.toArray();
   }
 
   @Override
   protected List<? extends LXFixture> getFixturesByKey(TriangleSelectorType fixtureFamily, Object keyObj) {
     List<BlinkyTriangle> fixtures;
-    Integer key = (Integer) keyObj;
+  if (fixtureFamily == TriangleSelectorType.STARPUSHER) {
+      fixtures = model.getTriangleByStarpusherAddressKey((String)keyObj);
 
-    if (fixtureFamily == TriangleSelectorType.DOME_GROUP) {
-      fixtures = model.getTrianglesByGroup(key);
-
-    } else if (fixtureFamily == TriangleSelectorType.DOME_INDEX) {
-      fixtures = model.allTriangles.stream()
-              .filter(triangle -> triangle.domeGroupIndex == key)
-              .collect(Collectors.toList());
-
-    } else if (fixtureFamily == TriangleSelectorType.PP_PORT) {
-      fixtures = model.allTriangles.stream()
-              .filter(triangle -> triangle.ppPort == key)
-              .collect(Collectors.toList());
-
-    } else if (fixtureFamily == TriangleSelectorType.PP_GROUP) {
-      fixtures = model.allTriangles.stream()
-              .filter(triangle -> triangle.ppGroup == key)
-              .collect(Collectors.toList());
-
-    } else if (fixtureFamily == TriangleSelectorType.TRIANGLE) {
-      fixtures = Collections.singletonList(model.allTriangles.get(key));
+    } else if (fixtureFamily == TriangleSelectorType.PORT) {
+      fixtures = model.getTriangleByStarpusherPortKey((String)keyObj);
+    } else if (fixtureFamily == TriangleSelectorType.TRIANGLE || fixtureFamily == TriangleSelectorType.TRIANGLE_ALL) {
+      fixtures = Collections.singletonList(model.allTriangles.get((Integer)keyObj));
 
     } else {
       throw new RuntimeException("Unsupported fixture type: " + fixtureFamily);
@@ -207,49 +196,55 @@ public class BlinkyDomeTriangleRotatorPattern
   }
 
   public void dumpNewVertexLocationsCsv() {
-    System.out.println("\n\n\nDUMPING NEW vertex-locations.csv!");
+    System.out.println("\n\n\nDUMPING NEW to /var/tmp/vertex-locations.csv!");
     System.out.println("--------------------");
-    System.out.println("domeGroup,domeIndex,vertex_1_x,vertex_1_y,vertex_1_z,vertex_2_x,vertex_2_y,vertex_2_z,vertex_3_x,vertex_3_y,vertex_3_z,ppGroup,ppPort,ppFirstLedOffset");
+    Path filePath = Path.of("/var/tmp/led-vertex-locations.csv");
+    try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+      writer.write("domeGroup,domeIndex,vertex_1_x,vertex_1_y,vertex_1_z,vertex_2_x,vertex_2_y,vertex_2_z,vertex_3_x,vertex_3_y,vertex_3_z,spAddress,spPort,spFirstLedOffset");
+      writer.newLine();
 
-    for (BlinkyTriangle tri : model.allTriangles) {
-      System.out.print(tri.domeGroup);
-      System.out.print(",");
-      System.out.print(tri.domeGroupIndex);
-      System.out.print(",");
+      for (BlinkyTriangle tri : model.allTriangles) {
+        writer.write(String.valueOf(tri.domeGroup));
+        writer.write(",");
+        writer.write(String.valueOf(tri.domeGroupIndex));
+        writer.write(",");
 
-      // Heads up! In BlinkyDomeFactory, note that y and z dimensions are switched in mapping.
-      // We need to make that same switch here so when it's reloaded, things are good.
-      // HEY DEVELOPER: Make sure this switch stays consistent with BlinkyDomeFactory!
+        // Heads up! In BlinkyDomeFactory, note that y and z dimensions are switched in mapping.
+        // We need to make that same switch here so when it's reloaded, things are good.
+        // HEY DEVELOPER: Make sure this switch stays consistent with BlinkyDomeFactory!
 
-      System.out.print(tri.getVA().x);
-      System.out.print(",");
-      System.out.print(tri.getVA().z); // Note z and y switched
-      System.out.print(",");
-      System.out.print(tri.getVA().y);
-      System.out.print(",");
+        writer.write(String.valueOf(tri.getVA().x));
+        writer.write(",");
+        writer.write(String.valueOf(tri.getVA().z)); // Note z and y switched
+        writer.write(",");
+        writer.write(String.valueOf(tri.getVA().y));
+        writer.write(",");
 
-      System.out.print(tri.getVB().x);
-      System.out.print(",");
-      System.out.print(tri.getVB().z); // Note z and y switched
-      System.out.print(",");
-      System.out.print(tri.getVB().y);
-      System.out.print(",");
+        writer.write(String.valueOf(tri.getVB().x));
+        writer.write(",");
+        writer.write(String.valueOf(tri.getVB().z)); // Note z and y switched
+        writer.write(",");
+        writer.write(String.valueOf(tri.getVB().y));
+        writer.write(",");
 
-      System.out.print(tri.getVC().x);
-      System.out.print(",");
-      System.out.print(tri.getVC().z);  // Note z and y switched
-      System.out.print(",");
-      System.out.print(tri.getVC().y);
-      System.out.print(",");
+        writer.write(String.valueOf(tri.getVC().x));
+        writer.write(",");
+        writer.write(String.valueOf(tri.getVC().z));  // Note z and y switched
+        writer.write(",");
+        writer.write(String.valueOf(tri.getVC().y));
+        writer.write(",");
 
 
-      System.out.print(tri.ppGroup);
-      System.out.print(",");
-      System.out.print(tri.ppPort);
-      System.out.print(",");
-      System.out.print(tri.firstPpIndex);
+        writer.write(tri.spAddress);
+        writer.write(",");
+        writer.write(String.valueOf(tri.spPort));
+        writer.write(",");
+        writer.write(String.valueOf(tri.firstSpIndex));
 
-      System.out.print("\n");
+        writer.newLine();
+      }
+    } catch (IOException e) {
+      System.err.println("An error occurred while writing to the file: " + e.getMessage());
     }
   }
 }

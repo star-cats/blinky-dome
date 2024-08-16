@@ -1,20 +1,20 @@
-package com.github.starcats.blinkydome.pixelpusher;
+package com.github.starcats.blinkydome.starpusher;
 
 import heronarts.lx.model.LXPoint;
 
 /**
- * Indicates an LXPoint that contains PixelPusher LED metadata to be used in a {@link PixelPusherOutput}
+ * Indicates an LXPoint that contains PixelPusher LED metadata to be used in a {@link StarPusherOutput}
  */
-public interface PixelPushableLED {
+public interface StarPushableLED {
 
   /** Which PixelPusher controller group the LED is associated with (0-indexed) */
-  int getPpGroup();
+  String getSpAddress();
 
   /** The port ("strip") in the PixelPusher controller group on which the LED is located (1-indexed) */
-  int getPpPortIndex();
+  int getSpPort();
 
   /** The index of the LED on the PixelPusher port */
-  int getPpLedIndex();
+  int getSpLedIndex();
 
   /** Get the underlying {@link LXPoint} (usually just a downcast) */
   LXPoint getPoint();
