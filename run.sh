@@ -121,6 +121,9 @@ if [ "$1" != "--fast" ]; then
 	build_subproject "org.processing:video:HEAD" "lib/processing-video"
 	build_subproject "heronarts.p3lx:p3lx:HEAD" "lib/p3lx"
 	build_subproject "ddf:minim:v2.2.2" "lib/minim"
+else
+	shift
 fi
 
-"${MAVEN}" compile exec:java
+"${MAVEN}" compile
+"${MAVEN}" exec:java -Dexec.args="$*"

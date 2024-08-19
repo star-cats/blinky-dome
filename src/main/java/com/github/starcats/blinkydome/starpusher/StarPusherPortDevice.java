@@ -88,8 +88,8 @@ public class StarPusherPortDevice {
         int b = color & 0xff;
 
         buffer[BYTES_PER_LED * index] = (byte)r;
-        buffer[BYTES_PER_LED * index + 1] = (byte)g;
-        buffer[BYTES_PER_LED * index + 2] = (byte)b;
+        buffer[BYTES_PER_LED * index + 1] = (byte)b;
+        buffer[BYTES_PER_LED * index + 2] = (byte)g;
     }
 
     /**
