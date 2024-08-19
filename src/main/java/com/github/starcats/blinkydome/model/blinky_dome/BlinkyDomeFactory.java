@@ -34,9 +34,9 @@ public class BlinkyDomeFactory {
       // Eventually these params should be specified in the CSV itself
       int domeGroup = row.getInt("domeGroup");
       int domeIndex = row.getInt("domeIndex");
-      int ppGroup = row.getInt("ppGroup");
-      int ppPort = row.getInt("ppPort");
-      int ppFirstLedOffset = row.getInt("ppFirstLedOffset");
+      String spAddress = row.getString("spAddress");
+      int spPort = row.getInt("spPort");
+      int spFirstLedOffset = row.getInt("spFirstLedOffset");
 
       float vertex1x = row.getFloat("vertex_1_x");
       float vertex1z = row.getFloat("vertex_1_z");
@@ -48,7 +48,7 @@ public class BlinkyDomeFactory {
       float vertex3z = row.getFloat("vertex_3_z");
       float vertex3y = row.getFloat("vertex_3_y");
 
-      System.out.println(domeGroup + "\t" + domeIndex + "\t" + ppGroup + "\t" + ppPort + "\t" + ppFirstLedOffset + "\t"
+      System.out.println(domeGroup + "\t" + domeIndex + "\t" + spAddress + "\t" + spPort + "\t" + spFirstLedOffset + "\t"
           + vertex1x + "\t" + vertex1z + "\t" + vertex1y + "\t" + vertex2x + "\t" + vertex2z + "\t" + vertex2y + "\t"
           + vertex3x + "\t" + vertex3z + "\t" + vertex3y);
 
@@ -58,7 +58,7 @@ public class BlinkyDomeFactory {
           // So we swap.
           // HEY DEVELOPER: If changing this, make same change in BlinkyDomeTriangleRotatorPattern::dumpNewCsv()!!!
           new LXVector(vertex1x, vertex1z, vertex1y), new LXVector(vertex2x, vertex2z, vertex2y),
-          new LXVector(vertex3x, vertex3z, vertex3y), ppGroup, ppPort, ppFirstLedOffset, domeGroup, domeIndex);
+          new LXVector(vertex3x, vertex3z, vertex3y), spAddress, spPort, spFirstLedOffset, domeGroup, domeIndex);
 
       allTriangles.add(newTriangle);
     }

@@ -22,8 +22,8 @@ public class BlinkyDomeFixtureSelectorPattern
   public final EnumParameter<BlinkyDomeSubfixtureType> subfixtureParam;
 
   public enum BlinkyDomeFixtureType {
-    GROUP,
-    PP_GROUP,
+    STARPUSHER,
+    PORT,
     TRIANGLE,
     ALL
   }
@@ -47,30 +47,27 @@ public class BlinkyDomeFixtureSelectorPattern
 
   @Override
   protected EnumParameter<BlinkyDomeFixtureType> makeFixtureFamilyParameter() {
-    return new EnumParameter<>("class", BlinkyDomeFixtureType.GROUP);
+    return new EnumParameter<>("class", BlinkyDomeFixtureType.STARPUSHER);
   }
 
   @Override
   protected Object[] getFixtureKeysForFamily(BlinkyDomeFixtureType fixtureFamily) {
     Set<Integer> keys;
-    if (fixtureFamily == BlinkyDomeFixtureType.GROUP) {
-      keys = model.getTriangleGroupsKeys();
-    } else if (fixtureFamily == BlinkyDomeFixtureType.PP_GROUP) {
-      return model.getPPGroupKeys().toArray();
-
+    if (fixtureFamily == BlinkyDomeFixtureType.STARPUSHER) {
+      return model.getStarpusherAddressKeys().toArray();
+    } else if (fixtureFamily == BlinkyDomeFixtureType.PORT) {
+      return model.getStarpusherPortKeys().toArray();
     } else if (fixtureFamily == BlinkyDomeFixtureType.TRIANGLE) {
       keys = new HashSet<>();
       for (int i=0; i<model.allTriangles.size(); i++) {
         keys.add(i);
       }
+      return keys.toArray();
     } else if (fixtureFamily == BlinkyDomeFixtureType.ALL) {
       return new Integer[] {0};
-
     } else {
       throw new RuntimeException("Unsupported fixture type: " + fixtureFamily);
     }
-
-    return keys.toArray();
   }
 
   @Override
@@ -79,10 +76,9 @@ public class BlinkyDomeFixtureSelectorPattern
 
     List<BlinkyTriangle> fixtures;
 
-    if (fixtureFamily == BlinkyDomeFixtureType.GROUP) {
-      Integer key = (Integer) keyObj;
-      fixtures = model.getTrianglesByGroup(key);
-
+    if (fixtureFamily == BlinkyDomeFixtureType.STARPUSHER) {
+      String key = (String) keyObj;
+      fixtures = model.getTriangleByStarpusherAddressKey(key);
     } else if (fixtureFamily == BlinkyDomeFixtureType.TRIANGLE) {
       Integer key = (Integer) keyObj;
       BlinkyTriangle triangle = model.allTriangles.get(key);
@@ -91,9 +87,9 @@ public class BlinkyDomeFixtureSelectorPattern
     } else if (fixtureFamily == BlinkyDomeFixtureType.ALL) {
       fixtures = model.allTriangles;
 
-    } else if (fixtureFamily == BlinkyDomeFixtureType.PP_GROUP) {
+    } else if (fixtureFamily == BlinkyDomeFixtureType.PORT) {
       String key = (String) keyObj;
-      fixtures = model.getTriangleByPPGroupKey(key);
+      fixtures = model.getTriangleByStarpusherPortKey(key);
 
     } else {
       throw new RuntimeException("Unsupported fixture type: " + fixtureFamily);

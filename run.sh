@@ -25,7 +25,7 @@ elif [ $(uname) = "Darwin" ]; then
 fi
 
 readonly MAVEN_REPO="${HOME}/.m2"
-readonly MAVEN_URL="https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz"
+readonly MAVEN_URL="https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz"
 readonly MAVEN_ARCHIVE=$(basename ${MAVEN_URL})
 readonly MAVEN_DIRECTORY=$(basename -s -bin.tar.gz ${MAVEN_URL})
 readonly MAVEN_TMP_PATH="/var/tmp/${MAVEN_ARCHIVE}"
@@ -121,6 +121,9 @@ if [ "$1" != "--fast" ]; then
 	build_subproject "org.processing:video:HEAD" "lib/processing-video"
 	build_subproject "heronarts.p3lx:p3lx:HEAD" "lib/p3lx"
 	build_subproject "ddf:minim:v2.2.2" "lib/minim"
+else
+	shift
 fi
 
-"${MAVEN}" compile exec:java
+"${MAVEN}" compile
+"${MAVEN}" exec:java -Dexec.args="$*"

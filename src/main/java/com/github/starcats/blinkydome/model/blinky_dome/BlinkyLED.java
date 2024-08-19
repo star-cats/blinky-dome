@@ -1,14 +1,16 @@
 package com.github.starcats.blinkydome.model.blinky_dome;
 
-import com.github.starcats.blinkydome.pixelpusher.PixelPushableLED;
+import com.github.starcats.blinkydome.starpusher.StarPushableLED;
 import heronarts.lx.model.LXPoint;
 import processing.core.PVector;
 
 /**
  * BlinkyModel's LED definition
  */
-public class BlinkyLED extends LXPoint implements PixelPushableLED {
-  private int ppGroup, ppPort, ppIndex;
+public class BlinkyLED extends LXPoint implements StarPushableLED {
+  private int spPort, spLedIndex;
+
+  private String spAddress;
 
   /** Angular position of triangle in XZ (floor) plane */
   public final float thetaRad;
@@ -24,12 +26,12 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
    * @param ppPort Which pixelpusher strip/port (1-indexed)
    * @param ppIndex The LED index on the pixelpusher strip/port
    */
-  public BlinkyLED(float x, float y, float z, int ppGroup, int ppPort, int ppIndex) {
+  public BlinkyLED(float x, float y, float z, String spAddress, int spPort, int spLedIndex) {
     super(x, y, z);
 
-    this.ppGroup = ppGroup;
-    this.ppPort = ppPort;
-    this.ppIndex = ppIndex;
+    this.spAddress = spAddress;
+    this.spPort = spPort;
+    this.spLedIndex = spLedIndex;
 
     this.thetaRad = PVector.angleBetween(
         new PVector(1f, 0f, 1f),
@@ -44,30 +46,30 @@ public class BlinkyLED extends LXPoint implements PixelPushableLED {
   //
   // PixelPushableLED implementations:
   @Override
-  public int getPpGroup() {
-    return ppGroup;
+  public String getSpAddress() {
+    return spAddress;
   }
 
   @Override
-  public int getPpPortIndex() {
-    return ppPort;
+  public int getSpPort() {
+    return spPort;
   }
 
   @Override
-  public int getPpLedIndex() {
-    return ppIndex;
+  public int getSpLedIndex() {
+    return spLedIndex;
   }
 
-  public void setPpGroup(int ppGroup) {
-    this.ppGroup = ppGroup;
+  public void setSpAddress(String spAddress) {
+    this.spAddress = spAddress;
   }
 
-  public void setPpPort(int ppPort) {
-    this.ppPort = ppPort;
+  public void setSpPort(int spPort) {
+    this.spPort = spPort;
   }
 
-  public void setPpIndex(int ppIndex) {
-    this.ppIndex = ppIndex;
+  public void setSpLedIndex(int spIndex) {
+    this.spLedIndex = spIndex;
   }
 
   @Override

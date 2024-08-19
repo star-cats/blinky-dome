@@ -18,7 +18,7 @@ public abstract class AbstractFixtureSelectorPattern<M extends LXModel, E extend
 
   protected M model;
 
-  private final EnumParameter<E> fixtureFamily;
+  protected final EnumParameter<E> fixtureFamily;
   private final DiscreteParameter fixtureSelector;
 
   private E currentlySelectedFamily;

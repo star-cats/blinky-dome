@@ -4,7 +4,6 @@ import com.github.starcats.blinkydome.color.ColorMappingSourceFamily;
 import com.github.starcats.blinkydome.color.GenericColorMappingSourceClan;
 import com.github.starcats.blinkydome.color.ImageColorSampler;
 import com.github.starcats.blinkydome.color.RotatingHueColorMappingSourceFamily;
-import com.github.starcats.blinkydome.configuration.dlo.BlinkyDomeOdroidGpio;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyDomeFactory;
 import com.github.starcats.blinkydome.model.blinky_dome.BlinkyModel;
 import com.github.starcats.blinkydome.modulator.MinimBeatTriggers;
@@ -14,16 +13,12 @@ import com.github.starcats.blinkydome.pattern.PerlinBreathing;
 import com.github.starcats.blinkydome.pattern.PerlinNoisePattern;
 import com.github.starcats.blinkydome.pattern.RainbowZPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeFixtureSelectorPattern;
+import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeTracer;
 import com.github.starcats.blinkydome.pattern.blinky_dome.BlinkyDomeTriangleRotatorPattern;
 import com.github.starcats.blinkydome.pattern.blinky_dome.FFTBandPattern;
 import com.github.starcats.blinkydome.pattern.mask.*;
-import com.github.starcats.blinkydome.pixelpusher.PixelPusherOutput;
-import com.github.starcats.blinkydome.starpusher.StarPusherDeviceRegistry;
 import com.github.starcats.blinkydome.starpusher.StarPusherOutput;
 import com.github.starcats.blinkydome.util.StarCatFFT;
-import com.heroicrobot.dropbit.registry.DeviceRegistry;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import heronarts.lx.LX;
 import heronarts.lx.LXChannel;
 import heronarts.lx.LXModulationEngine;
@@ -49,8 +44,6 @@ import java.util.Optional;
  */
 public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
-  private static final BlinkyDomeOutputDevice outputDevice = BlinkyDomeOutputDevice.STAR_PUSHER;
-
   // Components
   private StarCatFFT starCatFFT;
   protected GenericColorMappingSourceClan colorMappingSources;
@@ -68,8 +61,6 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
   @Override
   protected BlinkyModel makeModel() {
     return BlinkyDomeFactory.makeModel(p);
-//    return TestHarnessFactory.makeModel();
-//    return Meowloween.makeModel();
   }
 
   @Override
@@ -97,24 +88,6 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
         (LX lx2, String label) -> new MinimBeatTriggers(lx2, starCatFFT);
     lx.engine.modulation.getModulatorFactoryRegistry().register(MinimBeatTriggers.class, minimFactory);
     minimBeatTriggers = lx.engine.modulation.addModulator(MinimBeatTriggers.class, "minim triggers");
-
-
-    // ODroid GPIO
-    // ================
-    BlinkyDomeOdroidGpio.init();
-
-    GpioPinListenerDigital pinPressListener = (GpioPinDigitalStateChangeEvent event) -> {
-      System.out.println("Pin change! " + event.getPin().getName() + " went " + event.getState().isHigh());
-    };
-
-    if (BlinkyDomeOdroidGpio.isActive()) {
-      BlinkyDomeOdroidGpio.orange.addListener(pinPressListener);
-      BlinkyDomeOdroidGpio.yellow.addListener(pinPressListener);
-      BlinkyDomeOdroidGpio.green.addListener(pinPressListener);
-      BlinkyDomeOdroidGpio.blue.addListener(pinPressListener);
-      BlinkyDomeOdroidGpio.pink.addListener(pinPressListener);
-      //    BlinkyDomeOdroidGpio.brown.addListener(pinPressListener);
-    }
   }
 
   @Override
@@ -130,23 +103,16 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
 
   @Override
   protected List<LXOutput> constructOutputs(LX lx) {
-    if (outputDevice == BlinkyDomeOutputDevice.PIXEL_PUSHER) {
-      DeviceRegistry ppRegistry = new DeviceRegistry();
-      ppRegistry.setLogging(false);
-      ppRegistry.setExtraDelay(0);
-      ppRegistry.setAutoThrottle(true);
-      ppRegistry.setAntiLog(true);
-
-              return List.of(new PixelPusherOutput(lx, getModel(), ppRegistry)
-                      .addDebugOutput());
-
-    } else if (outputDevice == BlinkyDomeOutputDevice.STAR_PUSHER) {
-      StarPusherDeviceRegistry registry = new StarPusherDeviceRegistry();
-      registry.startDeviceDiscovery();
-      return List.of(new StarPusherOutput(lx, getModel(), registry));
-    } else {
-      return List.of();
-    }
+    // StarPusher output is configured by the geometry in src/main/resources/led-vertex-locations.csv. Each row in
+    // this CSV corresponds to a triangle with 33 logical LEDs on it. The last three columns configure that
+    // triangle's mapping to a StarPusher:
+    //
+    //   - spAddress: The IP address of the StarPusher this triangle is connected to,
+    //   - spPort: The 1-based StarPusher output port that this triangle is connected to,
+    //   - spFirstLedOffset - The 0-based offset of the first LED on this triangle on the StarPusher output port.
+    //
+    // The StarPusherOutput validates the model and its mapping to triangle locations.
+    return List.of(new StarPusherOutput(lx, model));
   }
 
   @Override
@@ -161,6 +127,8 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
       channel.label.setValue("BasePatterns");
       patterns = makeStandardPatterns();
 
+      channel.fader.setValue(0.5);
+
     // Channel 2: Primary masks
     } else if (channelNum == 2) {
       channel.label.setValue("Masks 1");
@@ -173,6 +141,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
       lx.engine.modulation.addModulation(ch2MaskVisibilityMod);
 
       patterns = makeMasks();
+      channel.enabled.setValue(false);
 
     // Channel 3: Secondary masks
     } else {
@@ -186,6 +155,7 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
       lx.engine.modulation.addModulation(ch3MaskVisibilityMod);
 
       patterns = makeMasks();
+      channel.enabled.setValue(false);
     }
 
     // common:
@@ -389,10 +359,11 @@ public class BlinkyDomeConfig extends AbstractStarcatsLxConfig<BlinkyModel> {
             (lx2, ch, l) -> new BlinkyDomeTriangleRotatorPattern(lx2, model);
     lx.registerPatternFactory(BlinkyDomeTriangleRotatorPattern.class, bdtrpFactory);
 
-
+    lx.registerPattern(BlinkyDomeTracer.class);
     // Normal patterns
     // --------------------
     return Arrays.asList(
+            new BlinkyDomeTriangleRotatorPattern(lx, model),
         quickBuild(perlinNoisePatternFactory),
         quickBuild(perlinBreathingFactory).initModulators(),
         fcbp,
