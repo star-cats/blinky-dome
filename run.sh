@@ -25,7 +25,7 @@ elif [ $(uname) = "Darwin" ]; then
 fi
 
 readonly MAVEN_REPO="${HOME}/.m2"
-readonly MAVEN_URL="https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz"
+readonly MAVEN_URL="https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz"
 readonly MAVEN_ARCHIVE=$(basename ${MAVEN_URL})
 readonly MAVEN_DIRECTORY=$(basename -s -bin.tar.gz ${MAVEN_URL})
 readonly MAVEN_TMP_PATH="/var/tmp/${MAVEN_ARCHIVE}"
@@ -60,6 +60,8 @@ if [ ! -d lib/lx/git_submodule/src ]; then
 fi
 
 function build_subproject() {
+	echo "=== BUILD $2 ==="
+	echo "${MAVEN} dependency:get -Dartifact=$1 -o -DrepoUrl=file://${MAVEN_REPO}"
 	if "${MAVEN}" dependency:get -Dartifact=$1 -o -DrepoUrl=file://${MAVEN_REPO} > /dev/null; then
 		echo "$1 already in maven repo."
 	else
@@ -69,7 +71,9 @@ function build_subproject() {
 	fi
 }
 
+
 function install_jdk() {
+	echo "=== INSTALL_JDK ==="
 	if [ $(uname) = "Linux" ] && [ $(uname -m) =  "x86_64" ]; then
 		if [ -e "${JAVA_HOME}/bin/javac" ]; then
 			echo "Using JDK at ${JAVA_HOME}"
@@ -107,7 +111,9 @@ function install_jdk() {
 }
 
 function install_maven() {
+	echo "=== INSTALL_MAVEN ==="
 	if [ ! -e "${MAVEN}" ]; then
+		echo "installing..."
 		wget -nc -O "${MAVEN_TMP_PATH}" "${MAVEN_URL}"
 		tar -xf "${MAVEN_TMP_PATH}"
 	fi
@@ -117,13 +123,17 @@ if [ "$1" != "--fast" ]; then
 	install_jdk
 	install_maven
 
-	build_subproject "heronarts.lx:lx:HEAD" "lib/lx"
-	build_subproject "org.processing:video:HEAD" "lib/processing-video"
-	build_subproject "heronarts.p3lx:p3lx:HEAD" "lib/p3lx"
+	build_subproject "heronarts.lx:lx:1.0.0" "lib/lx"
+	build_subproject "org.processing:video:3.3.7" "lib/processing-video"
+	build_subproject "heronarts.p3lx:p3lx:0.2.3" "lib/p3lx"
 	build_subproject "ddf:minim:v2.2.2" "lib/minim"
 else
 	shift
 fi
+
+echo "=== COMPILING ==="
+
+echo "${MAVEN} compile"
 
 "${MAVEN}" compile
 "${MAVEN}" exec:java -Dexec.args="$*"
