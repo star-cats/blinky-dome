@@ -46,3 +46,26 @@ On OSX you may be asked to install `wget` and `coreutils` via brew.
 $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 $ brew install coreutils wget
 ```
+
+The very first time you run it, you will see this. Just run it again.
+
+```sh
+./run.sh: line 63: : command not found
+~/blinky-dome/lib/lx ~/blinky-dome
+./run.sh: line 67: : command not found
+~/blinky-dome
+./run.sh: line 63: : command not found
+~/blinky-dome/lib/processing-video ~/blinky-dome
+./run.sh: line 67: : command not found
+~/blinky-dome
+./run.sh: line 63: : command not found
+~/blinky-dome/lib/p3lx ~/blinky-dome
+./run.sh: line 67: : command not found
+~/blinky-dome
+./run.sh: line 63: : command not found
+~/blinky-dome/lib/minim ~/blinky-dome
+./run.sh: line 67: : command not found
+~/blinky-dome
+./run.sh: line 128: : command not found
+./run.sh: line 129: : command not found
+```
