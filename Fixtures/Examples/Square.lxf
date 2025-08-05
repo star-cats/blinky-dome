@@ -1,0 +1,50 @@
+{
+	"label": "Square",
+	"tag": "square",
+	"parameters": {
+		"size": { "type": "float", "label": "Size", "description": "Length of the square edge", "default": 100, "min": 0 },
+		"pointsPerEdge": { "type" : "int", "label": "Points", "description": "Number of points per square edge", "default": 15, "min": 5, "max": 100 },
+		"center": { "type" : "boolean", "label": "Center", "description": "Whether to center the square", "default": false }
+	},
+	"transforms": [
+	  { "enabled": "$center", "x": "-0.5 * $size", "y": "-0.5 * $size" } 
+	],
+	"components": [
+	    {
+	    	"type": "strip",
+	    	"x": "0.5 * $size / $pointsPerEdge",
+	    	"y": 0,
+	    	"z": 0,
+	    	"spacing": "$size / $pointsPerEdge",
+	    	"numPoints": "$pointsPerEdge"
+	   	},
+	   	{
+	    	"type": "strip",
+	    	"x": "$size",
+	    	"y": "0.5 * $size / $pointsPerEdge",
+	    	"z": 0,
+	    	"roll": 90,
+	    	"spacing": "$size / $pointsPerEdge",
+	    	"numPoints": "$pointsPerEdge"
+	   	},
+	   	{
+	    	"type": "strip",
+	    	"x": "$size - 0.5 * $size / $pointsPerEdge",
+	    	"y": "$size",
+	    	"z": 0,
+	    	"roll": 180,
+	    	"spacing": "$size / $pointsPerEdge",
+	    	"numPoints": "$pointsPerEdge"
+	   	},
+	   	{
+	    	"type": "strip",
+	    	"x": "0",
+	    	"y": "$size - 0.5 * $size / $pointsPerEdge",
+	    	"z": 0,
+	    	"roll": 270,
+	    	"spacing": "$size / $pointsPerEdge",
+	    	"numPoints": "$pointsPerEdge"
+	   	}
+						
+	]
+}

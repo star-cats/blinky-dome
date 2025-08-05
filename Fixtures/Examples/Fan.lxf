@@ -1,0 +1,24 @@
+{
+	"label": "Fan",
+
+	"tag": "fan",
+
+	"parameters": {
+		"degrees": { "type": "float", "label": "Degrees", "description": "How many degrees the fan spans", "default": 180 },
+		"numStrips": { "type": "int", "label": "Strips", "description": "Number of strips in the fan", "default": 10, "min": 3, "max": 100 },
+		"radius": { "type": "float", "label": "Radius", "description": "The outer radius of the fan edge", "default": 200, "min": 0 },
+		"padding": { "type": "float", "label": "Padding", "description": "The inner radius padding the fan strips", "default": 10, "min": 0 },
+		"points": { "type": "int", "label": "Points", "description": "How many points per edge on the fan", "default": 20, "min": 1, "max": 1000 }		 
+	},
+
+	"components": [
+		{ "type": "strip",
+		  "instances": "$numStrips", 
+		  "x": "$padding * cos($degrees / ($numStrips - 1) * $instance)",
+		  "y": "$padding * sin($degrees / ($numStrips - 1) * $instance)",
+		  "roll": "$degrees / ($numStrips - 1) * $instance",
+		  "numPoints": "$points",
+		  "spacing": "($radius - $padding) / $points"
+		}
+	]
+}

@@ -1,0 +1,48 @@
+{
+	"label": "BlinkyTriangle",
+	"tag": "Triangle",
+	"parameters": {
+		"rotate": {
+			"type": "int",
+			"default": 0,
+			"label": "Rotate",
+			"description": "Rotate degrees so the plug of the triangle is at this position"
+		}
+	},
+	"transforms": [
+		{	"roll": "$rotate + 180" }, // rotate the triangle itself
+		{ 
+			// components list a triangle with an edge-length of 1, which is 0.
+			"scale": 0.5842
+		}
+	],
+	"components": [
+	    {
+	    	"type": "strip",
+	    	"x": 0.02278,
+	    	"y": 0.53822,
+	    	"z": 0,
+				"roll": 300,
+	    	"spacing": 0.09090909,
+	    	"numPoints": 11
+	   	},
+	   	{
+	    	"type": "strip",
+	    	"x": 0.454545,
+	    	"y": -0.28675,
+	    	"z": 0,
+	    	"roll": 180,
+	    	"spacing": 0.09090909,
+	    	"numPoints": 11
+	   	},
+	   	{
+	    	"type": "strip",
+	    	"x": -0.47716,
+	    	"y": -0.24725,
+	    	"z": 0,
+	    	"roll": 60,
+	    	"spacing": 0.09090909,
+	    	"numPoints": 11
+	   	}		
+	]
+}
