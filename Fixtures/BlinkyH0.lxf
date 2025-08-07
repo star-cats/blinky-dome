@@ -1,0 +1,80 @@
+{
+  "label": "BlinkyH0",
+  "tag": "Harness",
+  "parameters": {
+    "ip": {
+      "type": "int",
+      "default": 15,
+      "min": 11,
+      "max": 15,
+      "label": "Controller",
+      "description": "IP of box should be 192.168.123.n"
+    },
+    "port": {
+      "type": "int",
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "label": "Port",
+      "description": "Numbered port on the controller, labeled SPI OUT and a number"
+    }
+  },
+  "transforms": [
+    {
+      "pitch": -90
+    }
+  ],
+  "components": [
+    {
+      "id": "triangle-0",
+      "type": "BlinkyTriangle",
+      "x": 0,
+      "y": -0.7187664068427252,
+      "z": 4.753053988827073,
+      "pitch": 9.768531643267195,
+      "yaw": 0,
+      "rotate": 0
+    },
+    {
+      "id": "triangle-1",
+      "type": "BlinkyTriangle",
+      "x": 0,
+      "y": -1.4457568276874568,
+      "z": 4.581434830516536,
+      "pitch": 16.62256794426402,
+      "yaw": 0,
+      "rotate": 180
+    },
+    {
+      "id": "triangle-2",
+      "type": "BlinkyTriangle",
+      "x": -0.7634452071923363,
+      "y": -1.7777826012946323,
+      "z": 4.400525790160075,
+      "pitch": 22.502583613758524,
+      "yaw": -22.18940092079289,
+      "rotate": 348
+    },
+    {
+      "id": "triangle-3",
+      "type": "BlinkyTriangle",
+      "x": -0.766432755154021,
+      "y": -2.5088850291403673,
+      "z": 4.013094006168905,
+      "pitch": 31.717474411461016,
+      "yaw": -16.497973615369673,
+      "rotate": 168
+    }
+  ],
+  "outputs": [
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "universe": "$port - 1",
+      "channel": 1,
+      "host": "192.168.123.$ip",
+      "start": "0",
+      "num": "132"
+    }
+  ]
+}

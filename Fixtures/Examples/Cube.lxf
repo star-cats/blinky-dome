@@ -1,0 +1,70 @@
+{
+	"label": "Cube",
+	"tag": "cube",
+	"parameters": {
+		"size": { "type": "float", "label": "Size", "description": "Total size of a cube edge", "default": 100, "min": 0 },
+		"pointsPerEdge": { "type" : "int", "label": "Points", "description": "Number of points per cube edge", "default": 15, "min": 5, "max": 100 },
+		"padding": { "type" : "float", "label": "Padding", "description": "Spacing of points from cube edge", "default": 3, "min": 0 },
+		"caps": { "type" : "boolean", "label": "Caps", "description": "Whether the cube has top and bottom caps", "default": false },
+		"center": { "type" : "boolean", "label": "Center", "description": "Whether to center the square", "default": false }
+	},
+	"transforms": [
+	  { "enabled": "$center", "x": "-0.5 * ($size + 2 * $padding)", "y": "-0.5 * ($size + 2 * $padding)", "z": "-0.5 * ($size + 2 * $padding)" } 
+	],
+	"components": [
+	    {
+        "type": "Square",
+        "tag": "front",
+	      "x": "$padding", "y": "$padding", "z": 0,
+	    	"size": "$size",
+	    	"pointsPerEdge": "$pointsPerEdge"
+	   	},
+	    
+	    {
+        "type": "Square",
+        "tag": "right",
+	      "x": "$size+2*$padding", "y": "$padding", "z": "$padding",
+        "yaw": -90,
+	    	"size": "$size",
+	    	"pointsPerEdge": "$pointsPerEdge"
+	   	},
+	    
+	    {
+        "type": "Square",
+        "tag": "back",
+	      "x": "$size + $padding", "y": "$padding", "z": "$size + 2*$padding",
+        "yaw": -180,
+	    	"size": "$size",
+	    	"pointsPerEdge": "$pointsPerEdge"
+	   	},
+      
+	    {
+        "type": "Square",
+        "tag": "left",
+	      "x": 0, "y": "$padding", "z": "$size + $padding",
+        "yaw": -270,
+	    	"size": "$size",
+	    	"pointsPerEdge": "$pointsPerEdge"
+	   	},
+      
+	    {
+        "type": "Square",
+        "tag": "top",
+        "enabled": "$caps",
+	      "x": "$padding", "y": "$size + 2*$padding", "z": "$padding",
+        "pitch": 90,
+	    	"size": "$size",
+	    	"pointsPerEdge": "$pointsPerEdge"
+	   	},
+      
+	    {
+        "type": "Square",
+        "tag": "bottom",
+        "enabled": "$caps",
+	      "x": "$padding", "y": "0", "z": "$size + $padding",
+        "pitch": -90,
+	    	"size": "$size",
+	    	"pointsPerEdge": "$pointsPerEdge"
+	   	}
+	]
+}

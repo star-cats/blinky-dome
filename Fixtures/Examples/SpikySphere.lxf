@@ -1,0 +1,183 @@
+{
+	"label": "SpikySphere",
+	"tag": "SpikySphere",
+  
+  "parameters": {
+    "radius": { "type": "float", "min": 10, "max": 2000, "label": "Radius", "default": 200, "description": "Dome radius" },
+    "numPoints": { "type": "int", "min": 10, "max": 60, "label": "Num Points", "default": 30, "description": "Num Points" },
+    "spacing": { "type": "float", "min": 1, "max": 24, "label": "Spacing", "default": 8, "description": "Point spacing" }
+  },
+  
+	"components": [
+    
+    /* South Pole */
+    
+    {
+      "type": "strip",
+      "tags": ["pole", "southPole", "southern"],
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "-$radius",
+      "roll": -90
+    },
+    
+    /* Southern Hemisphere */
+    
+    {
+      "type": "strip",
+      "tag": "southern",
+      "instances": 10,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "-$radius * sin(15)",
+      "x": "$radius * cos(15) * cos($instance * 36)",
+      "z": "$radius * cos(15) * sin($instance * 36)",
+      "yaw": "-$instance * 36",
+      "roll": -15
+    },
+    
+    {
+      "type": "strip",
+      "tag": "southern",      
+      "instances": 8,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "-$radius * sin(30)",
+      "x": "$radius * cos(30) * cos($instance * 45)",
+      "z": "$radius * cos(30) * sin($instance * 45)",
+      "yaw": "-$instance * 45",
+      "roll": -45
+    },
+    
+    {
+      "type": "strip",
+      "tag": "southern",      
+      "instances": 6,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "-$radius * sin(45)",
+      "x": "$radius * cos(45) * cos($instance * 60)",
+      "z": "$radius * cos(45) * sin($instance * 60)",
+      "yaw": "-$instance * 60",
+      "roll": -45
+    },
+    
+    {
+      "type": "strip",
+      "tag": "southern",
+      "instances": 5,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "-$radius * sin(60)",
+      "x": "$radius * cos(60) * cos($instance * 72)",
+      "z": "$radius * cos(60) * sin($instance * 72)",
+      "yaw": "-$instance * 72",
+      "roll": -60
+    },
+    
+    {
+      "type": "strip",
+      "tag": "southern",      
+      "instances": 3,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "-$radius * sin(75)",
+      "x": "$radius * cos(75) * cos($instance * 120)",
+      "z": "$radius * cos(75) * sin($instance * 120)",
+      "yaw": "-$instance * 120",
+      "roll": -75
+    },
+    
+    
+    /* Horizon */
+    
+    {
+      "type": "strip",
+      "tag": "horizon",
+      "instances": 12,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "x": "$radius * cos($instance * 30)",
+      "z": "$radius * sin($instance * 30)",
+      "yaw": "-$instance * 30"
+    },
+    
+    /* Northern Hemisphere */
+    
+    {
+      "type": "strip",
+      "tag": "northern",
+      "instances": 10,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "$radius * sin(15)",
+      "x": "$radius * cos(15) * cos($instance * 36)",
+      "z": "$radius * cos(15) * sin($instance * 36)",
+      "yaw": "-$instance * 36",
+      "roll": 15
+    },
+    
+    {
+      "type": "strip",
+      "tag": "northern",
+      "instances": 8,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "$radius * sin(30)",
+      "x": "$radius * cos(30) * cos($instance * 45)",
+      "z": "$radius * cos(30) * sin($instance * 45)",
+      "yaw": "-$instance * 45",
+      "roll": 45
+    },
+    
+    {
+      "type": "strip",
+      "tag": "northern",
+      "instances": 6,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "$radius * sin(45)",
+      "x": "$radius * cos(45) * cos($instance * 60)",
+      "z": "$radius * cos(45) * sin($instance * 60)",
+      "yaw": "-$instance * 60",
+      "roll": 45
+    },
+    
+    {
+      "type": "strip",
+      "tag": "northern",
+      "instances": 5,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "$radius * sin(60)",
+      "x": "$radius * cos(60) * cos($instance * 72)",
+      "z": "$radius * cos(60) * sin($instance * 72)",
+      "yaw": "-$instance * 72",
+      "roll": 60
+    },
+    
+    {
+      "type": "strip",
+      "tag": "northern",
+      "instances": 3,
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "$radius * sin(75)",
+      "x": "$radius * cos(75) * cos($instance * 120)",
+      "z": "$radius * cos(75) * sin($instance * 120)",
+      "yaw": "-$instance * 120",
+      "roll": 75
+    },
+    
+    /* North Pole */
+    
+    {
+      "type": "strip",
+      "tags": ["pole", "northPole", "northern"],
+      "numPoints": "$numPoints",
+      "spacing": "$spacing",
+      "y": "$radius",
+      "roll": 90
+    }
+	]
+}

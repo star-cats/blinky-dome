@@ -1,0 +1,18 @@
+{
+	"label": "Winding",
+	"tag": "Winding",
+	"components": [
+    {
+      "type": "strip",
+      "instances": 100,
+      "numPoints": 60,
+      "x": "(1500 - 10*$instance) * cos($instance * 5)",
+      "y": "$instance * 12",
+      "z": "(1500 - 10*$instance) * sin($instance * 5)",
+      "spacing": 6,
+      "yaw": "$instance * 5",
+      "pitch": "3*$instance",
+      "roll": "90"
+    }
+	]
+}
