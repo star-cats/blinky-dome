@@ -1,0 +1,149 @@
+{
+	"label": "BlinkyStar",
+	"tag": "Star",
+	"parameters": {
+		"NumPoints": {
+			"type": "int",
+			"default": 60,
+			"label": "Line Points",
+			"description": "Number of pixels per line of the star"
+        },
+		"Overlap": {
+			"type": "int",
+			"default": 10,
+			"label": "Overlap",
+			"description": "Number of pixels overlapping at the end"
+        },        
+        "ip": {
+            "label": "String A Host",
+            "type": "string",
+            "default": "192.168.1.50",
+            "description": "Output host for String A"
+        },
+        "Universe": {
+			"type": "int",
+			"default": 1,
+			"label": "Universe",
+			"description": "start universe"
+        }
+	},
+	"transforms": [
+		{   "numPoints": "$NumPoints"},
+		{   "spacing": "2 / ($NumPoints - 1)"},
+
+	],
+	"components": [
+
+
+			// use this for high-res
+
+	    {
+	     	"type": "strip",
+	     	"x": 0.0,
+	     	"y": 1,
+	     	"z": 0,
+			 	"roll": -72,
+	     	"spacing": "2 / ($NumPoints + 1)",
+	     	"numPoints": "$NumPoints - ($Overlap/5)",
+            "output": {
+                "host": "$ip",
+                "byteOrder": "rgb",
+                "reverse": false,
+                "protocol": "artnet",
+                "universe": "$Universe",
+                "channel": 0,
+                "sequenceEnabled": false
+            }
+	   	 },
+	   	 {
+	     	"type": "strip",
+	     	"x": 0.587785,
+	     	"y": -0.80901,
+	     	"z": 0,
+	     	"roll": (72*2),
+	     	"spacing": "2 / ($NumPoints + 1)",
+	     	"numPoints": "$NumPoints - ($Overlap/5)",
+            "output": {
+                "host": "$ip",
+                "byteOrder": "rgb",
+                "reverse": false,
+                "protocol": "artnet",
+                "universe": "$Universe",
+                "channel": "1*3*($NumPoints - ($Overlap/5))",
+                "sequenceEnabled": false
+            }
+	   	 },
+	   	 {
+	     	"type": "strip",
+	     	"x": -0.951057,
+	     	"y": 0.309017,
+	     	"z": 0,
+	     	"roll": 0,
+	     	"spacing": "2 / ($NumPoints + 1)",
+	     	"numPoints": "$NumPoints - ($Overlap/5)",
+            "output": {
+                "host": "$ip",
+                "byteOrder": "rgb",
+                "reverse": false,
+                "protocol": "artnet",
+                "universe": "$Universe",
+                "channel": "2*3*($NumPoints - ($Overlap/5))",
+                "sequenceEnabled": false
+            }
+	   	 },        
+	   	 {
+	     	"type": "strip",
+	     	"x": 0.951057,
+	     	"y": 0.309017,
+	     	"z": 0,
+	     	"roll": (72*3),
+	     	"spacing": "2 / ($NumPoints + 1)",
+	     	"numPoints": "$NumPoints - ($Overlap/5)",
+            "output": {
+                "host": "$ip",
+                "byteOrder": "rgb",
+                "reverse": false,
+                "protocol": "artnet",
+                "universe": "$Universe + 1",
+                "channel": "3*3*($NumPoints - ($Overlap/5))-510",
+                "sequenceEnabled": false
+            }
+	   	 },
+	   	 {
+	     	"type": "strip",
+	     	"x": -0.587785,
+	     	"y": -0.809017,
+	     	"z": 0,
+	     	"roll":-(72*4),
+	     	"spacing": "2 / ($NumPoints + 1)",
+	     	"numPoints": "$NumPoints - ($Overlap/5)",
+            "output": {
+                "host": "$ip",
+                "byteOrder": "rgb",
+                "reverse": false,
+                "protocol": "artnet",
+                "universe": "$Universe + 1",
+                "channel": "4*3*($NumPoints - ($Overlap/5))-510",
+                "sequenceEnabled": false
+            }
+         },
+        {
+	     	"type": "strip",
+	     	"x": 0.0,
+	     	"y": 1,
+	     	"z": 0,
+			 	"roll": -72,
+	     	"spacing": "2 / ($NumPoints + 1)",
+	     	"numPoints": "$Overlap",
+            "output": {
+                "host": "$ip",
+                "byteOrder": "rgb",
+                "reverse": false,
+                "protocol": "artnet",
+                "universe": "$Universe + 1",
+                "channel": 390,
+                "sequenceEnabled": false
+            }
+	   	 }     		         	
+	]
+}
