@@ -30,27 +30,34 @@ def led_spacing_m(led_count: int, length_m: float) -> float:
 WATERFALL = {
     "output_file": "Waterfall.lxf",
     "coordinate_system": (
-        "Y-up right-handed, origin at dome base centre, units metres"
+        "Y-up right-handed, origin at dome base centre, units metres; "
+        "the waterfall climbs the back (negative Z) surface of the dome"
     ),
     "dome": {
         "radius_m": 16.0 * FT_TO_M,
-        "top_y_m": 16.0 * FT_TO_M,
-        "back_z_m": -16.0 * FT_TO_M,
         "ground_y_m": 0.0,
     },
+    # Ground-up construction: a 10 ft straight centre span chords the back of
+    # the dome's ground circle, with a 4 ft wing chord off each tip (endpoints
+    # on the ground circle). The same 4/10/4 pattern repeats at each spine
+    # level up the dome surface.
     "span": {
         "center_span_m": 10.0 * FT_TO_M,
         "wing_span_m": 4.0 * FT_TO_M,
-        "wing_fold_degrees": 35.0,
     },
-    "pivot": {
-        "chord_length_m": 12.0 * FT_TO_M,
-        "preserve_x_to_back": True,
+    # Chord lengths extending the 4 base points up the dome surface: base ->
+    # lower-spine level -> upper-spine level (12 points total).
+    "spine": {
+        "lower_length_m": 11.0 * FT_TO_M,
+        "upper_length_m": 8.0 * FT_TO_M,
     },
     "strips": {
         "count": 40,
         "nominal_spacing_m": 5.0 * IN_TO_M,
         "start_with": "long",
+        # LEDs start at the top edge of the sheet; this shifts them downward
+        # along each strip's polyline.
+        "start_offset_m": 0.0,
         "long": {
             "length_m": 6.0,
             "leds_per_strip": 360,
