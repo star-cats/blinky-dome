@@ -20,7 +20,7 @@ IN_TO_M = 0.0254
 OUTPUT_PATH = Path(__file__).resolve().parents[1] / "Fixtures" / "Waterfall.lxf"
 
 # Dome and global coordinate parameters.
-DOME_RADIUS_FT = 12.0
+DOME_RADIUS_FT = 16.0
 DOME_TOP_Y_FT = DOME_RADIUS_FT
 DOME_BACK_Z_FT = -DOME_RADIUS_FT
 DOME_GROUND_Y_FT = 0.0
