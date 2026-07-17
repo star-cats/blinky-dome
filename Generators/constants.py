@@ -121,37 +121,31 @@ STAR["output"] = {
 CAT_EAR = {
     "output_file": "CatEar.lxf",
     "coordinate_system": (
-        "Y-up right-handed, origin at single ear base, units metres"
+        "Y-up right-handed, origin at ear base centre; the ear points up +Y "
+        "and is symmetric about the Y axis, units metres"
     ),
+    # A symmetric chevron: two straight 2 m LED segments rise from the base
+    # (one continuous 4 m strip folded at the apex on the Y axis), each leaning
+    # spread_degrees / 2 from vertical.
+    "geometry": {
+        "segment_length_m": 2.0,
+        "spread_degrees": 45.0,
+    },
     "leds": {
-        # Derived from the Ear L A/B StripFixtures in Projects/Blinkydome2026.lxp.
         "leds_per_strip": 192,
         "strip_count": 2,
     },
-    "strips": [
-        {
-            "label": "Ear A",
-            "start_m": (0.0, 0.0, 0.0),
-            "angle_degrees": 42.0,
-            "spacing_m": 0.01,
-            "color": "#FFB703",
-        },
-        {
-            "label": "Ear B",
-            "start_m": (2.8, -1.4, 0.0),
-            "angle_degrees": 90.0,
-            "spacing_m": 0.02,
-            "color": "#FB8500",
-        },
-    ],
+    "colors": {
+        "rising": "#FFB703",
+        "falling": "#FB8500",
+    },
 }
-for strip in CAT_EAR["strips"]:
-    strip["length_m"] = strip["spacing_m"] * (
-        CAT_EAR["leds"]["leds_per_strip"] - 1
-    )
-    strip["leds_per_cm"] = leds_per_cm(
-        CAT_EAR["leds"]["leds_per_strip"], strip["length_m"]
-    )
+CAT_EAR["leds"]["led_spacing_m"] = led_spacing_m(
+    CAT_EAR["leds"]["leds_per_strip"], CAT_EAR["geometry"]["segment_length_m"]
+)
+CAT_EAR["leds"]["leds_per_cm"] = leds_per_cm(
+    CAT_EAR["leds"]["leds_per_strip"], CAT_EAR["geometry"]["segment_length_m"]
+)
 
 
 # Full-model assembly (generate_full_model.py). Positions are in scene units:
@@ -188,6 +182,6 @@ MODEL = {
     # tilt_degrees leans each ear outward from vertical and slides its base
     # down the dome surface by the same angle.
     "ears": {
-        "tilt_degrees": 25.0,
+        "tilt_degrees": 35.0,
     },
 }

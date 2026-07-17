@@ -141,8 +141,8 @@ def ear_fixtures(next_id) -> list[dict]:
     x = DOME_RADIUS_SCENE * math.sin(tilt)
     y = DOME_RADIUS_SCENE * math.cos(tilt)
 
-    # Rolling by -tilt leans each ear's up-direction outward (radially) on its
-    # side; the right ear mirrors the asymmetric ear geometry via yaw=180.
+    # The ear fixture is symmetric about its Y axis, so each side only needs a
+    # roll leaning its up-direction outward (radially) at the tilted position.
     return [
         make_fixture(
             next_id(),
@@ -158,8 +158,7 @@ def ear_fixtures(next_id) -> list[dict]:
             "blinky-dome/CatEar",
             x=-x,
             y=y,
-            yaw=180.0,
-            roll=-tilt_degrees,
+            roll=tilt_degrees,
         ),
     ]
 
