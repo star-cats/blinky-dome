@@ -10,60 +10,45 @@ from __future__ import annotations
 
 import json
 import math
-from pathlib import Path
 
-
-FT_TO_M = 0.3048
-IN_TO_M = 0.0254
+from constants import FIXTURES_DIR, WATERFALL
 
 # Output
-OUTPUT_PATH = Path(__file__).resolve().parents[1] / "Fixtures" / "Waterfall.lxf"
+OUTPUT_PATH = FIXTURES_DIR / WATERFALL["output_file"]
 
 # Dome and global coordinate parameters.
-DOME_RADIUS_FT = 16.0
-DOME_TOP_Y_FT = DOME_RADIUS_FT
-DOME_BACK_Z_FT = -DOME_RADIUS_FT
-DOME_GROUND_Y_FT = 0.0
+DOME_RADIUS_M = WATERFALL["dome"]["radius_m"]
+DOME_TOP_Y_M = WATERFALL["dome"]["top_y_m"]
+DOME_BACK_Z_M = WATERFALL["dome"]["back_z_m"]
+DOME_GROUND_Y_M = WATERFALL["dome"]["ground_y_m"]
 
 # Waterfall span parameters. The fixture spans 18 ft total: a 10 ft centre
 # section plus two 4 ft wings, folded down around the centre/wing creases.
-CENTER_SPAN_FT = 10.0
-WING_SPAN_FT = 4.0
-TOTAL_SPAN_FT = CENTER_SPAN_FT + WING_SPAN_FT * 2
-WING_FOLD_DEGREES = 35.0
+CENTER_SPAN_M = WATERFALL["span"]["center_span_m"]
+WING_SPAN_M = WATERFALL["span"]["wing_span_m"]
+TOTAL_SPAN_M = WATERFALL["span"]["total_span_m"]
+WING_FOLD_DEGREES = WATERFALL["span"]["wing_fold_degrees"]
 
 # Strand parameters.
-NUM_STRIPS = 40
-NOMINAL_STRIP_SPACING_IN = 5.0
-LONG_STRIP_LENGTH_M = 6.0
-SHORT_STRIP_LENGTH_M = 5.25
-LONG_STRIP_LEDS = 360
-SHORT_STRIP_LEDS = 315
-START_WITH_LONG_STRIP = True
+NUM_STRIPS = WATERFALL["strips"]["count"]
+NOMINAL_STRIP_SPACING_M = WATERFALL["strips"]["nominal_spacing_m"]
+LONG_STRIP_LENGTH_M = WATERFALL["strips"]["long"]["length_m"]
+SHORT_STRIP_LENGTH_M = WATERFALL["strips"]["short"]["length_m"]
+LONG_STRIP_LEDS = WATERFALL["strips"]["long"]["leds_per_strip"]
+SHORT_STRIP_LEDS = WATERFALL["strips"]["short"]["leds_per_strip"]
+START_WITH_LONG_STRIP = WATERFALL["strips"]["start_with"] == "long"
 
 # Distance from the top-centre of the dome toward the back of the dome before
 # the strands redirect toward the bottom-back ground line.
-PIVOT_CHORD_LENGTH_FT = 12.0
+PIVOT_CHORD_LENGTH_M = WATERFALL["pivot"]["chord_length_m"]
 
 # If true, each strand redirects toward a bottom-back point with the same X as
 # its folded top anchor. If false, all strands converge toward X=0 at the back.
-PRESERVE_X_TO_BACK = True
+PRESERVE_X_TO_BACK = WATERFALL["pivot"]["preserve_x_to_back"]
 
 # Presentation colours alternate with the physical strip lengths.
-LONG_STRIP_COLOR = "#4CC9F0"
-SHORT_STRIP_COLOR = "#F72585"
-
-
-def ft(value: float) -> float:
-    return value * FT_TO_M
-
-
-def inches(value: float) -> float:
-    return value * IN_TO_M
-
-
-def point_ft(x: float, y: float, z: float) -> tuple[float, float, float]:
-    return (ft(x), ft(y), ft(z))
+LONG_STRIP_COLOR = WATERFALL["strips"]["long"]["color"]
+SHORT_STRIP_COLOR = WATERFALL["strips"]["short"]["color"]
 
 
 def normalize(vector: tuple[float, float, float]) -> tuple[float, float, float]:
@@ -100,24 +85,24 @@ def rounded_coord(value: float) -> float:
     return 0 if rounded == 0 else rounded
 
 
-def folded_anchor_x_y(x_flat_ft: float) -> tuple[float, float]:
-    """Return the folded X/Y anchor for a point on the flat 18 ft span."""
-    half_center_ft = CENTER_SPAN_FT / 2.0
+def folded_anchor_x_y(x_flat_m: float) -> tuple[float, float]:
+    """Return the folded X/Y anchor for a point on the flat span."""
+    half_center_m = CENTER_SPAN_M / 2.0
     fold_radians = math.radians(WING_FOLD_DEGREES)
 
-    if x_flat_ft < -half_center_ft:
-        outward_ft = -half_center_ft - x_flat_ft
-        x_ft = -half_center_ft - outward_ft * math.cos(fold_radians)
-        y_ft = DOME_TOP_Y_FT - outward_ft * math.sin(fold_radians)
-    elif x_flat_ft > half_center_ft:
-        outward_ft = x_flat_ft - half_center_ft
-        x_ft = half_center_ft + outward_ft * math.cos(fold_radians)
-        y_ft = DOME_TOP_Y_FT - outward_ft * math.sin(fold_radians)
+    if x_flat_m < -half_center_m:
+        outward_m = -half_center_m - x_flat_m
+        x_m = -half_center_m - outward_m * math.cos(fold_radians)
+        y_m = DOME_TOP_Y_M - outward_m * math.sin(fold_radians)
+    elif x_flat_m > half_center_m:
+        outward_m = x_flat_m - half_center_m
+        x_m = half_center_m + outward_m * math.cos(fold_radians)
+        y_m = DOME_TOP_Y_M - outward_m * math.sin(fold_radians)
     else:
-        x_ft = x_flat_ft
-        y_ft = DOME_TOP_Y_FT
+        x_m = x_flat_m
+        y_m = DOME_TOP_Y_M
 
-    return x_ft, y_ft
+    return x_m, y_m
 
 
 def strip_profile(index: int) -> tuple[str, float, int, str]:
@@ -148,17 +133,17 @@ def make_strip(index: int) -> dict:
     if NUM_STRIPS < 2:
         raise ValueError("NUM_STRIPS must be at least 2")
 
-    x_flat_ft = -TOTAL_SPAN_FT / 2.0 + (TOTAL_SPAN_FT * index / (NUM_STRIPS - 1))
-    x_anchor_ft, y_anchor_ft = folded_anchor_x_y(x_flat_ft)
+    x_flat_m = -TOTAL_SPAN_M / 2.0 + (TOTAL_SPAN_M * index / (NUM_STRIPS - 1))
+    x_anchor_m, y_anchor_m = folded_anchor_x_y(x_flat_m)
 
-    start = point_ft(x_anchor_ft, y_anchor_ft, 0.0)
+    start = (x_anchor_m, y_anchor_m, 0.0)
 
-    chord_end = point_ft(x_anchor_ft, DOME_GROUND_Y_FT, DOME_BACK_Z_FT)
+    chord_end = (x_anchor_m, DOME_GROUND_Y_M, DOME_BACK_Z_M)
     chord_direction = normalize(subtract(chord_end, start))
-    pivot = add(start, scale(chord_direction, ft(PIVOT_CHORD_LENGTH_FT)))
+    pivot = add(start, scale(chord_direction, PIVOT_CHORD_LENGTH_M))
 
-    back_x_ft = x_anchor_ft if PRESERVE_X_TO_BACK else 0.0
-    back_target = point_ft(back_x_ft, DOME_GROUND_Y_FT, DOME_BACK_Z_FT)
+    back_x_m = x_anchor_m if PRESERVE_X_TO_BACK else 0.0
+    back_target = (back_x_m, DOME_GROUND_Y_M, DOME_BACK_Z_M)
 
     length_label, strip_length_m, led_count, color = strip_profile(index)
     spacing_m = strip_length_m / (led_count - 1)
@@ -186,19 +171,20 @@ def make_strip(index: int) -> dict:
         "groupColor": color,
         "numPoints": led_count,
         "metadata": {
-            "flat_x_ft": round(x_flat_ft, 6),
-            "folded_anchor_x_ft": round(x_anchor_ft, 6),
-            "folded_anchor_y_ft": round(y_anchor_ft, 6),
+            "flat_x_m": round(x_flat_m, 6),
+            "folded_anchor_x_m": round(x_anchor_m, 6),
+            "folded_anchor_y_m": round(y_anchor_m, 6),
             "physical_length_m": strip_length_m,
             "led_spacing_m": round(spacing_m, 9),
+            "leds_per_cm": round(strip_length_m and led_count / (strip_length_m * 100), 9),
         },
         "coords": coords,
     }
 
 
 def build_fixture() -> dict:
-    if abs(TOTAL_SPAN_FT - (CENTER_SPAN_FT + 2 * WING_SPAN_FT)) > 1e-9:
-        raise ValueError("TOTAL_SPAN_FT must equal CENTER_SPAN_FT + 2 * WING_SPAN_FT")
+    if abs(TOTAL_SPAN_M - (CENTER_SPAN_M + 2 * WING_SPAN_M)) > 1e-9:
+        raise ValueError("TOTAL_SPAN_M must equal CENTER_SPAN_M + 2 * WING_SPAN_M")
 
     strips = [make_strip(index) for index in range(NUM_STRIPS)]
     long_count = sum(1 for index in range(NUM_STRIPS) if strip_profile(index)[0] == "long")
@@ -208,13 +194,11 @@ def build_fixture() -> dict:
         "label": "Waterfall",
         "tags": ["waterfall", "dome", "strips"],
         "metadata": {
-            "coordinate_system": (
-                "Y-up right-handed, origin at dome base centre, units metres"
-            ),
-            "dome_radius_ft": DOME_RADIUS_FT,
-            "total_span_ft": TOTAL_SPAN_FT,
-            "center_span_ft": CENTER_SPAN_FT,
-            "wing_span_ft": WING_SPAN_FT,
+            "coordinate_system": WATERFALL["coordinate_system"],
+            "dome_radius_m": DOME_RADIUS_M,
+            "total_span_m": TOTAL_SPAN_M,
+            "center_span_m": CENTER_SPAN_M,
+            "wing_span_m": WING_SPAN_M,
             "wing_fold_degrees": WING_FOLD_DEGREES,
             "num_strips": NUM_STRIPS,
             "long_strips": long_count,
@@ -223,12 +207,11 @@ def build_fixture() -> dict:
             "short_strip_length_m": SHORT_STRIP_LENGTH_M,
             "long_strip_leds": LONG_STRIP_LEDS,
             "short_strip_leds": SHORT_STRIP_LEDS,
-            "nominal_strip_spacing_in": NOMINAL_STRIP_SPACING_IN,
-            "actual_flat_strip_spacing_in": round(
-                (TOTAL_SPAN_FT * 12.0) / (NUM_STRIPS - 1), 6
-            ),
-            "nominal_strip_spacing_m": round(inches(NOMINAL_STRIP_SPACING_IN), 9),
-            "pivot_chord_length_ft": PIVOT_CHORD_LENGTH_FT,
+            "long_strip_leds_per_cm": round(WATERFALL["strips"]["long"]["leds_per_cm"], 9),
+            "short_strip_leds_per_cm": round(WATERFALL["strips"]["short"]["leds_per_cm"], 9),
+            "actual_flat_strip_spacing_m": round(TOTAL_SPAN_M / (NUM_STRIPS - 1), 9),
+            "nominal_strip_spacing_m": round(NOMINAL_STRIP_SPACING_M, 9),
+            "pivot_chord_length_m": PIVOT_CHORD_LENGTH_M,
             "preserve_x_to_back": PRESERVE_X_TO_BACK,
         },
         "components": strips,
