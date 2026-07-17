@@ -1,5 +1,5 @@
 - dome blinkies need bigger point size to convey large diffuse area
-- dome blinkies plana and undae should be relocated
 - ip + universe mappings
 - bring animations to life
 - use views for lighting isolations
+- smart windows friendly edition of symlinker
