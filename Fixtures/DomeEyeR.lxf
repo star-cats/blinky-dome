@@ -1,0 +1,225 @@
+{
+  "label": "DomeEyeR",
+  "tag": "Eye",
+  "parameters": {
+    "ip": {
+      "type": "int",
+      "default": 13,
+      "min": 11,
+      "max": 15,
+      "label": "Controller",
+      "description": "IP of box should be 192.168.123.n"
+    }
+  },
+  "metadata": {
+    "coordinate_system": "Y-up right-handed, origin at dome base centre, units metres; baked onto the dome surface centred at azimuth 0 (front, +Z)",
+    "mirrored": true,
+    "dome_radius_m": 4.8768,
+    "elevation_degrees": 35.0,
+    "rows": 2,
+    "triangles_per_row": 8,
+    "triangle_edge_m": 0.5842,
+    "band_width_m": 2.921,
+    "band_height_m": 1.011864
+  },
+  "components": [
+    {
+      "id": "eye-tri-0",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 1.204794,
+      "y": 2.51446,
+      "z": 4.001142,
+      "yaw": 16.757712,
+      "pitch": -31.037324,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-1",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0.889814,
+      "y": 2.657428,
+      "z": 3.991176,
+      "yaw": 12.568284,
+      "pitch": -33.018662,
+      "rotate": 180
+    },
+    {
+      "id": "eye-tri-2",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0.608896,
+      "y": 2.51446,
+      "z": 4.133995,
+      "yaw": 8.378856,
+      "pitch": -31.037324,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-3",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0.29873,
+      "y": 2.657428,
+      "z": 4.078237,
+      "yaw": 4.189428,
+      "pitch": -33.018662,
+      "rotate": 180
+    },
+    {
+      "id": "eye-tri-4",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0,
+      "y": 2.51446,
+      "z": 4.178596,
+      "yaw": 0,
+      "pitch": -31.037324,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-5",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": -0.29873,
+      "y": 2.657428,
+      "z": 4.078237,
+      "yaw": -4.189428,
+      "pitch": -33.018662,
+      "rotate": 180
+    },
+    {
+      "id": "eye-tri-6",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": -0.608896,
+      "y": 2.51446,
+      "z": 4.133995,
+      "yaw": -8.378856,
+      "pitch": -31.037324,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-7",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": -0.889814,
+      "y": 2.657428,
+      "z": 3.991176,
+      "yaw": -12.568284,
+      "pitch": -33.018662,
+      "rotate": 180
+    },
+    {
+      "id": "eye-tri-8",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0.847725,
+      "y": 2.933663,
+      "z": 3.802389,
+      "yaw": 12.568284,
+      "pitch": -36.981338,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-9",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0.55256,
+      "y": 3.0666,
+      "z": 3.751509,
+      "yaw": 8.378856,
+      "pitch": -38.962676,
+      "rotate": 180
+    },
+    {
+      "id": "eye-tri-10",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0.2846,
+      "y": 2.933663,
+      "z": 3.885332,
+      "yaw": 4.189428,
+      "pitch": -36.981338,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-11",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": 0,
+      "y": 3.0666,
+      "z": 3.791984,
+      "yaw": 0,
+      "pitch": -38.962676,
+      "rotate": 180
+    },
+    {
+      "id": "eye-tri-12",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": -0.2846,
+      "y": 2.933663,
+      "z": 3.885332,
+      "yaw": -4.189428,
+      "pitch": -36.981338,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-13",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": -0.55256,
+      "y": 3.0666,
+      "z": 3.751509,
+      "yaw": -8.378856,
+      "pitch": -38.962676,
+      "rotate": 180
+    },
+    {
+      "id": "eye-tri-14",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": -0.847725,
+      "y": 2.933663,
+      "z": 3.802389,
+      "yaw": -12.568284,
+      "pitch": -36.981338,
+      "rotate": 0
+    },
+    {
+      "id": "eye-tri-15",
+      "type": "blinky-dome/BlinkyTriangle",
+      "x": -1.093324,
+      "y": 3.0666,
+      "z": 3.630948,
+      "yaw": -16.757712,
+      "pitch": -38.962676,
+      "rotate": 180
+    }
+  ],
+  "outputs": [
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "universe": 0,
+      "channel": 1,
+      "host": "192.168.123.$ip",
+      "start": 0,
+      "num": 48
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "universe": 1,
+      "channel": 1,
+      "host": "192.168.123.$ip",
+      "start": 48,
+      "num": 48
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "universe": 2,
+      "channel": 1,
+      "host": "192.168.123.$ip",
+      "start": 96,
+      "num": 48
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "universe": 3,
+      "channel": 1,
+      "host": "192.168.123.$ip",
+      "start": 144,
+      "num": 48
+    }
+  ]
+}

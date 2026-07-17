@@ -1,5 +1,5 @@
-- figure out what units we want to think in (cm?)
-- relocate star + ears
-- waterfall generator should be definds from ground upward. bottom cord lengths (10ft + 4ft fully constrain the bottom). bottom_waterfall_length can then specify the remainder of the interections + leftovers.
+- dome blinkies need bigger point size to convey large diffuse area
+- dome blinkies plana and undae should be relocated
+- ip + universe mappings
 - bring animations to life
 - use views for lighting isolations

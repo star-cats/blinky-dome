@@ -148,6 +148,26 @@ CAT_EAR["leds"]["leds_per_cm"] = leds_per_cm(
 )
 
 
+# Dome eyes (generate_dome_eye.py): the triangle patches freed by removing the
+# Plana/Undae harnesses, rebuilt as one eye each on the front of the dome. An
+# eye is two interlocking rows of 8 BlinkyTriangles following the dome's arc,
+# baked onto the dome surface centred at azimuth 0 (like the harness fixtures);
+# the model yaws each eye into place. DomeEyeR is the exact x-mirror of
+# DomeEyeL so the pair is mirror symmetric.
+DOME_EYE = {
+    "output_files": {
+        "left": "DomeEyeL.lxf",
+        "right": "DomeEyeR.lxf",
+    },
+    # Matches the scale transform inside BlinkyTriangle.lxf.
+    "triangle_edge_m": 0.5842,
+    "triangles_per_row": 8,
+    "rows": 2,
+    # Height of the eye centre above the horizon, on the dome surface.
+    "elevation_degrees": 35.0,
+}
+
+
 # Full-model assembly (generate_full_model.py). Positions are in scene units:
 # fixture geometry is metres, and every instance is placed at scene_scale, so
 # scene units = metres * scene_scale (matching the existing project files).
@@ -155,15 +175,25 @@ MODEL = {
     "output_file": "Blinkydome2026.lxm",
     "lx_version": "1.2.0",
     "scene_scale": 10.0,
-    # Dome-surface harness arcs: five identical groups of BlinkyH0-H3 yawed
-    # around the dome, one controller IP per group, one port per harness.
+    # Dome-surface harness arcs: identical groups of BlinkyH0-H3 yawed around
+    # the dome, one controller IP per group, one port per harness. Plana and
+    # Undae were removed from the back of the dome; their triangle patches and
+    # controllers (ips 13/14) are repurposed as the dome eyes below.
     "harness_groups": [
         {"name": "Astra", "yaw_degrees": 0.0, "ip": 11},
         {"name": "Dorsa", "yaw_degrees": 72.0, "ip": 12},
-        {"name": "Plana", "yaw_degrees": 144.0, "ip": 13},
-        {"name": "Undae", "yaw_degrees": 216.0, "ip": 14},
         {"name": "Tholi", "yaw_degrees": 288.0, "ip": 15},
     ],
+    # Two mirror-symmetric dome eyes on the front, yawed apart so their
+    # centres sit eye_distance_m apart measured along the dome's arc at the
+    # eyes' elevation. Eye L is on the cat's left (+X, like Ear L).
+    "eyes": {
+        "eye_distance_m": 3.0,
+        "instances": [
+            {"label": "Eye L", "fixture": "blinky-dome/DomeEyeL", "ip": 13, "side": 1},
+            {"label": "Eye R", "fixture": "blinky-dome/DomeEyeR", "ip": 14, "side": -1},
+        ],
+    },
     # The star grouping is four co-located StarEyes rolled ~15 degrees apart
     # (a stacked pinwheel), placed tangent to the dome surface on the front
     # (+Z) at elevation_degrees above the horizon.

@@ -29,6 +29,7 @@ generators=(
   generate_star.py
   generate_cat_ear.py
   generate_waterfall.py
+  generate_dome_eye.py
   generate_full_model.py
 )
 

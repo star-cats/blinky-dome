@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 import math
 
-from constants import MODEL, MODELS_DIR, WATERFALL
+from constants import DOME_EYE, MODEL, MODELS_DIR, WATERFALL
 
 OUTPUT_PATH = MODELS_DIR / MODEL["output_file"]
 
@@ -169,6 +169,33 @@ def waterfall_fixture(next_id) -> dict:
     return make_fixture(next_id(), "Waterfall", "blinky-dome/Waterfall")
 
 
+def dome_eye_fixtures(next_id) -> list[dict]:
+    """Mirror-symmetric dome eyes, yawed apart by the configured arc distance.
+
+    The eye fixtures bake the dome surface at azimuth 0, so yawing rotates
+    them along the dome. The yaw angle converts eye_distance_m (arc between
+    eye centres along the latitude circle at the eyes' elevation) to degrees.
+    """
+    eyes = MODEL["eyes"]
+    latitude_radius_m = WATERFALL["dome"]["radius_m"] * math.cos(
+        math.radians(DOME_EYE["elevation_degrees"])
+    )
+    half_yaw = math.degrees(
+        (eyes["eye_distance_m"] / 2.0) / latitude_radius_m
+    )
+
+    return [
+        make_fixture(
+            next_id(),
+            instance["label"],
+            instance["fixture"],
+            yaw=instance["side"] * half_yaw,
+            json_parameters={"ip": instance["ip"]},
+        )
+        for instance in eyes["instances"]
+    ]
+
+
 def dome_model_fixture(next_id) -> dict:
     """LED-less UI mesh of the dome scaffold (hand-imported .obj).
 
@@ -195,6 +222,7 @@ def build_model() -> dict:
     fixtures = [
         *harness_fixtures(next_id),
         *star_fixtures(next_id),
+        *dome_eye_fixtures(next_id),
         *ear_fixtures(next_id),
         waterfall_fixture(next_id),
         dome_model_fixture(next_id),
