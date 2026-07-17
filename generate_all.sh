@@ -24,10 +24,12 @@ fi
 cd "$GEN_DIR"
 
 # List each generator explicitly. Add new ones here as they are created.
+# generate_full_model.py assembles the fixtures into the .lxm, so it runs last.
 generators=(
   generate_star.py
   generate_cat_ear.py
   generate_waterfall.py
+  generate_full_model.py
 )
 
 echo "Running ${#generators[@]} generator(s) with $PYTHON"

@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 FIXTURES_DIR = Path(__file__).resolve().parents[1] / "Fixtures"
+MODELS_DIR = Path(__file__).resolve().parents[1] / "Models"
 
 CM_PER_M = 100.0
 FT_TO_M = 0.3048
@@ -151,3 +152,42 @@ for strip in CAT_EAR["strips"]:
     strip["leds_per_cm"] = leds_per_cm(
         CAT_EAR["leds"]["leds_per_strip"], strip["length_m"]
     )
+
+
+# Full-model assembly (generate_full_model.py). Positions are in scene units:
+# fixture geometry is metres, and every instance is placed at scene_scale, so
+# scene units = metres * scene_scale (matching the existing project files).
+MODEL = {
+    "output_file": "Blinkydome2026.lxm",
+    "lx_version": "1.2.0",
+    "scene_scale": 10.0,
+    # Dome-surface harness arcs: five identical groups of BlinkyH0-H3 yawed
+    # around the dome, one controller IP per group, one port per harness.
+    "harness_groups": [
+        {"name": "Astra", "yaw_degrees": 0.0, "ip": 11},
+        {"name": "Dorsa", "yaw_degrees": 72.0, "ip": 12},
+        {"name": "Plana", "yaw_degrees": 144.0, "ip": 13},
+        {"name": "Undae", "yaw_degrees": 216.0, "ip": 14},
+        {"name": "Tholi", "yaw_degrees": 288.0, "ip": 15},
+    ],
+    # The star grouping is four co-located StarEyes rolled ~15 degrees apart
+    # (a stacked pinwheel), placed tangent to the dome surface on the front
+    # (+Z) at elevation_degrees above the horizon.
+    "stars": {
+        "host": "192.168.1.50",
+        "elevation_degrees": 35.0,
+        "azimuth_degrees": 0.0,
+        "instances": [
+            {"label": "Star 1", "roll_degrees": 142.0, "universe": 7},
+            {"label": "Star 2", "roll_degrees": -167.0, "universe": 5},
+            {"label": "Star 3", "roll_degrees": -182.0, "universe": 3},
+            {"label": "Star 4", "roll_degrees": -197.0, "universe": 1},
+        ],
+    },
+    # Cat ears sit atop the dome, spread left/right (+/-X, cat facing +Z).
+    # tilt_degrees leans each ear outward from vertical and slides its base
+    # down the dome surface by the same angle.
+    "ears": {
+        "tilt_degrees": 25.0,
+    },
+}
