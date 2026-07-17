@@ -5,6 +5,20 @@
     "generated",
     "2d"
   ],
+  "parameters": {
+    "ip": {
+      "label": "String A Host",
+      "type": "string",
+      "default": "192.168.1.50",
+      "description": "Art-Net output host for this star"
+    },
+    "Universe": {
+      "type": "int",
+      "default": 1,
+      "label": "Universe",
+      "description": "Base Art-Net universe (segments 4-5 use +1)"
+    }
+  },
   "metadata": {
     "coordinate_system": "Y-up right-handed, origin at star centre, units metres",
     "outer_radius_m": 1.0,
@@ -25,6 +39,15 @@
         "led_spacing_m": 0.032786885,
         "leds_per_cm": 0.3,
         "angle_degrees": -72.0
+      },
+      "output": {
+        "host": "$ip",
+        "byteOrder": "rgb",
+        "reverse": false,
+        "protocol": "artnet",
+        "universe": "$Universe",
+        "channel": 0,
+        "sequenceEnabled": false
       },
       "coords": [
         {
@@ -400,6 +423,15 @@
         "leds_per_cm": 0.3,
         "angle_degrees": 144.0
       },
+      "output": {
+        "host": "$ip",
+        "byteOrder": "rgb",
+        "reverse": false,
+        "protocol": "artnet",
+        "universe": "$Universe",
+        "channel": 180,
+        "sequenceEnabled": false
+      },
       "coords": [
         {
           "index": 0,
@@ -773,6 +805,15 @@
         "led_spacing_m": 0.032786885,
         "leds_per_cm": 0.3,
         "angle_degrees": 0.0
+      },
+      "output": {
+        "host": "$ip",
+        "byteOrder": "rgb",
+        "reverse": false,
+        "protocol": "artnet",
+        "universe": "$Universe",
+        "channel": 360,
+        "sequenceEnabled": false
       },
       "coords": [
         {
@@ -1148,6 +1189,15 @@
         "leds_per_cm": 0.3,
         "angle_degrees": 216.0
       },
+      "output": {
+        "host": "$ip",
+        "byteOrder": "rgb",
+        "reverse": false,
+        "protocol": "artnet",
+        "universe": "$Universe + 1",
+        "channel": 30,
+        "sequenceEnabled": false
+      },
       "coords": [
         {
           "index": 0,
@@ -1521,6 +1571,15 @@
         "led_spacing_m": 0.032786885,
         "leds_per_cm": 0.3,
         "angle_degrees": 72.0
+      },
+      "output": {
+        "host": "$ip",
+        "byteOrder": "rgb",
+        "reverse": false,
+        "protocol": "artnet",
+        "universe": "$Universe + 1",
+        "channel": 210,
+        "sequenceEnabled": false
       },
       "coords": [
         {

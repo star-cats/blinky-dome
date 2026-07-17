@@ -98,6 +98,16 @@ STAR["leds"]["leds_per_cm"] = leds_per_cm(
 STAR["leds"]["led_spacing_m"] = (
     STAR["geometry"]["strip_length_m"] / (STAR["leds"]["leds_per_strip"] + 1)
 )
+# Art-Net output, ported from Fixtures/Star.lxf so StarEye lights real pixels.
+# Each universe holds 170 pixels (510 bytes); segments spill to $Universe + 1
+# exactly as the original Star.lxf channel math did.
+STAR["output"] = {
+    "protocol": "artnet",
+    "byte_order": "rgb",
+    "host_default": "192.168.1.50",
+    "universe_default": 1,
+    "universe_size_bytes": 510,
+}
 
 
 CAT_EAR = {

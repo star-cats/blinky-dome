@@ -66,7 +66,26 @@ def make_strip(
             "leds_per_cm": round(STAR["leds"]["leds_per_cm"], 9),
             "angle_degrees": angle_degrees,
         },
+        "output": strip_output(index, led_count),
         "coords": coords,
+    }
+
+
+def strip_output(index: int, led_count: int) -> dict:
+    """Art-Net output for one star segment, matching Star.lxf channel packing."""
+    cfg = STAR["output"]
+    byte_offset = index * 3 * led_count
+    universe_add = byte_offset // cfg["universe_size_bytes"]
+    channel = byte_offset - universe_add * cfg["universe_size_bytes"]
+    universe = "$Universe" if universe_add == 0 else f"$Universe + {universe_add}"
+    return {
+        "host": "$ip",
+        "byteOrder": cfg["byte_order"],
+        "reverse": False,
+        "protocol": cfg["protocol"],
+        "universe": universe,
+        "channel": channel,
+        "sequenceEnabled": False,
     }
 
 
@@ -83,6 +102,20 @@ def build_fixture() -> dict:
     return {
         "label": "Generated Star",
         "tags": ["star", "generated", "2d"],
+        "parameters": {
+            "ip": {
+                "label": "String A Host",
+                "type": "string",
+                "default": STAR["output"]["host_default"],
+                "description": "Art-Net output host for this star",
+            },
+            "Universe": {
+                "type": "int",
+                "default": STAR["output"]["universe_default"],
+                "label": "Universe",
+                "description": "Base Art-Net universe (segments 4-5 use +1)",
+            },
+        },
         "metadata": {
             "coordinate_system": STAR["coordinate_system"],
             "outer_radius_m": STAR["geometry"]["outer_radius_m"],
