@@ -184,4 +184,11 @@ MODEL = {
     "ears": {
         "tilt_degrees": 35.0,
     },
+    # Hand-imported dome scaffold mesh (Fixtures/dome_model.obj): raw export
+    # units, so it gets its own scale and orientation instead of scene_scale.
+    "dome_model": {
+        "scale": 0.01,
+        "pitch_degrees": 90.0,
+        "yaw_degrees": 18.0,
+    },
 }

@@ -50,6 +50,7 @@ def make_fixture(
     yaw: float = 0.0,
     pitch: float = 0.0,
     roll: float = 0.0,
+    scale: float = SCENE_SCALE,
     json_parameters: dict | None = None,
 ) -> dict:
     """One JsonFixture instance entry, serialized the way Chromatik saves them."""
@@ -71,7 +72,7 @@ def make_fixture(
             "yaw": rounded(yaw),
             "pitch": rounded(pitch),
             "roll": rounded(roll),
-            "scale": SCENE_SCALE,
+            "scale": scale,
             "selected": False,
             "deactivate": False,
             "enabled": True,
@@ -168,6 +169,23 @@ def waterfall_fixture(next_id) -> dict:
     return make_fixture(next_id(), "Waterfall", "blinky-dome/Waterfall")
 
 
+def dome_model_fixture(next_id) -> dict:
+    """LED-less UI mesh of the dome scaffold (hand-imported .obj).
+
+    The mesh is a raw export, so it carries its own scale and orientation
+    from MODEL["dome_model"] rather than the shared scene placement.
+    """
+    dome = MODEL["dome_model"]
+    return make_fixture(
+        next_id(),
+        "Dome Model",
+        "blinky-dome/dome_model",
+        yaw=dome["yaw_degrees"],
+        pitch=dome["pitch_degrees"],
+        scale=dome["scale"],
+    )
+
+
 def build_model() -> dict:
     counter = iter(range(FIRST_FIXTURE_ID, FIRST_FIXTURE_ID + 1000))
 
@@ -179,6 +197,7 @@ def build_model() -> dict:
         *star_fixtures(next_id),
         *ear_fixtures(next_id),
         waterfall_fixture(next_id),
+        dome_model_fixture(next_id),
     ]
 
     return {
