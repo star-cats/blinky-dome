@@ -50,14 +50,14 @@ def flat_band() -> list[dict]:
     height_m = EDGE_M * math.sqrt(3.0) / 2.0
     triangles = []
     for row in range(ROWS):
-        row_shift = row * EDGE_M / 2.0
+        row_shift = 0 #row * EDGE_M / 2.0
         for i in range(TRIANGLES_PER_ROW):
-            point_up = i % 2 == 0
+            point_up = (i + row) % 2 == 0
             centroid_v = height_m / 3.0 if point_up else 2.0 * height_m / 3.0
             triangles.append(
                 {
                     "u": row_shift + (i + 1) * EDGE_M / 2.0,
-                    "v": row * height_m + centroid_v,
+                    "v": row * height_m - centroid_v,
                     "point_up": point_up,
                 }
             )

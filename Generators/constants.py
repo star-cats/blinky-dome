@@ -160,11 +160,11 @@ DOME_EYE = {
         "right": "DomeEyeR.lxf",
     },
     # Matches the scale transform inside BlinkyTriangle.lxf.
-    "triangle_edge_m": 0.5842,
+    "triangle_edge_m": 0.7, #0.5842,
     "triangles_per_row": 8,
     "rows": 2,
     # Height of the eye centre above the horizon, on the dome surface.
-    "elevation_degrees": 35.0,
+    "elevation_degrees": 22.5,
 }
 
 
@@ -188,7 +188,7 @@ MODEL = {
     # centres sit eye_distance_m apart measured along the dome's arc at the
     # eyes' elevation. Eye L is on the cat's left (+X, like Ear L).
     "eyes": {
-        "eye_distance_m": 3.0,
+        "eye_distance_m": 5,
         "instances": [
             {"label": "Eye L", "fixture": "blinky-dome/DomeEyeL", "ip": 13, "side": 1},
             {"label": "Eye R", "fixture": "blinky-dome/DomeEyeR", "ip": 14, "side": -1},
