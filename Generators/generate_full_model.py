@@ -51,6 +51,7 @@ def make_fixture(
     pitch: float = 0.0,
     roll: float = 0.0,
     scale: float = SCENE_SCALE,
+    tags: str = "",
     json_parameters: dict | None = None,
 ) -> dict:
     """One JsonFixture instance entry, serialized the way Chromatik saves them."""
@@ -80,7 +81,7 @@ def make_fixture(
             "identify": False,
             "mute": False,
             "solo": False,
-            "tags": "",
+            "tags": tags,
             "fixtureType": fixture_type,
         },
         "children": {},
@@ -98,6 +99,7 @@ def harness_fixtures(next_id) -> list[dict]:
                     f"{group['name']} {port_index + 1}",
                     f"blinky-dome/BlinkyH{port_index}",
                     yaw=group["yaw_degrees"],
+                    tags="dome-cover",
                     json_parameters={"ip": group["ip"], "port": port_index + 1},
                 )
             )
@@ -126,6 +128,7 @@ def star_fixtures(next_id) -> list[dict]:
             # Tip the star plane's +Z normal up to the dome surface normal.
             pitch=-stars["elevation_degrees"],
             roll=instance["roll_degrees"],
+            tags="star",
             json_parameters={
                 "ip": stars["host"],
                 "Universe": instance["universe"],
@@ -152,6 +155,7 @@ def ear_fixtures(next_id) -> list[dict]:
             x=x,
             y=y,
             roll=-tilt_degrees,
+            tags="ears",
         ),
         make_fixture(
             next_id(),
@@ -160,13 +164,16 @@ def ear_fixtures(next_id) -> list[dict]:
             x=-x,
             y=y,
             roll=tilt_degrees,
+            tags="ears",
         ),
     ]
 
 
 def waterfall_fixture(next_id) -> dict:
     """The waterfall's geometry already places it on the dome back."""
-    return make_fixture(next_id(), "Waterfall", "blinky-dome/Waterfall")
+    return make_fixture(
+        next_id(), "Waterfall", "blinky-dome/Waterfall", tags="waterfall"
+    )
 
 
 def dome_eye_fixtures(next_id) -> list[dict]:
@@ -190,6 +197,7 @@ def dome_eye_fixtures(next_id) -> list[dict]:
             instance["label"],
             instance["fixture"],
             yaw=instance["side"] * half_yaw,
+            tags="eyes",
             json_parameters={"ip": instance["ip"]},
         )
         for instance in eyes["instances"]
@@ -210,6 +218,7 @@ def dome_model_fixture(next_id) -> dict:
         yaw=dome["yaw_degrees"],
         pitch=dome["pitch_degrees"],
         scale=dome["scale"],
+        tags="dome-cover",
     )
 
 
