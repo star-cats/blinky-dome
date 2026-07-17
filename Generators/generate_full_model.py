@@ -32,6 +32,16 @@ DOME_RADIUS_SCENE = DOME_RADIUS_M * SCENE_SCALE
 
 # Deterministic fixture ids so regeneration produces stable diffs.
 FIRST_FIXTURE_ID = 1001
+VIEW_ENGINE_ID = 2000
+FIRST_VIEW_ID = 2001
+
+MODEL_VIEWS = [
+    {"label": "Dome Cover", "selector": "dome-cover", "modulationColor": 0},
+    {"label": "Front Eyes", "selector": "eyes", "modulationColor": 2},
+    {"label": "Third Eye", "selector": "star", "modulationColor": 7},
+    {"label": "Ears", "selector": "ears", "modulationColor": 3},
+    {"label": "Waterfall", "selector": "waterfall", "modulationColor": 5},
+]
 
 
 def rounded(value: float) -> float:
@@ -85,6 +95,50 @@ def make_fixture(
             "fixtureType": fixture_type,
         },
         "children": {},
+    }
+
+
+def make_view_definition(view_id: int, view: dict) -> dict:
+    return {
+        "id": view_id,
+        "class": "heronarts.lx.structure.view.LXViewDefinition",
+        "internal": {
+            "modulationColor": view["modulationColor"],
+            "modulationControlsExpanded": True,
+            "modulationsExpanded": True,
+        },
+        "parameters": {
+            "label": view["label"],
+            "enabled": True,
+            "selector": view["selector"],
+            "normalization": 0,
+            "normalization/name": "RELATIVE",
+            "orientation": 0,
+            "orientation/name": "GLOBAL",
+            "priority": True,
+            "cueActive": False,
+        },
+        "children": {},
+    }
+
+
+def make_view_engine() -> dict:
+    return {
+        "id": VIEW_ENGINE_ID,
+        "class": "heronarts.lx.structure.view.LXViewEngine",
+        "internal": {
+            "modulationColor": 0,
+            "modulationControlsExpanded": True,
+            "modulationsExpanded": True,
+        },
+        "parameters": {
+            "label": "LX",
+        },
+        "children": {},
+        "views": [
+            make_view_definition(FIRST_VIEW_ID + index, view)
+            for index, view in enumerate(MODEL_VIEWS)
+        ],
     }
 
 
@@ -241,6 +295,9 @@ def build_model() -> dict:
         "version": MODEL["lx_version"],
         # Fixed timestamp keeps regeneration deterministic for clean diffs.
         "timestamp": 0,
+        "children": {
+            "views": make_view_engine(),
+        },
         "fixtures": fixtures,
         "normalization": {
             "normalizationMode": 0,
