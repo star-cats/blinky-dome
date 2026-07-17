@@ -18,6 +18,13 @@ FT_TO_M = 0.3048
 IN_TO_M = 0.0254
 
 
+BLINKY_TRIANGLE = {
+    # Chromatik preview point size for every BlinkyTriangle component, used by
+    # both the dome-cover harness fixtures and the generated dome-eye fixtures.
+    "point_size": 2.5,
+}
+
+
 def leds_per_cm(led_count: int, length_m: float) -> float:
     return led_count / (length_m * CM_PER_M)
 

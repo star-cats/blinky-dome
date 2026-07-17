@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 import math
 
-from constants import DOME_EYE, FIXTURES_DIR, WATERFALL
+from constants import BLINKY_TRIANGLE, DOME_EYE, FIXTURES_DIR, WATERFALL
 
 DOME_RADIUS_M = WATERFALL["dome"]["radius_m"]
 EDGE_M = DOME_EYE["triangle_edge_m"]
@@ -104,6 +104,8 @@ def build_fixture(label: str, mirror: bool) -> dict:
             {
                 "id": f"eye-tri-{index}",
                 "type": "blinky-dome/BlinkyTriangle",
+                "hasCustomPointSize": True,
+                "pointSize": BLINKY_TRIANGLE["point_size"],
                 **placement,
             }
         )
@@ -146,6 +148,7 @@ def build_fixture(label: str, mirror: bool) -> dict:
             "rows": ROWS,
             "triangles_per_row": TRIANGLES_PER_ROW,
             "triangle_edge_m": EDGE_M,
+            "triangle_point_size": BLINKY_TRIANGLE["point_size"],
             "band_width_m": round((TRIANGLES_PER_ROW + ROWS) * EDGE_M / 2.0, 6),
             "band_height_m": round(ROWS * height_m, 6),
         },
