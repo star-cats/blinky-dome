@@ -1,5 +1,6 @@
-- dome blinkies need bigger point size to convey large diffuse area
 - ip + universe mappings
+- importable test project/model that makes it obvious how to configure/portmap
+
 - bring animations to life
-- use views for lighting isolations
+
 - smart windows friendly edition of symlinker
