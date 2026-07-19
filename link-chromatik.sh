@@ -49,6 +49,7 @@ CONTENT_DIRS=(
   Colors
   Data
   Fixtures
+  Images
   Models
   Packages
   Presets
