@@ -1,5 +1,9 @@
 # Maven build output
 target/
 
+# Built package jar — blinky-dome/ itself is tracked (it's the symlink target,
+# so it has to exist on a fresh clone before ./install.sh runs)
+blinky-dome/*.jar
+
 # Maven downloaded by build.sh when it isn't on PATH
 .tools/

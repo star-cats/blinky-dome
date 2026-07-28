@@ -1,31 +1,51 @@
 #!/usr/bin/env bash
 #
-# install.sh — build the package and copy it into Chromatik's Packages folder
+# install.sh — symlink the built package folder into Chromatik
 #
-# Chromatik loads every .jar it finds in <chromatik>/Packages at startup, so
-# after running this you just need to restart Chromatik (or hit the reload button
-# in CONTENT > PACKAGES) to see the new patterns.
+# Mirrors how link-chromatik.sh handles the repo's other content folders: rather
+# than copying files into the Chromatik tree, it namespaces this repo's package
+# folder in with a single symlink:
+#
+#     <chromatik>/Packages/<namespace>  ->  <repo>/Patterns/blinky-dome
+#
+# Chromatik scans Packages/ recursively, so it finds the jar inside. You run this
+# once. After that, `./build.sh` rewrites the jar in place and Chromatik picks up
+# the new build on its next start — no reinstall step.
 #
 # Usage:
 #   ./install.sh [options]
 #
 # Options:
 #   -c, --chromatik PATH   Chromatik home dir (default: $CHROMATIK_HOME or ~/Chromatik)
-#       --uninstall        Remove the installed jar instead
+#   -n, --namespace NAME   Namespace subfolder name (default: this repo's dir name)
+#   -f, --force            Replace a symlink that currently points elsewhere
+#       --unlink           Remove the symlink this script would create (uninstall)
+#       --dry-run          Print what would happen, change nothing
 #   -h, --help             Show this help
 #
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CHROMATIK_HOME="${CHROMATIK_HOME:-$HOME/Chromatik}"
-UNINSTALL=0
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-usage() { sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
+# Must match <package.dir> in pom.xml
+PACKAGE_DIR="$SCRIPT_DIR/blinky-dome"
+
+CHROMATIK_HOME="${CHROMATIK_HOME:-$HOME/Chromatik}"
+NAMESPACE="$(basename "$REPO_ROOT")"
+FORCE=0
+UNLINK=0
+DRY_RUN=0
+
+usage() { sed -n '2,25p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -c|--chromatik) CHROMATIK_HOME="$2"; shift 2 ;;
-    --uninstall)    UNINSTALL=1; shift ;;
+    -n|--namespace) NAMESPACE="$2"; shift 2 ;;
+    -f|--force)     FORCE=1; shift ;;
+    --unlink)       UNLINK=1; shift ;;
+    --dry-run)      DRY_RUN=1; shift ;;
     -h|--help)      usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
   esac
@@ -33,6 +53,7 @@ done
 
 CHROMATIK_HOME="${CHROMATIK_HOME/#\~/$HOME}"
 PACKAGES_DIR="$CHROMATIK_HOME/Packages"
+LINK="$PACKAGES_DIR/$NAMESPACE"
 
 if [[ ! -d "$CHROMATIK_HOME" ]]; then
   echo "error: Chromatik home not found: $CHROMATIK_HOME" >&2
@@ -40,47 +61,81 @@ if [[ ! -d "$CHROMATIK_HOME" ]]; then
   exit 1
 fi
 
-# --- Uninstall ----------------------------------------------------------------
-if [[ $UNINSTALL -eq 1 ]]; then
-  shopt -s nullglob
-  removed=0
-  for jar in "$PACKAGES_DIR"/blinky-dome-patterns-*.jar; do
-    echo "Removing $jar"
-    rm -f "$jar"
-    removed=$((removed+1))
-  done
-  if [[ $removed -eq 0 ]]; then
-    echo "Nothing to remove in $PACKAGES_DIR"
+run() { # echo + execute unless dry-run
+  echo "  + $*"
+  [[ $DRY_RUN -eq 1 ]] || "$@"
+}
+
+echo "Repo:      $REPO_ROOT"
+echo "Chromatik: $CHROMATIK_HOME"
+echo "Namespace: $NAMESPACE"
+[[ $DRY_RUN -eq 1 ]] && echo "(dry run — no changes will be made)"
+echo
+
+# --- Unlink mode --------------------------------------------------------------
+if [[ $UNLINK -eq 1 ]]; then
+  if [[ -L "$LINK" ]]; then
+    target="$(readlink "$LINK")"
+    if [[ "$target" == "$PACKAGE_DIR" ]]; then
+      echo "Packages: removing symlink"
+      run rm "$LINK"
+    else
+      echo "Packages: symlink points elsewhere ($target) — leaving it alone"
+    fi
   else
-    echo "Removed $removed jar(s). Restart Chromatik to unload."
+    echo "Packages: no symlink to remove"
   fi
+  echo
+  echo "Done. Restart Chromatik to unload the package."
   exit 0
 fi
 
-# --- Build --------------------------------------------------------------------
-"$SCRIPT_DIR/build.sh"
-
+# --- Clean up jars copied by older versions of this script ---------------------
+# The previous install.sh copied a versioned jar directly into Packages/. Left in
+# place alongside the symlink, Chromatik would load the classes twice.
 shopt -s nullglob
-jars=("$SCRIPT_DIR"/target/*.jar)
-if [[ ${#jars[@]} -eq 0 ]]; then
-  echo "error: build produced no jar" >&2
-  exit 1
+for stale in "$PACKAGES_DIR"/blinky-dome-patterns*.jar; do
+  echo "Removing jar left by an older install: $(basename "$stale")"
+  run rm -f "$stale"
+done
+
+# --- Make sure there's something to link --------------------------------------
+if [[ ! -d "$PACKAGE_DIR" ]]; then
+  run mkdir -p "$PACKAGE_DIR"
 fi
 
-# --- Install ------------------------------------------------------------------
-mkdir -p "$PACKAGES_DIR"
+jars=("$PACKAGE_DIR"/*.jar)
+if [[ ${#jars[@]} -eq 0 ]]; then
+  echo "No jar built yet — building now."
+  echo
+  "$SCRIPT_DIR/build.sh"
+  echo
+fi
 
-# Clear out older versions of *this* package so Chromatik doesn't load two copies
-# of the same classes.
-for old in "$PACKAGES_DIR"/blinky-dome-patterns-*.jar; do
-  rm -f "$old"
-done
-
-for jar in "${jars[@]}"; do
-  echo "Installing $(basename "$jar") -> $PACKAGES_DIR"
-  cp "$jar" "$PACKAGES_DIR/"
-done
+# --- Link ---------------------------------------------------------------------
+if [[ -L "$LINK" ]]; then
+  target="$(readlink "$LINK")"
+  if [[ "$target" == "$PACKAGE_DIR" ]]; then
+    echo "Packages: already linked ✓"
+  elif [[ $FORCE -eq 1 ]]; then
+    echo "Packages: replacing symlink (was -> $target)"
+    run ln -sfn "$PACKAGE_DIR" "$LINK"
+  else
+    echo "Packages: symlink exists but points to $target"
+    echo "          re-run with --force to replace it" >&2
+    exit 1
+  fi
+elif [[ -e "$LINK" ]]; then
+  # A real file/dir is sitting where the symlink should go — never clobber it.
+  echo "Packages: '$LINK' already exists and is NOT a symlink — skipping" >&2
+  echo "          move/remove it manually if you want it namespaced" >&2
+  exit 1
+else
+  echo "Packages: linking"
+  [[ -d "$PACKAGES_DIR" ]] || run mkdir -p "$PACKAGES_DIR"
+  run ln -s "$PACKAGE_DIR" "$LINK"
+fi
 
 echo
-echo "Done. Restart Chromatik, then find the pattern under the"
-echo "\"Blinky Dome\" category in the pattern browser."
+echo "Done — this is a one-time step. From now on just run ./build.sh and"
+echo "restart Chromatik. Look for the \"Blinky Dome\" pattern category."

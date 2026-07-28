@@ -15,19 +15,41 @@ components; see the [Chromatik developer guide](https://chromatik.co/develop/).
 
 ## Quick start
 
+Once, ever:
+
 ```bash
 cd Patterns
 ./install.sh
 ```
 
-Then restart Chromatik. In the pattern browser you'll find a **Blinky Dome**
-category containing **Spatial Rainbow**.
-
-If you only want the `.jar` without installing it:
+Then after every code change:
 
 ```bash
-./build.sh          # -> Patterns/target/blinky-dome-patterns-0.1.0.jar
+./build.sh
 ```
+
+…and restart Chromatik. In the pattern browser you'll find a **Blinky Dome**
+category containing **Spatial Rainbow**.
+
+### Why install is one-time
+
+`install.sh` doesn't copy anything. It namespaces this folder into Chromatik with
+a single symlink, the same way `link-chromatik.sh` handles `Fixtures/`,
+`Projects/`, and the rest of the repo:
+
+```
+~/Chromatik/Packages/blinky-dome  ->  <repo>/Patterns/blinky-dome
+```
+
+The build writes `blinky-dome/blinky-dome-patterns.jar`, which is *inside* that
+symlinked folder — so a rebuild is live immediately, with no install step to
+repeat. Chromatik scans `Packages/` recursively, so it finds the jar one level
+down.
+
+The jar filename deliberately has no version number in it. The symlinked folder
+should only ever contain one jar; a versioned name would strand the old one there
+on every version bump and Chromatik would load both, giving you duplicate-class
+errors.
 
 ### Requirements
 
@@ -51,14 +73,19 @@ sudo ln -sfn /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk \
 Patterns/
 ├── README.md                 you are here
 ├── pom.xml                   Maven build: deps, Java version, packaging
-├── build.sh                  compile -> target/*.jar
-├── install.sh                compile + copy into ~/Chromatik/Packages
+├── build.sh                  compile -> blinky-dome/blinky-dome-patterns.jar
+├── install.sh                one-time symlink into ~/Chromatik/Packages
+├── blinky-dome/              <- the symlinked folder; holds the built jar
 └── src/main/
     ├── java/com/starcats/blinkydome/
     │   └── SpatialRainbowPattern.java     the demo pattern
     └── resources/
         └── lx.package        package metadata Chromatik reads
 ```
+
+`blinky-dome/` is tracked in git (empty, via `.gitkeep`) so the symlink target
+exists on a fresh clone before anything has been built. The jar inside it is
+gitignored, as is `target/`, which still holds intermediate build output.
 
 `src/main/resources/` can also hold `fixtures/`, `models/`, and `projects/`
 subfolders. Those get copied into `~/Chromatik/BlinkyDome/` when the package is
@@ -165,7 +192,7 @@ options on the **Axis** knob — the default is elevation.
 1. Drop a new `.java` file next to `SpatialRainbowPattern.java`, in package
    `com.starcats.blinkydome`.
 2. Extend `LXPattern`, annotate it, implement `run(double deltaMs)`.
-3. `./install.sh` and restart Chromatik.
+3. `./build.sh` and restart Chromatik.
 
 That's the whole loop. Chromatik picks up any public class extending `LXPattern`,
 `LXEffect`, or `LXModulator` — no manifest to edit.
@@ -197,9 +224,10 @@ against them, don't bundle them. Chromatik already has those classes loaded, and
 a second copy inside your jar will collide. Don't change that scope.
 
 **Two versions of the pattern in the browser.**
-Two jars in `~/Chromatik/Packages`. `install.sh` clears old
-`blinky-dome-patterns-*.jar` files automatically, but a manually-copied one will
-linger. `./install.sh --uninstall` clears them out.
+Two jars are reachable under `~/Chromatik/Packages`. Check both that folder and
+`Patterns/blinky-dome/` for a stray jar. `mvn`-driven builds always overwrite the
+one stable filename, so this usually means a hand-copied leftover — including one
+from before this folder used symlinks, which `./install.sh` clears out for you.
 
 **`error: no JDK found`.**
 `build.sh` looks at `JAVA_HOME`, then `/usr/libexec/java_home -v 21+`, then
@@ -211,9 +239,17 @@ explicitly.
 ## Notes on this repo
 
 `link-chromatik.sh` symlinks the repo's *content* folders (`Fixtures/`,
-`Projects/`, `Models/`, …) into `~/Chromatik/`. This `Patterns/` folder is
-deliberately **not** one of them — it holds Java source, which Chromatik has no
-use for. Only the compiled jar goes into `~/Chromatik/Packages`, and `install.sh`
-handles that.
+`Projects/`, `Models/`, …) into `~/Chromatik/`. `Patterns/` is deliberately not
+one of them — it's Java source, which Chromatik has no use for. Only the built
+package folder gets linked, and `install.sh` does that with the same namespacing
+convention.
 
-`target/` and `.tools/` are build output and gitignored.
+`./install.sh` takes the same flags as `link-chromatik.sh` for the same reasons:
+
+```bash
+./install.sh --dry-run     # show what would happen
+./install.sh -c /path      # non-default Chromatik home ($CHROMATIK_HOME works too)
+./install.sh -n my-name    # different namespace folder
+./install.sh --force       # replace a symlink pointing somewhere else
+./install.sh --unlink      # uninstall
+```

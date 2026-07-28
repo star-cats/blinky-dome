@@ -16,8 +16,17 @@
     <!-- Must match the Chromatik version you run. Check Chromatik > About. -->
     <lx.version>1.2.1</lx.version>
 
+    <!--
+      The built jar lands here rather than in target/. This folder is symlinked
+      into ~/Chromatik/Packages by install.sh, so a rebuild is picked up by
+      Chromatik with no copying step. See README.md.
+    -->
+    <package.dir>${project.basedir}/blinky-dome</package.dir>
+
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+    <maven-jar-plugin.version>3.4.1</maven-jar-plugin.version>
+    <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
   </properties>
 
   <dependencies>
@@ -48,6 +57,14 @@
   </dependencies>
 
   <build>
+    <!--
+      Stable filename, deliberately without the version number: the symlinked
+      package folder should only ever contain one jar. A versioned name would
+      leave an old copy behind on every version bump, and Chromatik would load
+      both and complain about duplicate classes.
+    -->
+    <finalName>${project.artifactId}</finalName>
+
     <resources>
       <!-- lx.package gets token substitution (@project.version@ and friends) -->
       <resource>
@@ -88,6 +105,31 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>${maven-resources-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <!-- Write the jar straight into the folder Chromatik has symlinked -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <configuration>
+          <outputDirectory>${package.dir}</outputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- `clean` doesn't know about ${package.dir}, since it lives outside target/ -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven-clean-plugin.version}</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${package.dir}</directory>
+              <includes>
+                <include>*.jar</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
       </plugin>
     </plugins>
   </build>
