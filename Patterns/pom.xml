@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.starcats</groupId>
+  <artifactId>blinky-dome-patterns</artifactId>
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+  <name>Blinky Dome</name>
+
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Must match the Chromatik version you run. Check Chromatik > About. -->
+    <lx.version>1.2.1</lx.version>
+
+    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+  </properties>
+
+  <dependencies>
+    <!--
+      "provided" scope: compile against the LX API, but do NOT bundle it into our
+      jar. Chromatik already has these classes loaded; shipping a second copy is
+      how you get ClassCastExceptions.
+    -->
+    <dependency>
+      <groupId>com.heronarts</groupId>
+      <artifactId>lx</artifactId>
+      <version>${lx.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- glx/glxstudio are only needed if you write custom UI. Harmless to keep. -->
+    <dependency>
+      <groupId>com.heronarts</groupId>
+      <artifactId>glx</artifactId>
+      <version>${lx.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.heronarts</groupId>
+      <artifactId>glxstudio</artifactId>
+      <version>${lx.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <!-- lx.package gets token substitution (@project.version@ and friends) -->
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>lx.package</include>
+        </includes>
+      </resource>
+      <!-- everything else (fixtures, models, projects) is copied verbatim -->
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>lx.package</exclude>
+        </excludes>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <compilerArgs>
+            <!--
+              this-escape is disabled because registering parameters from a
+              constructor (addParameter) is the required LX idiom — every pattern
+              trips this check.
+            -->
+            <arg>-Xlint:all,-this-escape</arg>
+            <arg>-Xpkginfo:always</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-plugin.version}</version>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
