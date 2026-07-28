@@ -185,6 +185,33 @@ For a dome, `elevation` (bands sweeping up the surface) and `azimuth` (bands
 rotating around it) are the two that read best from the ground. Those are both
 options on the **Axis** knob — the default is elevation.
 
+### Bending the rings: the Radius perturbation
+
+On the **Radius** axis alone the rainbow is perfectly concentric, which reads as
+flat. The **Lobes** and **Warp** knobs bend those rings into petals by offsetting
+each point's radial position by a sine of its angle:
+
+```java
+final float thetaN = p.theta / TWO_PI;                        // 0-1 around
+position += warp * (float) Math.sin(lobes * TWO_PI * thetaN); // N cycles per lap
+```
+
+Because `thetaN` spans exactly 0-1 for one revolution, sweeping it through
+`lobes * 2π` gives exactly `lobes` complete sine cycles and lands back on the
+starting value. That's why **Lobes** is an integer parameter rather than a
+continuous one: a fractional lobe count wouldn't close, leaving a visible hue
+seam where theta wraps from 2π back to 0.
+
+**Warp** is in units of normalized radius, so the resulting hue swing is
+`2 × warp × spread` rainbows peak-to-peak. Setting either knob to 0 disables the
+perturbation, and it only applies on the Radius axis — the other five are
+untouched.
+
+Note this uses `theta` (the angle in the x-y plane), not `azimuth` (the angle
+about the vertical Y axis). For a dome standing in the x-z plane those are
+different angles; if the petals come out oriented oddly on your model, `azimuth`
+is the one to try instead.
+
 ---
 
 ## Writing your own pattern

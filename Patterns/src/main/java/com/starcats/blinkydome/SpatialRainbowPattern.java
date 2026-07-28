@@ -6,6 +6,7 @@ import heronarts.lx.LXComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.pattern.LXPattern;
@@ -25,6 +26,8 @@ import heronarts.lx.pattern.LXPattern;
 @LXComponent.Description("Rainbow gradient that sweeps across the model in space")
 public class SpatialRainbowPattern extends LXPattern {
 
+  private static final float TWO_PI = (float) (2 * Math.PI);
+
   /**
    * Maps an LXPoint to a normalized 0-1 position along some spatial axis.
    *
@@ -43,7 +46,7 @@ public class SpatialRainbowPattern extends LXPattern {
     Z("Z", p -> p.zn),
     RADIUS("Radius", p -> p.rcn),
     // azimuth is 0-2PI around the Y axis; elevation is -PI/2 (down) to +PI/2 (up)
-    AZIMUTH("Azimuth", p -> (float) (p.azimuth / (2 * Math.PI))),
+    AZIMUTH("Azimuth", p -> p.azimuth / TWO_PI),
     ELEVATION("Elevation", p -> (float) (.5 + p.elevation / Math.PI));
 
     private final String label;
@@ -86,6 +89,23 @@ public class SpatialRainbowPattern extends LXPattern {
     .setUnits(LXParameter.Units.PERCENT)
     .setDescription("Brightness");
 
+  /*
+   * Radius-axis perturbation. On the Radius axis alone the rainbow is perfectly
+   * concentric, which reads as flat. Offsetting the radial position by a sine of
+   * the angle bends those rings into petals.
+   *
+   * Lobes is deliberately an integer: the sine has to close seamlessly where
+   * theta wraps from 2PI back to 0, and a fractional lobe count would leave a
+   * visible hue discontinuity along that seam.
+   */
+  public final DiscreteParameter lobes =
+    new DiscreteParameter("Lobes", 5, 0, 13)
+    .setDescription("Radius axis: number of petals around theta (0 disables)");
+
+  public final CompoundParameter warp =
+    new CompoundParameter("Warp", .15, 0, .5)
+    .setDescription("Radius axis: depth of the petal perturbation");
+
   /** Animation phase, 0-1. Advanced by run() rather than derived from wall time. */
   private double phase = 0;
 
@@ -98,6 +118,8 @@ public class SpatialRainbowPattern extends LXPattern {
     addParameter("spread", this.spread);
     addParameter("saturation", this.saturation);
     addParameter("level", this.level);
+    addParameter("lobes", this.lobes);
+    addParameter("warp", this.warp);
   }
 
   /**
@@ -115,11 +137,27 @@ public class SpatialRainbowPattern extends LXPattern {
     final float saturation = this.saturation.getValuef();
     final float level = this.level.getValuef();
 
+    // The petal perturbation only applies on the Radius axis, where it has a
+    // meaningful angle to work against.
+    final int lobes = this.lobes.getValuei();
+    final float warp = this.warp.getValuef();
+    final boolean perturb = (axis == Axis.RADIUS) && (lobes > 0) && (warp > 0);
+
     this.phase += deltaMs * .001 * this.speed.getValue();
     this.phase -= Math.floor(this.phase);
 
     for (LXPoint p : model.points) {
-      final float hue = 360f * wrap(axis.position(p) * spread - (float) this.phase);
+      float position = axis.position(p);
+
+      if (perturb) {
+        // thetaN is 0-1 for one trip around, so sweeping it through lobes * 2PI
+        // gives exactly `lobes` complete sine cycles per revolution — and lands
+        // back on the starting value, so there's no seam at the wrap point.
+        final float thetaN = p.theta / TWO_PI;
+        position += warp * (float) Math.sin(lobes * TWO_PI * thetaN);
+      }
+
+      final float hue = 360f * wrap(position * spread - (float) this.phase);
       // colors[] is the frame buffer this pattern renders into. p.index is the
       // point's slot in it — never assume it matches the loop iteration count,
       // since a view may be rendering a subset of the full model.
