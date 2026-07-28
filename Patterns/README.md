@@ -58,12 +58,22 @@ into `Patterns/.tools/` if you don't already have `mvn` on your PATH.
 
 ```bash
 brew install openjdk@21
-sudo ln -sfn /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk \
-             /Library/Java/JavaVirtualMachines/openjdk-21.jdk
 ```
+
+`build.sh` looks in Homebrew's keg-only location directly, so that's all you need
+— no `/Library/Java` symlink, no PATH changes.
 
 > The JVM bundled inside `Chromatik.app` is a stripped-down runtime with no
 > compiler in it, so it can't build this. You need a real JDK.
+
+> **`java` already "exists" on macOS and that's a trap.** With no JDK installed,
+> macOS still ships placeholder stubs at `/usr/bin/java` and `/usr/bin/javac`
+> (one binary, hardlinked under every tool name). They're executable and on your
+> PATH, so naive detection concludes Java is installed. Worse, `java -version`
+> against the stub prints a tidy error and exits, but a real classpath launch
+> *blocks forever* — so a build wired up this way hangs with no output rather
+> than failing. `build.sh` rejects the stub by requiring a `release` file at the
+> JDK root, which every genuine JDK image has and the stub directory doesn't.
 
 ---
 
@@ -257,9 +267,15 @@ one stable filename, so this usually means a hand-copied leftover — including 
 from before this folder used symlinks, which `./install.sh` clears out for you.
 
 **`error: no JDK found`.**
-`build.sh` looks at `JAVA_HOME`, then `/usr/libexec/java_home -v 21+`, then
-`javac` on your PATH. Install a JDK (see Requirements) or set `JAVA_HOME`
-explicitly.
+`build.sh` checks, in order: `JAVA_HOME`, `/usr/libexec/java_home -v 21+`,
+Homebrew's keg-only openjdk paths, `/usr/lib/jvm/*`, then `javac` on your PATH —
+and validates each one is a real JDK of at least version 21. Install a JDK (see
+Requirements), or point at it directly with `JAVA_HOME=/path/to/jdk ./build.sh`.
+
+**The build hangs with no output.**
+Shouldn't happen now, but if it ever does: check whether a stub JVM is being
+launched, with `ps ax | grep /usr/bin/java` while it's stuck. See the macOS stub
+note under Requirements.
 
 ---
 

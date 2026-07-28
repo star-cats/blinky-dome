@@ -28,43 +28,105 @@ MAVEN_VERSION="3.9.9"
 # --- Find a JDK ---------------------------------------------------------------
 # Note: the JVM bundled inside Chromatik.app is a stripped runtime with no
 # compiler, so it can't be used here. You need a real JDK.
+MIN_JDK=21
+
+# Is this a real JDK, or macOS lying to us?
+#
+# When no JDK is installed, macOS still ships stub binaries at /usr/bin/java,
+# /usr/bin/javac, etc. (all hardlinks to one placeholder). They exist and are
+# executable, so a naive `command -v javac` check happily concludes JAVA_HOME=/usr
+# — and then Maven launches the stub and BLOCKS FOREVER instead of failing. Every
+# real JDK image ships a `release` file at its root; the stub directory doesn't.
+# That's what we test, and we deliberately test it without executing anything.
+is_jdk() {
+  local home="${1:-}"
+  [[ -n "$home" && -x "$home/bin/javac" && -r "$home/release" ]]
+}
+
+# Major version, read out of the release file. Handles both the modern scheme
+# (21.0.11 -> 21) and the legacy one (1.8.0_292 -> 8).
+jdk_major() {
+  local v
+  v="$(sed -n 's/^JAVA_VERSION="\(.*\)"/\1/p' "$1/release" 2>/dev/null | head -1)"
+  case "$v" in
+    "")  return ;;
+    1.*) echo "${v#1.}" | cut -d. -f1 ;;
+    *)   echo "$v" | cut -d. -f1 ;;
+  esac
+}
+
 find_jdk() {
-  if [[ -n "${JAVA_HOME:-}" && -x "$JAVA_HOME/bin/javac" ]]; then
-    echo "$JAVA_HOME"
-    return 0
-  fi
-  # macOS ships a helper that knows where every installed JDK lives
+  local candidates=() home
+
+  # Explicit override always wins
+  candidates+=("${JAVA_HOME:-}")
+
+  # macOS helper that knows where properly-installed JDKs live
   if [[ -x /usr/libexec/java_home ]]; then
-    local home
-    if home="$(/usr/libexec/java_home -v 21+ 2>/dev/null)"; then
+    home="$(/usr/libexec/java_home -v "$MIN_JDK+" 2>/dev/null)" && candidates+=("$home")
+  fi
+
+  # Homebrew's openjdk is keg-only: it is NOT on PATH and NOT registered with
+  # java_home unless you also make the /Library/Java symlink. Look directly.
+  local brew_prefix
+  for brew_prefix in /opt/homebrew /usr/local; do
+    candidates+=("$brew_prefix/opt/openjdk@$MIN_JDK/libexec/openjdk.jdk/Contents/Home")
+    candidates+=("$brew_prefix/opt/openjdk/libexec/openjdk.jdk/Contents/Home")
+  done
+
+  # Linux distro layout
+  for home in /usr/lib/jvm/*; do
+    candidates+=("$home")
+  done
+
+  # Whatever javac is on PATH (validated like everything else, so the macOS
+  # stub at /usr/bin/javac gets rejected here rather than hanging the build)
+  if command -v javac >/dev/null 2>&1; then
+    candidates+=("$(dirname "$(dirname "$(command -v javac)")")")
+  fi
+
+  local too_old=""
+  for home in "${candidates[@]}"; do
+    is_jdk "$home" || continue
+    local major
+    major="$(jdk_major "$home")"
+    if [[ -n "$major" && "$major" -ge "$MIN_JDK" ]]; then
       echo "$home"
       return 0
     fi
-  fi
-  if command -v javac >/dev/null 2>&1; then
-    echo "$(dirname "$(dirname "$(command -v javac)")")"
-    return 0
-  fi
+    too_old="$home (Java ${major:-?})"
+  done
+
+  [[ -n "$too_old" ]] && echo "TOO_OLD:$too_old"
   return 1
 }
 
-if ! JAVA_HOME="$(find_jdk)"; then
-  cat >&2 <<'EOF'
-error: no JDK found (need Java 21 or newer, with javac).
+JDK_RESULT="$(find_jdk)" || {
+  if [[ "$JDK_RESULT" == TOO_OLD:* ]]; then
+    echo "error: found a JDK but it's too old: ${JDK_RESULT#TOO_OLD:}" >&2
+    echo "       this package needs Java $MIN_JDK or newer." >&2
+  else
+    echo "error: no JDK found (need Java $MIN_JDK or newer, with javac)." >&2
+    if command -v javac >/dev/null 2>&1; then
+      echo "       (/usr/bin/javac exists, but it's the macOS placeholder stub," >&2
+      echo "        not a real compiler — that's why this looks confusing.)" >&2
+    fi
+  fi
+  cat >&2 <<EOF
 
 Install one:
-  macOS:   brew install openjdk@21
-           sudo ln -sfn /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk \
-                        /Library/Java/JavaVirtualMachines/openjdk-21.jdk
-  Linux:   sudo apt install openjdk-21-jdk
+  macOS:   brew install openjdk@$MIN_JDK
+  Linux:   sudo apt install openjdk-$MIN_JDK-jdk
   Or download from https://adoptium.net/
 
-Then re-run ./build.sh (or set JAVA_HOME by hand).
+Then re-run ./build.sh. If it still isn't found, point at it explicitly:
+  JAVA_HOME=/path/to/jdk ./build.sh
 EOF
   exit 1
-fi
+}
+JAVA_HOME="$JDK_RESULT"
 export JAVA_HOME
-echo "JDK:   $JAVA_HOME"
+echo "JDK:   $JAVA_HOME (Java $(jdk_major "$JAVA_HOME"))"
 
 # --- Find (or fetch) Maven ----------------------------------------------------
 if command -v mvn >/dev/null 2>&1; then
