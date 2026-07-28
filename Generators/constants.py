@@ -56,7 +56,7 @@ WATERFALL = {
     # Chord lengths extending the 4 base points up the dome surface: base ->
     # lower-spine level -> upper-spine level (12 points total).
     "spine": {
-        "lower_length_m": 11.0 * FT_TO_M,
+        "lower_length_m": 12.0 * FT_TO_M,
         "upper_length_m": 8.0 * FT_TO_M,
     },
     "strips": {
