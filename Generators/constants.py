@@ -270,7 +270,7 @@ MODEL = {
     # the scaffold below y=0.
     "v3_dome": {
         "placement": {
-            "x_offset_m": 9.0,
+            "x_offset_m": 10.0,
             "y_offset_m": 0.0,
             "z_offset_m": 0.0,
             "yaw_degrees": 0.0,
