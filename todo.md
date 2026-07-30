@@ -1,5 +1,3 @@
-- The front star should be vertical and model config position it with azimuth
-- Make generate all a python thing
 - Make python and jdk version clear and fixtured
 - Try on window machine as sanity check
 

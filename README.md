@@ -48,12 +48,17 @@ Fixture geometry is generated, not hand-edited. Edit the Python in
 `Generators/`, then:
 
 ```
-./generate_all.sh
+python3 Generators/generate_all.py
 ```
 
+That runs every generator in dependency order in one process. Each one also
+stands alone if you are iterating on a single fixture — `python3
+Generators/generate_star.py` — though `generate_full_model.py` assembles the
+others, so it wants a full run behind it.
+
 Every generator reads `Generators/constants.py` and writes into `Fixtures/` and
-`Models/`, so the committed `.lxf`/`.lxm` files should always be reproducible
-from a clean run.
+`Models/` via absolute paths, so the committed `.lxf`/`.lxm` files should always
+be reproducible from a clean run, from any working directory.
 
 ## Custom patterns
 
