@@ -2,9 +2,10 @@
 #
 # build.sh — compile the custom patterns into a Chromatik package (.jar)
 #
-# Output: Patterns/blinky-dome/blinky-dome-patterns.jar
+# Output: Packages/blinky-dome-patterns.jar
 #
-# Once ./install.sh has symlinked that folder into Chromatik, this is the only
+# The repo root is the Chromatik home directory, so that jar lands exactly where
+# Chromatik looks for packages. There is no install step — this is the only
 # command you need to re-run after a code change. Restart Chromatik to pick it up.
 #
 # Requires a JDK 21+. It does NOT require Maven to be installed — if `mvn` isn't
@@ -157,4 +158,4 @@ fi
 
 echo
 echo "Built:"
-ls -1 "$SCRIPT_DIR"/blinky-dome/*.jar
+ls -1 "$SCRIPT_DIR"/../Packages/*.jar

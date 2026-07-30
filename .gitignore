@@ -1,17 +1,28 @@
-.idea
-build/
-.gradle
-*.iml
-.lxproject
-.DS_Store
-apache-maven*
-jdk-*
-*.log
-*.swp
-target
-*.swn
-*.swo
-.license*
+# --- Chromatik runtime state -------------------------------------------------
+# The repo root IS the Chromatik home directory, so Chromatik writes into it
+# while it runs. None of this is source; all of it is regenerated on launch.
 .lxpreferences
 .lxmidi
+.license*
+Logs/
+Deleted/
+Autosave/
+Examples/
+# Presets/ is deliberately NOT ignored — presets are hand-saved content, not
+# runtime churn, and they should travel with a clone.
+
+# Packages/ is a live Chromatik folder — track only the jar we build into it.
+Packages/*
+!Packages/blinky-dome-patterns.jar
+
+# --- Build output ------------------------------------------------------------
+target/
 __pycache__/
+
+# --- Editors / OS ------------------------------------------------------------
+.idea
+*.iml
+.DS_Store
+*.swn
+*.swo
+*.swp

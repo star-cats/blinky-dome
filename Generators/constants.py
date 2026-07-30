@@ -233,8 +233,8 @@ MODEL = {
     "eyes": {
         "eye_distance_m": 5,
         "instances": [
-            {"label": "Eye L", "fixture": "blinky-dome/DomeEyeL", "ip": 13, "side": 1},
-            {"label": "Eye R", "fixture": "blinky-dome/DomeEyeR", "ip": 14, "side": -1},
+            {"label": "Eye L", "fixture": "DomeEyeL", "ip": 13, "side": 1},
+            {"label": "Eye R", "fixture": "DomeEyeR", "ip": 14, "side": -1},
         ],
     },
     # The star grouping is four co-located StarEyes rolled ~15 degrees apart

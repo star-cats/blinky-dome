@@ -162,7 +162,7 @@ def star_fixtures(next_id) -> list[dict]:
         make_fixture(
             next_id(),
             instance["label"],
-            "blinky-dome/StarEye",
+            "StarEye",
             x=x,
             y=y,
             z=z,
@@ -193,7 +193,7 @@ def ear_fixtures(next_id) -> list[dict]:
         make_fixture(
             next_id(),
             "Ear L",
-            "blinky-dome/CatEar",
+            "CatEar",
             x=x,
             y=y,
             roll=-tilt_degrees,
@@ -202,7 +202,7 @@ def ear_fixtures(next_id) -> list[dict]:
         make_fixture(
             next_id(),
             "Ear R",
-            "blinky-dome/CatEar",
+            "CatEar",
             x=-x,
             y=y,
             roll=tilt_degrees,
@@ -214,7 +214,7 @@ def ear_fixtures(next_id) -> list[dict]:
 def waterfall_fixture(next_id) -> dict:
     """The waterfall's geometry already places it on the dome back."""
     return make_fixture(
-        next_id(), "Waterfall", "blinky-dome/Waterfall", tags="waterfall"
+        next_id(), "Waterfall", "Waterfall", tags="waterfall"
     )
 
 
@@ -254,7 +254,7 @@ def v3_harness_fixture(next_id) -> dict:
     return make_fixture(
         next_id(),
         "V3 Dome Cable Harness",
-        "blinky-dome/V3DomeHarness",
+        "V3DomeHarness",
         **placement,
         tags="v3-harness",
         json_parameters={
@@ -279,7 +279,7 @@ def v3_dome_model_fixture(next_id) -> dict:
     return make_fixture(
         next_id(),
         "V3 Dome Model",
-        "blinky-dome/v3_dome_model",
+        "v3_dome_model",
         **placement,
         scale=SCENE_SCALE * mesh["scale_trim"],
         tags="v3-harness",
@@ -296,7 +296,7 @@ def dome_model_fixture(next_id) -> dict:
     return make_fixture(
         next_id(),
         "Dome Model",
-        "blinky-dome/dome_model",
+        "dome_model",
         yaw=dome["yaw_degrees"],
         pitch=dome["pitch_degrees"],
         scale=dome["scale"],

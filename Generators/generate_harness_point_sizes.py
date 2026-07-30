@@ -19,7 +19,7 @@ def update_harness(path) -> int:
     fixture = json.loads(path.read_text(encoding="utf-8"))
     updated = 0
     for component in fixture.get("components", []):
-        if component.get("type") == "blinky-dome/BlinkyTriangle":
+        if component.get("type") == "BlinkyTriangle":
             component["hasCustomPointSize"] = True
             component["pointSize"] = BLINKY_TRIANGLE["point_size"]
             updated += 1

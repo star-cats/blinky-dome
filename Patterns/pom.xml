@@ -17,11 +17,11 @@
     <lx.version>1.2.1</lx.version>
 
     <!--
-      The built jar lands here rather than in target/. This folder is symlinked
-      into ~/Chromatik/Packages by install.sh, so a rebuild is picked up by
-      Chromatik with no copying step. See README.md.
+      The built jar lands here rather than in target/. The repo root *is* the
+      Chromatik home directory, so this is Chromatik's real Packages/ folder —
+      a rebuild is picked up with no install or copying step. See README.md.
     -->
-    <package.dir>${project.basedir}/blinky-dome</package.dir>
+    <package.dir>${project.basedir}/../Packages</package.dir>
 
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -58,10 +58,10 @@
 
   <build>
     <!--
-      Stable filename, deliberately without the version number: the symlinked
-      package folder should only ever contain one jar. A versioned name would
-      leave an old copy behind on every version bump, and Chromatik would load
-      both and complain about duplicate classes.
+      Stable filename, deliberately without the version number: Packages/ should
+      only ever contain one jar of ours. A versioned name would leave an old copy
+      behind on every version bump, and Chromatik would load both and complain
+      about duplicate classes.
     -->
     <finalName>${project.artifactId}</finalName>
 
@@ -107,7 +107,7 @@
         <version>${maven-resources-plugin.version}</version>
       </plugin>
       <plugin>
-        <!-- Write the jar straight into the folder Chromatik has symlinked -->
+        <!-- Write the jar straight into Chromatik's Packages/ folder -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${maven-jar-plugin.version}</version>
@@ -125,7 +125,12 @@
             <fileset>
               <directory>${package.dir}</directory>
               <includes>
-                <include>*.jar</include>
+                <!--
+                  Scoped to our own artifact, not *.jar: Packages/ is a real
+                  Chromatik folder and may hold third-party packages the user
+                  imported. `clean` has no business deleting those.
+                -->
+                <include>${project.artifactId}.jar</include>
               </includes>
             </fileset>
           </filesets>

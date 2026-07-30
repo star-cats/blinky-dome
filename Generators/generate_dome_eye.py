@@ -103,7 +103,7 @@ def build_fixture(label: str, mirror: bool) -> dict:
         components.append(
             {
                 "id": f"eye-tri-{index}",
-                "type": "blinky-dome/BlinkyTriangle",
+                "type": "BlinkyTriangle",
                 "hasCustomPointSize": True,
                 "pointSize": BLINKY_TRIANGLE["point_size"],
                 **placement,

@@ -15,41 +15,30 @@ components; see the [Chromatik developer guide](https://chromatik.co/develop/).
 
 ## Quick start
 
-Once, ever:
+After every code change:
 
 ```bash
 cd Patterns
-./install.sh
-```
-
-Then after every code change:
-
-```bash
 ./build.sh
 ```
 
 …and restart Chromatik. In the pattern browser you'll find a **Blinky Dome**
 category containing **Spatial Rainbow**.
 
-### Why install is one-time
-
-`install.sh` doesn't copy anything. It namespaces this folder into Chromatik with
-a single symlink, the same way `link-chromatik.sh` handles `Fixtures/`,
-`Projects/`, and the rest of the repo:
+There is no install step. The repo root *is* the Chromatik home directory, so
+the build writes straight into the folder Chromatik scans:
 
 ```
-~/Chromatik/Packages/blinky-dome  ->  <repo>/Patterns/blinky-dome
+<repo>/Packages/blinky-dome-patterns.jar
 ```
 
-The build writes `blinky-dome/blinky-dome-patterns.jar`, which is *inside* that
-symlinked folder — so a rebuild is live immediately, with no install step to
-repeat. Chromatik scans `Packages/` recursively, so it finds the jar one level
-down.
+A rebuild is live the moment Chromatik restarts. The jar is committed, so a
+fresh clone has working patterns without a JDK — you only need to build after
+changing the Java.
 
-The jar filename deliberately has no version number in it. The symlinked folder
-should only ever contain one jar; a versioned name would strand the old one there
-on every version bump and Chromatik would load both, giving you duplicate-class
-errors.
+The jar filename deliberately has no version number in it. A versioned name
+would strand the old jar in `Packages/` on every version bump, and Chromatik
+would load both, giving you duplicate-class errors.
 
 ### Requirements
 
@@ -83,25 +72,26 @@ brew install openjdk@21
 Patterns/
 ├── README.md                 you are here
 ├── pom.xml                   Maven build: deps, Java version, packaging
-├── build.sh                  compile -> blinky-dome/blinky-dome-patterns.jar
-├── install.sh                one-time symlink into ~/Chromatik/Packages
-├── blinky-dome/              <- the symlinked folder; holds the built jar
+├── build.sh                  compile -> ../Packages/blinky-dome-patterns.jar
 └── src/main/
     ├── java/com/starcats/blinkydome/
-    │   └── SpatialRainbowPattern.java     the demo pattern
+    │   ├── SpatialRainbowPattern.java     the demo pattern
+    │   └── ImageTest.java                 projects a jar-bundled image
     └── resources/
-        └── lx.package        package metadata Chromatik reads
+        ├── lx.package        package metadata Chromatik reads
+        └── com/starcats/blinkydome/
+            └── eye_of_sauron.jpeg         ImageTest's bundled image
 ```
 
-`blinky-dome/` is tracked in git (empty, via `.gitkeep`) so the symlink target
-exists on a fresh clone before anything has been built. The jar inside it is
-gitignored, as is `target/`, which still holds intermediate build output.
+The built jar lands in the repo's top-level `Packages/` folder and is committed;
+`target/` holds intermediate build output and is gitignored.
 
 `src/main/resources/` can also hold `fixtures/`, `models/`, and `projects/`
 subfolders. Those get copied into `~/Chromatik/BlinkyDome/` when the package is
 imported through the Chromatik UI (the `mediaDir` field in `lx.package` picks the
-folder name). We keep fixtures in the repo's top-level `Fixtures/` folder instead,
-symlinked by `link-chromatik.sh` — bundling them here too would just duplicate them.
+folder name). We keep fixtures in the repo's top-level `Fixtures/` folder
+instead — which Chromatik already reads directly — so bundling them here too
+would just duplicate them.
 
 ---
 
@@ -261,10 +251,10 @@ against them, don't bundle them. Chromatik already has those classes loaded, and
 a second copy inside your jar will collide. Don't change that scope.
 
 **Two versions of the pattern in the browser.**
-Two jars are reachable under `~/Chromatik/Packages`. Check both that folder and
-`Patterns/blinky-dome/` for a stray jar. `mvn`-driven builds always overwrite the
-one stable filename, so this usually means a hand-copied leftover — including one
-from before this folder used symlinks, which `./install.sh` clears out for you.
+Two jars are reachable under `Packages/`. `mvn`-driven builds always overwrite
+the one stable filename, so this means a stray copy — a hand-placed jar, or a
+versioned one left by an older build. Delete everything in `Packages/` except
+`blinky-dome-patterns.jar` and rebuild.
 
 **`error: no JDK found`.**
 `build.sh` checks, in order: `JAVA_HOME`, `/usr/libexec/java_home -v 21+`,
@@ -281,18 +271,17 @@ note under Requirements.
 
 ## Notes on this repo
 
-`link-chromatik.sh` symlinks the repo's *content* folders (`Fixtures/`,
-`Projects/`, `Models/`, …) into `~/Chromatik/`. `Patterns/` is deliberately not
-one of them — it's Java source, which Chromatik has no use for. Only the built
-package folder gets linked, and `install.sh` does that with the same namespacing
-convention.
+The repo root is the Chromatik home directory, so `Fixtures/`, `Projects/`,
+`Models/`, `Packages/` and friends are the real folders Chromatik reads. This
+`Patterns/` folder is not one of them — it's Java source, which Chromatik has no
+use for, and it sits at the root harmlessly because Chromatik ignores
+directories it doesn't recognize. Only the build *output* crosses over, into
+`Packages/`.
 
-`./install.sh` takes the same flags as `link-chromatik.sh` for the same reasons:
+`build.sh` passes any arguments straight through to Maven:
 
 ```bash
-./install.sh --dry-run     # show what would happen
-./install.sh -c /path      # non-default Chromatik home ($CHROMATIK_HOME works too)
-./install.sh -n my-name    # different namespace folder
-./install.sh --force       # replace a symlink pointing somewhere else
-./install.sh --unlink      # uninstall
+./build.sh                 # clean package
+./build.sh -X              # verbose Maven output, for debugging
+./build.sh clean           # remove target/ and our jar from Packages/
 ```
