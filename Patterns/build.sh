@@ -8,9 +8,10 @@
 # Chromatik looks for packages. There is no install step — this is the only
 # command you need to re-run after a code change. Restart Chromatik to pick it up.
 #
-# Requires a JDK 21+. It does NOT require Maven to be installed — if `mvn` isn't
-# on your PATH this script downloads a pinned copy into Patterns/.tools/ once and
-# reuses it from then on.
+# Requires a JDK at least as new as <maven.compiler.release> in pom.xml (21 as of
+# writing); this script reads that property rather than hardcoding the number. It
+# does NOT require Maven to be installed — if `mvn` isn't on your PATH this script
+# downloads a pinned copy into Patterns/.tools/ once and reuses it from then on.
 #
 # Usage:
 #   ./build.sh [extra maven args...]
@@ -29,7 +30,17 @@ MAVEN_VERSION="3.9.9"
 # --- Find a JDK ---------------------------------------------------------------
 # Note: the JVM bundled inside Chromatik.app is a stripped runtime with no
 # compiler, so it can't be used here. You need a real JDK.
-MIN_JDK=21
+#
+# The required version is read out of pom.xml rather than repeated here. That
+# file is what Maven actually compiles against, so deriving the check from it
+# means the two can't drift into disagreeing about which Java this needs.
+MIN_JDK="$(sed -n 's:.*<maven\.compiler\.release>\([0-9][0-9]*\)</maven\.compiler\.release>.*:\1:p' \
+  "$SCRIPT_DIR/pom.xml" | head -1)"
+if [[ -z "$MIN_JDK" ]]; then
+  echo "error: no <maven.compiler.release> found in $SCRIPT_DIR/pom.xml, so the" >&2
+  echo "       required Java version is unknown. Restore that property." >&2
+  exit 1
+fi
 
 # Is this a real JDK, or macOS lying to us?
 #

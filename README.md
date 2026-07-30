@@ -29,6 +29,25 @@ reason.
 If you keep the repo somewhere other than `~/Chromatik`, point Chromatik at it
 with the `--media` flag.
 
+## Toolchain versions
+
+Running Chromatik needs neither of these — the generated fixtures and the built
+pattern jar are both committed. You only need them to *change* things.
+
+| Tool | Version | Pinned in | Enforced by |
+| --- | --- | --- | --- |
+| Python | 3.9+ (tested through 3.13) | [`.python-version`](.python-version) → 3.10.9 | `Generators/constants.py` refuses to load below 3.9 |
+| JDK | 21+ | [`Patterns/pom.xml`](Patterns/pom.xml) → `maven.compiler.release` | `Patterns/build.sh` reads that property and checks the JDK it finds |
+| Maven | 3.9.9 | `Patterns/build.sh` | downloaded into `Patterns/.tools/` if `mvn` isn't on your PATH |
+
+Both versions are single-sourced: `build.sh` derives the Java it demands from
+`pom.xml` rather than repeating the number, and the Python floor lives in one
+constant. Bumping either means editing one place.
+
+Python 3.9 is a real floor, not a guess — the generators use PEP 585 subscripts
+(`Vec = tuple[float, float, float]`) as runtime type aliases, which 3.8 cannot
+evaluate.
+
 ## Layout
 
 | Folder | What's in it |
@@ -44,8 +63,9 @@ with the `--media` flag.
 
 ## Regenerating fixtures
 
-Fixture geometry is generated, not hand-edited. Edit the Python in
-`Generators/`, then:
+Fixture geometry is generated, not hand-edited. Needs Python 3.9+ (see
+[Toolchain versions](#toolchain-versions)). Edit the Python in `Generators/`,
+then:
 
 ```
 python3 Generators/generate_all.py

@@ -2,7 +2,7 @@
 - Try on window machine as sanity check
 
 - Sync with Ben on game plan
-- Add other fixtures if relevant
+- Add other fixtures if relevant (matrix behind acroyoga, front posters, eyes)
 
 - Create Project with a calibration pattern. Same model/fixtures loaded, but only calibration pattern / calibration grid channel group
 - ip + universe mappings

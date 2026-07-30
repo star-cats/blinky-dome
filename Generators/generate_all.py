@@ -12,6 +12,8 @@ dome's centre height to place fixtures).
 Output is identical either way: every generator writes to an absolute path
 built from constants.py, so none of them depend on the working directory.
 
+Needs Python 3.9 or newer (enforced in constants.py, pinned in .python-version).
+
 Usage:
     python3 Generators/generate_all.py
     ./Generators/generate_all.py
@@ -30,6 +32,12 @@ from pathlib import Path
 GENERATORS_DIR = str(Path(__file__).resolve().parent)
 if GENERATORS_DIR not in sys.path:
     sys.path.insert(0, GENERATORS_DIR)
+
+# Imported for its side effect as much as its value: constants.py holds the
+# minimum Python version and refuses to load on anything older. Doing it here,
+# before the generator loop, means a too-old interpreter reports the version
+# problem rather than surfacing as "generate_star.py failed".
+from constants import MIN_PYTHON  # noqa: E402
 
 
 # Order matters in two places: generate_harness_point_sizes rewrites the
@@ -66,7 +74,10 @@ def run(module_name: str) -> None:
 
 
 def main() -> int:
-    print(f"Running {len(GENERATORS)} generator(s) with {sys.executable}")
+    version = ".".join(str(part) for part in sys.version_info[:3])
+    minimum = ".".join(str(part) for part in MIN_PYTHON)
+    print(f"Python {version} (>= {minimum} required) at {sys.executable}")
+    print(f"Running {len(GENERATORS)} generator(s)")
     print()
 
     for module_name in GENERATORS:

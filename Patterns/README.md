@@ -43,11 +43,17 @@ would load both, giving you duplicate-class errors.
 ### Requirements
 
 A **JDK 21 or newer**. That's it — `build.sh` downloads its own copy of Maven
-into `Patterns/.tools/` if you don't already have `mvn` on your PATH.
+(3.9.9) into `Patterns/.tools/` if you don't already have `mvn` on your PATH.
 
 ```bash
 brew install openjdk@21
 ```
+
+That 21 has one source of truth: `<maven.compiler.release>` in
+[`pom.xml`](pom.xml), which is what Maven compiles against. `build.sh` reads the
+property instead of hardcoding a number, so the version it demands and the
+version it targets can't drift apart. To move to a newer Java, change that
+property and nothing else.
 
 `build.sh` looks in Homebrew's keg-only location directly, so that's all you need
 — no `/Library/Java` symlink, no PATH changes.

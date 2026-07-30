@@ -8,7 +8,28 @@ sanity checks.
 from __future__ import annotations
 
 import math
+import sys
 from pathlib import Path
+
+
+# Several generators use PEP 585 subscripts ("Vec = tuple[float, float, float]")
+# as module-level type aliases, which are evaluated at run time rather than
+# deferred like annotations are. On 3.8 that means the run gets all the way into
+# a generator and then dies with "'type' object is not subscriptable", naming
+# whichever module it happened to reach first. Fail here instead, where the
+# message can say what is actually wrong. Every generator imports this module
+# before its own aliases are evaluated, so this covers standalone runs too.
+#
+# Verified against 3.9 / 3.10 / 3.11 / 3.12 / 3.13: byte-identical output.
+MIN_PYTHON = (3, 9)
+if sys.version_info < MIN_PYTHON:
+    raise SystemExit(
+        f"error: the fixture generators need Python "
+        f"{MIN_PYTHON[0]}.{MIN_PYTHON[1]} or newer, but this is "
+        f"{'.'.join(str(part) for part in sys.version_info[:3])}.\n"
+        f"       interpreter: {sys.executable}\n"
+        f"       pyenv reads the pin in .python-version at the repo root."
+    )
 
 
 FIXTURES_DIR = Path(__file__).resolve().parents[1] / "Fixtures"
