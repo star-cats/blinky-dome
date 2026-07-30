@@ -1,8 +1,6 @@
-- Port image-pattern refs to jar-bundled resources (see ImageTest.java). Chromatik
-  resolves ImagePattern fileName with Paths.get() against the JVM cwd, not the media
-  folder, so there is no relative path that works — assets now live in Images/ but the
-  refs are still absolute under ~/Chromatik/
 - The front star should be vertical and model config position it with azimuth
+- Make generate all a python thing
+- Make python and jdk version clear and fixtured
 - Try on window machine as sanity check
 
 - Sync with Ben on game plan

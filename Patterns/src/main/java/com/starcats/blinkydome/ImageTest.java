@@ -37,10 +37,12 @@ public class ImageTest extends LXPattern {
    * Resolved relative to this class's package, i.e.
    * com/starcats/blinkydome/eye_of_sauron.jpeg inside the jar.
    *
-   * Note it deliberately does NOT live under a resources/images/ folder:
-   * "images" is one of Chromatik's own media directory names, and a package
-   * importing through the UI would copy that folder out into ~/Chromatik/. Kept
-   * beside the class, it stays unambiguously a code resource.
+   * Note it deliberately does NOT live under a top-level resources folder that
+   * Chromatik treats as package media. Installing a package through the UI
+   * copies jar entries under fixtures/, models/, projects/, scripts/, colors/,
+   * views/, presets/ and data/ out into the media folder; anything named that
+   * way would get unpacked into ~/Chromatik/ behind your back. Kept beside the
+   * class, it stays unambiguously a code resource.
    */
   private static final String IMAGE_RESOURCE = "eye_of_sauron.jpeg";
 

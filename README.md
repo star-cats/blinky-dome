@@ -27,7 +27,7 @@ Chromatik scribbles in the working tree while it runs; `Autosave/`, `Logs/`,
 reason.
 
 If you keep the repo somewhere other than `~/Chromatik`, point Chromatik at it
-with the `--media` flag — but note the caveat about image paths below.
+with the `--media` flag.
 
 ## Layout
 
@@ -69,14 +69,29 @@ Chromatik scans — so a restart picks up the new build. Requires a JDK 21+; the
 jar is committed, so you only need to build after changing the Java. See
 [Patterns/README.md](Patterns/README.md) for the tutorial.
 
-## Known wart: image paths are absolute
+## Image patterns: use the portable ones
 
-Chromatik's image pattern resolves its `fileName` with `Paths.get()`, against
-the JVM's working directory rather than the media folder — there is no relative
-form that works. The image references in the project files are therefore
-absolute paths under `~/Chromatik/Images/`, which only resolve if you cloned to
-`~/Chromatik` under a home directory of the same name.
+Chromatik's stock image patterns load through `new File(fileName)`, resolved
+against the JVM's working directory rather than the media folder — so there is
+no relative form that works, and a saved project pins itself to one clone
+location. Ours used to hold absolute paths under `~/Chromatik/Images/`, which
+only resolved on a machine that had cloned to exactly that spot.
 
-The durable fix is to ship images as classpath resources inside the pattern jar,
-the way [`Patterns/src/main/java/com/starcats/blinkydome/ImageTest.java`](Patterns/src/main/java/com/starcats/blinkydome/ImageTest.java)
-already does. Patterns using bundled images have no path to break.
+The 2026 projects instead use **Image (Portable)** and **Slideshow (Portable)**
+from the Blinky Dome package. They subclass the built-ins — same projection,
+same GIF and slideshow controls, same device UI — and override only
+serialization: a file under the media root is stored as `Images/foo.png` and
+resolved against whatever the media root is on the machine loading it. Paths
+outside the media root are left absolute, since they were never portable
+anyway. See [`MediaPath.java`](Patterns/src/main/java/com/starcats/blinkydome/MediaPath.java).
+
+**When adding an image pattern, reach for the Portable variants**, not the stock
+ones — the stock ones will happily save an absolute path that breaks on every
+other machine. Keep the image file itself in `Images/` so it travels with the
+clone.
+
+A third option, for an image that belongs to a pattern rather than to a show:
+ship it as a classpath resource inside the jar, the way
+[`ImageTest.java`](Patterns/src/main/java/com/starcats/blinkydome/ImageTest.java)
+does. Nothing to install and no path to break, but it only works from a pattern
+we wrote — the built-ins need a real file on disk.
