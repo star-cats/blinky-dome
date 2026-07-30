@@ -221,13 +221,39 @@ MODEL = {
     "ears": {
         "tilt_degrees": 35.0,
     },
-    # The V3 dome cable harness (Fixtures/V3DomeHarness.lxf) is a whole second
-    # dome, not part of the cat, so it is parked off to the side on +X far
-    # enough that its own 3.5 m radius clears the ears and waterfall.
-    # ips are the last octet of each junction box on 192.168.123.x, J1-J5.
-    "v3_harness": {
-        "x_offset_m": 9.0,
-        "ips": [11, 12, 13, 14, 15],
+    # The V3 dome is a whole second dome, not part of the cat, so it is parked
+    # off to the side on +X far enough that its own 3.5 m radius clears the
+    # ears and waterfall. Its LED harness (V3DomeHarness.lxf) and its scaffold
+    # mesh (v3_dome_model.lxf) are one physical structure, so they share
+    # "placement" and move together; only the mesh's cosmetic knobs differ.
+    "v3_dome": {
+        "placement": {
+            "x_offset_m": 9.0,
+            "y_offset_m": 0.0,
+            "z_offset_m": 0.0,
+            "yaw_degrees": 0.0,
+            "pitch_degrees": 0.0,
+            "roll_degrees": 0.0,
+        },
+        # ips are the last octet of each junction box on 192.168.123.x, J1-J5.
+        "harness": {
+            "ips": [11, 12, 13, 14, 15],
+        },
+        # v3_dome_model.obj is the same 3V 5/9 dome as the harness (75
+        # triangles, 23 ft diameter) but exported in feet with its origin on
+        # the base ring, where the harness puts its origin at the sphere
+        # centre. These three knobs are visual-alignment only -- they register
+        # the mesh struts against the LED triangles and never move an LED:
+        #   scale            feet -> scene units (0.3048 m/ft * scene_scale)
+        #   y_offset_m       drop the base-ring origin onto the sphere centre,
+        #                    which sits 2.190 ft up in the .obj's own frame
+        #   yaw_phase_degrees  spin the mesh to line its struts up with the
+        #                    LED triangles (the dome is 72-degree symmetric)
+        "model": {
+            "scale": 3.048,
+            "y_offset_m": 0,
+            "yaw_phase_degrees": 0.0,
+        },
     },
     # Hand-imported dome scaffold mesh (Fixtures/dome_model.obj): raw export
     # units, so it gets its own scale and orientation instead of scene_scale.

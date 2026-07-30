@@ -31,6 +31,7 @@ generators=(
   generate_waterfall.py
   generate_harness_point_sizes.py
   generate_dome_eye.py
+  generate_v3_dome_model.py
   generate_full_model.py
 )
 

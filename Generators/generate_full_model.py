@@ -14,7 +14,9 @@ Assembles every fixture into one Chromatik model, positioned in scene units
   - The two CatEars sit atop the dome, spread left/right, leaning outward by
     a configurable tilt angle.
   - The V3 dome cable harness is a separate dome of its own, so it is parked
-    beside the cat on the +X axis rather than overlapping it.
+    beside the cat on the +X axis rather than overlapping it. Its scaffold
+    mesh shares that placement (one physical structure) and adds only a
+    cosmetic scale and yaw phase of its own.
 
 All placement knobs live in constants.MODEL.
 """
@@ -261,22 +263,62 @@ def dome_eye_fixtures(next_id) -> list[dict]:
     ]
 
 
+def v3_dome_placement() -> dict:
+    """Shared transform for the V3 dome's LED harness and its scaffold mesh.
+
+    They are one physical structure, so both fixtures are placed from this
+    single set of knobs and translate/rotate together.
+    """
+    placement = MODEL["v3_dome"]["placement"]
+    return {
+        "x": placement["x_offset_m"] * SCENE_SCALE,
+        "y": placement["y_offset_m"] * SCENE_SCALE,
+        "z": placement["z_offset_m"] * SCENE_SCALE,
+        "yaw": placement["yaw_degrees"],
+        "pitch": placement["pitch_degrees"],
+        "roll": placement["roll_degrees"],
+    }
+
+
 def v3_harness_fixture(next_id) -> dict:
     """The V3 cable harness dome, parked beside the cat on the +X axis.
 
     Its geometry is a full 3.5 m dome centred on its own origin, so it is
     offset far enough out that nothing on the cat overlaps it.
     """
-    harness = MODEL["v3_harness"]
+    harness = MODEL["v3_dome"]["harness"]
     return make_fixture(
         next_id(),
         "V3 Dome Cable Harness",
         "blinky-dome/V3DomeHarness",
-        x=harness["x_offset_m"] * SCENE_SCALE,
+        **v3_dome_placement(),
         tags="v3-harness",
         json_parameters={
             f"ipJ{index + 1}": ip for index, ip in enumerate(harness["ips"])
         },
+    )
+
+
+def v3_dome_model_fixture(next_id) -> dict:
+    """LED-less UI mesh of the V3 dome scaffold, riding the harness placement.
+
+    Takes the shared V3 placement so it stays locked to the harness, then
+    layers on its own scale, height nudge and yaw phase. Those three are
+    cosmetic: they line the mesh struts up with the LED triangles without
+    moving any LEDs. LXFixture translates before it scales, so the nudge is
+    in scene units and stays put if the mesh scale is retuned.
+    """
+    mesh = MODEL["v3_dome"]["model"]
+    placement = v3_dome_placement()
+    placement["y"] += mesh["y_offset_m"] * SCENE_SCALE
+    placement["yaw"] += mesh["yaw_phase_degrees"]
+    return make_fixture(
+        next_id(),
+        "V3 Dome Model",
+        "blinky-dome/v3_dome_model",
+        **placement,
+        scale=mesh["scale"],
+        tags="v3-harness",
     )
 
 
@@ -312,6 +354,7 @@ def build_model() -> dict:
         waterfall_fixture(next_id),
         dome_model_fixture(next_id),
         v3_harness_fixture(next_id),
+        v3_dome_model_fixture(next_id),
     ]
 
     return {
