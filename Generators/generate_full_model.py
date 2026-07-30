@@ -7,9 +7,9 @@ Assembles every fixture into one Chromatik model, positioned in scene units
 
   - The Waterfall carries the dome in its own geometry, so its instance sits
     at the origin.
-  - The StarEye grouping (four co-located stars rolled into a pinwheel) is
-    placed tangent to the dome surface at the front (+Z), at a configurable
-    elevation above the horizon.
+  - The StarEye grouping (four co-located stars rolled into a pinwheel) stands
+    upright against the dome, resting on its bottom tip at a configurable
+    bearing and angle above the horizon.
   - The two CatEars sit atop the dome, spread left/right, leaning outward by
     a configurable tilt angle.
   - The V3 dome cable harness is a separate dome of its own, so it is parked
@@ -25,7 +25,7 @@ from __future__ import annotations
 import json
 import math
 
-from constants import MODEL, MODELS_DIR, WATERFALL
+from constants import MODEL, MODELS_DIR, STAR, WATERFALL
 from generate_v3_dome_model import centre_height_m as v3_dome_centre_height_m
 
 OUTPUT_PATH = MODELS_DIR / MODEL["output_file"]
@@ -149,13 +149,20 @@ def make_view_engine() -> dict:
 
 
 def star_fixtures(next_id) -> list[dict]:
-    """The co-located StarEye pinwheel, tangent to the dome front surface."""
+    """The co-located StarEye pinwheel, standing upright against the dome."""
     stars = MODEL["stars"]
     elevation = math.radians(stars["elevation_degrees"])
     azimuth = math.radians(stars["azimuth_degrees"])
 
+    # Standing upright, the star meets the dome at its bottom tip rather than
+    # at its centre, so the configured angles locate that contact point and the
+    # centre rides one radius above it. The radius is the star's roll-invariant
+    # bounding radius (see constants.star_tip_ratio), which is what keeps the
+    # four differently-rolled stars co-located and all of them clear of the
+    # surface instead of only the one whose arm happens to point down.
+    star_radius_scene = STAR["geometry"]["radius_m"] * SCENE_SCALE
     x = DOME_RADIUS_SCENE * math.sin(azimuth) * math.cos(elevation)
-    y = DOME_RADIUS_SCENE * math.sin(elevation)
+    y = DOME_RADIUS_SCENE * math.sin(elevation) + star_radius_scene
     z = DOME_RADIUS_SCENE * math.cos(azimuth) * math.cos(elevation)
 
     return [
@@ -166,9 +173,10 @@ def star_fixtures(next_id) -> list[dict]:
             x=x,
             y=y,
             z=z,
+            # Yaw alone: the star turns to face out along its bearing and stays
+            # vertical. Pitching it onto the dome normal is exactly what we no
+            # longer want, so there is deliberately no pitch here.
             yaw=stars["azimuth_degrees"],
-            # Tip the star plane's +Z normal up to the dome surface normal.
-            pitch=-stars["elevation_degrees"],
             roll=instance["roll_degrees"],
             tags="star",
             json_parameters={

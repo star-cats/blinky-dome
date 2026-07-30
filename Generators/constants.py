@@ -7,6 +7,7 @@ sanity checks.
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 
 
@@ -87,17 +88,59 @@ for profile in ("long", "short"):
     strip["led_spacing_m"] = led_spacing_m(strip["leds_per_strip"], strip["length_m"])
 
 
+def star_tip_ratio(shape: dict, length_ratio: float) -> float:
+    """Distance to the furthest LED, as a multiple of the vertex-circle radius.
+
+    Each strip runs a little past the vertex it aims at -- 2.0 against a chord
+    of 1.902 -- so what bounds the star is its arm ends, not the circle the
+    vertices sit on. All five overshoot equally, which makes this radius the
+    same no matter how the star is rolled; the model relies on that when it
+    stands the pinwheel on the dome.
+
+    length_ratio is how far the LEDs themselves reach, which is short of the
+    strip end (see reach_ratio below). Measuring to the strip end instead would
+    describe a star bigger than the one that lights up, and leave it hanging
+    above whatever it is meant to be resting on.
+    """
+    length = length_ratio
+    # The first LED of each arm sits on its vertex, which is on the unit circle
+    # by construction, so that is the floor.
+    extent = 1.0
+    for vertex_degrees, segment_degrees in zip(
+        shape["vertex_angles_degrees"], shape["segment_angles_degrees"]
+    ):
+        vertex = math.radians(vertex_degrees)
+        segment = math.radians(segment_degrees)
+        # Distance from the centre is convex along a straight run, so the
+        # maximum is at one end or the other -- no need to walk the LEDs.
+        extent = max(
+            extent,
+            math.hypot(
+                math.cos(vertex) + math.cos(segment) * length,
+                math.sin(vertex) + math.sin(segment) * length,
+            ),
+        )
+    return extent
+
+
 STAR = {
     "output_file": "StarEye.lxf",
     "coordinate_system": (
         "Y-up right-handed, origin at star centre, units metres"
     ),
     "geometry": {
-        # Derived from Fixtures/Star.lxf: vertex coordinates lie on radius 1,
-        # and each strip spans 2 fixture units.
-        "outer_radius_m": 1.0,
-        "strip_length_m": 2.0,
+        # The one physical dimension of the star: how far it measures across at
+        # its widest, tip to opposite tip. Every other length below is derived
+        # from it, so this is the only knob to touch when the star resizes.
+        "diameter_ft": 4.2,
         "points": 5,
+        # Pentagram construction, ported from Fixtures/Star.lxf. The vertices
+        # sit on a unit circle in this order (top, lower-right, upper-left,
+        # upper-right, lower-left) and a strip leaves each one on the matching
+        # bearing. Unitless -- these describe the shape, diameter_ft the size.
+        "vertex_angles_degrees": [90.0, -54.0, 162.0, 18.0, -126.0],
+        "segment_angles_degrees": [-72.0, 144.0, 0.0, 216.0, 72.0],
+        "strip_length_ratio": 2.0,
     },
     "leds": {
         # Derived from Projects/Blinkydome2026.lxp Star jsonParameters.
@@ -106,6 +149,22 @@ STAR = {
         "strip_count": 5,
     },
 }
+# How far along an arm the lit pixels actually get. Spacing splits the strip
+# into leds+1 gaps with the first LED on the vertex, so the last one stops two
+# gaps short of the strip end.
+STAR["leds"]["reach_ratio"] = STAR["geometry"]["strip_length_ratio"] * (
+    (STAR["leds"]["leds_per_strip"] - 1) / (STAR["leds"]["leds_per_strip"] + 1)
+)
+# radius_m is the half-width the model stands the star on, measured to the
+# outermost LED; outer_radius_m is the vertex circle the fixture is drawn from,
+# backed out of it so the lit star measures diameter_ft tip to tip.
+STAR["geometry"]["radius_m"] = STAR["geometry"]["diameter_ft"] * FT_TO_M / 2
+STAR["geometry"]["outer_radius_m"] = STAR["geometry"]["radius_m"] / star_tip_ratio(
+    STAR["geometry"], STAR["leds"]["reach_ratio"]
+)
+STAR["geometry"]["strip_length_m"] = (
+    STAR["geometry"]["outer_radius_m"] * STAR["geometry"]["strip_length_ratio"]
+)
 STAR["leds"]["leds_per_cm"] = leds_per_cm(
     STAR["leds"]["leds_per_strip"], STAR["geometry"]["strip_length_m"]
 )
@@ -171,7 +230,7 @@ DOME_EYE = {
     "triangles_per_row": 8,
     "rows": 2,
     # Height of the eye centre above the horizon, on the dome surface.
-    "elevation_degrees": 22.5,
+    "elevation_degrees": 10.0,
 }
 
 
@@ -238,11 +297,14 @@ MODEL = {
         ],
     },
     # The star grouping is four co-located StarEyes rolled ~15 degrees apart
-    # (a stacked pinwheel), placed tangent to the dome surface on the front
-    # (+Z) at elevation_degrees above the horizon.
+    # (a stacked pinwheel). The stars stand upright rather than lying flat on
+    # the dome, so they are positioned by where their bottom tip rests against
+    # the surface: elevation_degrees is that contact point's angle up from the
+    # horizontal, azimuth_degrees its bearing around the dome (0 = front, +Z).
+    # The star then hangs vertically from there, facing out along the bearing.
     "stars": {
         "host": "192.168.1.50",
-        "elevation_degrees": 35.0,
+        "elevation_degrees": 31.0,
         "azimuth_degrees": 0.0,
         "instances": [
             {"label": "Star 1", "roll_degrees": 142.0, "universe": 7},

@@ -19,9 +19,7 @@ def rounded_coord(value: float) -> float:
 
 def star_vertices() -> list[tuple[float, float, float]]:
     radius_m = STAR["geometry"]["outer_radius_m"]
-    # Match the existing Star.lxf vertex order: top, lower-right, upper-left,
-    # upper-right, lower-left.
-    angles_degrees = [90, -54, 162, 18, -126]
+    angles_degrees = STAR["geometry"]["vertex_angles_degrees"]
     return [
         (
             radius_m * math.cos(math.radians(angle)),
@@ -60,7 +58,7 @@ def make_strip(
         "label": f"Star Segment {index + 1}",
         "numPoints": led_count,
         "metadata": {
-            "physical_length_m": STAR["geometry"]["strip_length_m"],
+            "physical_length_m": round(STAR["geometry"]["strip_length_m"], 9),
             "leds_per_strip": led_count,
             "led_spacing_m": round(spacing_m, 9),
             "leds_per_cm": round(STAR["leds"]["leds_per_cm"], 9),
@@ -90,8 +88,7 @@ def strip_output(index: int, led_count: int) -> dict:
 
 
 def build_fixture() -> dict:
-    # Roll values are derived from the existing Fixtures/Star.lxf strip rolls.
-    segment_angles_degrees = [-72.0, 144.0, 0.0, 216.0, 72.0]
+    segment_angles_degrees = STAR["geometry"]["segment_angles_degrees"]
     components = [
         make_strip(index, start, angle)
         for index, (start, angle) in enumerate(
@@ -118,9 +115,11 @@ def build_fixture() -> dict:
         },
         "metadata": {
             "coordinate_system": STAR["coordinate_system"],
-            "outer_radius_m": STAR["geometry"]["outer_radius_m"],
+            "diameter_ft": STAR["geometry"]["diameter_ft"],
+            "diameter_m": round(STAR["geometry"]["radius_m"] * 2, 9),
+            "outer_radius_m": round(STAR["geometry"]["outer_radius_m"], 9),
             "strip_count": STAR["leds"]["strip_count"],
-            "strip_length_m": STAR["geometry"]["strip_length_m"],
+            "strip_length_m": round(STAR["geometry"]["strip_length_m"], 9),
             "leds_per_strip": STAR["leds"]["leds_per_strip"],
             "overlap_leds": STAR["leds"]["overlap_leds"],
             "leds_per_cm": round(STAR["leds"]["leds_per_cm"], 9),
