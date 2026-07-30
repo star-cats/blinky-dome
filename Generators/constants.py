@@ -179,7 +179,7 @@ DOME_EYE = {
 # fixture geometry is metres, and every instance is placed at scene_scale, so
 # scene units = metres * scene_scale (matching the existing project files).
 MODEL = {
-    "output_file": "Blinkydome2026.lxm",
+    "output_file": "full_camp_model_2026.lxm",
     "lx_version": "1.2.0",
     "scene_scale": 10.0,
     # Dome-surface harness arcs: identical groups of BlinkyH0-H3 yawed around
@@ -220,6 +220,14 @@ MODEL = {
     # down the dome surface by the same angle.
     "ears": {
         "tilt_degrees": 35.0,
+    },
+    # The V3 dome cable harness (Fixtures/V3DomeHarness.lxf) is a whole second
+    # dome, not part of the cat, so it is parked off to the side on +X far
+    # enough that its own 3.5 m radius clears the ears and waterfall.
+    # ips are the last octet of each junction box on 192.168.123.x, J1-J5.
+    "v3_harness": {
+        "x_offset_m": 9.0,
+        "ips": [11, 12, 13, 14, 15],
     },
     # Hand-imported dome scaffold mesh (Fixtures/dome_model.obj): raw export
     # units, so it gets its own scale and orientation instead of scene_scale.

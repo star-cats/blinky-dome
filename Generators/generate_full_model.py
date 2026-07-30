@@ -13,6 +13,8 @@ Assembles every fixture into one Chromatik model, positioned in scene units
     elevation above the horizon.
   - The two CatEars sit atop the dome, spread left/right, leaning outward by
     a configurable tilt angle.
+  - The V3 dome cable harness is a separate dome of its own, so it is parked
+    beside the cat on the +X axis rather than overlapping it.
 
 All placement knobs live in constants.MODEL.
 """
@@ -41,6 +43,7 @@ MODEL_VIEWS = [
     {"label": "Third Eye", "selector": "star", "modulationColor": 7},
     {"label": "Ears", "selector": "ears", "modulationColor": 3},
     {"label": "Waterfall", "selector": "waterfall", "modulationColor": 5},
+    {"label": "V3 Harness", "selector": "v3-harness", "modulationColor": 1},
 ]
 
 
@@ -258,6 +261,25 @@ def dome_eye_fixtures(next_id) -> list[dict]:
     ]
 
 
+def v3_harness_fixture(next_id) -> dict:
+    """The V3 cable harness dome, parked beside the cat on the +X axis.
+
+    Its geometry is a full 3.5 m dome centred on its own origin, so it is
+    offset far enough out that nothing on the cat overlaps it.
+    """
+    harness = MODEL["v3_harness"]
+    return make_fixture(
+        next_id(),
+        "V3 Dome Cable Harness",
+        "blinky-dome/V3DomeHarness",
+        x=harness["x_offset_m"] * SCENE_SCALE,
+        tags="v3-harness",
+        json_parameters={
+            f"ipJ{index + 1}": ip for index, ip in enumerate(harness["ips"])
+        },
+    )
+
+
 def dome_model_fixture(next_id) -> dict:
     """LED-less UI mesh of the dome scaffold (hand-imported .obj).
 
@@ -289,6 +311,7 @@ def build_model() -> dict:
         *ear_fixtures(next_id),
         waterfall_fixture(next_id),
         dome_model_fixture(next_id),
+        v3_harness_fixture(next_id),
     ]
 
     return {

@@ -119,6 +119,27 @@
             "cueActive": false
           },
           "children": {}
+        },
+        {
+          "id": 2006,
+          "class": "heronarts.lx.structure.view.LXViewDefinition",
+          "internal": {
+            "modulationColor": 1,
+            "modulationControlsExpanded": true,
+            "modulationsExpanded": true
+          },
+          "parameters": {
+            "label": "V3 Harness",
+            "enabled": true,
+            "selector": "v3-harness",
+            "normalization": 0,
+            "normalization/name": "RELATIVE",
+            "orientation": 0,
+            "orientation/name": "GLOBAL",
+            "priority": true,
+            "cueActive": false
+          },
+          "children": {}
         }
       ]
     }
@@ -855,6 +876,43 @@
         "solo": false,
         "tags": "dome-cover",
         "fixtureType": "blinky-dome/dome_model"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "blinky-dome/V3DomeHarness",
+      "jsonParameters": {
+        "ipJ1": 11,
+        "ipJ2": 12,
+        "ipJ3": 13,
+        "ipJ4": 14,
+        "ipJ5": 15
+      },
+      "id": 1023,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "V3 Dome Cable Harness",
+        "x": 90.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 10.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": true,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "v3-harness",
+        "fixtureType": "blinky-dome/V3DomeHarness"
       },
       "children": {}
     }
