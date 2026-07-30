@@ -263,6 +263,12 @@ MODEL = {
     # ears and waterfall. Its LED harness (V3DomeHarness.lxf) and its scaffold
     # mesh (v3_dome_model.lxf) are one physical structure, so they share
     # "placement" and move together; only the mesh's cosmetic knobs differ.
+    #
+    # "placement" locates the dome's base ring, so y_offset_m 0 stands it on
+    # the ground and positive values lift the whole dome. The harness measures
+    # from the sphere centre instead, which on a 5/9 dome is above the base, so
+    # generate_full_model.py raises the LEDs by that much rather than sinking
+    # the scaffold below y=0.
     "v3_dome": {
         "placement": {
             "x_offset_m": 9.0,
@@ -276,20 +282,23 @@ MODEL = {
         "harness": {
             "ips": [11, 12, 13, 14, 15],
         },
-        # v3_dome_model.obj is the same 3V 5/9 dome as the harness (75
-        # triangles, 23 ft diameter) but exported in feet with its origin on
-        # the base ring, where the harness puts its origin at the sphere
-        # centre. These three knobs are visual-alignment only -- they register
-        # the mesh struts against the LED triangles and never move an LED:
-        #   scale            feet -> scene units (0.3048 m/ft * scene_scale)
-        #   y_offset_m       drop the base-ring origin onto the sphere centre,
-        #                    which sits 2.190 ft up in the .obj's own frame
-        #   yaw_phase_degrees  spin the mesh to line its struts up with the
-        #                    LED triangles (the dome is 72-degree symmetric)
+        # v3_dome_model.obj is the same 3V 5/9 dome as the harness, generated
+        # off the same hub sphere and in the same units, so it needs no scale
+        # conversion -- only a drop from its base-ring origin onto the sphere
+        # centre the harness is built around, which generate_full_model.py
+        # takes straight from the dome geometry.
+        #
+        # The knobs below are visual trim on top of that, applied only to the
+        # mesh; they never move an LED. Leave them at their neutral values
+        # unless the mesh visibly disagrees with the LED triangles.
+        #   scale_trim         multiplies the derived scale (1.0 = exact)
+        #   y_trim_m           extra height nudge, metres
+        #   yaw_phase_degrees  spins the mesh to line its struts up with the
+        #                      LED triangles (the dome is 72-degree symmetric)
         "model": {
-            "scale": 3.048,
-            "y_offset_m": 0,
-            "yaw_phase_degrees": 0.0,
+            "scale_trim": 1.0,
+            "y_trim_m": 0.0,
+            "yaw_phase_degrees": 36.0,
         },
     },
     # Hand-imported dome scaffold mesh (Fixtures/dome_model.obj): raw export

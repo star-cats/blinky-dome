@@ -27,6 +27,7 @@ import json
 import math
 
 from constants import DOME_EYE, MODEL, MODELS_DIR, WATERFALL
+from generate_v3_dome_model import centre_height_m as v3_dome_centre_height_m
 
 OUTPUT_PATH = MODELS_DIR / MODEL["output_file"]
 
@@ -267,7 +268,9 @@ def v3_dome_placement() -> dict:
     """Shared transform for the V3 dome's LED harness and its scaffold mesh.
 
     They are one physical structure, so both fixtures are placed from this
-    single set of knobs and translate/rotate together.
+    single set of knobs and translate/rotate together. The transform locates
+    the dome's base ring, so a y offset of zero stands it on the ground; the
+    two fixtures then each correct for where their own origin sits.
     """
     placement = MODEL["v3_dome"]["placement"]
     return {
@@ -285,13 +288,20 @@ def v3_harness_fixture(next_id) -> dict:
 
     Its geometry is a full 3.5 m dome centred on its own origin, so it is
     offset far enough out that nothing on the cat overlaps it.
+
+    The harness measures from the dome's sphere centre, which on a 5/9 dome
+    sits above the base ring, so the LEDs are lifted by that much to stand on
+    the shared placement. Raising the lights is what keeps the scaffold out of
+    the ground -- dropping the mesh instead would bury its lower ring.
     """
     harness = MODEL["v3_dome"]["harness"]
+    placement = v3_dome_placement()
+    placement["y"] += v3_dome_centre_height_m() * SCENE_SCALE
     return make_fixture(
         next_id(),
         "V3 Dome Cable Harness",
         "blinky-dome/V3DomeHarness",
-        **v3_dome_placement(),
+        **placement,
         tags="v3-harness",
         json_parameters={
             f"ipJ{index + 1}": ip for index, ip in enumerate(harness["ips"])
@@ -302,22 +312,22 @@ def v3_harness_fixture(next_id) -> dict:
 def v3_dome_model_fixture(next_id) -> dict:
     """LED-less UI mesh of the V3 dome scaffold, riding the harness placement.
 
-    Takes the shared V3 placement so it stays locked to the harness, then
-    layers on its own scale, height nudge and yaw phase. Those three are
-    cosmetic: they line the mesh struts up with the LED triangles without
-    moving any LEDs. LXFixture translates before it scales, so the nudge is
-    in scene units and stays put if the mesh scale is retuned.
+    Takes the shared V3 placement so it stays locked to the harness. The mesh
+    is generated in metres off the same hub sphere as the LED triangles, and
+    its origin is already the base ring, so it sits on the placement as-is --
+    the harness is the one that lifts to meet it. LXFixture translates before
+    it scales, so any trim below is in scene units and survives a scale trim.
     """
     mesh = MODEL["v3_dome"]["model"]
     placement = v3_dome_placement()
-    placement["y"] += mesh["y_offset_m"] * SCENE_SCALE
+    placement["y"] += mesh["y_trim_m"] * SCENE_SCALE
     placement["yaw"] += mesh["yaw_phase_degrees"]
     return make_fixture(
         next_id(),
         "V3 Dome Model",
         "blinky-dome/v3_dome_model",
         **placement,
-        scale=mesh["scale"],
+        scale=SCENE_SCALE * mesh["scale_trim"],
         tags="v3-harness",
     )
 

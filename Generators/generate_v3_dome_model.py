@@ -15,7 +15,7 @@ Deriving the hubs from the icosahedron is the whole point: laying hubs out on
 evenly spaced latitude rings looks similar but is not a geodesic, and gives
 crossing struts and stray pentagons.
 
-Coordinates are in feet, Y up, the base ring centred on the origin at y=0.
+Coordinates are in metres, Y up, the base ring centred on the origin at y=0.
 """
 
 from __future__ import annotations
@@ -25,10 +25,14 @@ import math
 from collections import Counter
 from pathlib import Path
 
-from constants import FIXTURES_DIR
+from constants import FIXTURES_DIR, IN_TO_M, V3_HARNESS
 
 
-DEFAULT_DOME_DIAMETER_FT = 23.0
+# Sized by hub-sphere radius, in metres, shared with the LED harness so the two
+# describe the same dome. Sizing by a "diameter" instead is what pulled them
+# apart: this dome is widest above its base, so a base or width figure implies a
+# different sphere than the one the harness places LEDs on.
+DEFAULT_DOME_RADIUS_M = V3_HARNESS["dome_radius_m"]
 DEFAULT_STRUT_THICKNESS_IN = 1.0
 DEFAULT_OUTPUT_PATH = FIXTURES_DIR / "v3_dome_model.obj"
 
@@ -214,18 +218,40 @@ def valences(hub_count: int, edges: list[Edge]) -> list[int]:
     return counts
 
 
-def place(hubs: list[Vec], dome_diameter_ft: float) -> list[Vec]:
-    """Scale so the widest hub ring spans dome_diameter_ft, and sit it on y=0."""
-    widest = max(math.hypot(x, z) for x, _, z in hubs)
-    scale_factor = (dome_diameter_ft / 2.0) / widest
-    lowest = min(y for _, y, _ in hubs) * scale_factor
+def centre_height_fraction() -> float:
+    """How far the sphere centre sits above the base ring, as a fraction of R.
+
+    The truncation cuts below the equator, so the dome's lowest hubs are under
+    its sphere centre. Anything that has to align this mesh against geometry
+    built around the sphere centre -- the LED harness, the model assembly --
+    needs this number, so it is derived here rather than measured off the .obj.
+    """
+    sphere, triangles = subdivide(*icosahedron(), FREQUENCY)
+    hubs, _ = truncate(sphere, triangles, RINGS_KEPT)
+    return -min(y for _, y, _ in hubs)
+
+
+def centre_height_m(dome_radius_m: float = DEFAULT_DOME_RADIUS_M) -> float:
+    """Height of the sphere centre above the base ring, in metres."""
+    return centre_height_fraction() * dome_radius_m
+
+
+def place(hubs: list[Vec], dome_radius_m: float) -> list[Vec]:
+    """Scale the unit dome to dome_radius_m and sit its lowest hub on y=0.
+
+    The hubs come off a unit sphere, so the radius is the scale factor. Sizing
+    on the sphere -- not on a base or width measurement -- is what keeps this
+    mesh and the LED harness on the same shell.
+    """
+    lowest = min(y for _, y, _ in hubs) * dome_radius_m
     return [
-        (x * scale_factor, y * scale_factor - lowest, z * scale_factor) for x, y, z in hubs
+        (x * dome_radius_m, y * dome_radius_m - lowest, z * dome_radius_m)
+        for x, y, z in hubs
     ]
 
 
-def build_dome(dome_diameter_ft: float) -> tuple[list[Vec], list[Edge], int]:
-    """Hubs (in feet, based at y=0), struts, and the triangle count."""
+def build_dome(dome_radius_m: float) -> tuple[list[Vec], list[Edge], int]:
+    """Hubs (in metres, based at y=0), struts, and the triangle count."""
     sphere, triangles = subdivide(*icosahedron(), FREQUENCY)
     hubs, triangles = truncate(sphere, triangles, RINGS_KEPT)
     struts = edges_of(triangles)
@@ -239,7 +265,7 @@ def build_dome(dome_diameter_ft: float) -> tuple[list[Vec], list[Edge], int]:
             "expected %d / %d / %d / %d" % (*actual, *expected)
         )
 
-    return place(hubs, dome_diameter_ft), struts, len(triangles)
+    return place(hubs, dome_radius_m), struts, len(triangles)
 
 
 def strut_classes(hubs: list[Vec], struts: list[Edge]) -> list[tuple[str, float, int]]:
@@ -253,7 +279,7 @@ def strut_classes(hubs: list[Vec], struts: list[Edge]) -> list[tuple[str, float,
     ]
 
 
-def beam_mesh(start: Vec, end: Vec, thickness_ft: float) -> tuple[list[Vec], list[Face]]:
+def beam_mesh(start: Vec, end: Vec, thickness_m: float) -> tuple[list[Vec], list[Face]]:
     direction = normalize(subtract(end, start))
     up = (0.0, 1.0, 0.0)
     if abs(dot(direction, up)) > 0.96:
@@ -261,7 +287,7 @@ def beam_mesh(start: Vec, end: Vec, thickness_ft: float) -> tuple[list[Vec], lis
 
     side_a = normalize(cross(direction, up))
     side_b = normalize(cross(direction, side_a))
-    half = thickness_ft / 2.0
+    half = thickness_m / 2.0
     offsets = [
         add(scale(side_a, half), scale(side_b, half)),
         add(scale(side_a, -half), scale(side_b, half)),
@@ -281,21 +307,21 @@ def beam_mesh(start: Vec, end: Vec, thickness_ft: float) -> tuple[list[Vec], lis
     return vertices, faces
 
 
-def build_obj(dome_diameter_ft: float, strut_thickness_in: float) -> str:
-    thickness_ft = strut_thickness_in / 12.0
-    if dome_diameter_ft <= 0:
-        raise ValueError("dome diameter must be positive")
+def build_obj(dome_radius_m: float, strut_thickness_in: float) -> str:
+    thickness_m = strut_thickness_in * IN_TO_M
+    if dome_radius_m <= 0:
+        raise ValueError("dome radius must be positive")
     if strut_thickness_in <= 0:
         raise ValueError("strut thickness must be positive")
 
-    hubs, struts, triangle_count = build_dome(dome_diameter_ft)
+    hubs, struts, triangle_count = build_dome(dome_radius_m)
     classes = strut_classes(hubs, struts)
 
     obj_vertices: list[Vec] = []
     obj_faces: list[Face] = []
     for start_index, end_index in struts:
         beam_vertices, beam_faces = beam_mesh(
-            hubs[start_index], hubs[end_index], thickness_ft
+            hubs[start_index], hubs[end_index], thickness_m
         )
         vertex_offset = len(obj_vertices)
         obj_vertices.extend(beam_vertices)
@@ -306,14 +332,15 @@ def build_obj(dome_diameter_ft: float, strut_thickness_in: float) -> str:
 
     lines = [
         "# 3V 5/9 Kruschke-style geodesic dome visualization",
-        f"# dome_diameter_ft {dome_diameter_ft}",
-        f"# dome_height_ft {round(max(y for _, y, _ in hubs), 6)}",
+        f"# dome_radius_m {dome_radius_m}",
+        f"# dome_height_m {round(max(y for _, y, _ in hubs), 6)}",
+        f"# sphere_centre_above_base_m {round(centre_height_m(dome_radius_m), 6)}",
         f"# strut_thickness_in {strut_thickness_in}",
         f"# hubs {len(hubs)}",
         f"# struts {len(struts)}",
         f"# triangles {triangle_count}",
         "# strut_counts "
-        + " ".join(f"{name}={count}@{value:.4f}ft" for name, value, count in classes),
+        + " ".join(f"{name}={count}@{value:.4f}m" for name, value, count in classes),
         f"# pentagonal_hubs {EXPECTED_PENTAGONS}",
         "# material solid_gray 0.55 0.55 0.55",
         "o V3_5_9_Kruschke_Dome",
@@ -333,11 +360,11 @@ def parse_args() -> argparse.Namespace:
         description="Generate a solid gray OBJ of a 3V 5/9 Kruschke-style dome."
     )
     parser.add_argument(
-        "--dome-diameter-ft",
-        "--dome-diameter",
+        "--dome-radius-m",
+        "--dome-radius",
         type=float,
-        default=DEFAULT_DOME_DIAMETER_FT,
-        help="Flat-base dome diameter in feet (default: 23).",
+        default=DEFAULT_DOME_RADIUS_M,
+        help=f"Hub-sphere radius in metres (default: {DEFAULT_DOME_RADIUS_M}).",
     )
     parser.add_argument(
         "--strut-thickness-in",
@@ -361,7 +388,7 @@ def main() -> None:
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(
-        build_obj(args.dome_diameter_ft, args.strut_thickness_in),
+        build_obj(args.dome_radius_m, args.strut_thickness_in),
         encoding="utf-8",
     )
     print(f"Wrote {output_path}")
