@@ -19,48 +19,6 @@
           "id": 2001,
           "class": "heronarts.lx.structure.view.LXViewDefinition",
           "internal": {
-            "modulationColor": 0,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Dome Cover",
-            "enabled": true,
-            "selector": "dome-cover",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        },
-        {
-          "id": 2002,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
-            "modulationColor": 2,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Front Eyes",
-            "enabled": true,
-            "selector": "eyes",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        },
-        {
-          "id": 2003,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
             "modulationColor": 7,
             "modulationControlsExpanded": true,
             "modulationsExpanded": true
@@ -79,7 +37,7 @@
           "children": {}
         },
         {
-          "id": 2004,
+          "id": 2002,
           "class": "heronarts.lx.structure.view.LXViewDefinition",
           "internal": {
             "modulationColor": 3,
@@ -100,7 +58,7 @@
           "children": {}
         },
         {
-          "id": 2005,
+          "id": 2003,
           "class": "heronarts.lx.structure.view.LXViewDefinition",
           "internal": {
             "modulationColor": 5,
@@ -121,7 +79,7 @@
           "children": {}
         },
         {
-          "id": 2006,
+          "id": 2004,
           "class": "heronarts.lx.structure.view.LXViewDefinition",
           "internal": {
             "modulationColor": 1,
@@ -129,7 +87,7 @@
             "modulationsExpanded": true
           },
           "parameters": {
-            "label": "V3 Harness",
+            "label": "Small Dome",
             "enabled": true,
             "selector": "v3-harness",
             "normalization": 0,
@@ -146,420 +104,12 @@
   },
   "fixtures": [
     {
-      "jsonFixtureType": "blinky-dome/BlinkyH0",
-      "jsonParameters": {
-        "ip": 11,
-        "port": 1
-      },
-      "id": 1001,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Astra 1",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH0"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH1",
-      "jsonParameters": {
-        "ip": 11,
-        "port": 2
-      },
-      "id": 1002,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Astra 2",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH1"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH2",
-      "jsonParameters": {
-        "ip": 11,
-        "port": 3
-      },
-      "id": 1003,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Astra 3",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH2"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH3",
-      "jsonParameters": {
-        "ip": 11,
-        "port": 4
-      },
-      "id": 1004,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Astra 4",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 0.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH3"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH0",
-      "jsonParameters": {
-        "ip": 12,
-        "port": 1
-      },
-      "id": 1005,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Dorsa 1",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 72.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH0"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH1",
-      "jsonParameters": {
-        "ip": 12,
-        "port": 2
-      },
-      "id": 1006,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Dorsa 2",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 72.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH1"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH2",
-      "jsonParameters": {
-        "ip": 12,
-        "port": 3
-      },
-      "id": 1007,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Dorsa 3",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 72.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH2"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH3",
-      "jsonParameters": {
-        "ip": 12,
-        "port": 4
-      },
-      "id": 1008,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Dorsa 4",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 72.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH3"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH0",
-      "jsonParameters": {
-        "ip": 15,
-        "port": 1
-      },
-      "id": 1009,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Tholi 1",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 288.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH0"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH1",
-      "jsonParameters": {
-        "ip": 15,
-        "port": 2
-      },
-      "id": 1010,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Tholi 2",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 288.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH1"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH2",
-      "jsonParameters": {
-        "ip": 15,
-        "port": 3
-      },
-      "id": 1011,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Tholi 3",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 288.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH2"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/BlinkyH3",
-      "jsonParameters": {
-        "ip": 15,
-        "port": 4
-      },
-      "id": 1012,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Tholi 4",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 288.0,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "dome-cover",
-        "fixtureType": "blinky-dome/BlinkyH3"
-      },
-      "children": {}
-    },
-    {
       "jsonFixtureType": "blinky-dome/StarEye",
       "jsonParameters": {
         "ip": "192.168.1.50",
         "Universe": 7
       },
-      "id": 1013,
+      "id": 1001,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -593,7 +143,7 @@
         "ip": "192.168.1.50",
         "Universe": 5
       },
-      "id": 1014,
+      "id": 1002,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -627,7 +177,7 @@
         "ip": "192.168.1.50",
         "Universe": 3
       },
-      "id": 1015,
+      "id": 1003,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -661,7 +211,7 @@
         "ip": "192.168.1.50",
         "Universe": 1
       },
-      "id": 1016,
+      "id": 1004,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -690,75 +240,9 @@
       "children": {}
     },
     {
-      "jsonFixtureType": "blinky-dome/DomeEyeL",
-      "jsonParameters": {
-        "ip": 13
-      },
-      "id": 1017,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Eye L",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": 31.791597,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "eyes",
-        "fixtureType": "blinky-dome/DomeEyeL"
-      },
-      "children": {}
-    },
-    {
-      "jsonFixtureType": "blinky-dome/DomeEyeR",
-      "jsonParameters": {
-        "ip": 14
-      },
-      "id": 1018,
-      "class": "heronarts.lx.structure.JsonFixture",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "Eye R",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "yaw": -31.791597,
-        "pitch": 0.0,
-        "roll": 0.0,
-        "scale": 10.0,
-        "selected": false,
-        "deactivate": false,
-        "enabled": true,
-        "brightness": 1.0,
-        "identify": false,
-        "mute": false,
-        "solo": false,
-        "tags": "eyes",
-        "fixtureType": "blinky-dome/DomeEyeR"
-      },
-      "children": {}
-    },
-    {
       "jsonFixtureType": "blinky-dome/CatEar",
       "jsonParameters": {},
-      "id": 1019,
+      "id": 1005,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -789,7 +273,7 @@
     {
       "jsonFixtureType": "blinky-dome/CatEar",
       "jsonParameters": {},
-      "id": 1020,
+      "id": 1006,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -820,7 +304,7 @@
     {
       "jsonFixtureType": "blinky-dome/Waterfall",
       "jsonParameters": {},
-      "id": 1021,
+      "id": 1007,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -851,7 +335,7 @@
     {
       "jsonFixtureType": "blinky-dome/dome_model",
       "jsonParameters": {},
-      "id": 1022,
+      "id": 1008,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -888,7 +372,7 @@
         "ipJ4": 14,
         "ipJ5": 15
       },
-      "id": 1023,
+      "id": 1009,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -919,7 +403,7 @@
     {
       "jsonFixtureType": "blinky-dome/v3_dome_model",
       "jsonParameters": {},
-      "id": 1024,
+      "id": 1010,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,

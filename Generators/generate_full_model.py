@@ -5,9 +5,8 @@ Generate the full Blinkydome model (.lxm) from the generated fixtures.
 Assembles every fixture into one Chromatik model, positioned in scene units
 (metres * MODEL["scene_scale"], matching the existing project files):
 
-  - BlinkyH0-H3 harness arcs and the Waterfall carry the dome in their own
-    geometry, so their instances sit at the origin (five harness groups are
-    yawed 72 degrees apart around the dome).
+  - The Waterfall carries the dome in its own geometry, so its instance sits
+    at the origin.
   - The StarEye grouping (four co-located stars rolled into a pinwheel) is
     placed tangent to the dome surface at the front (+Z), at a configurable
     elevation above the horizon.
@@ -26,7 +25,7 @@ from __future__ import annotations
 import json
 import math
 
-from constants import DOME_EYE, MODEL, MODELS_DIR, WATERFALL
+from constants import MODEL, MODELS_DIR, WATERFALL
 from generate_v3_dome_model import centre_height_m as v3_dome_centre_height_m
 
 OUTPUT_PATH = MODELS_DIR / MODEL["output_file"]
@@ -40,13 +39,14 @@ FIRST_FIXTURE_ID = 1001
 VIEW_ENGINE_ID = 2000
 FIRST_VIEW_ID = 2001
 
+# Selectors match fixture tags, so a view is only worth keeping while something
+# still carries its tag. "dome-cover" was dropped along with the Astra/Dorsa/
+# Tholi harnesses -- the Dome Model mesh still wears the tag but has no LEDs.
 MODEL_VIEWS = [
-    {"label": "Dome Cover", "selector": "dome-cover", "modulationColor": 0},
-    {"label": "Front Eyes", "selector": "eyes", "modulationColor": 2},
     {"label": "Third Eye", "selector": "star", "modulationColor": 7},
     {"label": "Ears", "selector": "ears", "modulationColor": 3},
     {"label": "Waterfall", "selector": "waterfall", "modulationColor": 5},
-    {"label": "V3 Harness", "selector": "v3-harness", "modulationColor": 1},
+    {"label": "Small Dome", "selector": "v3-harness", "modulationColor": 1},
 ]
 
 
@@ -148,24 +148,6 @@ def make_view_engine() -> dict:
     }
 
 
-def harness_fixtures(next_id) -> list[dict]:
-    """Five groups of BlinkyH0-H3, yawed around the dome, origin-centric."""
-    fixtures = []
-    for group in MODEL["harness_groups"]:
-        for port_index in range(4):
-            fixtures.append(
-                make_fixture(
-                    next_id(),
-                    f"{group['name']} {port_index + 1}",
-                    f"blinky-dome/BlinkyH{port_index}",
-                    yaw=group["yaw_degrees"],
-                    tags="dome-cover",
-                    json_parameters={"ip": group["ip"], "port": port_index + 1},
-                )
-            )
-    return fixtures
-
-
 def star_fixtures(next_id) -> list[dict]:
     """The co-located StarEye pinwheel, tangent to the dome front surface."""
     stars = MODEL["stars"]
@@ -234,34 +216,6 @@ def waterfall_fixture(next_id) -> dict:
     return make_fixture(
         next_id(), "Waterfall", "blinky-dome/Waterfall", tags="waterfall"
     )
-
-
-def dome_eye_fixtures(next_id) -> list[dict]:
-    """Mirror-symmetric dome eyes, yawed apart by the configured arc distance.
-
-    The eye fixtures bake the dome surface at azimuth 0, so yawing rotates
-    them along the dome. The yaw angle converts eye_distance_m (arc between
-    eye centres along the latitude circle at the eyes' elevation) to degrees.
-    """
-    eyes = MODEL["eyes"]
-    latitude_radius_m = WATERFALL["dome"]["radius_m"] * math.cos(
-        math.radians(DOME_EYE["elevation_degrees"])
-    )
-    half_yaw = math.degrees(
-        (eyes["eye_distance_m"] / 2.0) / latitude_radius_m
-    )
-
-    return [
-        make_fixture(
-            next_id(),
-            instance["label"],
-            instance["fixture"],
-            yaw=instance["side"] * half_yaw,
-            tags="eyes",
-            json_parameters={"ip": instance["ip"]},
-        )
-        for instance in eyes["instances"]
-    ]
 
 
 def v3_dome_placement() -> dict:
@@ -357,9 +311,7 @@ def build_model() -> dict:
         return next(counter)
 
     fixtures = [
-        *harness_fixtures(next_id),
         *star_fixtures(next_id),
-        *dome_eye_fixtures(next_id),
         *ear_fixtures(next_id),
         waterfall_fixture(next_id),
         dome_model_fixture(next_id),
