@@ -52,7 +52,11 @@ fi
 # That's what we test, and we deliberately test it without executing anything.
 is_jdk() {
   local home="${1:-}"
-  [[ -n "$home" && -x "$home/bin/javac" && -r "$home/release" ]]
+  [[ -n "$home" && -r "$home/release" ]] || return 1
+  # javac under Git Bash on Windows is javac.exe, and bash's file tests do not
+  # append the extension the way PATH lookup does -- checking only "javac" there
+  # rejects every real JDK and reports none installed.
+  [[ -x "$home/bin/javac" || -x "$home/bin/javac.exe" ]]
 }
 
 # Major version, read out of the release file. Handles both the modern scheme

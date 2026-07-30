@@ -4,22 +4,74 @@ StarCats LED dome control software.
 
 ## Setup
 
-1. Install Chromatik from [chromatik.co](https://chromatik.co/download/) and run it
-   once, so it creates `~/Chromatik`.
+Run these commands.
 
-1. Replace that folder with this repo:
+### macOS
 
-   ```
-   mv ~/Chromatik ~/Chromatik.bak
-   git clone https://github.com/star-cats/blinky-dome.git ~/Chromatik
-   ```
+```bash
+# Install Chromatik, then run it once so it creates ~/Chromatik
+open https://chromatik.co/download/
 
-1. Start Chromatik and open `Projects/FullCampLayout2026.lxp`.
+# Replace that folder with this repo
+git clone https://github.com/star-cats/blinky-dome.git ~/Chromatik
+cd ~/Chromatik
 
-That's it — no install script, no symlinks. You don't need a license to run the
-simulator.
+# Python, to regenerate the fixtures
+brew install python@3.11
 
-**This repo *is* the Chromatik home directory.** `Fixtures/`, `Models/`,
+# JDK, to build the custom patterns
+brew install openjdk@21
+
+# Regenerate the fixtures and the model
+python3 Generators/generate_all.py
+
+# Build the pattern jar into Packages/
+cd Patterns && ./build.sh
+```
+
+Start Chromatik and open `Projects/FullCampLayout2026.lxp`.
+
+### Windows
+
+In PowerShell:
+
+```powershell
+# Install Chromatik, then run it once so it creates ~\Chromatik
+start https://chromatik.co/download/
+
+# Replace that folder with this repo
+git clone https://github.com/star-cats/blinky-dome.git ~\Chromatik
+cd ~\Chromatik
+
+# Python, to regenerate the fixtures
+winget install Python.Python.3.11
+
+# JDK, to build the custom patterns
+winget install EclipseAdoptium.Temurin.21.JDK
+
+# Regenerate the fixtures and the model
+python Generators/generate_all.py
+```
+
+Then in Git Bash, which comes with Git for Windows, because `build.sh` needs bash:
+
+```bash
+# Build the pattern jar into Packages/
+cd ~/Chromatik/Patterns && ./build.sh
+```
+
+Start Chromatik and open `Projects/FullCampLayout2026.lxp`.
+
+Windows is not yet verified end to end. Everything above is expected to work,
+but macOS is the tested path.
+
+### Notes
+
+The last two commands are only needed if you intend to change fixture geometry
+or pattern code. The generated fixtures and the built jar are both committed, so
+a fresh clone opens and runs without them, and without a license.
+
+**This repo _is_ the Chromatik home directory.** `Fixtures/`, `Models/`,
 `Projects/`, `Packages/` and friends are the real folders Chromatik reads and
 writes, which is why everything works straight out of a clone. It also means
 Chromatik scribbles in the working tree while it runs; `Autosave/`, `Logs/`,
@@ -32,13 +84,13 @@ with the `--media` flag.
 ## Toolchain versions
 
 Running Chromatik needs neither of these — the generated fixtures and the built
-pattern jar are both committed. You only need them to *change* things.
+pattern jar are both committed. You only need them to _change_ things.
 
-| Tool | Version | Pinned in | Enforced by |
-| --- | --- | --- | --- |
-| Python | 3.9+ (tested through 3.13) | [`.python-version`](.python-version) → 3.10.9 | `Generators/constants.py` refuses to load below 3.9 |
-| JDK | 21+ | [`Patterns/pom.xml`](Patterns/pom.xml) → `maven.compiler.release` | `Patterns/build.sh` reads that property and checks the JDK it finds |
-| Maven | 3.9.9 | `Patterns/build.sh` | downloaded into `Patterns/.tools/` if `mvn` isn't on your PATH |
+| Tool   | Version                    | Pinned in                                                         | Enforced by                                                         |
+| ------ | -------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Python | 3.9+ (tested through 3.13) | [`.python-version`](.python-version) → 3.10.9                     | `Generators/constants.py` refuses to load below 3.9                 |
+| JDK    | 21+                        | [`Patterns/pom.xml`](Patterns/pom.xml) → `maven.compiler.release` | `Patterns/build.sh` reads that property and checks the JDK it finds |
+| Maven  | 3.9.9                      | `Patterns/build.sh`                                               | downloaded into `Patterns/.tools/` if `mvn` isn't on your PATH      |
 
 Both versions are single-sourced: `build.sh` derives the Java it demands from
 `pom.xml` rather than repeating the number, and the Python floor lives in one
@@ -50,16 +102,16 @@ evaluate.
 
 ## Layout
 
-| Folder | What's in it |
-| --- | --- |
-| `Fixtures/` | `.lxf` fixture definitions, most of them generated |
-| `Models/` | `.lxm` model files assembling fixtures into the full camp layout |
-| `Projects/` | `.lxp` project files — start with `FullCampLayout2026.lxp` |
-| `Packages/` | the built pattern jar Chromatik loads |
-| `Images/` | image assets referenced by image patterns |
-| `Data/` | reference photos and other supporting data |
-| `Generators/` | Python that generates the fixtures and models |
-| `Patterns/` | Java source for the custom pattern package |
+| Folder        | What's in it                                                     |
+| ------------- | ---------------------------------------------------------------- |
+| `Fixtures/`   | `.lxf` fixture definitions, most of them generated               |
+| `Models/`     | `.lxm` model files assembling fixtures into the full camp layout |
+| `Projects/`   | `.lxp` project files — start with `FullCampLayout2026.lxp`       |
+| `Packages/`   | the built pattern jar Chromatik loads                            |
+| `Images/`     | image assets referenced by image patterns                        |
+| `Data/`       | reference photos and other supporting data                       |
+| `Generators/` | Python that generates the fixtures and models                    |
+| `Patterns/`   | Java source for the custom pattern package                       |
 
 ## Regenerating fixtures
 

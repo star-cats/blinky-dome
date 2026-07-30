@@ -1,0 +1,5 @@
+# Git for Windows defaults to core.autocrlf=true, which would check build.sh out
+# with CRLF endings. Bash then chokes on the carriage returns with an error that
+# points at the wrong thing entirely ("$'\r': command not found"). Keep shell
+# scripts LF everywhere.
+*.sh text eol=lf
