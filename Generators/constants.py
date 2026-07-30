@@ -175,6 +175,43 @@ DOME_EYE = {
 }
 
 
+# V3 dome cable harness (generate_v3_dome_harness.py). LED triangles sit on the
+# same 3V 5/9 geodesic as generate_v3_dome_model.py, one per face, with their
+# corners on the strut midpoints. Numbering runs ring by ring from the apex
+# down, and by azimuth within a ring; the top 10 of the dome's 14 face rings
+# (5,5,10,10,5,10,5,10,10,5 = 75 faces) carry LEDs and the bottom 4 do not.
+#
+# Only placement is computed here. The wiring below is physical fact about the
+# installed dome -- rewriting it would resequence every pixel and break the
+# patterns and Art-Net mapping already built against this fixture.
+V3_HARNESS = {
+    "output_file": "V3DomeHarness.lxf",
+    "coordinate_system": (
+        "Y-up right-handed, origin at sphere centre (floor level), units metres"
+    ),
+    "dome_radius_m": 3.5,
+    # A physical LED strip: 33 LEDs over 0.575 m. Its span is therefore a touch
+    # shorter than a triangle edge, so each strip starts on its corner and stops
+    # half a pixel short of the next one.
+    "led_triangle_edge_m": 0.575,
+    "leds_per_side": 33,
+    # Art-Net: box IP is 192.168.123.<ipJn>, one harness per port, universes
+    # allocated port*3-3 upward, 170 pixels per universe.
+    "universe_size_px": 170,
+    "boxes": ["J1", "J2", "J3", "J4", "J5"],
+    # box -> harness (port) -> triangle numbers in position order.
+    "wiring": {
+        "J1": [[20, 36, 46, 61], [21, 51, 71, 60], [30, 11, 10, 5], [45, 35, 70]],
+        "J2": [[12, 38, 47, 63], [23, 53, 72, 52], [22, 13, 6, 1], [37, 31, 62]],
+        "J3": [[14, 40, 48, 65], [25, 55, 73, 54], [24, 15, 7, 2], [39, 32, 64]],
+        "J4": [[16, 42, 49, 67], [27, 57, 74, 56], [26, 17, 8, 3], [41, 33, 66]],
+        "J5": [[18, 44, 50, 69], [29, 59, 75, 58], [28, 19, 9, 4], [43, 34, 68]],
+    },
+    # Carried through to the fixture's metadata block verbatim.
+    "junction_hub": {"el": 46.64, "az": 0},
+}
+
+
 # Full-model assembly (generate_full_model.py). Positions are in scene units:
 # fixture geometry is metres, and every instance is placed at scene_scale, so
 # scene units = metres * scene_scale (matching the existing project files).
