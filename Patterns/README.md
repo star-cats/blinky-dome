@@ -82,7 +82,11 @@ Patterns/
 └── src/main/
     ├── java/com/starcats/blinkydome/
     │   ├── SpatialRainbowPattern.java     the demo pattern
-    │   └── ImageTest.java                 projects a jar-bundled image
+    │   ├── ImageTest.java                 projects a jar-bundled image
+    │   ├── BeatTracker.java               shared on-beat clock (a modulator)
+    │   ├── PortableImagePattern.java      image pattern with portable paths
+    │   ├── PortableSlideshowPattern.java  slideshow with portable paths
+    │   └── MediaPath.java                 media-relative path translation
     └── resources/
         ├── lx.package        package metadata Chromatik reads
         └── com/starcats/blinkydome/
@@ -98,6 +102,54 @@ imported through the Chromatik UI (the `mediaDir` field in `lx.package` picks th
 folder name). We keep fixtures in the repo's top-level `Fixtures/` folder
 instead — which Chromatik already reads directly — so bundling them here too
 would just duplicate them.
+
+---
+
+## Beat Tracker
+
+A **modulator**, not a pattern: it produces a shared, steady on-beat clock that
+any number of patterns can hook into, so the whole rig pulses together instead of
+each pattern doing its own audio analysis.
+
+Wiring it up, once per project:
+
+1. Add a **Band Gate** modulator and aim it at the bass (that is Chromatik's own
+   thresholder — it is the thing that decides a kick just happened).
+2. Add a **Beat Tracker** modulator (Blinky Dome category).
+3. Map the Band Gate onto the tracker's **Input** knob.
+4. Map the tracker onto whatever you want moving in time.
+
+The tracker treats each rising edge on `Input` as a *sighting* of a beat,
+averages the gaps between sightings into a tempo, then runs its own clock at that
+tempo and emits the beat from the clock rather than from the gate. That
+indirection is the whole point: a bass gate fires late on a soft kick, twice on a
+sloppy one, and not at all during a breakdown, and anything driven straight off
+it inherits all of that. Driven off the averaged clock, the gate only has to be
+right *on average*.
+
+Four things come out:
+
+| Output | What it is | Use it for |
+| --- | --- | --- |
+| the modulator's value | 0-1 ramp resetting each beat | anything continuous — this is what you get using it as a modulation source |
+| `Beat` | trigger on each beat | anything discrete |
+| `BPM` | tracked tempo | display, or driving other rates |
+| `Conf` | how consistent recent intervals are | deciding how much to trust the beat |
+
+And the knobs that matter: **Thresh** is how far the input must rise to count;
+**Min BPM** sets the tempo range (intervals fold into Min BPM up to twice Min
+BPM, so a gate hitting every eighth note still reports the right tempo); **Avg**
+is the moving-average window, higher being steadier but slower to follow; **Lock**
+is how hard each sighting pulls the clock back into alignment, 0 free-running and
+1 snapping. **Relearn** throws the tempo away and starts over.
+
+Measured against synthetic gates at 128 BPM over 60s runs — a perfect gate, one
+jittering ±20ms, one missing 30% of beats, one firing double-time, one with 25%
+spurious extra hits, and one going silent for 12s — the tracker holds the tempo
+to within 2% and the output stays steady to about one frame. The one thing it
+cannot do is find the downbeat in a gate that fires evenly on every eighth note:
+nothing in that signal distinguishes the beat from the off-beat, so it locks
+steadily onto whichever it saw first.
 
 ---
 

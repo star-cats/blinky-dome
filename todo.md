@@ -1,4 +1,3 @@
-- Make python and jdk version clear and fixtured
 - Try on window machine as sanity check
 
 - Sync with Ben on game plan
