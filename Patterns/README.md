@@ -136,12 +136,24 @@ Four things come out:
 | `BPM` | tracked tempo | display, or driving other rates |
 | `Conf` | how consistent recent intervals are | deciding how much to trust the beat |
 
-And the knobs that matter: **Thresh** is how far the input must rise to count;
-**Min BPM** sets the tempo range (intervals fold into Min BPM up to twice Min
-BPM, so a gate hitting every eighth note still reports the right tempo); **Avg**
-is the moving-average window, higher being steadier but slower to follow; **Lock**
-is how hard each sighting pulls the clock back into alignment, 0 free-running and
-1 snapping. **Relearn** throws the tempo away and starts over.
+The top row is what you touch while the music plays: **Input** (the mapping
+target), **Thresh** for how far the input must rise to count, **Lock** for how
+hard each sighting pulls the clock back into alignment (0 free-runs, 1 snaps),
+and **Shift**.
+
+**Shift** slides the emitted beat off the audio, ±200ms, positive being later.
+Use it for the lag between a trigger firing and light actually reaching an eye —
+or to deliberately push a pattern ahead of the kick. It is applied at the output
+only: the tracking phase stays locked to what the gate heard, so turning the knob
+moves where beats land without disturbing the lock or the BPM estimate. Shifts
+larger than one beat wrap, which only comes up above 300 BPM. The phase ramp
+moves with the trigger, so both outputs always describe the same beat.
+
+The second row is set-and-forget: **Min BPM** sets the tempo range (intervals
+fold into Min BPM up to twice Min BPM, so a gate hitting every eighth note still
+reports the right tempo), **Avg** is the moving-average window — higher is
+steadier but slower to follow — and **Relearn** throws the tempo away and starts
+over.
 
 ### The chart
 
@@ -150,8 +162,11 @@ gate sightings as circles, predicted beats as vertical lines, scrolling right to
 left over a 3-second window (`WINDOW_SECONDS` in `UIBeatTracker.java`). Current
 BPM sits top-left, confidence top-right.
 
-Read it while tuning **Thresh**. Circles sitting on the lines means it is
-locked. Circles scattered between lines means the gate is firing on things that
+The lines are where beats are *emitted*, so with Shift dialled in they sit off
+the circles by exactly that much — which is how you see the offset you asked for.
+
+Read it while tuning **Thresh** (at Shift 0). Circles sitting on the lines means
+it is locked. Circles scattered between lines means the gate is firing on things that
 are not the beat — raise the threshold. No circles at all means it never fires —
 lower it. The circles are logged before any filtering, so hits the tracker
 decides to *reject* still show up; watching one sit off the grid while the lines

@@ -9,6 +9,7 @@ import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.TriggerParameter;
 
 /**
@@ -138,6 +139,12 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     new CompoundParameter("Lock", .25, 0, 1)
     .setDescription("How hard each beat pulls the clock back into alignment; 0 free-runs, 1 snaps");
 
+  public final CompoundParameter shift =
+    (CompoundParameter) new CompoundParameter("Shift", 0, -200, 200)
+    .setUnits(LXParameter.Units.MILLISECONDS)
+    .setPolarity(LXParameter.Polarity.BIPOLAR)
+    .setDescription("Slide the emitted beat later (+) or earlier (-) than the audio, in milliseconds");
+
   public final BoundedParameter bpm =
     new BoundedParameter("BPM", 0, 0, 400)
     .setDescription("Tracked tempo (output)");
@@ -192,6 +199,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     addParameter("minBpm", this.minBpm);
     addParameter("window", this.window);
     addParameter("lock", this.lock);
+    addParameter("shift", this.shift);
     addParameter("bpm", this.bpm);
     addParameter("confidence", this.confidence);
     addParameter("beat", this.beat);
@@ -210,7 +218,29 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     }
     advanceClock(deltaMs);
 
-    return this.phase;
+    // The shifted phase, not the tracking one, so the ramp and the trigger
+    // always describe the same beat. Downstream sees one coherent output.
+    return outputPhase();
+  }
+
+  /**
+   * Where the emitted beat sits, as opposed to where the audio beat sits.
+   *
+   * Shift is applied here at the output rather than folded into {@link #phase},
+   * which stays locked to what the gate actually heard. Keeping the two apart
+   * means the tracking maths -- correction, dropout resync, the whole averaging
+   * loop -- never has to know the knob exists, and moving the knob cannot
+   * disturb the lock.
+   *
+   * Positive shift emits later: at +100ms on a 500ms beat the output wraps a
+   * fifth of a beat after the audio does.
+   */
+  private double outputPhase() {
+    if (this.periodMs <= 0) {
+      return this.phase;
+    }
+    double shifted = this.phase - this.shift.getValue() / this.periodMs;
+    return shifted - Math.floor(shifted);
   }
 
   /**
@@ -343,10 +373,30 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     return this.intervalCount >= MIN_SAMPLES && this.periodMs > 0;
   }
 
-  /** Hard alignment, for when there is no tempo to be gentle about. */
+  /**
+   * Hard alignment, for when there is no tempo to be gentle about.
+   *
+   * Only emits when there is no tempo yet. In that state sightings are the only
+   * source of beats, and a shift measured in milliseconds has no beat to be
+   * relative to, so they go out raw. Once the clock is running it owns the
+   * output: firing here too would put an unshifted beat in the middle of a
+   * shifted stream every time a resync happened.
+   */
   private void syncPhase() {
     this.phase = 0;
-    fire();
+    if (!hasTempo()) {
+      fire();
+      return;
+    }
+    // The snap puts the audio beat at this instant; the emitted beat is that
+    // plus the shift. A positive shift is still ahead of us, and the clock will
+    // arrive there on its own in exactly that many milliseconds. A negative one
+    // already went by. Zero means it is now -- and the clock, having just been
+    // set to the top of a beat, would take a whole period to work that out,
+    // swallowing a beat on every resync.
+    if (outputPhase() <= 0) {
+      fire();
+    }
   }
 
   /**
@@ -385,9 +435,19 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
       // Until the tempo settles, sightings themselves are the only trigger.
       return;
     }
-    this.phase += deltaMs / this.periodMs;
-    while (this.phase >= 1) {
-      this.phase -= 1;
+    double advance = deltaMs / this.periodMs;
+
+    // Read the output position before advancing, then move both by the same
+    // amount. Because the offset is sampled once per frame, turning the Shift
+    // knob relocates the next beat rather than manufacturing a spurious one --
+    // which is what comparing raw output phase between frames would do.
+    double output = outputPhase() + advance;
+
+    this.phase += advance;
+    this.phase -= Math.floor(this.phase);
+
+    while (output >= 1) {
+      output -= 1;
       fire();
     }
   }

@@ -3,6 +3,7 @@ package com.starcats.blinkydome;
 import heronarts.glx.ui.UI;
 import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
+import heronarts.glx.ui.component.UIKnob;
 import heronarts.glx.ui.vg.VGraphics;
 import heronarts.lx.studio.LXStudio;
 import heronarts.lx.studio.ui.modulation.UIModulator;
@@ -35,7 +36,12 @@ public class UIBeatTracker implements UIModulatorControls<BeatTracker> {
   private static final float WINDOW_SECONDS = 3;
 
   private static final float CHART_HEIGHT = 46;
-  private static final float CONTROL_ROW_HEIGHT = 46;
+
+  /** Knobs carry their own labels, so the row is exactly one knob tall. */
+  private static final float KNOB_ROW_HEIGHT = UIKnob.HEIGHT;
+
+  /** A value box stacked over a label. */
+  private static final float CONFIG_ROW_HEIGHT = 34;
 
   /** Radius of a sighting dot. */
   private static final float BEAT_DOT_RADIUS = 2.5f;
@@ -45,18 +51,23 @@ public class UIBeatTracker implements UIModulatorControls<BeatTracker> {
     uiModulator.setLayout(UI2dContainer.Layout.VERTICAL);
     uiModulator.setChildSpacing(4);
 
-    UI2dContainer controls = UI2dContainer.newHorizontalContainer(CONTROL_ROW_HEIGHT, 4);
-    addColumn(controls, newKnob(tracker.threshold));
-    addColumn(controls, newKnob(tracker.lock));
-    addColumn(controls,
-      newDoubleBox(tracker.minBpm),
-      controlLabel(ui, "Min BPM"),
-      newIntegerBox(tracker.window),
-      controlLabel(ui, "Avg"));
-    addColumn(controls,
-      newButton(tracker.relearn).setTriggerable(true),
-      controlLabel(ui, "Relearn"));
-    controls.addToContainer(uiModulator);
+    // Row one is what you touch while the music is playing. Input comes first
+    // because it is the one control you wire rather than dial: it is a
+    // modulation target, and the gate gets mapped onto it. Shift goes last,
+    // next to the chart it is dialled against.
+    UI2dContainer performRow = UI2dContainer.newHorizontalContainer(KNOB_ROW_HEIGHT, 4);
+    addColumn(performRow, newKnob(tracker.input));
+    addColumn(performRow, newKnob(tracker.threshold));
+    addColumn(performRow, newKnob(tracker.lock));
+    addColumn(performRow, newKnob(tracker.shift));
+    performRow.addToContainer(uiModulator);
+
+    // Row two is set-and-forget: the tempo range and how much history to average.
+    UI2dContainer configRow = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
+    addColumn(configRow, newDoubleBox(tracker.minBpm), controlLabel(ui, "Min BPM"));
+    addColumn(configRow, newIntegerBox(tracker.window), controlLabel(ui, "Avg"));
+    addColumn(configRow, newButton(tracker.relearn).setTriggerable(true), controlLabel(ui, "Relearn"));
+    configRow.addToContainer(uiModulator);
 
     new UIBeatChart(ui, tracker, uiModulator.getContentWidth(), CHART_HEIGHT)
       .addToContainer(uiModulator);
