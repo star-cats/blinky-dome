@@ -105,6 +105,13 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   private static final int MAX_WINDOW = 32;
 
   /**
+   * Sightings retained purely so the UI can chart them. Nothing in the tracking
+   * reads this -- it is a display tap, deliberately kept separate from the
+   * interval history, which holds only the readings that survived filtering.
+   */
+  private static final int SIGHTING_HISTORY = 64;
+
+  /**
    * Silence longer than this many beats is a dropout, not a very slow beat. The
    * tempo is probably still right on the other side, so the gap resyncs the
    * phase but is kept out of the average.
@@ -161,6 +168,14 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   /** Position within the current beat, 0-1. This is the modulator's value. */
   private double phase = 0;
 
+  /** Every sighting that cleared debounce, timestamped on the elapsed clock. */
+  private final double[] sightings = new double[SIGHTING_HISTORY];
+  private int sightingCount = 0;
+  private int sightingHead = 0;
+
+  /** Milliseconds of running time, and the time base the UI charts against. */
+  private double elapsedMs = 0;
+
   private double sinceDetectMs = 0;
   private boolean sawFirstEdge = false;
   private boolean armed = true;
@@ -187,6 +202,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   @Override
   protected double computeValue(double deltaMs) {
     this.firedThisFrame = false;
+    this.elapsedMs += deltaMs;
     this.sinceDetectMs += deltaMs;
 
     if (pollInput()) {
@@ -224,6 +240,15 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   private void onBeatSighted() {
     double interval = this.sinceDetectMs;
     this.sinceDetectMs = 0;
+
+    // Logged before any filtering, so the chart shows what the gate actually
+    // did -- including the hits the tracker goes on to reject. Seeing those sit
+    // off the predicted grid is how you know to move the threshold.
+    this.sightings[this.sightingHead] = this.elapsedMs;
+    this.sightingHead = (this.sightingHead + 1) % SIGHTING_HISTORY;
+    if (this.sightingCount < SIGHTING_HISTORY) {
+      ++this.sightingCount;
+    }
 
     if (!this.sawFirstEdge) {
       // Nothing to measure against yet -- one edge is not an interval.
@@ -383,6 +408,10 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
 
   private void forgetTempo() {
     clearSamples();
+    // Clears the chart too -- leaving old sightings up next to a blank grid
+    // would read as though the tracker still knew something.
+    this.sightingCount = 0;
+    this.sightingHead = 0;
     this.missedCorrections = 0;
     this.periodMs = 0;
     this.phase = 0;
@@ -391,6 +420,35 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     this.armed = true;
     this.bpm.setValue(0);
     this.confidence.setValue(0);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Visualizer tap. Read from the UI thread while the engine thread writes, with
+  // no synchronization: the worst case is a chart frame that draws a sighting a
+  // frame late, which is not worth a lock on the audio path.
+  // ---------------------------------------------------------------------------
+
+  /** Running time in milliseconds, the time base sightings are stamped against. */
+  public double getElapsedMs() {
+    return this.elapsedMs;
+  }
+
+  /** Current beat length in milliseconds, or 0 before a tempo is established. */
+  public double getPeriodMs() {
+    return this.periodMs;
+  }
+
+  /**
+   * Copies recent sighting timestamps into {@code out}, newest first, and
+   * returns how many were written. Newest-first lets a caller drawing a fixed
+   * time window stop as soon as it walks off the left edge.
+   */
+  public int getRecentSightings(double[] out) {
+    int count = Math.min(out.length, this.sightingCount);
+    for (int i = 0; i < count; ++i) {
+      out[i] = this.sightings[Math.floorMod(this.sightingHead - 1 - i, SIGHTING_HISTORY)];
+    }
+    return count;
   }
 
   @Override

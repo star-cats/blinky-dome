@@ -143,6 +143,27 @@ is the moving-average window, higher being steadier but slower to follow; **Lock
 is how hard each sighting pulls the clock back into alignment, 0 free-running and
 1 snapping. **Relearn** throws the tempo away and starts over.
 
+### The chart
+
+The device panel draws what the tracker is hearing against what it believes:
+gate sightings as circles, predicted beats as vertical lines, scrolling right to
+left over a 3-second window (`WINDOW_SECONDS` in `UIBeatTracker.java`). Current
+BPM sits top-left, confidence top-right.
+
+Read it while tuning **Thresh**. Circles sitting on the lines means it is
+locked. Circles scattered between lines means the gate is firing on things that
+are not the beat — raise the threshold. No circles at all means it never fires —
+lower it. The circles are logged before any filtering, so hits the tracker
+decides to *reject* still show up; watching one sit off the grid while the lines
+keep their spacing is the tracker doing its job.
+
+`UIBeatTracker` is a separate class from `BeatTracker` on purpose: it is the only
+half that imports glx, so the modulator itself stays loadable and testable
+without a UI. Chromatik pairs the two automatically — its class loader registers
+anything implementing `UIModulatorControls` and reads the modulator type back off
+the generic parameter, which is why that interface has to be declared directly on
+the class.
+
 Measured against synthetic gates at 128 BPM over 60s runs — a perfect gate, one
 jittering ±20ms, one missing 30% of beats, one firing double-time, one with 25%
 spurious extra hits, and one going silent for 12s — the tracker holds the tempo
