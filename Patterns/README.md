@@ -158,18 +158,15 @@ moves where beats land without disturbing the lock or the BPM estimate. Shifts
 larger than one beat wrap, which only comes up above 300 BPM. The phase ramp
 moves with the trigger, so both outputs always describe the same beat.
 
-The second row is set-and-forget. **Rate** picks how often to emit — `Half`
-(every other beat), `Single` (the default, on the beat), or `Double` (twice per
-beat). It changes only the output: the tracker still follows the music at its
-real tempo, and BPM keeps reporting that, with the chart marking emitted beats
-and the readout naming the rate when it isn't Single. Half time lands on real
-beats, just every other one; double time interleaves midpoints. Rate composes
-with Shift, so you can run at double time nudged 40ms early.
+The second row is set-and-forget. **Min BPM** is the slowest tempo worth
+believing — a gap longer than a few beats at that rate reads as a dropout rather
+than a very slow beat. **Avg** is the moving-average window, higher being
+steadier but slower to follow. **Relearn** throws the tempo away and starts over.
 
-Then **Min BPM** sets the tempo range (intervals fold into Min BPM up to twice
-Min BPM, so a gate hitting every eighth note still reports the right tempo),
-**Avg** is the moving-average window — higher is steadier but slower to follow —
-and **Relearn** throws the tempo away and starts over.
+The tracker takes the gate's spacing at face value: whatever rate it fires at is
+the tempo it reports. A gate hitting every eighth note is tracked at eighth-note
+tempo, not folded back to the quarter. That puts the burden on the gate — if the
+tempo reads double what you expect, fix it at the Band Gate rather than here.
 
 ### The chart
 
@@ -196,12 +193,18 @@ the generic parameter, which is why that interface has to be declared directly o
 the class.
 
 Measured against synthetic gates at 128 BPM over 60s runs — a perfect gate, one
-jittering ±20ms, one missing 30% of beats, one firing double-time, one with 25%
-spurious extra hits, and one going silent for 12s — the tracker holds the tempo
-to within 2% and the output stays steady to about one frame. The one thing it
-cannot do is find the downbeat in a gate that fires evenly on every eighth note:
-nothing in that signal distinguishes the beat from the off-beat, so it locks
-steadily onto whichever it saw first.
+jittering ±20ms, one missing 30% of beats, and one going silent for 12s — the
+tracker holds the tempo exactly and the output stays steady to about one frame,
+riding through the whole 12-second dropout still in phase. A gate firing on
+every eighth note locks just as solidly, at 257 BPM, because that genuinely is
+the rate it is being told about.
+
+Where it struggles is a gate that fires at the right rate *plus* extra hits in
+between. With a spurious hit on 25% of beats it drifts to around 230 BPM and the
+output jitter climbs to ~55ms, because a stray hit splits one beat into two
+shorter intervals and nothing rejects them outright. `Conf` drops to about 0.6
+when this happens, which is the signal to raise **Thresh** until the chart shows
+one circle per beat.
 
 ---
 

@@ -8,7 +8,6 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.TriggerParameter;
@@ -62,9 +61,9 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
 
   /**
    * Floor on the gap between two sightings, purely as debounce -- 50ms is 1200
-   * BPM, far faster than any tempo we would want to fold down from. Anything
-   * closer together than this is one physical hit that crossed the threshold
-   * twice, not two beats.
+   * BPM, far faster than any tempo worth tracking. Anything closer together
+   * than this is one physical hit that crossed the threshold twice, not two
+   * beats.
    */
   private static final double DEBOUNCE_MS = 50;
 
@@ -72,10 +71,10 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
    * How far off the running average an interval can be and still be believed.
    *
    * Tighter than it looks like it needs to be, because of how a stray hit fails:
-   * one extra sighting inside a beat splits it into two intervals that fold back
-   * to roughly 0.8 and 1.2 beats. At a 25% tolerance both slip through and drag
-   * the average down; at 15% both are rejected. Real jitter is far smaller than
-   * this -- +/-20ms on a 128 BPM beat is only 4% -- so the room is not needed.
+   * one extra sighting inside a beat splits it into two intervals of roughly
+   * 0.4 and 0.6 beats. At a 25% tolerance the pair can drag the average down;
+   * at 15% both are rejected outright. Real jitter is far smaller than this --
+   * +/-20ms on a 128 BPM beat is only 4% -- so the room is not needed.
    */
   private static final double OUTLIER_TOLERANCE = .15;
 
@@ -93,10 +92,10 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
    * How near a beat a sighting must land, as a fraction of a beat, before it is
    * allowed to pull the clock.
    *
-   * Folding fixes the tempo but not the phase: a gate catching every eighth note
-   * reports the right interval while half its sightings sit on the off-beat. If
-   * every sighting pulled, those would drag the clock back and forth across the
-   * downbeat forever. Stray hits between beats do the same.
+   * A stray hit landing mid-beat is still a rising edge, and if every sighting
+   * pulled, those would drag the clock back and forth across the beat forever.
+   * Ignoring the ones that land nowhere near where we expect a beat costs
+   * nothing when the gate is clean and saves the lock when it is not.
    */
   private static final double CORRECTION_WINDOW = .25;
 
@@ -133,7 +132,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
 
   public final BoundedParameter minBpm =
     new BoundedParameter("Min BPM", 70, 40, 200)
-    .setDescription("Bottom of the tempo range; intervals fold into Min BPM up to twice Min BPM");
+    .setDescription("Slowest tempo to believe -- a gap longer than a few beats at this rate reads as a dropout, not a slow beat");
 
   public final DiscreteParameter window =
     new DiscreteParameter("Avg", 8, MIN_SAMPLES, MAX_WINDOW + 1)
@@ -142,37 +141,6 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   public final CompoundParameter lock =
     new CompoundParameter("Lock", .25, 0, 1)
     .setDescription("How hard each beat pulls the clock back into alignment; 0 free-runs, 1 snaps");
-
-  /**
-   * How often to emit, relative to the beat being tracked.
-   *
-   * Only the output rate changes -- the tracked tempo is whatever the music is
-   * doing, and BPM keeps reporting that regardless of what comes out.
-   */
-  public enum Rate {
-    HALF("Half", .5),
-    SINGLE("Single", 1),
-    DOUBLE("Double", 2);
-
-    /** Emitted beats per tracked beat. */
-    public final double multiplier;
-
-    private final String label;
-
-    private Rate(String label, double multiplier) {
-      this.label = label;
-      this.multiplier = multiplier;
-    }
-
-    @Override
-    public String toString() {
-      return this.label;
-    }
-  }
-
-  public final EnumParameter<Rate> rate =
-    new EnumParameter<Rate>("Rate", Rate.SINGLE)
-    .setDescription("Emit on every beat, every other beat, or twice per beat");
 
   /**
    * Decay rate of the output envelope, as k in exp(-t*k/10) with t in seconds.
@@ -223,10 +191,10 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
    * fractional part is where we are inside the current beat, the integer part
    * is which beat it is.
    *
-   * Held as one running number rather than a wrapped 0-1 phase because half
-   * time needs to know *which* beat this is, and a phase that resets every beat
-   * cannot say. It also makes correction cleaner -- nudging the clock across a
-   * beat boundary is just arithmetic here, with no wrap to special-case.
+   * Held as one running number rather than a wrapped 0-1 phase so that nothing
+   * downstream has to special-case a wrap: correction nudging the clock across
+   * a beat boundary is plain arithmetic here, and a Shift longer than a beat
+   * (possible at high tempo) needs no modular fixup.
    */
   private double beatPosition = 0;
 
@@ -257,7 +225,6 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     addParameter("minBpm", this.minBpm);
     addParameter("window", this.window);
     addParameter("lock", this.lock);
-    addParameter("rate", this.rate);
     addParameter("decay", this.decay);
     addParameter("shift", this.shift);
     addParameter("bpm", this.bpm);
@@ -301,7 +268,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   /**
    * Where the emitted beat sits, as opposed to where the audio beat sits.
    *
-   * Shift is applied here at the output rather than folded into {@link #phase},
+   * Shift is applied here at the output rather than folded into {@link #beatPosition},
    * which stays locked to what the gate actually heard. Keeping the two apart
    * means the tracking maths -- correction, dropout resync, the whole averaging
    * loop -- never has to know the knob exists, and moving the knob cannot
@@ -321,14 +288,11 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   /**
    * The output's own running position, in emitted beats.
    *
-   * Shift and rate compose here and nowhere else: slide by the shift, then
-   * rescale by the rate. Every whole number this passes is a beat to emit,
-   * which is what makes half and double time fall out of the same arithmetic
-   * as single instead of needing cases of their own.
+   * The shift is applied here and nowhere else. Every whole number this passes
+   * is a beat to emit.
    */
   private double outputPosition(double beats) {
-    double shifted = beats - this.shift.getValue() / this.periodMs;
-    return shifted * this.rate.getEnum().multiplier;
+    return beats - this.shift.getValue() / this.periodMs;
   }
 
   /** Where we are inside the tracked beat, 0-1. */
@@ -388,28 +352,12 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
       return;
     }
 
-    recordInterval(foldIntoOctave(interval, slowestMs));
+    // Taken at face value: whatever spacing the gate reports is the tempo. A
+    // gate that fires on every eighth note is therefore tracked at eighth-note
+    // tempo, not folded back to the quarter -- if that is not what you want,
+    // it is the gate that needs fixing.
+    recordInterval(interval);
     correctPhase();
-  }
-
-  /**
-   * Folds an interval into the one-octave window starting at Min BPM.
-   *
-   * A bass gate that reliably catches every eighth note, or only every other
-   * downbeat, is still telling the truth about the tempo -- just in the wrong
-   * octave. Doubling or halving into a fixed range makes those readings agree
-   * with each other instead of fighting the average.
-   */
-  private double foldIntoOctave(double intervalMs, double slowestMs) {
-    double fastestMs = slowestMs / 2;
-    double folded = intervalMs;
-    while (folded < fastestMs) {
-      folded *= 2;
-    }
-    while (folded > slowestMs) {
-      folded /= 2;
-    }
-    return folded;
   }
 
   private void recordInterval(double interval) {
@@ -476,9 +424,8 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
    * shifted stream every time a resync happened.
    */
   private void syncPhase() {
-    // Snap to the nearest whole beat rather than zeroing the count: half time
-    // alternates on that count, so throwing it away would let a resync flip
-    // which beats get emitted.
+    // Nearest whole beat rather than zero, so the count stays continuous with
+    // where the clock already was instead of jumping backwards.
     this.beatPosition = Math.round(this.beatPosition);
     if (!hasTempo()) {
       fire();
@@ -534,11 +481,11 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     }
     double advance = deltaMs / this.periodMs;
 
-    // Both readings use the knobs as they are right now, so the only difference
-    // between them is this frame's advance. That is what keeps turning Shift or
-    // switching Rate from manufacturing a beat: the jump moves both ends
-    // equally and cancels, where comparing against last frame's stored output
-    // would see it as a crossing.
+    // Both readings use the shift as it is right now, so the only difference
+    // between them is this frame's advance. That is what keeps turning Shift
+    // from manufacturing a beat: the jump moves both ends equally and cancels,
+    // where comparing against last frame's stored output would see it as a
+    // crossing.
     double before = outputPosition(this.beatPosition);
     this.beatPosition += advance;
     double after = outputPosition(this.beatPosition);
@@ -608,13 +555,6 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     return this.periodMs;
   }
 
-  /**
-   * Milliseconds between emitted beats, which is the tracked period divided by
-   * the rate. Equal to {@link #getPeriodMs()} at single time.
-   */
-  public double getOutputPeriodMs() {
-    return this.periodMs / this.rate.getEnum().multiplier;
-  }
 
   /**
    * Copies recent sighting timestamps into {@code out}, newest first, and

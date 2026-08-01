@@ -65,7 +65,6 @@ public class UIBeatTracker implements UIModulatorControls<BeatTracker> {
 
     // Row two is set-and-forget: the tempo range and how much history to average.
     UI2dContainer configRow = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
-    addColumn(configRow, newEnumBox(tracker.rate), controlLabel(ui, "Rate"));
     addColumn(configRow, newDoubleBox(tracker.minBpm), controlLabel(ui, "Min BPM"));
     addColumn(configRow, newIntegerBox(tracker.window), controlLabel(ui, "Avg"));
     addColumn(configRow, newButton(tracker.relearn).setTriggerable(true), controlLabel(ui, "Relearn"));
@@ -104,14 +103,12 @@ public class UIBeatTracker implements UIModulatorControls<BeatTracker> {
     @Override
     public void onDraw(UI ui, VGraphics vg) {
       double now = this.tracker.getElapsedMs();
-      // The grid marks beats as *emitted*, so it follows the output period --
-      // twice as many lines at double time, half as many at half.
-      double outputPeriodMs = this.tracker.getOutputPeriodMs();
+      double periodMs = this.tracker.getPeriodMs();
       double windowMs = WINDOW_SECONDS * 1000;
 
-      drawPredictedGrid(ui, vg, now, outputPeriodMs, windowMs);
+      drawPredictedGrid(ui, vg, now, periodMs, windowMs);
       drawSightings(ui, vg, now, windowMs);
-      drawReadout(ui, vg, outputPeriodMs);
+      drawReadout(ui, vg, periodMs);
     }
 
     /**
@@ -163,12 +160,8 @@ public class UIBeatTracker implements UIModulatorControls<BeatTracker> {
       vg.fontFace(ui.theme.getControlFont());
       vg.fillColor(ui.theme.controlTextColor);
       vg.textAlign(VGraphics.Align.LEFT, VGraphics.Align.TOP);
-      // Always the tracked tempo, never the emission rate -- BPM should mean
-      // what the music is doing. The suffix says how often we act on it.
-      BeatTracker.Rate rate = this.tracker.rate.getEnum();
-      String suffix = rate == BeatTracker.Rate.SINGLE ? "" : "  " + rate + " time";
       vg.text(4, 3, periodMs > 0
-        ? String.format("%.1f BPM%s", this.tracker.bpm.getValue(), suffix)
+        ? String.format("%.1f BPM", this.tracker.bpm.getValue())
         : "listening...");
 
       vg.textAlign(VGraphics.Align.RIGHT, VGraphics.Align.TOP);
