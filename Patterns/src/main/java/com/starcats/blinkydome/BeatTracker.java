@@ -36,13 +36,16 @@ import heronarts.lx.parameter.TriggerParameter;
  *
  * Outputs, in order of usefulness downstream:
  *
- *   value    the beat phase, a 0-1 ramp that resets on every beat. Map this
- *            onto anything that wants to move continuously in time with the
- *            music -- it is the modulator's own value, so it is what you get
- *            when you use this as a modulation source.
- *   beat     a trigger on each downbeat, for anything that fires discretely.
+ *   value    exp(-t*k/10): 1 on the beat, decaying away over t seconds at a
+ *            rate set by {@link #decay}. This is the modulator's own value, so
+ *            it is what you get using this as a modulation source -- map it
+ *            onto brightness, size, anything that should pulse.
+ *   beat     a trigger on each beat, for anything that fires discretely.
  *   bpm      the tracked tempo.
  *   conf     how much to believe the tempo (see below).
+ *
+ * {@link #getOutputPhase()} still gives the linear 0-1 ramp for anything that
+ * should sweep across the beat rather than pulse on it.
  */
 @LXCategory("Blinky Dome")
 @LXModulator.Global("Beat Tracker")
@@ -171,6 +174,17 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     new EnumParameter<Rate>("Rate", Rate.SINGLE)
     .setDescription("Emit on every beat, every other beat, or twice per beat");
 
+  /**
+   * Decay rate of the output envelope, as k in exp(-t*k/10) with t in seconds.
+   *
+   * Read it as a time constant: the envelope falls to 1/e after 10/k seconds,
+   * so 30 is a third of a second and 50 is a fifth. At 0 it never decays and
+   * the output simply sits at 1, which is the way to get a plain gate.
+   */
+  public final CompoundParameter decay =
+    new CompoundParameter("Decay", 30, 0, 100)
+    .setDescription("How fast the output falls after each beat -- reaches 1/e after 10/Decay seconds");
+
   public final CompoundParameter shift =
     (CompoundParameter) new CompoundParameter("Shift", 0, -200, 200)
     .setUnits(LXParameter.Units.MILLISECONDS)
@@ -224,6 +238,9 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   /** Milliseconds of running time, and the time base the UI charts against. */
   private double elapsedMs = 0;
 
+  /** Time since the last emitted beat -- the t in the output envelope. */
+  private double sinceOutputBeatMs = 0;
+
   private double sinceDetectMs = 0;
   private boolean sawFirstEdge = false;
   private boolean armed = true;
@@ -241,6 +258,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     addParameter("window", this.window);
     addParameter("lock", this.lock);
     addParameter("rate", this.rate);
+    addParameter("decay", this.decay);
     addParameter("shift", this.shift);
     addParameter("bpm", this.bpm);
     addParameter("confidence", this.confidence);
@@ -254,15 +272,30 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     this.firedThisFrame = false;
     this.elapsedMs += deltaMs;
     this.sinceDetectMs += deltaMs;
+    this.sinceOutputBeatMs += deltaMs;
 
     if (pollInput()) {
       onBeatSighted();
     }
     advanceClock(deltaMs);
 
-    // The shifted phase, not the tracking one, so the ramp and the trigger
-    // always describe the same beat. Downstream sees one coherent output.
-    return outputPhase();
+    // Computed after advanceClock, so a beat emitted this frame has already
+    // zeroed t and the envelope reads exactly 1 on the beat rather than one
+    // frame's worth below it.
+    return decayEnvelope();
+  }
+
+  /**
+   * The analog output: exp(-t*k/10), where t is seconds since the last emitted
+   * beat and k is {@link #decay}.
+   *
+   * Exactly 1 on the beat and falling from there, which is the shape almost
+   * everything downstream actually wants -- brightness, size, intensity. The
+   * beat phase is still available through {@link #getOutputPhase()} for the
+   * cases that want a linear ramp instead.
+   */
+  private double decayEnvelope() {
+    return Math.exp(-(this.sinceOutputBeatMs / 1000) * this.decay.getValue() / 10);
   }
 
   /**
@@ -519,6 +552,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   private void fire() {
     if (!this.firedThisFrame) {
       this.firedThisFrame = true;
+      this.sinceOutputBeatMs = 0;
       this.beat.trigger();
     }
   }
@@ -554,6 +588,19 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   /** Running time in milliseconds, the time base sightings are stamped against. */
   public double getElapsedMs() {
     return this.elapsedMs;
+  }
+
+  /**
+   * Position within the current emitted beat, 0-1, rising linearly and resetting
+   * on each beat.
+   *
+   * This is what the modulator's value used to be, before the value became the
+   * decay envelope. Exposed because the chart needs it to place its grid, and
+   * because a linear ramp is still the right driver for anything that should
+   * sweep rather than pulse.
+   */
+  public double getOutputPhase() {
+    return outputPhase();
   }
 
   /** Current beat length in milliseconds, or 0 before a tempo is established. */
@@ -598,9 +645,12 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     return this;
   }
 
-  /** The phase is a ramp that wraps, so modulation should treat it that way. */
+  /**
+   * The envelope decays toward 0 and never wraps around, unlike the ramp this
+   * output used to be -- so modulation should clamp at the ends, not wrap.
+   */
   @Override
   public boolean isWrappable() {
-    return true;
+    return false;
   }
 }

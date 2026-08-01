@@ -60,6 +60,7 @@ public class UIBeatTracker implements UIModulatorControls<BeatTracker> {
     addColumn(performRow, newKnob(tracker.threshold));
     addColumn(performRow, newKnob(tracker.lock));
     addColumn(performRow, newKnob(tracker.shift));
+    addColumn(performRow, newKnob(tracker.decay));
     performRow.addToContainer(uiModulator);
 
     // Row two is set-and-forget: the tempo range and how much history to average.
@@ -126,7 +127,9 @@ public class UIBeatTracker implements UIModulatorControls<BeatTracker> {
       }
       vg.strokeColor(ui.theme.primaryColor);
       vg.strokeWidth(1);
-      double beatTime = now - this.tracker.getValue() * periodMs;
+      // getOutputPhase(), not getValue(): the value is the decay envelope now,
+      // and the grid needs the linear position within the beat.
+      double beatTime = now - this.tracker.getOutputPhase() * periodMs;
       double earliest = now - windowMs;
       while (beatTime > earliest) {
         float x = timeToX(beatTime, now, windowMs);

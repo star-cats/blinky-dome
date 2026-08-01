@@ -131,15 +131,24 @@ Four things come out:
 
 | Output | What it is | Use it for |
 | --- | --- | --- |
-| the modulator's value | 0-1 ramp resetting each beat | anything continuous — this is what you get using it as a modulation source |
+| the modulator's value | `exp(-t*k/10)` — 1 on the beat, decaying after | anything that should pulse: brightness, size, intensity. This is what you get using it as a modulation source |
 | `Beat` | trigger on each beat | anything discrete |
 | `BPM` | tracked tempo | display, or driving other rates |
 | `Conf` | how consistent recent intervals are | deciding how much to trust the beat |
 
+**Decay** is the `k` in that envelope, with `t` in seconds: the output falls to
+1/e after `10/k` seconds, so 30 is a third of a second and 50 is a fifth. At 0 it
+never decays and you get a plain gate that sits at 1. The default of 30 leaves
+the pulse at about a quarter of full by the next beat at 128 BPM.
+
+The value is a pulse, not a ramp. If you want something that sweeps *across* the
+beat instead, `BeatTracker.getOutputPhase()` still returns the linear 0-1 ramp —
+it just isn't the mapped value any more.
+
 The top row is what you touch while the music plays: **Input** (the mapping
 target), **Thresh** for how far the input must rise to count, **Lock** for how
 hard each sighting pulls the clock back into alignment (0 free-runs, 1 snaps),
-and **Shift**.
+then **Shift** and **Decay**.
 
 **Shift** slides the emitted beat off the audio, ±200ms, positive being later.
 Use it for the lag between a trigger firing and light actually reaching an eye —
