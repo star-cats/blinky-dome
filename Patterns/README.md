@@ -154,16 +154,19 @@ transpose real music.
 
 ### The moods
 
-- **AMBIENT** — no bass for `Amb Bts` beats (default 6). The floor is empty.
-- **BUILDING** — reachable only from AMBIENT, and only after 4s of both silence
-  and settled state, when intensity has climbed by **Rise** over **Window** with
-  both halves of that window contributing. That last part is what tells a riser
-  from a track simply starting, which steps the intensity up in a single frame.
-- **DRIVING** — two consecutive high-confidence bass beats, from any state.
+Two, both decided purely by whether bass is landing:
 
-A build that sets no new intensity peak for 10 seconds has stalled and falls back
-to AMBIENT. A build that resolves into a drive is a **drop**, and only that
-transition fires DropTracker.
+- **AMBIENT** — no bass for `Amb Bts` beats (default 6). The floor is empty.
+- **DRIVING** — two consecutive high-confidence bass beats.
+
+There was a third, BUILDING, that tried to recognise a riser from the shape of
+the intensity curve. It was dropped for being too fragile to hang a show on:
+telling a build from a track simply getting louder needs thresholds that hold for
+one song and not the next, and it guessed wrong at exactly the moments everyone
+was watching. Bass or no bass is a fact, so these two are worth trusting.
+
+Intensity is still measured, still smoothed, still published and still drives
+AmbientTracker. It just no longer decides anything.
 
 ### The charts
 
@@ -191,10 +194,17 @@ gated. It goes quiet during a breakdown because the room is quiet, not because a
 state machine muted it, and swells back on its own through a build. **Depth**
 blends out the intensity scaling if you want a fixed-brightness layer.
 
-**Drop Tracker** fires once on BUILDING → DRIVING: a trigger plus a linear ramp
-from 1 to 0 over **Fall**. Linear, not exponential — this is a one-shot sweep
-meant to hold the room for a few seconds, and exponential spends most of its life
-near zero.
+**Drop Tracker** fires once when bass returns after a quiet stretch — AMBIENT →
+DRIVING — as a trigger plus a linear ramp from 1 to 0 over **Fall**. Linear, not
+exponential: this is a one-shot sweep meant to hold the room for a few seconds,
+and exponential spends most of its life near zero.
+
+**Reset** (default 60s) is the minimum gap between drops. Bass detection is not
+perfect, and a track that loses a beat or two can flicker to ambient and back in
+seconds; without a holdoff every flicker would read as a drop and the biggest
+gesture in the rig would become its most common one. A transition inside the
+window is ignored outright, not queued, so nothing fires the instant it expires.
+The panel counts the remaining seconds so a quiet meter is never ambiguous.
 
 All three output 0 and say "no ctrl" when there is no controller.
 

@@ -17,8 +17,8 @@ import heronarts.lx.parameter.TriggerParameter;
  * to.
  *
  * One of these per show. It takes three band levels, tracks the bass for tempo,
- * smooths the bands into a single intensity figure, and runs a three-state mood
- * machine over the result. Everything it learns is published through
+ * smooths the bands into a single intensity figure, and reports whether the floor
+ * is driving or empty. Everything it learns is published through
  * {@link MoodState} for the supporting trackers -- DriveTracker, AmbientTracker,
  * DropTracker -- to read, so the analysis happens once instead of once per
  * effect.
@@ -40,12 +40,6 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
 
   /** Consecutive high-confidence sightings that mean the track is driving. */
   private static final int DRIVING_BEATS = 2;
-
-  /** AMBIENT has to hold this long before a rise counts as a build. */
-  private static final double AMBIENT_SETTLE_MS = 4000;
-
-  /** A build with no new peak for this long has stalled; fall back to ambient. */
-  private static final double BUILD_STALL_MS = 10000;
 
   /** Seconds of intensity history kept, which is what the UI graph spans. */
   public static final double HISTORY_SECONDS = 15;
@@ -91,7 +85,7 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
 
   public final BoundedParameter minBpm =
     new BoundedParameter("Min BPM", 95, 40, 200)
-    .setDescription("Hard tempo floor -- intervals implying anything slower are thrown away, never folded");
+    .setDescription("Hard tempo floor -- every beat is still tracked, but the reported BPM never reads below this");
 
   public final DiscreteParameter beatsUntilAmbient =
     new DiscreteParameter("Amb Beats", 6, 1, 33)
@@ -106,15 +100,6 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     (CompoundParameter) new CompoundParameter("Release", 1.5, .01, 10)
     .setUnits(LXParameter.Units.SECONDS)
     .setDescription("Intensity smoothing time constant while falling");
-
-  public final CompoundParameter buildRise =
-    new CompoundParameter("Rise", .10, .01, 1)
-    .setDescription("How much intensity must climb over the Rise Window to read as a build");
-
-  public final CompoundParameter buildWindow =
-    (CompoundParameter) new CompoundParameter("Window", 3, .5, 10)
-    .setUnits(LXParameter.Units.SECONDS)
-    .setDescription("How far back to compare intensity when detecting a build");
 
   public final CompoundParameter lowWeight =
     new CompoundParameter("Lo W", .5, 0, 1)
@@ -155,26 +140,22 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
   private final BeatClock clock = new BeatClock();
 
   private Mood mood = Mood.AMBIENT;
-  private double msInMood = 0;
   private int highConfidenceRun = 0;
-
-  /** Highest smoothed intensity seen in the current build, and time since it. */
-  private double buildPeak = 0;
-  private double msSincePeak = 0;
 
   private double smoothed = 0;
   private long lastBeatCount = 0;
 
   /**
-   * Bumped every time BUILDING gives way to DRIVING. DropTracker watches this
-   * rather than trying to observe the transition itself.
+   * Bumped every time the mood enters DRIVING, which with two states means every
+   * AMBIENT to DRIVING transition. DropTracker watches this rather than trying to
+   * observe the transition itself, so it stays right whatever order the engine
+   * runs the two in.
    */
-  private long dropCount = 0;
+  private long driveCount = 0;
 
-  /** Ring of smoothed intensity samples with timestamps, for the graph and rise test. */
+  /** Ring of smoothed intensity samples with timestamps, for the graph. */
   private final double[] historyValue = new double[HISTORY_SAMPLES];
   private final double[] historyTime = new double[HISTORY_SAMPLES];
-  private final Mood[] historyMood = new Mood[HISTORY_SAMPLES];
   private int historyCount = 0;
   private int historyHead = 0;
 
@@ -195,8 +176,6 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     addParameter("beatsUntilAmbient", this.beatsUntilAmbient);
     addParameter("charge", this.charge);
     addParameter("discharge", this.discharge);
-    addParameter("buildRise", this.buildRise);
-    addParameter("buildWindow", this.buildWindow);
     addParameter("lowWeight", this.lowWeight);
     addParameter("midWeight", this.midWeight);
     addParameter("highWeight", this.highWeight);
@@ -267,9 +246,16 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     this.intensity.setValue(this.smoothed);
   }
 
+  /**
+   * Two states, decided entirely by whether bass is landing.
+   *
+   * Nothing here consults the intensity curve. That was what made the old
+   * BUILDING state fragile -- it had to judge the shape of a signal rather than
+   * the presence of an event, and the thresholds that made it work for one track
+   * misfired on the next. Intensity is still measured and still published; it
+   * simply no longer decides anything.
+   */
   private void updateMood(double deltaMs) {
-    this.msInMood += deltaMs;
-
     // A sighting only counts once it has survived every filter in the clock and
     // the tempo it agrees with is itself consistent.
     if (this.clock.acceptedSightingThisFrame()) {
@@ -280,116 +266,28 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
       }
     }
 
-    // DRIVING wins from anywhere: bass landing where it should outranks whatever
-    // the intensity curve happens to be doing.
-    if (this.highConfidenceRun >= DRIVING_BEATS && this.mood != Mood.DRIVING) {
-      if (this.mood == Mood.BUILDING) {
-        ++this.dropCount;
+    if (this.mood == Mood.DRIVING) {
+      double period = this.clock.getPeriodMs();
+      if (period > 0
+          && this.clock.getSinceSightingMs() > period * this.beatsUntilAmbient.getValuei()) {
+        setMood(Mood.AMBIENT);
       }
+    } else if (this.highConfidenceRun >= DRIVING_BEATS) {
       setMood(Mood.DRIVING);
-      return;
-    }
-
-    switch (this.mood) {
-      case DRIVING: {
-        double period = this.clock.getPeriodMs();
-        if (period > 0
-            && this.clock.getSinceSightingMs() > period * this.beatsUntilAmbient.getValuei()) {
-          setMood(Mood.AMBIENT);
-        }
-        break;
-      }
-      case AMBIENT: {
-        // The silence test is not redundant with the DRIVING rule, however much
-        // it looks like it. DRIVING needs two high-confidence beats, which takes
-        // a second or so to establish -- and in that window bass is playing but
-        // has not yet earned the transition, so a build would slip in and hand
-        // straight over, reporting a drop for nothing more than the music
-        // starting. Requiring real silence first is what makes a drop mean
-        // something.
-        boolean silent = this.clock.getSinceSightingMs() >= AMBIENT_SETTLE_MS;
-        if (silent && this.msInMood >= AMBIENT_SETTLE_MS && isRising()) {
-          setMood(Mood.BUILDING);
-          this.buildPeak = this.smoothed;
-          this.msSincePeak = 0;
-        }
-        break;
-      }
-      case BUILDING: {
-        if (this.smoothed > this.buildPeak) {
-          this.buildPeak = this.smoothed;
-          this.msSincePeak = 0;
-        } else {
-          this.msSincePeak += deltaMs;
-          if (this.msSincePeak >= BUILD_STALL_MS) {
-            // No new high in ten seconds: the build went nowhere.
-            setMood(Mood.AMBIENT);
-          }
-        }
-        break;
-      }
+      ++this.driveCount;
     }
   }
 
   private void setMood(Mood next) {
     if (next != this.mood) {
       this.mood = next;
-      this.msInMood = 0;
       this.highConfidenceRun = 0;
     }
-  }
-
-  /**
-   * True when intensity is meaningfully higher than it was a Rise Window ago.
-   *
-   * Compares against a sample from the history ring rather than tracking a
-   * derivative, because a derivative of a signal this noisy needs its own
-   * smoothing and then has its own lag to argue about. A straight then-and-now
-   * comparison is what the graph shows, so what triggers a build is exactly what
-   * you can see happening.
-   */
-  private boolean isRising() {
-    double windowMs = this.buildWindow.getValue() * 1000;
-    double now = this.clock.getElapsedMs();
-    Double oldest = intensityAt(now - windowMs);
-    Double middle = intensityAt(now - windowMs / 2);
-    if (oldest == null || middle == null) {
-      return false;
-    }
-
-    double rise = this.buildRise.getValue();
-    if ((this.smoothed - oldest) < rise) {
-      return false;
-    }
-    // "Slow and steady", tested rather than assumed. A track simply starting
-    // steps the intensity up in one frame, which clears any total-rise bar you
-    // care to set and would read as a build that instantly "drops" the moment
-    // the bass lands. Requiring both halves of the window to have climbed tells
-    // a ramp from a step, because a step leaves one half perfectly flat.
-    double floor = rise / 4;
-    return (middle - oldest) >= floor && (this.smoothed - middle) >= floor;
-  }
-
-  /** Nearest recorded intensity at or before the given time, or null if too old. */
-  private Double intensityAt(double timeMs) {
-    if (this.historyCount == 0 || timeMs < 0) {
-      return null;
-    }
-    for (int i = 1; i <= this.historyCount; ++i) {
-      int idx = Math.floorMod(this.historyHead - i, HISTORY_SAMPLES);
-      if (this.historyTime[idx] <= timeMs) {
-        return this.historyValue[idx];
-      }
-    }
-    // Every sample we have is newer than the requested time, so the history does
-    // not reach back far enough yet.
-    return null;
   }
 
   private void recordHistory(double deltaMs) {
     this.historyValue[this.historyHead] = this.smoothed;
     this.historyTime[this.historyHead] = this.clock.getElapsedMs();
-    this.historyMood[this.historyHead] = this.mood;
     this.historyHead = (this.historyHead + 1) % HISTORY_SAMPLES;
     if (this.historyCount < HISTORY_SAMPLES) {
       ++this.historyCount;
@@ -399,10 +297,7 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
   private void forget() {
     this.clock.forget();
     this.mood = Mood.AMBIENT;
-    this.msInMood = 0;
     this.highConfidenceRun = 0;
-    this.buildPeak = 0;
-    this.msSincePeak = 0;
     this.historyCount = 0;
     this.historyHead = 0;
     this.bpm.setValue(0);
@@ -441,9 +336,12 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     return this.clock.getBeatCount();
   }
 
-  /** Monotonic count of BUILDING -> DRIVING transitions, for DropTracker. */
-  public long getDropCount() {
-    return this.dropCount;
+  /**
+   * Monotonic count of entries into DRIVING, which with two moods is every
+   * AMBIENT to DRIVING transition. DropTracker watches this.
+   */
+  public long getDriveCount() {
+    return this.driveCount;
   }
 
   public BeatClock getClock() {
@@ -451,15 +349,12 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
   }
 
   /** Copies recent intensity samples for the graph, newest first. Returns the count. */
-  public int getIntensityHistory(double[] outTime, double[] outValue, Mood[] outMood) {
+  public int getIntensityHistory(double[] outTime, double[] outValue) {
     int count = Math.min(Math.min(outTime.length, outValue.length), this.historyCount);
     for (int i = 0; i < count; ++i) {
       int idx = Math.floorMod(this.historyHead - 1 - i, HISTORY_SAMPLES);
       outTime[i] = this.historyTime[idx];
       outValue[i] = this.historyValue[idx];
-      if (outMood != null) {
-        outMood[i] = this.historyMood[idx];
-      }
     }
     return count;
   }

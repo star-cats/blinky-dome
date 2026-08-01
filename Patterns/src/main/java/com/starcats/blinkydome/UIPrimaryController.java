@@ -59,18 +59,15 @@ public class UIPrimaryController implements UIModulatorControls<PrimaryControlle
     addColumn(tempoConfig, newButton(c.relearn).setTriggerable(true), controlLabel(ui, "Relearn"));
     tempoConfig.addToContainer(uiModulator);
 
-    UI2dContainer moodConfig = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
-    addColumn(moodConfig, newDoubleBox(c.charge), controlLabel(ui, "Charge"));
-    addColumn(moodConfig, newDoubleBox(c.discharge), controlLabel(ui, "Release"));
-    addColumn(moodConfig, newDoubleBox(c.buildRise), controlLabel(ui, "Rise"));
-    addColumn(moodConfig, newDoubleBox(c.buildWindow), controlLabel(ui, "Window"));
-    moodConfig.addToContainer(uiModulator);
-
-    UI2dContainer weights = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
-    addColumn(weights, newDoubleBox(c.lowWeight), controlLabel(ui, "Lo W"));
-    addColumn(weights, newDoubleBox(c.midWeight), controlLabel(ui, "Mid W"));
-    addColumn(weights, newDoubleBox(c.highWeight), controlLabel(ui, "Hi W"));
-    weights.addToContainer(uiModulator);
+    // Smoothing and the band mix in one row -- with the build detector gone
+    // there is not enough left here to justify two.
+    UI2dContainer mix = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
+    addColumn(mix, newDoubleBox(c.charge), controlLabel(ui, "Charge"));
+    addColumn(mix, newDoubleBox(c.discharge), controlLabel(ui, "Release"));
+    addColumn(mix, newDoubleBox(c.lowWeight), controlLabel(ui, "Lo W"));
+    addColumn(mix, newDoubleBox(c.midWeight), controlLabel(ui, "Mid W"));
+    addColumn(mix, newDoubleBox(c.highWeight), controlLabel(ui, "Hi W"));
+    mix.addToContainer(uiModulator);
 
     float width = uiModulator.getContentWidth();
     new UIBeatChart(ui, c, width, BEAT_CHART_HEIGHT).addToContainer(uiModulator);
@@ -208,7 +205,7 @@ public class UIPrimaryController implements UIModulatorControls<PrimaryControlle
     public void onDraw(UI ui, VGraphics vg) {
       double now = this.controller.getClock().getElapsedMs();
       double windowMs = PrimaryController.HISTORY_SECONDS * 1000;
-      int count = this.controller.getIntensityHistory(this.times, this.values, null);
+      int count = this.controller.getIntensityHistory(this.times, this.values);
 
       if (count > 1) {
         vg.strokeColor(ui.theme.primaryColor);

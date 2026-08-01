@@ -11,13 +11,18 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.TriggerParameter;
 
 /**
- * Fires once, on the drop.
+ * Fires once, when the floor comes back.
  *
- * Watches for the one transition that matters -- {@link Mood#BUILDING} giving
- * way to {@link Mood#DRIVING} -- and answers with a single trigger plus a linear
- * ramp from 1 down to 0. Nothing else moves it: a track that was already driving
- * and stays driving never sets this off, and neither does drifting from ambient
- * into a groove without a build in front of it.
+ * Watches for {@link Mood#AMBIENT} giving way to {@link Mood#DRIVING} -- bass
+ * returning after a stretch without it -- and answers with a single trigger plus
+ * a linear ramp from 1 down to 0.
+ *
+ * The {@link #cooldown} is what keeps that meaningful. Bass detection is not
+ * perfect, and a track that drops a beat or two mid-set can flicker to ambient
+ * and back inside a few seconds; without a holdoff, every one of those flickers
+ * would read as a drop and the biggest gesture in the rig would become the most
+ * common thing it does. A minute between drops means the ones that land are the
+ * ones worth watching.
  *
  * Linear rather than exponential decay because this is a one-shot sweep, not a
  * pulse. Exponential spends most of its life near zero, which is the wrong shape
@@ -26,7 +31,7 @@ import heronarts.lx.parameter.TriggerParameter;
 @LXCategory("Blinky Dome")
 @LXModulator.Global("Drop Tracker")
 @LXModulator.Device("Drop Tracker")
-@LXComponent.Description("One-shot ramp fired by the BUILDING to DRIVING transition")
+@LXComponent.Description("One-shot ramp fired when bass returns after a quiet stretch")
 public class DropTracker extends LXModulator implements LXNormalizedParameter, LXTriggerSource {
 
   public final CompoundParameter duration =
@@ -34,12 +39,23 @@ public class DropTracker extends LXModulator implements LXNormalizedParameter, L
     .setUnits(LXParameter.Units.SECONDS)
     .setDescription("How long the ramp takes to fall from 1 back to 0");
 
+  public final CompoundParameter cooldown =
+    (CompoundParameter) new CompoundParameter("Reset", 60, 0, 300)
+    .setUnits(LXParameter.Units.SECONDS)
+    .setDescription("Minimum time between drops -- a return to driving inside this window is ignored");
+
   public final TriggerParameter drop =
     new TriggerParameter("Drop")
-    .setDescription("Fires once when a build resolves into a drive (output)");
+    .setDescription("Fires once when the floor returns after a quiet stretch (output)");
 
-  private long lastDropCount = -1;
+  private long lastDriveCount = -1;
   private double ramp = 0;
+
+  /**
+   * Time since the last drop was allowed through. Starts high so the first drop
+   * of a set is never swallowed by a cooldown that has not had a chance to run.
+   */
+  private double sinceDropMs = Double.MAX_VALUE / 4;
 
   public DropTracker() {
     this("Drop Tracker");
@@ -48,29 +64,42 @@ public class DropTracker extends LXModulator implements LXNormalizedParameter, L
   public DropTracker(String label) {
     super(label);
     addParameter("duration", this.duration);
+    addParameter("cooldown", this.cooldown);
     addParameter("drop", this.drop);
   }
 
   @Override
   protected double computeValue(double deltaMs) {
+    this.sinceDropMs += deltaMs;
+
     PrimaryController controller = MoodState.get();
     if (controller == null) {
       // Keep falling rather than freezing, so an in-flight ramp finishes
       // gracefully if the controller goes away mid-drop.
-      this.lastDropCount = -1;
+      this.lastDriveCount = -1;
       return decay(deltaMs);
     }
 
-    long drops = controller.getDropCount();
-    if (this.lastDropCount >= 0 && drops != this.lastDropCount) {
+    long drives = controller.getDriveCount();
+    boolean entered = this.lastDriveCount >= 0 && drives != this.lastDriveCount;
+    this.lastDriveCount = drives;
+
+    // The counter is consumed either way: a transition inside the cooldown is
+    // ignored, not deferred, so the holdoff cannot leave a drop queued up to
+    // fire the moment it expires.
+    if (entered && this.sinceDropMs >= this.cooldown.getValue() * 1000) {
+      this.sinceDropMs = 0;
       this.ramp = 1;
       this.drop.trigger();
-      this.lastDropCount = drops;
       // Full value on the frame of the drop, before any decay is applied.
       return this.ramp;
     }
-    this.lastDropCount = drops;
     return decay(deltaMs);
+  }
+
+  /** Seconds until another drop is allowed, 0 when ready. Drawn by the UI. */
+  public double getCooldownRemaining() {
+    return Math.max(0, this.cooldown.getValue() - this.sinceDropMs / 1000);
   }
 
   private double decay(double deltaMs) {

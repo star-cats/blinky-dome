@@ -9,9 +9,10 @@ import heronarts.lx.studio.ui.modulation.UIModulatorControls;
 /**
  * Panel for {@link DropTracker}: one knob and the ramp.
  *
- * This fires rarely by design, so the caption says whether it is armed -- a
- * build in progress means a drop could land at any moment -- rather than leaving
- * a permanently empty meter with nothing to explain it.
+ * This fires rarely by design, so the caption explains the silence: counting
+ * down while the cooldown holds it off, "armed" when sitting in ambient with a
+ * drop available the moment bass returns. A permanently empty meter with no
+ * explanation is indistinguishable from a broken one.
  */
 public class UIDropTracker implements UIModulatorControls<DropTracker> {
 
@@ -28,6 +29,7 @@ public class UIDropTracker implements UIModulatorControls<DropTracker> {
 
     UI2dContainer knobs = UI2dContainer.newHorizontalContainer(ROW_HEIGHT, 4);
     addColumn(knobs, newKnob(tracker.duration));
+    addColumn(knobs, newKnob(tracker.cooldown));
     knobs.addToContainer(uiModulator);
 
     new UIPulseMeter(ui, METER_WIDTH, ROW_HEIGHT,
@@ -37,7 +39,12 @@ public class UIDropTracker implements UIModulatorControls<DropTracker> {
         if (controller == null) {
           return "no ctrl";
         }
-        return controller.getMood() == Mood.BUILDING ? "armed" : "waiting";
+        double remaining = tracker.getCooldownRemaining();
+        if (remaining > 0) {
+          // Counting down is the difference between "held off" and "broken".
+          return String.format("%.0fs", remaining);
+        }
+        return controller.getMood() == Mood.AMBIENT ? "armed" : "ready";
       }).addToContainer(uiModulator);
   }
 }

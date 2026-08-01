@@ -192,3 +192,25 @@ seconds after entering DRIVING, and fully shut two seconds after leaving.
 This is closer to the original spec than the follower was. "roughly 2 seconds to
 transition fully" is not something an RC curve does: one time constant gets it to
 63% and it approaches the rest asymptotically without ever arriving.
+
+## Revision: BUILDING is gone; the drop is AMBIENT to DRIVING with a holdoff
+
+Supersedes the three-state mood machine described above.
+
+BUILDING is removed. Recognising a riser meant judging the *shape* of the
+intensity curve rather than the presence of an event, and that judgement is too
+fragile to hang a show on -- the thresholds that separate a build from a track
+simply getting louder hold for one song and not the next, and it guessed wrong at
+exactly the moments that mattered. Two states remain, AMBIENT and DRIVING, both
+decided purely by whether bass is landing, which is a fact rather than a
+judgement.
+
+Removed along with it: the Rise and Window parameters, the build peak and stall
+tracking, and the intensity-rise detector. Intensity is still measured, smoothed,
+published and used by AmbientTracker -- it simply no longer decides anything.
+
+DropTracker now fires on AMBIENT -> DRIVING, and carries a **Reset** cooldown
+defaulting to 60 seconds. A transition arriving inside that window is ignored
+rather than deferred, so the holdoff cannot leave a drop queued to fire the
+instant it expires. The cooldown starts elapsed, so the first drop of a set is
+never swallowed.
