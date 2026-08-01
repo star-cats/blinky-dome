@@ -17,10 +17,13 @@ import heronarts.lx.parameter.TriggerParameter;
  * no tempo of its own -- shaped into exp(-t*k/10) and multiplied by a gate that
  * only opens in {@link Mood#DRIVING}.
  *
- * The gate is an RC follower rather than a switch on purpose. A hard cut on the
- * mood change would slam the whole rig on and off at the exact moment the music
- * is doing something interesting; easing over a couple of seconds lets the drive
- * layer arrive under the drop instead of snapping in on top of it.
+ * The gate ramps rather than switching, on purpose. A hard cut on the mood change
+ * would slam the whole rig on and off at the exact moment the music is doing
+ * something interesting; sliding over a couple of seconds lets the drive layer
+ * arrive under the drop instead of snapping in on top of it.
+ *
+ * The ramp is linear, so {@link #gateTime} is the actual time to go from shut to
+ * fully open and back.
  *
  * Usable either way round: {@link #beat} for anything that fires discretely, and
  * the modulator's own value for anything that should follow the decay.
@@ -64,7 +67,7 @@ public class DriveTracker extends LXModulator implements LXNormalizedParameter, 
     if (controller == null) {
       // Nothing to follow. Let the gate fall rather than freezing it, so
       // deleting the controller fades this out instead of leaving it stuck on.
-      this.gate = approach(this.gate, 0, deltaMs);
+      this.gate = slew(this.gate, 0, deltaMs);
       this.lastBeatCount = -1;
       return 0;
     }
@@ -77,7 +80,7 @@ public class DriveTracker extends LXModulator implements LXNormalizedParameter, 
     }
     this.lastBeatCount = beats;
 
-    this.gate = approach(this.gate, controller.getMood() == Mood.DRIVING ? 1 : 0, deltaMs);
+    this.gate = slew(this.gate, controller.getMood() == Mood.DRIVING ? 1 : 0, deltaMs);
     return envelope(controller.getSinceBeatMs()) * this.gate;
   }
 
@@ -85,10 +88,24 @@ public class DriveTracker extends LXModulator implements LXNormalizedParameter, 
     return Math.exp(-(sinceBeatMs / 1000) * this.decay.getValue() / 10);
   }
 
-  private double approach(double current, double target, double deltaMs) {
-    double tau = this.gateTime.getValue() * 1000;
-    double alpha = (tau <= 0) ? 1 : 1 - Math.exp(-deltaMs / tau);
-    return current + (target - current) * alpha;
+  /**
+   * Linear slew toward the target: Gate is the time to cross the full 0-1 range.
+   *
+   * Linear rather than an exponential follower so the knob means what it says. An
+   * RC curve reaches only 63% of the way in one time constant and never actually
+   * arrives, so "2 seconds" would describe neither how long the gate takes to
+   * open nor how long until the drive layer is really at full. A straight ramp
+   * takes exactly the time on the dial, both directions.
+   */
+  private double slew(double current, double target, double deltaMs) {
+    double durationMs = this.gateTime.getValue() * 1000;
+    if (durationMs <= 0) {
+      return target;
+    }
+    double step = deltaMs / durationMs;
+    return (target > current)
+      ? Math.min(target, current + step)
+      : Math.max(target, current - step);
   }
 
   /** How far open the mood gate currently is, 0-1. Drawn by the UI. */

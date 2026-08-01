@@ -180,9 +180,11 @@ to the shape that caused it.
 ### The three trackers
 
 **Drive Tracker** emits `exp(-t*k/10)` on the controller's beat grid, multiplied
-by a gate that opens only in DRIVING. The gate is an RC follower, not a switch
+by a gate that opens only in DRIVING. The gate ramps rather than switching
 (**Gate**, default 2s), so the drive layer arrives under a drop rather than
-snapping in on top of it.
+snapping in on top of it. The ramp is linear, so Gate is the real time from shut
+to fully open — an exponential follower would only be 63% of the way there after
+the time on the dial, and would never quite arrive.
 
 **Ambient Tracker** is the same pulse scaled by smoothed intensity, and is never
 gated. It goes quiet during a breakdown because the room is quiet, not because a

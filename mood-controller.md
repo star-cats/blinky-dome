@@ -180,3 +180,15 @@ exists to stop noise dragging the tempo down, not to transpose real music.
 The outlier filter compares incoming intervals against the *unfloored* average.
 Comparing against the floored one would make every interval of a genuinely slow
 track read as an outlier, clearing the history and reseeding forever.
+
+## Revision: the DriveTracker gate is linear
+
+Supersedes "DriveTracker is gated by an RC follower" above.
+
+The gate ramps linearly, so Gate is the actual time to travel the full 0-1 range
+in either direction -- 2 seconds on the dial means the gate is fully open two
+seconds after entering DRIVING, and fully shut two seconds after leaving.
+
+This is closer to the original spec than the follower was. "roughly 2 seconds to
+transition fully" is not something an RC curve does: one time constant gets it to
+63% and it approaches the rest asymptotically without ever arriving.
