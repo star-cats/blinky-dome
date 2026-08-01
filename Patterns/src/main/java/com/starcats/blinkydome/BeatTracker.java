@@ -8,6 +8,7 @@ import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.TriggerParameter;
@@ -139,6 +140,37 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     new CompoundParameter("Lock", .25, 0, 1)
     .setDescription("How hard each beat pulls the clock back into alignment; 0 free-runs, 1 snaps");
 
+  /**
+   * How often to emit, relative to the beat being tracked.
+   *
+   * Only the output rate changes -- the tracked tempo is whatever the music is
+   * doing, and BPM keeps reporting that regardless of what comes out.
+   */
+  public enum Rate {
+    HALF("Half", .5),
+    SINGLE("Single", 1),
+    DOUBLE("Double", 2);
+
+    /** Emitted beats per tracked beat. */
+    public final double multiplier;
+
+    private final String label;
+
+    private Rate(String label, double multiplier) {
+      this.label = label;
+      this.multiplier = multiplier;
+    }
+
+    @Override
+    public String toString() {
+      return this.label;
+    }
+  }
+
+  public final EnumParameter<Rate> rate =
+    new EnumParameter<Rate>("Rate", Rate.SINGLE)
+    .setDescription("Emit on every beat, every other beat, or twice per beat");
+
   public final CompoundParameter shift =
     (CompoundParameter) new CompoundParameter("Shift", 0, -200, 200)
     .setUnits(LXParameter.Units.MILLISECONDS)
@@ -172,8 +204,17 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   /** Current best estimate of one beat, in milliseconds. 0 until we have one. */
   private double periodMs = 0;
 
-  /** Position within the current beat, 0-1. This is the modulator's value. */
-  private double phase = 0;
+  /**
+   * Position in beats since the tracker locked on, counting continuously: the
+   * fractional part is where we are inside the current beat, the integer part
+   * is which beat it is.
+   *
+   * Held as one running number rather than a wrapped 0-1 phase because half
+   * time needs to know *which* beat this is, and a phase that resets every beat
+   * cannot say. It also makes correction cleaner -- nudging the clock across a
+   * beat boundary is just arithmetic here, with no wrap to special-case.
+   */
+  private double beatPosition = 0;
 
   /** Every sighting that cleared debounce, timestamped on the elapsed clock. */
   private final double[] sightings = new double[SIGHTING_HISTORY];
@@ -199,6 +240,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     addParameter("minBpm", this.minBpm);
     addParameter("window", this.window);
     addParameter("lock", this.lock);
+    addParameter("rate", this.rate);
     addParameter("shift", this.shift);
     addParameter("bpm", this.bpm);
     addParameter("confidence", this.confidence);
@@ -237,10 +279,28 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
    */
   private double outputPhase() {
     if (this.periodMs <= 0) {
-      return this.phase;
+      return trackingPhase();
     }
-    double shifted = this.phase - this.shift.getValue() / this.periodMs;
-    return shifted - Math.floor(shifted);
+    double position = outputPosition(this.beatPosition);
+    return position - Math.floor(position);
+  }
+
+  /**
+   * The output's own running position, in emitted beats.
+   *
+   * Shift and rate compose here and nowhere else: slide by the shift, then
+   * rescale by the rate. Every whole number this passes is a beat to emit,
+   * which is what makes half and double time fall out of the same arithmetic
+   * as single instead of needing cases of their own.
+   */
+  private double outputPosition(double beats) {
+    double shifted = beats - this.shift.getValue() / this.periodMs;
+    return shifted * this.rate.getEnum().multiplier;
+  }
+
+  /** Where we are inside the tracked beat, 0-1. */
+  private double trackingPhase() {
+    return this.beatPosition - Math.floor(this.beatPosition);
   }
 
   /**
@@ -383,7 +443,10 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
    * shifted stream every time a resync happened.
    */
   private void syncPhase() {
-    this.phase = 0;
+    // Snap to the nearest whole beat rather than zeroing the count: half time
+    // alternates on that count, so throwing it away would let a resync flip
+    // which beats get emitted.
+    this.beatPosition = Math.round(this.beatPosition);
     if (!hasTempo()) {
       fire();
       return;
@@ -411,7 +474,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
       syncPhase();
       return;
     }
-    double error = this.phase;
+    double error = trackingPhase();
     if (error > .5) {
       error -= 1;
     }
@@ -426,8 +489,9 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
       return;
     }
     this.missedCorrections = 0;
-    this.phase -= this.lock.getValue() * error;
-    this.phase -= Math.floor(this.phase);
+    // No wrapping: the position is continuous, so a nudge across a beat
+    // boundary just carries into the next beat and the count stays honest.
+    this.beatPosition -= this.lock.getValue() * error;
   }
 
   private void advanceClock(double deltaMs) {
@@ -437,17 +501,16 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     }
     double advance = deltaMs / this.periodMs;
 
-    // Read the output position before advancing, then move both by the same
-    // amount. Because the offset is sampled once per frame, turning the Shift
-    // knob relocates the next beat rather than manufacturing a spurious one --
-    // which is what comparing raw output phase between frames would do.
-    double output = outputPhase() + advance;
+    // Both readings use the knobs as they are right now, so the only difference
+    // between them is this frame's advance. That is what keeps turning Shift or
+    // switching Rate from manufacturing a beat: the jump moves both ends
+    // equally and cancels, where comparing against last frame's stored output
+    // would see it as a crossing.
+    double before = outputPosition(this.beatPosition);
+    this.beatPosition += advance;
+    double after = outputPosition(this.beatPosition);
 
-    this.phase += advance;
-    this.phase -= Math.floor(this.phase);
-
-    while (output >= 1) {
-      output -= 1;
+    if (Math.floor(after) > Math.floor(before)) {
       fire();
     }
   }
@@ -474,7 +537,7 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
     this.sightingHead = 0;
     this.missedCorrections = 0;
     this.periodMs = 0;
-    this.phase = 0;
+    this.beatPosition = 0;
     this.sinceDetectMs = 0;
     this.sawFirstEdge = false;
     this.armed = true;
@@ -496,6 +559,14 @@ public class BeatTracker extends LXModulator implements LXNormalizedParameter, L
   /** Current beat length in milliseconds, or 0 before a tempo is established. */
   public double getPeriodMs() {
     return this.periodMs;
+  }
+
+  /**
+   * Milliseconds between emitted beats, which is the tracked period divided by
+   * the rate. Equal to {@link #getPeriodMs()} at single time.
+   */
+  public double getOutputPeriodMs() {
+    return this.periodMs / this.rate.getEnum().multiplier;
   }
 
   /**

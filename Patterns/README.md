@@ -149,11 +149,18 @@ moves where beats land without disturbing the lock or the BPM estimate. Shifts
 larger than one beat wrap, which only comes up above 300 BPM. The phase ramp
 moves with the trigger, so both outputs always describe the same beat.
 
-The second row is set-and-forget: **Min BPM** sets the tempo range (intervals
-fold into Min BPM up to twice Min BPM, so a gate hitting every eighth note still
-reports the right tempo), **Avg** is the moving-average window — higher is
-steadier but slower to follow — and **Relearn** throws the tempo away and starts
-over.
+The second row is set-and-forget. **Rate** picks how often to emit — `Half`
+(every other beat), `Single` (the default, on the beat), or `Double` (twice per
+beat). It changes only the output: the tracker still follows the music at its
+real tempo, and BPM keeps reporting that, with the chart marking emitted beats
+and the readout naming the rate when it isn't Single. Half time lands on real
+beats, just every other one; double time interleaves midpoints. Rate composes
+with Shift, so you can run at double time nudged 40ms early.
+
+Then **Min BPM** sets the tempo range (intervals fold into Min BPM up to twice
+Min BPM, so a gate hitting every eighth note still reports the right tempo),
+**Avg** is the moving-average window — higher is steadier but slower to follow —
+and **Relearn** throws the tempo away and starts over.
 
 ### The chart
 

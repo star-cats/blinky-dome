@@ -1,6 +1,6 @@
 {
   "version": "1.2.1",
-  "timestamp": 1785511124694,
+  "timestamp": 1785512400193,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -554,7 +554,7 @@
           "autoCycleMode": 1,
           "autoCycleMode/name": "RANDOM",
           "autoCycleTimeSecs": 6.1,
-          "autoCycleCursor": 17,
+          "autoCycleCursor": 15,
           "triggerSwatchCycle": false,
           "expandedPerformance": true,
           "label1": "1",
@@ -573,7 +573,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "Dunes",
+              "label": "Flames",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -589,15 +589,15 @@
                 },
                 "parameters": {
                   "label": "LX",
-                  "mode": 0,
-                  "mode/name": "FIXED",
-                  "period": 3.0,
-                  "primary/brightness": 37.83529281616211,
-                  "primary/saturation": 80.49871063232422,
-                  "primary/hue": 36.26953125,
+                  "mode": 2,
+                  "mode/name": "CYCLE",
+                  "period": 20.0,
+                  "primary/brightness": 0.0,
+                  "primary/saturation": 63.68235397338867,
+                  "primary/hue": 180.64453125,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
-                  "secondary/hue": 181.08982849121094
+                  "secondary/hue": 359.0
                 },
                 "children": {}
               },
@@ -614,9 +614,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 21.0,
-                  "primary/brightness": 53.5644416809082,
-                  "primary/saturation": 83.19661712646484,
-                  "primary/hue": 37.359375,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 0.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -636,9 +636,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 22.0,
-                  "primary/brightness": 86.40625,
-                  "primary/saturation": 90.73633575439453,
-                  "primary/hue": 40.39453125,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 91.12823486328125,
+                  "primary/hue": 23.33203125,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 240.25782775878906
@@ -658,9 +658,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 30.0,
-                  "primary/brightness": 93.71090698242188,
-                  "primary/saturation": 83.23308563232422,
-                  "primary/hue": 20.0625,
+                  "primary/brightness": 85.30924224853516,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 47.89453125,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -680,9 +680,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 30.0,
-                  "primary/brightness": 78.57749938964844,
-                  "primary/saturation": 37.652992248535156,
-                  "primary/hue": 49.65234375,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 78.24737548828125,
+                  "primary/hue": 51.7734375,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -5054,19 +5054,19 @@
               "release": 139.4847403437656,
               "slope": 4.869140647351741,
               "band-1": 0.0,
-              "band-2": 0.0,
-              "band-3": 0.0065563865620388295,
-              "band-4": 0.007802865015607452,
-              "band-5": 0.0,
+              "band-2": 0.08912640971200181,
+              "band-3": 0.10732405803845835,
+              "band-4": 0.09808255546487366,
+              "band-5": 0.0807992785129219,
               "band-6": 0.0,
               "band-7": 0.0,
-              "band-8": 0.0,
-              "band-9": 0.0,
-              "band-10": 0.0,
-              "band-11": 0.0239763400193731,
-              "band-12": 0.19479579132871894,
-              "band-13": 0.24676820678205913,
-              "band-14": 0.17965672425254176,
+              "band-8": 0.018116403935878767,
+              "band-9": 0.04290784566499539,
+              "band-10": 0.0014742241474080542,
+              "band-11": 0.0,
+              "band-12": 0.13705847435780516,
+              "band-13": 0.2011257734468871,
+              "band-14": 0.08009240426621,
               "band-15": 0.0,
               "band-16": 0.0
             },
@@ -5323,7 +5323,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 475283,
@@ -5417,7 +5417,7 @@
                           "exp": 1.0
                         },
                         "children": {},
-                        "basis": 0.5617805473579728
+                        "basis": 0.07577097989979413
                       },
                       {
                         "id": 482193,
@@ -5459,7 +5459,7 @@
                           "exp": 1.0
                         },
                         "children": {},
-                        "basis": 0.7148996172615739
+                        "basis": 0.34686085952953244
                       }
                     ],
                     "modulations": [
@@ -5965,7 +5965,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.17197137115924319
+                        "basis": 0.17451058577055062
                       },
                       {
                         "id": 482150,
@@ -6007,7 +6007,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6378557110000057
+                        "basis": 0.3156344570000001
                       },
                       {
                         "id": 482151,
@@ -6049,7 +6049,7 @@
                           "exp": 0.00960937344643753
                         },
                         "children": {},
-                        "basis": 0.38285334415022076
+                        "basis": 0.6328500344200726
                       }
                     ],
                     "modulations": [
@@ -6335,7 +6335,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9579959160692136
+                        "basis": 0.14506668287910607
                       },
                       {
                         "id": 500377,
@@ -6382,7 +6382,7 @@
                           "triggerOut": false
                         },
                         "children": {},
-                        "basis": 0.10086573126865998
+                        "basis": 9.485418353500918E-4
                       }
                     ],
                     "modulations": [
@@ -6607,7 +6607,7 @@
                           "exp": -0.021328124508727342
                         },
                         "children": {},
-                        "basis": 0.4242644779720292
+                        "basis": 0.8473911952882649
                       },
                       {
                         "id": 523895,
@@ -6649,7 +6649,7 @@
                           "exp": -0.021328124508727342
                         },
                         "children": {},
-                        "basis": 0.17182594265806875
+                        "basis": 0.9406836231458274
                       },
                       {
                         "id": 524105,
@@ -6691,7 +6691,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.26489792351817987
+                        "basis": 0.9616394121699637
                       }
                     ],
                     "modulations": [
@@ -6891,7 +6891,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 3,
             "patterns": [
               {
                 "id": 478637,
@@ -6985,7 +6985,7 @@
                           "exp": 0.031484374005231075
                         },
                         "children": {},
-                        "basis": 0.4550764868812342
+                        "basis": 0.8537470307165653
                       }
                     ],
                     "modulations": [
@@ -7599,7 +7599,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9436659387213862
+                        "basis": 0.13365244855741737
                       }
                     ],
                     "modulations": [
@@ -7787,8 +7787,8 @@
                           "activeStep-8": false,
                           "activeStep-9": false,
                           "activeStep-10": false,
-                          "activeStep-11": true,
-                          "activeStep-12": false,
+                          "activeStep-11": false,
+                          "activeStep-12": true,
                           "activeStep-13": false,
                           "activeStep-14": false,
                           "activeStep-15": false,
@@ -7811,7 +7811,7 @@
                           "step-16": 0.0
                         },
                         "children": {},
-                        "basis": 0.41834658332559954
+                        "basis": 0.5619422767226283
                       }
                     ],
                     "modulations": [],
@@ -8262,7 +8262,7 @@
               "transitionEnabled": true,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 1,
+              "focusedPattern": 5,
               "triggerPatternCycle": false,
               "launchPatternCycle": false
             },
@@ -8286,7 +8286,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 5,
             "patterns": [
               {
                 "id": 478700,
@@ -8688,7 +8688,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7881927054557861
+                        "basis": 0.05720517515219753
                       },
                       {
                         "id": 623674,
@@ -9104,7 +9104,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9345563350402353
+                        "basis": 0.8031395253430169
                       },
                       {
                         "id": 486851,
@@ -9146,7 +9146,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.02306799238348606
+                        "basis": 0.5884331405616484
                       },
                       {
                         "id": 487950,
@@ -9502,7 +9502,7 @@
                           "triggerOut": false
                         },
                         "children": {},
-                        "basis": 0.7791329500551173
+                        "basis": 0.24134049530831891
                       },
                       {
                         "id": 537324,
@@ -9514,7 +9514,7 @@
                         },
                         "parameters": {
                           "label": "Env",
-                          "running": false,
+                          "running": true,
                           "trigger": false,
                           "reset": false,
                           "midiSource/index": 0,
@@ -9538,7 +9538,7 @@
                           "periodSlow": 10000.0
                         },
                         "children": {},
-                        "basis": 1.0,
+                        "basis": 0.5102665657688934,
                         "stages": [
                           {
                             "basis": 0.0,
@@ -9713,7 +9713,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.41469636993860265
+                        "basis": 0.22154086155179395
                       }
                     ],
                     "modulations": [
@@ -10052,8 +10052,8 @@
                   "cueActive": false,
                   "auxActive": false,
                   "autoCycleEnabled": true,
-                  "autoCycleMode": 0,
-                  "autoCycleMode/name": "NEXT",
+                  "autoCycleMode": 1,
+                  "autoCycleMode/name": "RANDOM",
                   "autoCycleTimeSecs": 4.1,
                   "transitionEnabled": true,
                   "transitionBlendMode": 0,
@@ -10115,7 +10115,7 @@
                           "exp": 0.009921873148414306
                         },
                         "children": {},
-                        "basis": 0.4632400501231968
+                        "basis": 0.8140507225635278
                       },
                       {
                         "id": 565006,
@@ -10157,7 +10157,7 @@
                           "exp": 0.32218749285675585
                         },
                         "children": {},
-                        "basis": 0.26219520801940077
+                        "basis": 0.2932215353654992
                       }
                     ],
                     "modulations": [
@@ -10592,7 +10592,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.2505281449623493
+                        "basis": 0.2959573172851563
                       }
                     ],
                     "modulations": [
@@ -10839,7 +10839,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 3,
+            "patternIndex": 0,
             "patterns": [
               {
                 "id": 483982,
@@ -11031,7 +11031,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6924504181494193
+                        "basis": 0.27420482820841635
                       },
                       {
                         "id": 484550,
@@ -11102,7 +11102,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5275814197296179
+                        "basis": 0.6611333113907323
                       },
                       {
                         "id": 555176,
@@ -11137,8 +11137,8 @@
                           "triggerMode/name": "EXTERNAL",
                           "triggerIn": false,
                           "triggerOut": false,
-                          "activeStep-1": true,
-                          "activeStep-2": false,
+                          "activeStep-1": false,
+                          "activeStep-2": true,
                           "activeStep-3": false,
                           "activeStep-4": false,
                           "activeStep-5": false,
@@ -12210,12 +12210,12 @@
                   "colorMode/name": "LINKED",
                   "blendMode": 1,
                   "blendMode/name": "HSV",
-                  "color1/brightness": 37.64706039428711,
-                  "color1/saturation": 80.85213413834572,
-                  "color1/hue": 36.26953125,
-                  "color2/brightness": 37.64706039428711,
-                  "color2/saturation": 75.32758012786508,
-                  "color2/hue": 0.8594373135752562,
+                  "color1/brightness": 0.0,
+                  "color1/saturation": 64.03577747941017,
+                  "color1/hue": 264.0387757440001,
+                  "color2/brightness": 0.0,
+                  "color2/saturation": 58.51122346892953,
+                  "color2/hue": 228.8446451370363,
                   "paletteIndex": 1,
                   "paletteStops": 2,
                   "paletteInvert": false,
@@ -12305,7 +12305,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 66760,
@@ -13013,7 +13013,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9693485969000903
+                        "basis": 0.9760027095000834
                       }
                     ],
                     "modulations": [
@@ -13325,11 +13325,11 @@
                   "blendMode": 0,
                   "blendMode/name": "RGB",
                   "color1/brightness": 100.0,
-                  "color1/saturation": 37.64156883955002,
-                  "color1/hue": 36.26953125,
+                  "color1/saturation": 20.82521218061447,
+                  "color1/hue": 264.0387757440001,
                   "color2/brightness": 0.0,
-                  "color2/saturation": 80.49871063232422,
-                  "color2/hue": 36.26953125,
+                  "color2/saturation": 63.68235397338867,
+                  "color2/hue": 264.0387757440001,
                   "paletteIndex": 1,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -13364,7 +13364,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 13,
+            "patternIndex": 9,
             "patterns": [
               {
                 "id": 305411,
@@ -13478,7 +13478,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3649375255125818
+                        "basis": 0.9320317325031194
                       }
                     ],
                     "modulations": [
@@ -13679,7 +13679,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.639948741878274
+                        "basis": 0.5142768437412247
                       }
                     ],
                     "modulations": [
@@ -14006,7 +14006,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.16643962775624818
+                        "basis": 0.14862019460706685
                       }
                     ],
                     "modulations": [
@@ -14698,7 +14698,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.05027716352056875
+                        "basis": 0.8747751365220341
                       },
                       {
                         "id": 228027,
@@ -14740,7 +14740,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.49952191640007815
+                        "basis": 0.014117737200077527
                       }
                     ],
                     "modulations": [
@@ -15118,7 +15118,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.46448383307345525
+                        "basis": 0.06459830854498912
                       }
                     ],
                     "modulations": [
@@ -15267,7 +15267,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.2413285892229853
+                        "basis": 0.0
                       }
                     ],
                     "modulations": [
@@ -15654,7 +15654,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7422746868998736
+                        "basis": 0.550136361899872
                       },
                       {
                         "id": 297483,
@@ -15696,7 +15696,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.38177245072213645
+                        "basis": 0.18963424027915343
                       },
                       {
                         "id": 297563,
@@ -15738,7 +15738,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.1501530768999609
+                        "basis": 0.9580147518999585
                       }
                     ],
                     "modulations": [
@@ -15899,11 +15899,11 @@
                       "blendMode": 0,
                       "blendMode/name": "RGB",
                       "color1/brightness": 0.0,
-                      "color1/saturation": 85.5761489868164,
-                      "color1/hue": 94.69802849999996,
+                      "color1/saturation": 100.0,
+                      "color1/hue": 188.00001525878906,
                       "color2/brightness": 0.0,
                       "color2/saturation": 0.0,
-                      "color2/hue": 220.4123201321754,
+                      "color2/hue": 313.7143068909645,
                       "paletteIndex": 1,
                       "paletteStops": 5,
                       "paletteInvert": false,
@@ -16100,11 +16100,11 @@
                   "blendMode": 0,
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
-                  "color1/saturation": 37.652992248535156,
-                  "color1/hue": 49.65234375,
-                  "color2/brightness": 78.4313735961914,
-                  "color2/saturation": 37.652992248535156,
-                  "color2/hue": 49.65234375,
+                  "color1/saturation": 78.24737548828125,
+                  "color1/hue": 51.7734375,
+                  "color2/brightness": 100.0,
+                  "color2/saturation": 78.24737548828125,
+                  "color2/hue": 51.7734375,
                   "paletteIndex": 5,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -16572,10 +16572,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
                   "color1/saturation": 0.0,
-                  "color1/hue": 36.26953125,
-                  "color2/brightness": 37.64706039428711,
-                  "color2/saturation": 80.49871063232422,
-                  "color2/hue": 111.27454819548996,
+                  "color1/hue": 264.0387757440001,
+                  "color2/brightness": 0.0,
+                  "color2/saturation": 63.68235397338867,
+                  "color2/hue": 129.85424153343172,
                   "paletteIndex": 1,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -16642,7 +16642,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.002634623268803482
+                        "basis": 0.16858529296281097
                       }
                     ],
                     "modulations": [
@@ -16680,7 +16680,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 3,
             "patterns": [
               {
                 "id": 135434,
@@ -16998,7 +16998,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5782463090133443
+                        "basis": 0.9385032251907673
                       }
                     ],
                     "modulations": [
@@ -17382,7 +17382,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.8836380619515514
+                        "basis": 0.3706652924678483
                       }
                     ],
                     "modulations": [
@@ -17630,7 +17630,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.4369501809727231
+                        "basis": 0.004640905836766683
                       }
                     ],
                     "modulations": [
@@ -17778,7 +17778,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6249415124001564
+                        "basis": 0.6799343790001533
                       }
                     ],
                     "modulations": [
@@ -17888,7 +17888,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 1,
             "patterns": [
               {
                 "id": 66865,
@@ -18726,7 +18726,7 @@
                       "exp": 0.0
                     },
                     "children": {},
-                    "basis": 0.032404880900093934
+                    "basis": 0.9375166183001022
                   },
                   {
                     "id": 317465,
@@ -18768,7 +18768,7 @@
                       "exp": 0.0
                     },
                     "children": {},
-                    "basis": 0.4195169508999481
+                    "basis": 0.32462868829995367
                   }
                 ],
                 "modulations": [
@@ -19565,10 +19565,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
                   "color1/saturation": 0.0,
-                  "color1/hue": 36.26953125,
-                  "color2/brightness": 37.64706039428711,
-                  "color2/saturation": 80.49871063232422,
-                  "color2/hue": 36.26953125,
+                  "color1/hue": 264.0387757440001,
+                  "color2/brightness": 0.0,
+                  "color2/saturation": 63.68235397338867,
+                  "color2/hue": 264.0387757440001,
                   "paletteIndex": 1,
                   "paletteStops": 2,
                   "paletteInvert": false,
@@ -19603,7 +19603,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 4,
             "patterns": [
               {
                 "id": 68193,
@@ -20355,7 +20355,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5304973512492553
+                        "basis": 0.15685920747621668
                       },
                       {
                         "id": 337303,
@@ -20397,7 +20397,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.8760996170998481
+                        "basis": 0.24400375499984478
                       }
                     ],
                     "modulations": [
@@ -20832,7 +20832,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.03548706361733028
+                        "basis": 0.6289218262844158
                       },
                       {
                         "id": 388264,
@@ -20874,7 +20874,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.001664334230256456
+                        "basis": 0.060205473447594346
                       },
                       {
                         "id": 388265,
@@ -21666,7 +21666,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.46025142297713223
+                        "basis": 0.667678952542003
                       }
                     ],
                     "modulations": [
@@ -21815,7 +21815,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.11674412077600466
+                        "basis": 0.2511209402712301
                       }
                     ],
                     "modulations": [
@@ -22083,7 +22083,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5572928113320621
+                        "basis": 0.729767915532853
                       }
                     ],
                     "modulations": [
@@ -22209,7 +22209,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.05677281957982444
+                        "basis": 0.6958570439260495
                       }
                     ],
                     "modulations": [
@@ -22601,11 +22601,11 @@
                   "blendMode": 0,
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
-                  "color1/saturation": 37.652992248535156,
-                  "color1/hue": 49.65234375,
-                  "color2/brightness": 78.4313735961914,
-                  "color2/saturation": 37.652992248535156,
-                  "color2/hue": 49.65234375,
+                  "color1/saturation": 78.24737548828125,
+                  "color1/hue": 51.7734375,
+                  "color2/brightness": 100.0,
+                  "color2/saturation": 78.24737548828125,
+                  "color2/hue": 51.7734375,
                   "paletteIndex": 5,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -22640,7 +22640,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 4,
+            "patternIndex": 0,
             "patterns": [
               {
                 "id": 66831,
@@ -23313,7 +23313,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3885270324537883
+                        "basis": 0.469627408665497
                       },
                       {
                         "id": 299172,
@@ -23355,7 +23355,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7442164823113474
+                        "basis": 0.25347805302121257
                       },
                       {
                         "id": 299173,
@@ -23397,7 +23397,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.17760507574678186
+                        "basis": 0.8403273371648063
                       }
                     ],
                     "modulations": [
@@ -23558,11 +23558,11 @@
                       "blendMode": 0,
                       "blendMode/name": "RGB",
                       "color1/brightness": 100.0,
-                      "color1/saturation": 99.44442749023438,
-                      "color1/hue": 1.970674033486091,
+                      "color1/saturation": 85.5761489868164,
+                      "color1/hue": 234.19921875,
                       "color2/brightness": 0.0,
                       "color2/saturation": 0.0,
-                      "color2/hue": 127.68496566566154,
+                      "color2/hue": 359.0,
                       "paletteIndex": 1,
                       "paletteStops": 5,
                       "paletteInvert": false,
@@ -23937,10 +23937,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
                   "color1/saturation": 0.0,
-                  "color1/hue": 36.26953125,
+                  "color1/hue": 264.0387757440001,
                   "color2/brightness": 100.0,
-                  "color2/saturation": 58.16402530166306,
-                  "color2/hue": 156.26953125,
+                  "color2/saturation": 58.16061420828869,
+                  "color2/hue": 24.038775744000077,
                   "paletteIndex": 1,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -24040,7 +24040,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 8,
+            "patternIndex": 5,
             "patterns": [
               {
                 "id": 345954,
@@ -24154,7 +24154,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3877546989703457
+                        "basis": 0.3892432218195282
                       }
                     ],
                     "modulations": [
@@ -24303,7 +24303,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7703834119979818
+                        "basis": 0.40677788058949615
                       }
                     ],
                     "modulations": [
@@ -24452,7 +24452,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.08193428949248009
+                        "basis": 0.6310715072315214
                       }
                     ],
                     "modulations": [
@@ -24623,7 +24623,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.508451140205734
+                        "basis": 0.9388816076816575
                       }
                     ],
                     "modulations": [
@@ -24825,7 +24825,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.31177307875470106
+                        "basis": 0.7619352634772355
                       }
                     ],
                     "modulations": [
@@ -25025,7 +25025,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3104022965999616
+                        "basis": 0.5871032381999624
                       }
                     ],
                     "modulations": [
@@ -25401,7 +25401,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3244961368039492
+                        "basis": 0.0
                       },
                       {
                         "id": 416940,
@@ -25443,7 +25443,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3244961368039492
+                        "basis": 0.0
                       },
                       {
                         "id": 417568,
@@ -25669,7 +25669,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.2733748057000072
+                        "basis": 0.41489519310000716
                       }
                     ],
                     "modulations": [
@@ -26733,7 +26733,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.36345437415371
+                        "basis": 0.7478102887738715
                       }
                     ],
                     "modulations": [
@@ -27030,7 +27030,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.411867124769371
+                        "basis": 0.6570989875506387
                       },
                       {
                         "id": 296660,
@@ -27072,7 +27072,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6207209610429801
+                        "basis": 0.31458163363017355
                       }
                     ],
                     "modulations": [
@@ -27537,7 +27537,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.08903234843008584
+                        "basis": 0.9892121915993741
                       }
                     ],
                     "modulations": [
@@ -28001,7 +28001,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6362744995487326
+                        "basis": 0.37015070754873103
                       }
                     ],
                     "modulations": [
@@ -28615,7 +28615,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.031530982521430204
+                        "basis": 0.6766683803021957
                       }
                     ],
                     "modulations": [
@@ -28890,7 +28890,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6168741973426415
+                        "basis": 0.8145631165702404
                       }
                     ],
                     "modulations": [
@@ -29265,7 +29265,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9681038618629075
+                        "basis": 0.2754602764766598
                       }
                     ],
                     "modulations": [
@@ -29514,7 +29514,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6657899213226338
+                        "basis": 0.6212100011020771
                       }
                     ],
                     "modulations": [
@@ -29799,7 +29799,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9583543413316475
+                        "basis": 0.32457527426030813
                       }
                     ],
                     "modulations": [
@@ -30084,7 +30084,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.04167459325424447
+                        "basis": 0.4519202006928328
                       }
                     ],
                     "modulations": [
@@ -30357,7 +30357,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6390001629588624
+                        "basis": 0.9378527591697731
                       },
                       {
                         "id": 189007,
@@ -30399,7 +30399,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.874356983299966
+                        "basis": 0.9743533998999646
                       }
                     ],
                     "modulations": [
@@ -30625,7 +30625,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.019746464599928477
+                        "basis": 0.671218443799928
                       }
                     ],
                     "modulations": [
@@ -30773,7 +30773,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.37364979519995345
+                        "basis": 0.6235575868999556
                       }
                     ],
                     "modulations": [
@@ -30974,7 +30974,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.8652885531717713
+                        "basis": 0.7995947836920977
                       },
                       {
                         "id": 301369,
@@ -31016,7 +31016,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.44260277835275824
+                        "basis": 0.8559021313578367
                       },
                       {
                         "id": 302518,
@@ -31435,7 +31435,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.025635508376401394
+                        "basis": 0.3740617014752696
                       },
                       {
                         "id": 229792,
@@ -31477,7 +31477,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.10106035709987515
+                        "basis": 0.054390111199874795
                       }
                     ],
                     "modulations": [
@@ -31664,7 +31664,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7935373600443654
+                        "basis": 0.3222236396597088
                       }
                     ],
                     "modulations": [
@@ -31981,7 +31981,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.2657026741278926
+                        "basis": 0.35830415696031
                       }
                     ],
                     "modulations": [
@@ -32170,7 +32170,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9089138239999971
+                        "basis": 0.9372128697999981
                       }
                     ],
                     "modulations": [
@@ -32407,11 +32407,11 @@
                   "blendMode": 0,
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
-                  "color1/saturation": 100.0,
-                  "color1/hue": 300.6328125,
-                  "color2/brightness": 100.0,
+                  "color1/saturation": 80.49871063232422,
+                  "color1/hue": 36.26953125,
+                  "color2/brightness": 37.64706039428711,
                   "color2/saturation": 0.0,
-                  "color2/hue": 120.6328125,
+                  "color2/hue": 216.26953125,
                   "paletteIndex": 1,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -34072,12 +34072,12 @@
                   "colorMode/name": "LINKED",
                   "blendMode": 1,
                   "blendMode/name": "HSV",
-                  "color1/brightness": 85.71428097784519,
+                  "color1/brightness": 23.3613413721323,
                   "color1/saturation": 100.0,
-                  "color1/hue": 277.7756696641445,
-                  "color2/brightness": 100.0,
+                  "color1/hue": 13.412388414144516,
+                  "color2/brightness": 37.64706039428711,
                   "color2/saturation": 100.0,
-                  "color2/hue": 300.6328125,
+                  "color2/hue": 36.26953125,
                   "paletteIndex": 1,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -34598,12 +34598,12 @@
                       "colorMode/name": "LINKED",
                       "blendMode": 0,
                       "blendMode/name": "RGB",
-                      "color1/brightness": 100.0,
-                      "color1/saturation": 100.0,
-                      "color1/hue": 70.72265625,
-                      "color2/brightness": 100.0,
-                      "color2/saturation": 96.82539664208889,
-                      "color2/hue": 70.72265625,
+                      "color1/brightness": 53.72549057006836,
+                      "color1/saturation": 83.19661712646484,
+                      "color1/hue": 37.359375,
+                      "color2/brightness": 53.72549057006836,
+                      "color2/saturation": 80.02201376855373,
+                      "color2/hue": 37.359375,
                       "paletteIndex": 2,
                       "paletteStops": 5,
                       "paletteInvert": false,
@@ -35239,12 +35239,12 @@
                       "colorMode/name": "LINKED",
                       "blendMode": 1,
                       "blendMode/name": "HSV",
-                      "color1/brightness": 100.0,
+                      "color1/brightness": 37.64706039428711,
                       "color1/saturation": 0.0,
-                      "color1/hue": 300.6328125,
-                      "color2/brightness": 100.0,
-                      "color2/saturation": 100.0,
-                      "color2/hue": 300.6328125,
+                      "color1/hue": 36.26953125,
+                      "color2/brightness": 37.64706039428711,
+                      "color2/saturation": 80.49871063232422,
+                      "color2/hue": 36.26953125,
                       "paletteIndex": 1,
                       "paletteStops": 5,
                       "paletteInvert": false,
@@ -35364,7 +35364,7 @@
             "class": "heronarts.lx.audio.BandGate",
             "internal": {
               "modulationColor": 6,
-              "modulationControlsExpanded": true,
+              "modulationControlsExpanded": false,
               "modulationsExpanded": true
             },
             "parameters": {
@@ -35391,7 +35391,7 @@
               "floor": 0.7565517231693557,
               "decay": 539.368057763204,
               "gate": false,
-              "average": 0.10122065446081796,
+              "average": 0.14420896798876803,
               "tap": false
             },
             "children": {}
@@ -35428,7 +35428,7 @@
               "floor": 0.6623957582758538,
               "decay": 128.12499962747097,
               "gate": false,
-              "average": 0.5579963262685042,
+              "average": 0.5465447484271662,
               "tap": false
             },
             "children": {}
@@ -35469,7 +35469,7 @@
             "class": "heronarts.lx.audio.BandFilter",
             "internal": {
               "modulationColor": 2,
-              "modulationControlsExpanded": true,
+              "modulationControlsExpanded": false,
               "modulationsExpanded": true
             },
             "parameters": {
@@ -35492,6 +35492,37 @@
               "slope": 4.5,
               "minFreq": 120.0,
               "maxFreq": 5161.02294921875
+            },
+            "children": {}
+          },
+          {
+            "id": 640594,
+            "class": "heronarts.lx.audio.BandFilter",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "Hi-Hat Band",
+              "running": true,
+              "trigger": false,
+              "reset": false,
+              "midiSource/index": 0,
+              "midiFilter/enabled": true,
+              "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
+              "gain": 0.0,
+              "range": 36.0,
+              "attack": 10.0,
+              "release": 100.0,
+              "slope": 4.5,
+              "minFreq": 3834.982177734375,
+              "maxFreq": 14389.625
             },
             "children": {}
           },
@@ -35535,7 +35566,7 @@
               "exp": 0.35382812516763806
             },
             "children": {},
-            "basis": 0.026349957615849854
+            "basis": 0.03884183645870536
           },
           {
             "id": 70317,
@@ -35577,7 +35608,7 @@
               "exp": 0.0
             },
             "children": {},
-            "basis": 0.05544440804854457
+            "basis": 0.08172926352928546
           },
           {
             "id": 131645,
@@ -35611,7 +35642,7 @@
               "floor": 0.0,
               "decay": 1600.0,
               "gate": false,
-              "average": 0.47576154665261017,
+              "average": 0.44103664606813586,
               "tap": false
             },
             "children": {}
@@ -35698,7 +35729,7 @@
               "exp": -0.017421863041818142
             },
             "children": {},
-            "basis": 0.0011882017456230373
+            "basis": 0.0017514995111672295
           },
           {
             "id": 151165,
@@ -35764,8 +35795,8 @@
               "activeStep-2": false,
               "activeStep-3": false,
               "activeStep-4": false,
-              "activeStep-5": true,
-              "activeStep-6": false,
+              "activeStep-5": false,
+              "activeStep-6": true,
               "activeStep-7": false,
               "activeStep-8": false,
               "activeStep-9": false,
@@ -35904,7 +35935,7 @@
               "activeStep-4": false,
               "activeStep-5": false,
               "activeStep-6": false,
-              "activeStep-7": true,
+              "activeStep-7": false,
               "activeStep-8": false,
               "activeStep-9": false,
               "activeStep-10": false,
@@ -35912,7 +35943,7 @@
               "activeStep-12": false,
               "activeStep-13": false,
               "activeStep-14": false,
-              "activeStep-15": false,
+              "activeStep-15": true,
               "activeStep-16": false,
               "step-1": false,
               "step-2": true,
@@ -35968,7 +35999,7 @@
               "triggerOut": false
             },
             "children": {},
-            "basis": 0.7153193432502202
+            "basis": 0.9780986867502236
           },
           {
             "id": 535276,
@@ -36010,7 +36041,7 @@
               "exp": 0.0
             },
             "children": {},
-            "basis": 0.3206573321509311
+            "basis": 0.20502439606904496
           },
           {
             "id": 541604,
@@ -36046,7 +36077,7 @@
               "triggerOut": false
             },
             "children": {},
-            "basis": 0.5438387778091232
+            "basis": 0.8016596146195687
           },
           {
             "id": 547522,
@@ -36194,7 +36225,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "Beat Tracker",
+              "label": "Bass Beat Tracker",
               "running": true,
               "trigger": false,
               "reset": false,
@@ -36211,8 +36242,43 @@
               "minBpm": 70.0,
               "window": 12,
               "lock": 0.2392968752028537,
-              "bpm": 124.85756447386262,
-              "confidence": 0.6839392448780385,
+              "shift": -61.749999737367034,
+              "bpm": 124.31031738120171,
+              "confidence": 0.8644484579242823,
+              "beat": false,
+              "relearn": false
+            },
+            "children": {}
+          },
+          {
+            "id": 640621,
+            "class": "com.starcats.blinkydome.BeatTracker",
+            "internal": {
+              "modulationColor": 1,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "Hi-Hat Tracker",
+              "running": true,
+              "trigger": false,
+              "reset": false,
+              "midiSource/index": 0,
+              "midiFilter/enabled": true,
+              "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
+              "input": 0.0,
+              "threshold": 0.14734375046100467,
+              "minBpm": 70.0,
+              "window": 12,
+              "lock": 0.40976562502328306,
+              "shift": -48.31250039860606,
+              "bpm": 125.61387421821772,
+              "confidence": 0.7415456877059732,
               "beat": false,
               "relearn": false
             },
@@ -36249,7 +36315,7 @@
           {
             "source": {
               "id": 67656,
-              "path": "/modulation/modulator/5"
+              "path": "/modulation/modulator/6"
             },
             "target": {
               "componentId": 66910,
@@ -36275,7 +36341,7 @@
           {
             "source": {
               "id": 67656,
-              "path": "/modulation/modulator/5"
+              "path": "/modulation/modulator/6"
             },
             "target": {
               "componentId": 66846,
@@ -36795,7 +36861,7 @@
           {
             "source": {
               "id": 131713,
-              "path": "/modulation/modulator/8"
+              "path": "/modulation/modulator/9"
             },
             "target": {
               "componentId": 131647,
@@ -36821,7 +36887,7 @@
           {
             "source": {
               "id": 131645,
-              "path": "/modulation/modulator/7"
+              "path": "/modulation/modulator/8"
             },
             "target": {
               "componentId": 131722,
@@ -36925,7 +36991,7 @@
           {
             "source": {
               "id": 70317,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 135386,
@@ -36951,7 +37017,7 @@
           {
             "source": {
               "id": 67656,
-              "path": "/modulation/modulator/5"
+              "path": "/modulation/modulator/6"
             },
             "target": {
               "componentId": 68174,
@@ -37055,7 +37121,7 @@
           {
             "source": {
               "id": 67656,
-              "path": "/modulation/modulator/5"
+              "path": "/modulation/modulator/6"
             },
             "target": {
               "componentId": 136708,
@@ -37107,7 +37173,7 @@
           {
             "source": {
               "id": 131645,
-              "path": "/modulation/modulator/7"
+              "path": "/modulation/modulator/8"
             },
             "target": {
               "componentId": 136708,
@@ -37133,7 +37199,7 @@
           {
             "source": {
               "id": 67656,
-              "path": "/modulation/modulator/5"
+              "path": "/modulation/modulator/6"
             },
             "target": {
               "componentId": 139435,
@@ -37211,7 +37277,7 @@
           {
             "source": {
               "id": 139669,
-              "path": "/modulation/modulator/9"
+              "path": "/modulation/modulator/10"
             },
             "target": {
               "componentId": 136708,
@@ -37237,7 +37303,7 @@
           {
             "source": {
               "id": 139669,
-              "path": "/modulation/modulator/9"
+              "path": "/modulation/modulator/10"
             },
             "target": {
               "componentId": 139435,
@@ -37367,12 +37433,12 @@
           {
             "source": {
               "id": 70317,
-              "path": "/modulation/modulator/6"
+              "path": "/modulation/modulator/7"
             },
             "target": {
               "componentId": 151165,
               "parameterPath": "input",
-              "path": "/modulation/modulator/10/input"
+              "path": "/modulation/modulator/11/input"
             },
             "id": 151166,
             "class": "heronarts.lx.modulation.LXCompoundModulation",
@@ -37393,7 +37459,7 @@
           {
             "source": {
               "id": 151165,
-              "path": "/modulation/modulator/10"
+              "path": "/modulation/modulator/11"
             },
             "target": {
               "componentId": 151159,
@@ -37419,7 +37485,7 @@
           {
             "source": {
               "id": 151165,
-              "path": "/modulation/modulator/10"
+              "path": "/modulation/modulator/11"
             },
             "target": {
               "componentId": 151158,
@@ -39109,7 +39175,7 @@
           {
             "source": {
               "id": 535276,
-              "path": "/modulation/modulator/15"
+              "path": "/modulation/modulator/16"
             },
             "target": {
               "componentId": 478551,
@@ -39135,12 +39201,12 @@
           {
             "source": {
               "id": 545072,
-              "path": "/modulation/modulator/19"
+              "path": "/modulation/modulator/20"
             },
             "target": {
               "componentId": 545595,
               "parameterPath": "input",
-              "path": "/modulation/modulator/20/input"
+              "path": "/modulation/modulator/21/input"
             },
             "id": 545778,
             "class": "heronarts.lx.modulation.LXCompoundModulation",
@@ -39161,12 +39227,12 @@
           {
             "source": {
               "id": 545595,
-              "path": "/modulation/modulator/20"
+              "path": "/modulation/modulator/21"
             },
             "target": {
               "componentId": 545463,
               "parameterPath": "input",
-              "path": "/modulation/modulator/18/input"
+              "path": "/modulation/modulator/19/input"
             },
             "id": 545857,
             "class": "heronarts.lx.modulation.LXCompoundModulation",
@@ -39187,7 +39253,7 @@
           {
             "source": {
               "id": 547522,
-              "path": "/modulation/modulator/17"
+              "path": "/modulation/modulator/18"
             },
             "target": {
               "componentId": 499631,
@@ -39213,7 +39279,7 @@
           {
             "source": {
               "id": 545463,
-              "path": "/modulation/modulator/18"
+              "path": "/modulation/modulator/19"
             },
             "target": {
               "componentId": 478551,
@@ -39239,7 +39305,7 @@
           {
             "source": {
               "id": 547522,
-              "path": "/modulation/modulator/17"
+              "path": "/modulation/modulator/18"
             },
             "target": {
               "componentId": 484346,
@@ -39265,7 +39331,7 @@
           {
             "source": {
               "id": 547522,
-              "path": "/modulation/modulator/17"
+              "path": "/modulation/modulator/18"
             },
             "target": {
               "componentId": 482231,
@@ -39291,7 +39357,7 @@
           {
             "source": {
               "id": 545463,
-              "path": "/modulation/modulator/18"
+              "path": "/modulation/modulator/19"
             },
             "target": {
               "componentId": 482231,
@@ -39322,9 +39388,35 @@
             "target": {
               "componentId": 635322,
               "parameterPath": "input",
-              "path": "/modulation/modulator/21/input"
+              "path": "/modulation/modulator/22/input"
             },
             "id": 635323,
+            "class": "heronarts.lx.modulation.LXCompoundModulation",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "LX",
+              "enabled": true,
+              "polarity": 0,
+              "polarity/name": "UNIPOLAR",
+              "range": 1.0
+            },
+            "children": {}
+          },
+          {
+            "source": {
+              "id": 640594,
+              "path": "/modulation/modulator/5"
+            },
+            "target": {
+              "componentId": 640621,
+              "parameterPath": "input",
+              "path": "/modulation/modulator/23/input"
+            },
+            "id": 640674,
             "class": "heronarts.lx.modulation.LXCompoundModulation",
             "internal": {
               "modulationColor": 0,
@@ -39351,7 +39443,7 @@
             "target": {
               "componentId": 67656,
               "parameterPath": "trigger",
-              "path": "/modulation/modulator/5/trigger"
+              "path": "/modulation/modulator/6/trigger"
             },
             "id": 67657,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39381,7 +39473,7 @@
             "target": {
               "componentId": 70317,
               "parameterPath": "trigger",
-              "path": "/modulation/modulator/6/trigger"
+              "path": "/modulation/modulator/7/trigger"
             },
             "id": 70318,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39406,7 +39498,7 @@
             "source": {
               "componentId": 76917,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/11/triggerOut"
+              "path": "/modulation/modulator/12/triggerOut"
             },
             "target": {
               "componentId": 67588,
@@ -39441,7 +39533,7 @@
             "target": {
               "componentId": 76917,
               "parameterPath": "triggerIn",
-              "path": "/modulation/modulator/11/triggerIn"
+              "path": "/modulation/modulator/12/triggerIn"
             },
             "id": 76920,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39466,7 +39558,7 @@
             "source": {
               "componentId": 76917,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/11/triggerOut"
+              "path": "/modulation/modulator/12/triggerOut"
             },
             "target": {
               "componentId": 68174,
@@ -39496,7 +39588,7 @@
             "source": {
               "componentId": 76917,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/11/triggerOut"
+              "path": "/modulation/modulator/12/triggerOut"
             },
             "target": {
               "componentId": 66910,
@@ -39526,7 +39618,7 @@
             "source": {
               "componentId": 76917,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/11/triggerOut"
+              "path": "/modulation/modulator/12/triggerOut"
             },
             "target": {
               "componentId": 66846,
@@ -39586,12 +39678,12 @@
             "source": {
               "componentId": 131645,
               "parameterPath": "gate",
-              "path": "/modulation/modulator/7/gate"
+              "path": "/modulation/modulator/8/gate"
             },
             "target": {
               "componentId": 131713,
               "parameterPath": "running",
-              "path": "/modulation/modulator/8/running"
+              "path": "/modulation/modulator/9/running"
             },
             "id": 131714,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39616,7 +39708,7 @@
             "source": {
               "componentId": 139665,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/12/triggerOut"
+              "path": "/modulation/modulator/13/triggerOut"
             },
             "target": {
               "componentId": 136708,
@@ -39651,7 +39743,7 @@
             "target": {
               "componentId": 139669,
               "parameterPath": "trigger",
-              "path": "/modulation/modulator/9/trigger"
+              "path": "/modulation/modulator/10/trigger"
             },
             "id": 139670,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39706,7 +39798,7 @@
             "source": {
               "componentId": 131645,
               "parameterPath": "gate",
-              "path": "/modulation/modulator/7/gate"
+              "path": "/modulation/modulator/8/gate"
             },
             "target": {
               "componentId": 136708,
@@ -39766,7 +39858,7 @@
             "source": {
               "componentId": 131645,
               "parameterPath": "gate",
-              "path": "/modulation/modulator/7/gate"
+              "path": "/modulation/modulator/8/gate"
             },
             "target": {
               "componentId": 6,
@@ -39796,12 +39888,12 @@
             "source": {
               "componentId": 76917,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/11/triggerOut"
+              "path": "/modulation/modulator/12/triggerOut"
             },
             "target": {
               "componentId": 139665,
               "parameterPath": "triggerIn",
-              "path": "/modulation/modulator/12/triggerIn"
+              "path": "/modulation/modulator/13/triggerIn"
             },
             "id": 220752,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39826,7 +39918,7 @@
             "source": {
               "componentId": 259083,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/13/triggerOut"
+              "path": "/modulation/modulator/14/triggerOut"
             },
             "target": {
               "componentId": 6,
@@ -39856,12 +39948,12 @@
             "source": {
               "componentId": 76917,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/11/triggerOut"
+              "path": "/modulation/modulator/12/triggerOut"
             },
             "target": {
               "componentId": 259083,
               "parameterPath": "triggerIn",
-              "path": "/modulation/modulator/13/triggerIn"
+              "path": "/modulation/modulator/14/triggerIn"
             },
             "id": 259477,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39946,12 +40038,12 @@
             "source": {
               "componentId": 342550,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/14/triggerOut"
+              "path": "/modulation/modulator/15/triggerOut"
             },
             "target": {
               "componentId": 139665,
               "parameterPath": "triggerIn",
-              "path": "/modulation/modulator/12/triggerIn"
+              "path": "/modulation/modulator/13/triggerIn"
             },
             "id": 343229,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -39976,7 +40068,7 @@
             "source": {
               "componentId": 139665,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/12/triggerOut"
+              "path": "/modulation/modulator/13/triggerOut"
             },
             "target": {
               "componentId": 139435,
@@ -40006,7 +40098,7 @@
             "source": {
               "componentId": 76917,
               "parameterPath": "triggerOut",
-              "path": "/modulation/modulator/11/triggerOut"
+              "path": "/modulation/modulator/12/triggerOut"
             },
             "target": {
               "componentId": 139435,
@@ -40041,7 +40133,7 @@
             "target": {
               "componentId": 541604,
               "parameterPath": "trigger",
-              "path": "/modulation/modulator/16/trigger"
+              "path": "/modulation/modulator/17/trigger"
             },
             "id": 544733,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -40071,7 +40163,7 @@
             "target": {
               "componentId": 547522,
               "parameterPath": "targetTrigger",
-              "path": "/modulation/modulator/17/targetTrigger"
+              "path": "/modulation/modulator/18/targetTrigger"
             },
             "id": 551998,
             "class": "heronarts.lx.modulation.LXTriggerModulation",
@@ -40156,7 +40248,7 @@
             "source": {
               "componentId": 635322,
               "parameterPath": "beat",
-              "path": "/modulation/modulator/21/beat"
+              "path": "/modulation/modulator/22/beat"
             },
             "target": {
               "componentId": 635870,
@@ -43861,7 +43953,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/label",
+                "parameterPath": "/lx/modulation/modulator/6/label",
                 "value": "LFO",
                 "normalizedValue": 0.0
               },
@@ -43869,7 +43961,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/running",
+                "parameterPath": "/lx/modulation/modulator/6/running",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -43877,7 +43969,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/trigger",
+                "parameterPath": "/lx/modulation/modulator/6/trigger",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -43885,7 +43977,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiSource/index",
+                "parameterPath": "/lx/modulation/modulator/6/midiSource/index",
                 "value": 0,
                 "normalizedValue": 0.0
               },
@@ -43893,7 +43985,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/enabled",
+                "parameterPath": "/lx/modulation/modulator/6/midiFilter/enabled",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -43901,7 +43993,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/channel",
+                "parameterPath": "/lx/modulation/modulator/6/midiFilter/channel",
                 "value": 16,
                 "normalizedValue": 1.0
               },
@@ -43909,7 +44001,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/minNote",
+                "parameterPath": "/lx/modulation/modulator/6/midiFilter/minNote",
                 "value": 0,
                 "normalizedValue": 0.0
               },
@@ -43917,7 +44009,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/noteRange",
+                "parameterPath": "/lx/modulation/modulator/6/midiFilter/noteRange",
                 "value": 128,
                 "normalizedValue": 1.0
               },
@@ -43925,7 +44017,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/minVelocity",
+                "parameterPath": "/lx/modulation/modulator/6/midiFilter/minVelocity",
                 "value": 1,
                 "normalizedValue": 0.0
               },
@@ -43933,7 +44025,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/velocityRange",
+                "parameterPath": "/lx/modulation/modulator/6/midiFilter/velocityRange",
                 "value": 127,
                 "normalizedValue": 1.0
               },
@@ -43941,7 +44033,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/loop",
+                "parameterPath": "/lx/modulation/modulator/6/loop",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -43949,7 +44041,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoSync",
+                "parameterPath": "/lx/modulation/modulator/6/tempoSync",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -43957,7 +44049,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoMultiplier",
+                "parameterPath": "/lx/modulation/modulator/6/tempoMultiplier",
                 "value": 4,
                 "normalizedValue": 0.26666666666666666
               },
@@ -43965,7 +44057,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoLock",
+                "parameterPath": "/lx/modulation/modulator/6/tempoLock",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -43973,7 +44065,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/clockMode",
+                "parameterPath": "/lx/modulation/modulator/6/clockMode",
                 "value": 0,
                 "normalizedValue": 0.0
               },
@@ -43981,7 +44073,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/periodFast",
+                "parameterPath": "/lx/modulation/modulator/6/periodFast",
                 "value": 9342.822030740843,
                 "normalizedValue": 0.6267501435664941
               },
@@ -43989,7 +44081,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/periodSlow",
+                "parameterPath": "/lx/modulation/modulator/6/periodSlow",
                 "value": 10000.0,
                 "normalizedValue": 0.3163156681145601
               },
@@ -43997,7 +44089,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/wave",
+                "parameterPath": "/lx/modulation/modulator/6/wave",
                 "value": 4,
                 "normalizedValue": 1.0
               },
@@ -44005,7 +44097,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/skew",
+                "parameterPath": "/lx/modulation/modulator/6/skew",
                 "value": 0.3467187564820051,
                 "normalizedValue": 0.6733593782410026
               },
@@ -44013,7 +44105,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/shape",
+                "parameterPath": "/lx/modulation/modulator/6/shape",
                 "value": 0.005546883214265108,
                 "normalizedValue": 0.5027734416071326
               },
@@ -44021,7 +44113,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/bias",
+                "parameterPath": "/lx/modulation/modulator/6/bias",
                 "value": 0.00562501372769475,
                 "normalizedValue": 0.5028125068638474
               },
@@ -44029,7 +44121,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/phase",
+                "parameterPath": "/lx/modulation/modulator/6/phase",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -44037,7 +44129,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/exp",
+                "parameterPath": "/lx/modulation/modulator/6/exp",
                 "value": 0.35382812516763806,
                 "normalizedValue": 0.676914062583819
               }
@@ -46810,192 +46902,8 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/label",
-                "value": "Music Mask",
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/running",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/trigger",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiSource/index",
-                "value": 0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/enabled",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/channel",
-                "value": 16,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/minNote",
-                "value": 0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/noteRange",
-                "value": 128,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/minVelocity",
-                "value": 1,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/midiFilter/velocityRange",
-                "value": 127,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/loop",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoSync",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoMultiplier",
-                "value": 4,
-                "normalizedValue": 0.26666666666666666
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoLock",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/clockMode",
-                "value": 0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/periodFast",
-                "value": 9484.18508459676,
-                "normalizedValue": 0.6291329561223734
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/periodSlow",
-                "value": 10000.0,
-                "normalizedValue": 0.3163156681145601
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/wave",
-                "value": 4,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/skew",
-                "value": 0.6264843540266156,
-                "normalizedValue": 0.8132421770133078
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/shape",
-                "value": 0.005546883214265108,
-                "normalizedValue": 0.5027734416071326
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/bias",
-                "value": 0.00562501372769475,
-                "normalizedValue": 0.5028125068638474
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/phase",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/exp",
-                "value": 0.35382812516763806,
-                "normalizedValue": 0.676914062583819
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/label",
-                "value": "EyeMask",
+                "value": "Music Mask",
                 "normalizedValue": 0.0
               },
               {
@@ -47115,8 +47023,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/periodFast",
-                "value": 7499.641888437412,
-                "normalizedValue": 0.5928515640553087
+                "value": 9484.18508459676,
+                "normalizedValue": 0.6291329561223734
               },
               {
                 "scope": "MODULATION",
@@ -47139,24 +47047,24 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/skew",
-                "value": 0.4544531246647239,
-                "normalizedValue": 0.7272265623323619
+                "value": 0.6264843540266156,
+                "normalizedValue": 0.8132421770133078
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/shape",
-                "value": 0.0,
-                "normalizedValue": 0.5
+                "value": 0.005546883214265108,
+                "normalizedValue": 0.5027734416071326
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/bias",
-                "value": 0.0,
-                "normalizedValue": 0.5
+                "value": 0.00562501372769475,
+                "normalizedValue": 0.5028125068638474
               },
               {
                 "scope": "MODULATION",
@@ -47171,22 +47079,22 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/exp",
-                "value": 0.39124999986961484,
-                "normalizedValue": 0.6956249999348074
+                "value": 0.35382812516763806,
+                "normalizedValue": 0.676914062583819
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/label",
-                "value": "Step Sequencer",
+                "parameterPath": "/lx/modulation/modulator/7/label",
+                "value": "EyeMask",
                 "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/running",
+                "parameterPath": "/lx/modulation/modulator/7/running",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47194,7 +47102,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/trigger",
+                "parameterPath": "/lx/modulation/modulator/7/trigger",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47202,7 +47110,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/midiSource/index",
+                "parameterPath": "/lx/modulation/modulator/7/midiSource/index",
                 "value": 0,
                 "normalizedValue": 0.0
               },
@@ -47210,7 +47118,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/midiFilter/enabled",
+                "parameterPath": "/lx/modulation/modulator/7/midiFilter/enabled",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47218,7 +47126,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/midiFilter/channel",
+                "parameterPath": "/lx/modulation/modulator/7/midiFilter/channel",
                 "value": 16,
                 "normalizedValue": 1.0
               },
@@ -47226,7 +47134,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/midiFilter/minNote",
+                "parameterPath": "/lx/modulation/modulator/7/midiFilter/minNote",
                 "value": 0,
                 "normalizedValue": 0.0
               },
@@ -47234,7 +47142,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/midiFilter/noteRange",
+                "parameterPath": "/lx/modulation/modulator/7/midiFilter/noteRange",
                 "value": 128,
                 "normalizedValue": 1.0
               },
@@ -47242,7 +47150,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/midiFilter/minVelocity",
+                "parameterPath": "/lx/modulation/modulator/7/midiFilter/minVelocity",
                 "value": 1,
                 "normalizedValue": 0.0
               },
@@ -47250,7 +47158,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/midiFilter/velocityRange",
+                "parameterPath": "/lx/modulation/modulator/7/midiFilter/velocityRange",
                 "value": 127,
                 "normalizedValue": 1.0
               },
@@ -47258,7 +47166,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/loop",
+                "parameterPath": "/lx/modulation/modulator/7/loop",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47266,7 +47174,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/tempoSync",
+                "parameterPath": "/lx/modulation/modulator/7/tempoSync",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47274,7 +47182,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/tempoMultiplier",
+                "parameterPath": "/lx/modulation/modulator/7/tempoMultiplier",
                 "value": 4,
                 "normalizedValue": 0.26666666666666666
               },
@@ -47282,7 +47190,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/tempoLock",
+                "parameterPath": "/lx/modulation/modulator/7/tempoLock",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47290,7 +47198,119 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/numSteps",
+                "parameterPath": "/lx/modulation/modulator/7/clockMode",
+                "value": 0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/periodFast",
+                "value": 7499.641888437412,
+                "normalizedValue": 0.5928515640553087
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/periodSlow",
+                "value": 10000.0,
+                "normalizedValue": 0.3163156681145601
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/wave",
+                "value": 4,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/skew",
+                "value": 0.4544531246647239,
+                "normalizedValue": 0.7272265623323619
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/shape",
+                "value": 0.0,
+                "normalizedValue": 0.5
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/bias",
+                "value": 0.0,
+                "normalizedValue": 0.5
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/phase",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/7/exp",
+                "value": 0.39124999986961484,
+                "normalizedValue": 0.6956249999348074
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/label",
+                "value": "Step Sequencer",
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/running",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/trigger",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/midiSource/index",
+                "value": 0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/midiFilter/enabled",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/midiFilter/channel",
                 "value": 16,
                 "normalizedValue": 1.0
               },
@@ -47298,7 +47318,79 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/triggerMode",
+                "parameterPath": "/lx/modulation/modulator/12/midiFilter/minNote",
+                "value": 0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/midiFilter/noteRange",
+                "value": 128,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/midiFilter/minVelocity",
+                "value": 1,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/midiFilter/velocityRange",
+                "value": 127,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/loop",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/tempoSync",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/tempoMultiplier",
+                "value": 4,
+                "normalizedValue": 0.26666666666666666
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/tempoLock",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/numSteps",
+                "value": 16,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/12/triggerMode",
                 "value": 1,
                 "normalizedValue": 1.0
               },
@@ -47306,7 +47398,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/triggerIn",
+                "parameterPath": "/lx/modulation/modulator/12/triggerIn",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47314,7 +47406,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/triggerOut",
+                "parameterPath": "/lx/modulation/modulator/12/triggerOut",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47322,7 +47414,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-1",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-1",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47330,7 +47422,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-2",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-2",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47338,7 +47430,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-3",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-3",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47346,7 +47438,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-4",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-4",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47354,7 +47446,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-5",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-5",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47362,7 +47454,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-6",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-6",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47370,7 +47462,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-7",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-7",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47378,7 +47470,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-8",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-8",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47386,7 +47478,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-9",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-9",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47394,7 +47486,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-10",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-10",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47402,7 +47494,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-11",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-11",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47410,7 +47502,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-12",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-12",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47418,7 +47510,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-13",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-13",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47426,7 +47518,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-14",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-14",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47434,7 +47526,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-15",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-15",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47442,7 +47534,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-16",
+                "parameterPath": "/lx/modulation/modulator/12/activeStep-16",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47450,7 +47542,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-1",
+                "parameterPath": "/lx/modulation/modulator/12/step-1",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47458,7 +47550,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-2",
+                "parameterPath": "/lx/modulation/modulator/12/step-2",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47466,7 +47558,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-3",
+                "parameterPath": "/lx/modulation/modulator/12/step-3",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47474,7 +47566,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-4",
+                "parameterPath": "/lx/modulation/modulator/12/step-4",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47482,7 +47574,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-5",
+                "parameterPath": "/lx/modulation/modulator/12/step-5",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47490,7 +47582,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-6",
+                "parameterPath": "/lx/modulation/modulator/12/step-6",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47498,7 +47590,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-7",
+                "parameterPath": "/lx/modulation/modulator/12/step-7",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47506,7 +47598,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-8",
+                "parameterPath": "/lx/modulation/modulator/12/step-8",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47514,7 +47606,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-9",
+                "parameterPath": "/lx/modulation/modulator/12/step-9",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47522,7 +47614,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-10",
+                "parameterPath": "/lx/modulation/modulator/12/step-10",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47530,7 +47622,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-11",
+                "parameterPath": "/lx/modulation/modulator/12/step-11",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47538,7 +47630,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-12",
+                "parameterPath": "/lx/modulation/modulator/12/step-12",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47546,7 +47638,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-13",
+                "parameterPath": "/lx/modulation/modulator/12/step-13",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47554,7 +47646,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-14",
+                "parameterPath": "/lx/modulation/modulator/12/step-14",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -47562,7 +47654,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-15",
+                "parameterPath": "/lx/modulation/modulator/12/step-15",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -47570,7 +47662,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-16",
+                "parameterPath": "/lx/modulation/modulator/12/step-16",
                 "value": 0.0,
                 "normalizedValue": 0.0
               }
@@ -54375,134 +54467,6 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/running",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/loop",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoSync",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoMultiplier",
-                "value": 4,
-                "normalizedValue": 0.26666666666666666
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/tempoLock",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/manualBasis",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/basisIn",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/clockMode",
-                "value": 0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/periodFast",
-                "value": 9484.18508459676,
-                "normalizedValue": 0.6291329561223734
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/periodSlow",
-                "value": 10000.0,
-                "normalizedValue": 0.3163156681145601
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/wave",
-                "value": 4,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/skew",
-                "value": 0.6264843540266156,
-                "normalizedValue": 0.8132421770133078
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/shape",
-                "value": 0.005546883214265108,
-                "normalizedValue": 0.5027734416071326
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/bias",
-                "value": 0.00562501372769475,
-                "normalizedValue": 0.5028125068638474
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/phase",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/5/exp",
-                "value": 0.35382812516763806,
-                "normalizedValue": 0.676914062583819
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/running",
                 "value": 1.0,
                 "normalizedValue": 1.0
@@ -54568,8 +54532,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/periodFast",
-                "value": 4507.3594217327045,
-                "normalizedValue": 0.5208203098736703
+                "value": 9484.18508459676,
+                "normalizedValue": 0.6291329561223734
               },
               {
                 "scope": "MODULATION",
@@ -54584,32 +54548,32 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/wave",
-                "value": 0,
-                "normalizedValue": 0.0
+                "value": 4,
+                "normalizedValue": 1.0
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/skew",
-                "value": -1.0,
-                "normalizedValue": 0.0
+                "value": 0.6264843540266156,
+                "normalizedValue": 0.8132421770133078
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/shape",
-                "value": 0.0,
-                "normalizedValue": 0.5
+                "value": 0.005546883214265108,
+                "normalizedValue": 0.5027734416071326
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/bias",
-                "value": 0.0,
-                "normalizedValue": 0.5
+                "value": 0.00562501372769475,
+                "normalizedValue": 0.5028125068638474
               },
               {
                 "scope": "MODULATION",
@@ -54624,336 +54588,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/6/exp",
-                "value": 0.0,
-                "normalizedValue": 0.5
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/running",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/loop",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/tempoSync",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/tempoMultiplier",
-                "value": 4,
-                "normalizedValue": 0.26666666666666666
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/tempoLock",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/manualBasis",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/basisIn",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/numSteps",
-                "value": 16,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/triggerMode",
-                "value": 1,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-1",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-2",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-3",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-4",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-5",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-6",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-7",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-8",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-9",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-10",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-11",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-12",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-13",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-14",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-15",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/activeStep-16",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-1",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-2",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-3",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-4",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-5",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-6",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-7",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-8",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-9",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-10",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-11",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-12",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-13",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-14",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-15",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/11/step-16",
-                "value": 0.0,
-                "normalizedValue": 0.0
+                "value": 0.35382812516763806,
+                "normalizedValue": 0.676914062583819
               },
               {
                 "scope": "MODULATION",
@@ -54967,47 +54603,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/gain",
-                "value": 9.033749967813492,
-                "normalizedValue": 0.5941015621647239
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/range",
-                "value": 42.275390612427145,
-                "normalizedValue": 0.40305989569363493
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/attack",
-                "value": 10.0,
-                "normalizedValue": 0.1
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/release",
-                "value": 303.05322585261604,
-                "normalizedValue": 0.5505027028567762
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/slope",
-                "value": 1.7068359889090061,
-                "normalizedValue": 0.3137890659272671
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/minFreq",
+                "parameterPath": "/lx/modulation/modulator/7/loop",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -55015,23 +54611,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/maxFreq",
-                "value": 335.50982666015625,
-                "normalizedValue": 0.3438535407376116
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/threshold",
-                "value": 0.3245312524493784,
-                "normalizedValue": 0.3245312524493784
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/floor",
+                "parameterPath": "/lx/modulation/modulator/7/tempoSync",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -55039,63 +54619,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/decay",
-                "value": 1600.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/gate",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/average",
-                "value": 0.6977559599555596,
-                "normalizedValue": 0.6977559599555596
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/7/tap",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/running",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/loop",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/tempoSync",
-                "value": 0.0,
-                "normalizedValue": 0.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/tempoMultiplier",
+                "parameterPath": "/lx/modulation/modulator/7/tempoMultiplier",
                 "value": 4,
                 "normalizedValue": 0.26666666666666666
               },
@@ -55103,7 +54627,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/tempoLock",
+                "parameterPath": "/lx/modulation/modulator/7/tempoLock",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -55111,7 +54635,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/manualBasis",
+                "parameterPath": "/lx/modulation/modulator/7/manualBasis",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -55119,7 +54643,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/basisIn",
+                "parameterPath": "/lx/modulation/modulator/7/basisIn",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -55127,7 +54651,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/clockMode",
+                "parameterPath": "/lx/modulation/modulator/7/clockMode",
                 "value": 0,
                 "normalizedValue": 0.0
               },
@@ -55135,15 +54659,15 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/periodFast",
-                "value": 963.8348996819499,
-                "normalizedValue": 0.346538092797016
+                "parameterPath": "/lx/modulation/modulator/7/periodFast",
+                "value": 4507.3594217327045,
+                "normalizedValue": 0.5208203098736703
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/periodSlow",
+                "parameterPath": "/lx/modulation/modulator/7/periodSlow",
                 "value": 10000.0,
                 "normalizedValue": 0.3163156681145601
               },
@@ -55151,7 +54675,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/wave",
+                "parameterPath": "/lx/modulation/modulator/7/wave",
                 "value": 0,
                 "normalizedValue": 0.0
               },
@@ -55159,7 +54683,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/skew",
+                "parameterPath": "/lx/modulation/modulator/7/skew",
                 "value": -1.0,
                 "normalizedValue": 0.0
               },
@@ -55167,23 +54691,23 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/shape",
-                "value": 0.0036830762401223183,
-                "normalizedValue": 0.5018415381200612
+                "parameterPath": "/lx/modulation/modulator/7/shape",
+                "value": 0.0,
+                "normalizedValue": 0.5
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/bias",
-                "value": 0.6599330375902355,
-                "normalizedValue": 0.8299665187951177
+                "parameterPath": "/lx/modulation/modulator/7/bias",
+                "value": 0.0,
+                "normalizedValue": 0.5
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/phase",
+                "parameterPath": "/lx/modulation/modulator/7/phase",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -55191,9 +54715,9 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/8/exp",
-                "value": -0.08191961934790015,
-                "normalizedValue": 0.4590401903260499
+                "parameterPath": "/lx/modulation/modulator/7/exp",
+                "value": 0.0,
+                "normalizedValue": 0.5
               },
               {
                 "scope": "MODULATION",
@@ -55208,8 +54732,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/12/loop",
-                "value": 1.0,
-                "normalizedValue": 1.0
+                "value": 0.0,
+                "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
@@ -55232,8 +54756,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/12/tempoLock",
-                "value": 0.0,
-                "normalizedValue": 0.0
+                "value": 1.0,
+                "normalizedValue": 1.0
               },
               {
                 "scope": "MODULATION",
@@ -55360,8 +54884,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/12/activeStep-12",
-                "value": 1.0,
-                "normalizedValue": 1.0
+                "value": 0.0,
+                "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
@@ -55384,8 +54908,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/12/activeStep-15",
-                "value": 0.0,
-                "normalizedValue": 0.0
+                "value": 1.0,
+                "normalizedValue": 1.0
               },
               {
                 "scope": "MODULATION",
@@ -55400,8 +54924,8 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/12/step-1",
-                "value": 0.0,
-                "normalizedValue": 0.0
+                "value": 1.0,
+                "normalizedValue": 1.0
               },
               {
                 "scope": "MODULATION",
@@ -55456,16 +54980,16 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/12/step-8",
-                "value": 1.0,
-                "normalizedValue": 1.0
+                "value": 0.0,
+                "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/12/step-9",
-                "value": 0.0,
-                "normalizedValue": 0.0
+                "value": 1.0,
+                "normalizedValue": 1.0
               },
               {
                 "scope": "MODULATION",
@@ -55527,7 +55051,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/9/running",
+                "parameterPath": "/lx/modulation/modulator/8/running",
                 "value": 1.0,
                 "normalizedValue": 1.0
               },
@@ -55535,9 +55059,121 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/9/loop",
-                "value": 1.0,
+                "parameterPath": "/lx/modulation/modulator/8/gain",
+                "value": 9.033749967813492,
+                "normalizedValue": 0.5941015621647239
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/range",
+                "value": 42.275390612427145,
+                "normalizedValue": 0.40305989569363493
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/attack",
+                "value": 10.0,
+                "normalizedValue": 0.1
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/release",
+                "value": 303.05322585261604,
+                "normalizedValue": 0.5505027028567762
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/slope",
+                "value": 1.7068359889090061,
+                "normalizedValue": 0.3137890659272671
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/minFreq",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/maxFreq",
+                "value": 335.50982666015625,
+                "normalizedValue": 0.3438535407376116
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/threshold",
+                "value": 0.3245312524493784,
+                "normalizedValue": 0.3245312524493784
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/floor",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/decay",
+                "value": 1600.0,
                 "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/gate",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/average",
+                "value": 0.6977559599555596,
+                "normalizedValue": 0.6977559599555596
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/8/tap",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/9/running",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/9/loop",
+                "value": 0.0,
+                "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
@@ -55584,24 +55220,24 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/9/clockMode",
-                "value": 1,
-                "normalizedValue": 0.3333333333333333
+                "value": 0,
+                "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/9/periodFast",
-                "value": 1000.0,
-                "normalizedValue": 0.35010952138840146
+                "value": 963.8348996819499,
+                "normalizedValue": 0.346538092797016
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/9/periodSlow",
-                "value": 210324.4469388993,
-                "normalizedValue": 0.6946484406944364
+                "value": 10000.0,
+                "normalizedValue": 0.3163156681145601
               },
               {
                 "scope": "MODULATION",
@@ -55616,22 +55252,6 @@
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/9/skew",
-                "value": 0.0,
-                "normalizedValue": 0.5
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/9/shape",
-                "value": 1.0,
-                "normalizedValue": 1.0
-              },
-              {
-                "scope": "MODULATION",
-                "type": "PARAMETER",
-                "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/9/bias",
                 "value": -1.0,
                 "normalizedValue": 0.0
               },
@@ -55639,17 +55259,361 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/9/shape",
+                "value": 0.0036830762401223183,
+                "normalizedValue": 0.5018415381200612
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/9/bias",
+                "value": 0.6599330375902355,
+                "normalizedValue": 0.8299665187951177
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/9/phase",
-                "value": 0.780000003054738,
-                "normalizedValue": 0.780000003054738
+                "value": 0.0,
+                "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
                 "parameterPath": "/lx/modulation/modulator/9/exp",
-                "value": -0.017421863041818142,
-                "normalizedValue": 0.49128906847909093
+                "value": -0.08191961934790015,
+                "normalizedValue": 0.4590401903260499
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/running",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/loop",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/tempoSync",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/tempoMultiplier",
+                "value": 4,
+                "normalizedValue": 0.26666666666666666
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/tempoLock",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/manualBasis",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/basisIn",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/numSteps",
+                "value": 16,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/triggerMode",
+                "value": 1,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-1",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-2",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-3",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-4",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-5",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-6",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-7",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-8",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-9",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-10",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-11",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-12",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-13",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-14",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-15",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/activeStep-16",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-1",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-2",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-3",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-4",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-5",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-6",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-7",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-8",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-9",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-10",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-11",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-12",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-13",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-14",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-15",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/13/step-16",
+                "value": 0.0,
+                "normalizedValue": 0.0
               },
               {
                 "scope": "MODULATION",
@@ -55663,7 +55627,15 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/10/input",
+                "parameterPath": "/lx/modulation/modulator/10/loop",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/tempoSync",
                 "value": 0.0,
                 "normalizedValue": 0.0
               },
@@ -55671,7 +55643,127 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/10/window",
+                "parameterPath": "/lx/modulation/modulator/10/tempoMultiplier",
+                "value": 4,
+                "normalizedValue": 0.26666666666666666
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/tempoLock",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/manualBasis",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/basisIn",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/clockMode",
+                "value": 1,
+                "normalizedValue": 0.3333333333333333
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/periodFast",
+                "value": 1000.0,
+                "normalizedValue": 0.35010952138840146
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/periodSlow",
+                "value": 210324.4469388993,
+                "normalizedValue": 0.6946484406944364
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/wave",
+                "value": 0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/skew",
+                "value": 0.0,
+                "normalizedValue": 0.5
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/shape",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/bias",
+                "value": -1.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/phase",
+                "value": 0.780000003054738,
+                "normalizedValue": 0.780000003054738
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/10/exp",
+                "value": -0.017421863041818142,
+                "normalizedValue": 0.49128906847909093
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/11/running",
+                "value": 1.0,
+                "normalizedValue": 1.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/11/input",
+                "value": 0.0,
+                "normalizedValue": 0.0
+              },
+              {
+                "scope": "MODULATION",
+                "type": "PARAMETER",
+                "enabled": true,
+                "parameterPath": "/lx/modulation/modulator/11/window",
                 "value": 0.5,
                 "normalizedValue": 0.5
               },
@@ -55679,7 +55771,7 @@
                 "scope": "MODULATION",
                 "type": "PARAMETER",
                 "enabled": true,
-                "parameterPath": "/lx/modulation/modulator/10/windowRangeMs",
+                "parameterPath": "/lx/modulation/modulator/11/windowRangeMs",
                 "value": 10000.0,
                 "normalizedValue": 0.1652754590984975
               }
@@ -55775,9 +55867,9 @@
         "animation": true,
         "camera": {
           "active": true,
-          "radius": 120.19553894241781,
-          "theta": 180.5528169471072,
-          "phi": -5.80944709177129,
+          "radius": 132.73882421805885,
+          "theta": 179.38172594213393,
+          "phi": -9.670167799806222,
           "x": -1.0101499348558036,
           "y": 24.27487796213245,
           "z": -7.647156257160532
