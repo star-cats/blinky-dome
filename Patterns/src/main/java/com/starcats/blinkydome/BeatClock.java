@@ -98,8 +98,13 @@ public class BeatClock {
   public double threshold = .5;
 
   /**
-   * Hard tempo floor. An interval implying a slower tempo than this is thrown
-   * away rather than folded up into range -- see the spec clarifications.
+   * Hard floor on the reported tempo.
+   *
+   * Applied to the average, never to the beats: every sighting is a real thing
+   * that happened and gets tracked, and it is only the tempo that comes out the
+   * other side that is prevented from reading slower than this. Discarding the
+   * beats instead would mean a slow passage silently stopped being tracked at
+   * all, which is worse than a tempo that reads high.
    */
   public double minBpm = 95;
 
@@ -120,8 +125,18 @@ public class BeatClock {
   private int outlierRun = 0;
   private int missedCorrections = 0;
 
-  /** Current best estimate of one beat, in milliseconds. 0 until we have one. */
+  /** Beat length the clock runs on, after the Min BPM floor. 0 until we have one. */
   private double periodMs = 0;
+
+  /**
+   * The same average before the floor is applied.
+   *
+   * Kept separately because the outlier test has to compare like with like. Test
+   * an incoming interval against the floored period and a track slower than the
+   * floor has every single interval read as an outlier -- which would clear the
+   * history, reseed, floor again, and do it forever.
+   */
+  private double rawPeriodMs = 0;
   private double bpm = 0;
   private double confidence = 0;
 
@@ -221,20 +236,13 @@ public class BeatClock {
       syncPhase();
       return;
     }
-    if (interval > slowestMs) {
-      // Below the hard tempo floor. A real hit, so it may still pull the phase,
-      // but it is not admissible evidence about the tempo.
-      correctPhase();
-      return;
-    }
-
     recordInterval(interval);
     correctPhase();
   }
 
   private void recordInterval(double interval) {
     if (this.intervalCount >= MIN_SAMPLES) {
-      double deviation = Math.abs(interval - this.periodMs) / this.periodMs;
+      double deviation = Math.abs(interval - this.rawPeriodMs) / this.rawPeriodMs;
       if (deviation > OUTLIER_TOLERANCE) {
         if (++this.outlierRun < OUTLIER_PATIENCE) {
           return;
@@ -268,8 +276,13 @@ public class BeatClock {
     if (mean <= 0) {
       return;
     }
-    this.periodMs = mean;
-    this.bpm = 60000 / mean;
+    this.rawPeriodMs = mean;
+
+    // The floor lands here and nowhere else: every interval above was recorded
+    // whatever it implied, and only the tempo handed out is held above Min BPM.
+    double slowestMs = 60000 / this.minBpm;
+    this.periodMs = Math.min(mean, slowestMs);
+    this.bpm = 60000 / this.periodMs;
 
     if (samples < MIN_SAMPLES) {
       // A single interval always looks perfectly consistent with itself.
@@ -404,6 +417,7 @@ public class BeatClock {
     this.sightingHead = 0;
     this.missedCorrections = 0;
     this.periodMs = 0;
+    this.rawPeriodMs = 0;
     this.bpm = 0;
     this.confidence = 0;
     this.beatPosition = 0;

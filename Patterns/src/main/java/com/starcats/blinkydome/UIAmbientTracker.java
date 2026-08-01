@@ -16,12 +16,15 @@ import heronarts.lx.studio.ui.modulation.UIModulatorControls;
 public class UIAmbientTracker implements UIModulatorControls<AmbientTracker> {
 
   private static final float METER_WIDTH = 54;
-  private static final float ROW_HEIGHT = UIKnob.HEIGHT + 14;
+
+  /** See UIDriveTracker: a horizontal container needs its height set explicitly. */
+  private static final float ROW_HEIGHT = UIKnob.HEIGHT + 16;
 
   @Override
   public void buildModulatorControls(LXStudio.UI ui, UIModulator uiModulator, AmbientTracker tracker) {
     uiModulator.setLayout(UI2dContainer.Layout.HORIZONTAL);
     uiModulator.setChildSpacing(4);
+    uiModulator.setContentHeight(ROW_HEIGHT);
 
     UI2dContainer knobs = UI2dContainer.newHorizontalContainer(ROW_HEIGHT, 4);
     addColumn(knobs, newKnob(tracker.decay));

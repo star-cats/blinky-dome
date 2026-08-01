@@ -145,8 +145,12 @@ constants. Two constants because the directions do different jobs: charge has to
 be quick enough that a riser reads as it happens, release slow enough that the
 gap between kicks does not look like the energy dropping.
 
-**Min BPM** is a hard floor — an interval implying anything slower is thrown
-away, never doubled into range. Set it near the slowest track you will play.
+**Min BPM** floors the tempo, not the beats. Every bass beat is tracked whatever
+spacing it arrives at; it is the averaged BPM that is never allowed to read below
+this. Below the floor the clock therefore runs faster than the music — at 70 BPM
+against a floor of 95 it emits 95 — so set it below the slowest track you will
+actually play. It is there to stop noise dragging the tempo down, not to
+transpose real music.
 
 ### The moods
 

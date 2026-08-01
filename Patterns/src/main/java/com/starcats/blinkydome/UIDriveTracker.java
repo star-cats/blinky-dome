@@ -17,12 +17,21 @@ import heronarts.lx.studio.ui.modulation.UIModulatorControls;
 public class UIDriveTracker implements UIModulatorControls<DriveTracker> {
 
   private static final float METER_WIDTH = 54;
-  private static final float ROW_HEIGHT = UIKnob.HEIGHT + 14;
+
+  /**
+   * Tall enough for a knob plus the meter's caption strip underneath.
+   *
+   * A horizontal container does not grow to fit its children the way a vertical
+   * one does, so this height has to be handed to the modulator explicitly --
+   * otherwise the meter draws past the bottom of the panel it was given.
+   */
+  private static final float ROW_HEIGHT = UIKnob.HEIGHT + 16;
 
   @Override
   public void buildModulatorControls(LXStudio.UI ui, UIModulator uiModulator, DriveTracker tracker) {
     uiModulator.setLayout(UI2dContainer.Layout.HORIZONTAL);
     uiModulator.setChildSpacing(4);
+    uiModulator.setContentHeight(ROW_HEIGHT);
 
     UI2dContainer knobs = UI2dContainer.newHorizontalContainer(ROW_HEIGHT, 4);
     addColumn(knobs, newKnob(tracker.decay));

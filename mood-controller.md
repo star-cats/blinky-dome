@@ -162,3 +162,21 @@ components. Settings to carry over to the new controller, for reference:
 
     Bass Beat Tracker: Thresh 0.372, Min BPM 99.6, Avg 12, Lock 0.372, Shift -63.8ms
     Hi-Hat Tracker:    dropped, no longer needed
+
+## Revision: Min BPM floors the tempo, it does not reject beats
+
+Supersedes "Min BPM is a hard floor" above.
+
+Rejecting a sighting is not allowed -- an actual bass beat happened and must be
+tracked. Every interval is recorded whatever tempo it implies. The floor is
+applied to the average instead: the smoothed BPM handed out is never allowed to
+read below Min BPM, and the clock runs on that floored period.
+
+One consequence is worth stating plainly. Below the floor the clock necessarily
+runs faster than the music -- at 70 BPM against a floor of 95 it emits 95 -- so
+the floor should be set below the slowest track that will actually be played. It
+exists to stop noise dragging the tempo down, not to transpose real music.
+
+The outlier filter compares incoming intervals against the *unfloored* average.
+Comparing against the floored one would make every interval of a genuinely slow
+track read as an outlier, clearing the history and reseeding forever.
