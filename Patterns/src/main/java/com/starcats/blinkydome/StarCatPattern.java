@@ -24,13 +24,11 @@ import heronarts.lx.pattern.LXPattern;
  * anti-aliased with a soft falloff rather than a hard cutoff for the same
  * reason: a crisp one-pixel outline would fall between columns and vanish.
  *
- * The tempo and the beat grid come from the {@link PrimaryController} via
- * {@link MoodState}, so the cat is on the same clock as everything else in the
- * show and there is no per-pattern beat tracking to tune. Its own clock
- * free-runs and is drifted onto the controller's rather than being set from it,
- * so nothing here ever jumps; see {@link #advanceClock}. With no controller in
- * the project, or before it has worked out a tempo, that free run is all there
- * is, at {@link #fallbackBpm}.
+ * The tempo and the beat grid come from the {@link PrimaryController}, through a
+ * {@link PrimaryController.Follower} that free-runs and drifts onto the grid
+ * rather than being set from it, so the cat is in time with the rest of the show
+ * without anything here ever jumping. There is no beat tracking in this file at
+ * all, and no {@link #sync} setting to get right twice.
  *
  * Geometry is expressed in units of the face radius and the radius itself as a
  * fraction of the model, so this renders the same shape on any model rather than
@@ -177,10 +175,10 @@ public class StarCatPattern extends LXPattern {
   // --- State -----------------------------------------------------------------
 
   /**
-   * The animation clock, in beats. One beat is one full turn of the bounce, so
-   * everything below is a function of this and nothing reads wall time directly.
+   * The animation clock. One beat is one full turn of the bounce, so everything
+   * below is a function of this and nothing reads wall time directly.
    */
-  private double beats = 0;
+  private final PrimaryController.Follower clock = new PrimaryController.Follower();
 
   private long lastBeatIndex = Long.MIN_VALUE;
 
@@ -225,64 +223,18 @@ public class StarCatPattern extends LXPattern {
 
   @Override
   protected void run(double deltaMs) {
-    advanceClock(deltaMs);
+    this.clock.loop(deltaMs, this.fallbackBpm.getValue(), this.sync.getValue());
     onBeat();
     layout(deltaMs);
     draw();
   }
 
-  /**
-   * Moves the animation clock, following the {@link PrimaryController}.
-   *
-   * The clock always free-runs, at the controller's tempo when it has one. It is
-   * never assigned the controller's position, only pulled toward it -- a cat is
-   * a physical object and it cannot teleport. A snap onto the grid, however
-   * small, reads as the animation glitching rather than as the beat arriving,
-   * and the moments the controller most wants to correct in -- a tempo change,
-   * the first bars of a new track -- are exactly the moments a viewer is
-   * watching. So the error is closed over {@link #sync} seconds instead.
-   *
-   * The correction is taken modulo one beat, toward whichever boundary is
-   * nearer, so the worst case to drift across is half a beat and the absolute
-   * beat count never matters. Reading the count rather than watching a per-frame
-   * flag keeps this right whichever order the engine runs the pattern and the
-   * modulator in.
-   */
-  private void advanceClock(double deltaMs) {
-    PrimaryController controller = MoodState.get();
-    BeatClock clock = (controller != null) ? controller.getClock() : null;
-
-    // Free-running is the normal case, not the fallback: with no tempo to follow
-    // the cat keeps hopping rather than freezing mid-air, which would read as a
-    // crash instead of as a pause.
-    double bpm = (controller != null && controller.getBpm() > 0)
-      ? controller.getBpm()
-      : this.fallbackBpm.getValue();
-    this.beats += deltaMs * .001 * bpm / 60;
-
-    if (clock == null || !clock.hasTempo()) {
-      return;
-    }
-
-    // Both clocks run at the same tempo, so this error is a standing offset the
-    // drift below can actually close, rather than something it has to chase.
-    double error = controller.getBeatCount() + clock.getOutputPhase() - this.beats;
-    error -= Math.floor(error);
-    if (error > .5) {
-      error -= 1;
-    }
-    // Exponential, so the correction eases in and out instead of arriving at a
-    // hard stop. Most of the way in one Sync, the rest shortly after.
-    double tauMs = this.sync.getValue() * 1000;
-    this.beats += error * (1 - Math.exp(-deltaMs / tauMs));
-  }
-
-  /** Colour change and size swell, once per beat of the clock above. */
+  /** Colour change and size swell, once per beat of the clock. */
   private void onBeat() {
-    long beatIndex = (long) Math.floor(this.beats + HUE_LEAD);
-    // Forward crossings only. The drift correction can walk the clock back over
-    // a boundary it just crossed, and re-crossing should not spend a second
-    // colour on the same beat.
+    long beatIndex = this.clock.beatIndex(HUE_LEAD);
+    // Forward crossings only, as Follower.beatIndex requires: the drift
+    // correction can walk the clock back over a boundary it just crossed, and
+    // re-crossing should not spend a second colour on the same beat.
     if (beatIndex <= this.lastBeatIndex) {
       return;
     }
@@ -304,7 +256,7 @@ public class StarCatPattern extends LXPattern {
     // the same rate whatever the frame rate is doing.
     this.swell -= this.swell * (1 - Math.exp(-deltaMs / POP_DECAY_MS));
 
-    double phase = this.beats * TWO_PI;
+    double phase = this.clock.getRadians();
     double squashAmount = this.squash.getValue();
 
     // |sin| rather than sin: the cat bounces off the floor once a beat instead

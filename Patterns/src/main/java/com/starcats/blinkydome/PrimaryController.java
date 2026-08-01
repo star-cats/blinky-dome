@@ -322,6 +322,24 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     return this.clock.getPeriodMs();
   }
 
+  /** Whether the clock has heard enough to have a tempo worth following. */
+  public boolean hasTempo() {
+    return this.clock.hasTempo();
+  }
+
+  /**
+   * Continuous position on the emitted beat grid, in beats: the whole part is
+   * the beat count, the fraction is how far through the current beat we are.
+   *
+   * Read this to know where the grid *is*. Do not animate from it directly --
+   * it moves in steps whenever the clock corrects itself, and anything that
+   * follows it literally will jump when it does. {@link Follower} is the thing
+   * to animate from.
+   */
+  public double getGridBeats() {
+    return this.clock.getBeatCount() + this.clock.getOutputPhase();
+  }
+
   /** Milliseconds since the last emitted beat -- the t in every child's envelope. */
   public double getSinceBeatMs() {
     return this.clock.getSinceBeatMs();
@@ -378,5 +396,114 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
   @Override
   public boolean isWrappable() {
     return false;
+  }
+
+  /**
+   * A private animation clock that stays on the controller's beat grid without
+   * ever jumping onto it.
+   *
+   * Anything that animates continuously -- a bounce, a sweep, a rotation --
+   * needs its own clock rather than the controller's readouts, and this is that
+   * clock. Hold one per animation, call {@link #loop} once a frame, and drive
+   * everything off {@link #getBeats} or {@link #getRadians}.
+   *
+   * It works the way it does because {@link #getGridBeats} is not something you
+   * can animate from. That position is honest about the music, which means it
+   * moves in steps: the clock nudges itself on every accepted beat and hard
+   * resyncs when the music goes away and comes back. Assigned straight into an
+   * animation those corrections read as the animation glitching rather than as
+   * the beat arriving, and they land at exactly the moments a viewer is watching
+   * -- a tempo change, the first bars of a new track.
+   *
+   * So this free-runs at the controller's tempo and is only ever pulled toward
+   * the grid, closing the error exponentially over the caller's sync time. Both
+   * clocks run at the same tempo, so that error is a standing offset the drift
+   * can actually close rather than something it has to chase. The correction is
+   * taken modulo one beat, toward whichever boundary is nearer, so the worst
+   * case to cross is half a beat and the absolute beat count never matters.
+   *
+   * With no controller in the project, or before one has found a tempo, it free
+   * runs at the caller's fallback rather than freezing. A stopped animation
+   * reads as a crash; a slightly-wrong-tempo one reads as fine.
+   */
+  public static class Follower {
+
+    private double beats = 0;
+    private double error = 0;
+    private boolean following = false;
+
+    /**
+     * Advances one frame.
+     *
+     * @param deltaMs frame time, as handed to run() or computeValue()
+     * @param fallbackBpm tempo to use when there is no controller or no tempo yet
+     * @param syncSeconds time constant for closing the error onto the grid; most
+     *   of the way in one of these, the rest shortly after
+     */
+    public void loop(double deltaMs, double fallbackBpm, double syncSeconds) {
+      PrimaryController controller = MoodState.get();
+
+      double bpm = (controller != null && controller.getBpm() > 0)
+        ? controller.getBpm()
+        : fallbackBpm;
+      this.beats += deltaMs * .001 * bpm / 60;
+
+      this.following = (controller != null) && controller.hasTempo();
+      if (!this.following) {
+        this.error = 0;
+        return;
+      }
+
+      double e = controller.getGridBeats() - this.beats;
+      e -= Math.floor(e);
+      if (e > .5) {
+        e -= 1;
+      }
+      this.error = e;
+
+      // Exponential, so the correction eases in and out instead of arriving at a
+      // hard stop -- a constant-rate slew would stop dead on arrival, and that
+      // change of speed is itself visible on something moving.
+      double tauMs = syncSeconds * 1000;
+      double alpha = (tauMs <= 0) ? 1 : 1 - Math.exp(-deltaMs / tauMs);
+      this.beats += this.error * alpha;
+    }
+
+    /** Continuous position in beats. Monotonic in practice, but see {@link #beatIndex}. */
+    public double getBeats() {
+      return this.beats;
+    }
+
+    /** Position within the current beat, 0-1. */
+    public double getPhase() {
+      return this.beats - Math.floor(this.beats);
+    }
+
+    /** Position in radians, one beat to the turn -- for feeding straight into sin/cos. */
+    public double getRadians() {
+      return this.beats * 2 * Math.PI;
+    }
+
+    /**
+     * Which beat we are in, optionally shifted by a lead in beats so an event can
+     * fire slightly before the beat lands.
+     *
+     * Callers watching this for changes must guard on the index having gone *up*,
+     * not merely differing. The drift correction can walk the clock back over a
+     * boundary it just crossed, and re-crossing should not fire the event twice.
+     */
+    public long beatIndex(double lead) {
+      return (long) Math.floor(this.beats + lead);
+    }
+
+    /** Whether there is a controller with a tempo being followed, or this is free-running. */
+    public boolean isFollowing() {
+      return this.following;
+    }
+
+    /** How far off the grid we currently are, in beats, signed. For UI and debugging. */
+    public double getErrorBeats() {
+      return this.error;
+    }
   }
 }
