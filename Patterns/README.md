@@ -83,7 +83,13 @@ Patterns/
     ├── java/com/starcats/blinkydome/
     │   ├── SpatialRainbowPattern.java     the demo pattern
     │   ├── ImageTest.java                 projects a jar-bundled image
-    │   ├── BeatTracker.java               shared on-beat clock (a modulator)
+    │   ├── BeatClock.java                 beat tracking, no Chromatik in it
+    │   ├── PrimaryController.java         tempo + intensity + mood (a modulator)
+    │   ├── Mood.java                      AMBIENT / BUILDING / DRIVING
+    │   ├── MoodState.java                 registry the trackers look it up through
+    │   ├── DriveTracker.java              on-beat pulse gated to DRIVING
+    │   ├── AmbientTracker.java            on-beat pulse scaled by intensity
+    │   ├── DropTracker.java               one-shot ramp on the drop
     │   ├── PortableImagePattern.java      image pattern with portable paths
     │   ├── PortableSlideshowPattern.java  slideshow with portable paths
     │   └── MediaPath.java                 media-relative path translation
@@ -105,107 +111,110 @@ would just duplicate them.
 
 ---
 
-## Beat Tracker
+## Mood system
 
-A **modulator**, not a pattern: it produces a shared, steady on-beat clock that
-any number of patterns can hook into, so the whole rig pulses together instead of
-each pattern doing its own audio analysis.
+Four modulators that between them work out what the music is doing and hand that
+conclusion to everything else. **PrimaryController** does the listening; the
+other three turn its conclusions into signal. One controller per show.
 
-Wiring it up, once per project:
+### Wiring
 
-1. Add a **Band Gate** modulator and aim it at the bass (that is Chromatik's own
-   thresholder — it is the thing that decides a kick just happened).
-2. Add a **Beat Tracker** modulator (Blinky Dome category).
-3. Map the Band Gate onto the tracker's **Input** knob.
-4. Map the tracker onto whatever you want moving in time.
+1. Add three **Band Filter** or **Band Gate** modulators aimed at low, mid and
+   high, or any three level sources.
+2. Add a **Primary Controller** and map those onto its **Low**, **Mid** and
+   **High** knobs.
+3. Add whichever of **Drive Tracker**, **Ambient Tracker** and **Drop Tracker**
+   you want. They find the controller by themselves — there is nothing to wire
+   between them.
 
-The tracker treats each rising edge on `Input` as a *sighting* of a beat,
-averages the gaps between sightings into a tempo, then runs its own clock at that
-tempo and emits the beat from the clock rather than from the gate. That
-indirection is the whole point: a bass gate fires late on a soft kick, twice on a
-sloppy one, and not at all during a breakdown, and anything driven straight off
-it inherits all of that. Driven off the averaged clock, the gate only has to be
-right *on average*.
+Only **Low** drives the beat clock. Mid and High feed intensity.
 
-Four things come out:
+### What the controller works out
 
-| Output | What it is | Use it for |
-| --- | --- | --- |
-| the modulator's value | `exp(-t*k/10)` — 1 on the beat, decaying after | anything that should pulse: brightness, size, intensity. This is what you get using it as a modulation source |
-| `Beat` | trigger on each beat | anything discrete |
-| `BPM` | tracked tempo | display, or driving other rates |
-| `Conf` | how consistent recent intervals are | deciding how much to trust the beat |
+| Output | What it is |
+| --- | --- |
+| the modulator's value | smoothed intensity, so the controller maps directly |
+| `Beat` | trigger on every beat of the tracked tempo |
+| `BPM` / `Conf` | tempo, and how consistent recent intervals have been |
+| `Intensity` | the same smoothed figure as the value |
+| mood | AMBIENT / BUILDING / DRIVING, read by the other three |
 
-**Decay** is the `k` in that envelope, with `t` in seconds: the output falls to
-1/e after `10/k` seconds, so 30 is a third of a second and 50 is a fifth. At 0 it
-never decays and you get a plain gate that sits at 1. The default of 30 leaves
-the pulse at about a quarter of full by the next beat at 128 BPM.
+Intensity is a weighted mix of the three bands (**Lo W** / **Mid W** / **Hi W**,
+normalized) run through a follower with separate **Charge** and **Release** time
+constants. Two constants because the directions do different jobs: charge has to
+be quick enough that a riser reads as it happens, release slow enough that the
+gap between kicks does not look like the energy dropping.
 
-The value is a pulse, not a ramp. If you want something that sweeps *across* the
-beat instead, `BeatTracker.getOutputPhase()` still returns the linear 0-1 ramp —
-it just isn't the mapped value any more.
+**Min BPM** is a hard floor — an interval implying anything slower is thrown
+away, never doubled into range. Set it near the slowest track you will play.
 
-The top row is what you touch while the music plays: **Input** (the mapping
-target), **Thresh** for how far the input must rise to count, **Lock** for how
-hard each sighting pulls the clock back into alignment (0 free-runs, 1 snaps),
-then **Shift** and **Decay**.
+### The moods
 
-**Shift** slides the emitted beat off the audio, ±200ms, positive being later.
-Use it for the lag between a trigger firing and light actually reaching an eye —
-or to deliberately push a pattern ahead of the kick. It is applied at the output
-only: the tracking phase stays locked to what the gate heard, so turning the knob
-moves where beats land without disturbing the lock or the BPM estimate. Shifts
-larger than one beat wrap, which only comes up above 300 BPM. The phase ramp
-moves with the trigger, so both outputs always describe the same beat.
+- **AMBIENT** — no bass for `Amb Bts` beats (default 6). The floor is empty.
+- **BUILDING** — reachable only from AMBIENT, and only after 4s of both silence
+  and settled state, when intensity has climbed by **Rise** over **Window** with
+  both halves of that window contributing. That last part is what tells a riser
+  from a track simply starting, which steps the intensity up in a single frame.
+- **DRIVING** — two consecutive high-confidence bass beats, from any state.
 
-The second row is set-and-forget. **Min BPM** is the slowest tempo worth
-believing — a gap longer than a few beats at that rate reads as a dropout rather
-than a very slow beat. **Avg** is the moving-average window, higher being
-steadier but slower to follow. **Relearn** throws the tempo away and starts over.
+A build that sets no new intensity peak for 10 seconds has stalled and falls back
+to AMBIENT. A build that resolves into a drive is a **drop**, and only that
+transition fires DropTracker.
 
-The tracker takes the gate's spacing at face value: whatever rate it fires at is
-the tempo it reports. A gate hitting every eighth note is tracked at eighth-note
-tempo, not folded back to the quarter. That puts the burden on the gate — if the
-tempo reads double what you expect, fix it at the Band Gate rather than here.
+### The charts
 
-### The chart
+The beat chart spans 3 seconds, scrolling right to left: red dots are registered
+beats, dashed lines are where the audio beat actually is, solid lines are where
+beats are emitted after **Shift**. Dots on the dashed lines means the tracking is
+right; the gap to the solid lines is the offset you dialled in. BPM sits top
+left.
 
-The device panel draws what the tracker is hearing against what it believes:
-gate sightings as circles, predicted beats as vertical lines, scrolling right to
-left over a 3-second window (`WINDOW_SECONDS` in `UIBeatTracker.java`). Current
-BPM sits top-left, confidence top-right.
+Below it, smoothed intensity over 15 seconds with the current mood named. The
+mood machine runs off that curve, so a transition that looks wrong can be traced
+to the shape that caused it.
 
-The lines are where beats are *emitted*, so with Shift dialled in they sit off
-the circles by exactly that much — which is how you see the offset you asked for.
+### The three trackers
 
-Read it while tuning **Thresh** (at Shift 0). Circles sitting on the lines means
-it is locked. Circles scattered between lines means the gate is firing on things that
-are not the beat — raise the threshold. No circles at all means it never fires —
-lower it. The circles are logged before any filtering, so hits the tracker
-decides to *reject* still show up; watching one sit off the grid while the lines
-keep their spacing is the tracker doing its job.
+**Drive Tracker** emits `exp(-t*k/10)` on the controller's beat grid, multiplied
+by a gate that opens only in DRIVING. The gate is an RC follower, not a switch
+(**Gate**, default 2s), so the drive layer arrives under a drop rather than
+snapping in on top of it.
 
-`UIBeatTracker` is a separate class from `BeatTracker` on purpose: it is the only
-half that imports glx, so the modulator itself stays loadable and testable
-without a UI. Chromatik pairs the two automatically — its class loader registers
-anything implementing `UIModulatorControls` and reads the modulator type back off
-the generic parameter, which is why that interface has to be declared directly on
-the class.
+**Ambient Tracker** is the same pulse scaled by smoothed intensity, and is never
+gated. It goes quiet during a breakdown because the room is quiet, not because a
+state machine muted it, and swells back on its own through a build. **Depth**
+blends out the intensity scaling if you want a fixed-brightness layer.
+
+**Drop Tracker** fires once on BUILDING → DRIVING: a trigger plus a linear ramp
+from 1 to 0 over **Fall**. Linear, not exponential — this is a one-shot sweep
+meant to hold the room for a few seconds, and exponential spends most of its life
+near zero.
+
+All three output 0 and say "no ctrl" when there is no controller.
+
+### How it's put together
+
+`BeatClock` holds the tracking — edge detection, interval averaging, outlier
+rejection, phase lock, shift — with no Chromatik in it at all and no parameters,
+so it is testable without an engine or a UI. `PrimaryController` owns one and
+adds the parameters and the mood machine. `MoodState` is the static registry the
+other three look the controller up through; controllers deregister on dispose so
+a project reload cannot leave a stale one published. Children watch monotonic
+counters rather than per-frame flags, so they are correct whatever order the
+engine runs modulators in.
 
 Measured against synthetic gates at 128 BPM over 60s runs — a perfect gate, one
 jittering ±20ms, one missing 30% of beats, and one going silent for 12s — the
 tracker holds the tempo exactly and the output stays steady to about one frame,
-riding through the whole 12-second dropout still in phase. A gate firing on
-every eighth note locks just as solidly, at 257 BPM, because that genuinely is
-the rate it is being told about.
+riding through the whole dropout still in phase. A gate firing on every eighth
+note locks just as solidly at 257 BPM, because that genuinely is the rate it is
+being told about.
 
-Where it struggles is a gate that fires at the right rate *plus* extra hits in
-between. With a spurious hit on 25% of beats it drifts to around 230 BPM and the
+Where it struggles is a gate firing at the right rate *plus* stray hits in
+between: with a spurious hit on 25% of beats it drifts to around 230 BPM and
 output jitter climbs to ~55ms, because a stray hit splits one beat into two
-shorter intervals and nothing rejects them outright. `Conf` drops to about 0.6
-when this happens, which is the signal to raise **Thresh** until the chart shows
-one circle per beat.
-
+shorter intervals. `Conf` drops to about 0.6 when this happens — the signal to
+raise **Thresh** until the chart shows one red dot per beat.
 ---
 
 ## How the demo pattern works

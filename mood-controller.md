@@ -69,3 +69,96 @@ These are states and are constantly being monitored how to state change as a fun
 - Single trigger impulse on start, but the "smooth map" value is this decay.
 - config vlaue is just that decay duration.
 - UI is the config params and a simple vertical meter of the output pulse.
+
+---
+
+# Clarifications (resolved before implementation)
+
+These answer questions the spec above left open. Where they conflict with a
+loose reading of the text above, these win.
+
+## Wiring between modulators
+
+PrimaryController publishes its state through a static registry of live
+instances. The supporting modulators auto-bind to the single active controller
+and output 0 (saying so in their UI) when there isn't one. Controllers
+deregister on dispose so a project reload doesn't leak a stale reference.
+
+Children read the controller through monotonic counters rather than
+"did it happen this frame" flags, so they behave correctly regardless of what
+order the engine runs the modulators in. Worst case a child acts one frame late.
+
+## Intensity
+
+The three band inputs combine as a weighted sum with configurable per-band
+weights, normalized by their total. Defaults: Low 0.5, Mid 0.3, High 0.2.
+
+That single figure is then RC smoothed with separate charge and discharge time
+constants (defaults 0.15s charge, 1.5s discharge) to produce the smoothed
+intensity everything downstream uses. It is also PrimaryController's own
+modulator value, so the controller can be mapped directly.
+
+## Min BPM is a hard floor
+
+An interval implying a tempo below Min BPM (default 95) is rejected outright: it
+never enters the averaging window, and the previous tempo holds. Nothing is
+doubled or halved to bring it into range -- octave folding stays removed. A
+genuinely slower track therefore never locks, which is the intended trade.
+
+A gap longer than several beats is still treated separately as a dropout, which
+resyncs the phase without contributing an interval.
+
+## The high band is not beat-tracked
+
+Only the Low input drives the beat clock. Mid and High contribute to intensity
+only. The separate hi-hat tracking that existed before this refactor is dropped.
+
+Consequently "hand off to driving when two high beats" means two high-confidence
+*bass* beats -- the same trigger as DRIVING from any other state. A high
+confidence beat is a sighting that cleared debounce, the Min BPM floor and the
+outlier filter while confidence was at least 0.5. Two consecutive ones enter
+DRIVING.
+
+## Mood transition details
+
+- Initial state is AMBIENT.
+- DRIVING is entered from any state on two consecutive high-confidence bass
+  beats.
+- DRIVING -> AMBIENT when no bass sighting has arrived for `beats until ambient`
+  beats at the current tempo (default 6).
+- AMBIENT -> BUILDING requires at least 4s in AMBIENT and smoothed intensity
+  higher than it was N seconds ago by more than a configured amount (defaults
+  +0.10 over 3s). The DRIVING rule preempts this whenever bass returns, so "while
+  there are no bass beats" needs no separate test.
+- BUILDING -> AMBIENT when no new intensity peak has been set for 10 continuous
+  seconds. The peak resets on entry to BUILDING, so this reads as "the build
+  stalled".
+
+## Output envelopes
+
+The beat envelope is exp(-t*k/10) with t in seconds, matching the existing
+convention: the output falls to 1/e after 10/k seconds. A literal exp(-k*t) with
+k ranging to 100 would be instantaneous and unusable.
+
+DropTracker's ramp is linear from 1 to 0 over its configured duration, as
+specified, and it fires only on the BUILDING -> DRIVING edge -- not on
+AMBIENT -> DRIVING.
+
+## Gating
+
+- DriveTracker is gated by an RC follower toward 1 in DRIVING and 0 elsewhere,
+  with a configurable time constant defaulting to about 2 seconds.
+- AmbientTracker has no mood gate at all. Its smoothed-intensity multiplier does
+  the shaping, so it never leaves a hole between states.
+
+The supporting modulators emit on the controller's beat grid and have no shift
+or phase of their own; Shift stays a controller-level control.
+
+## Consequence for existing projects
+
+BeatTracker and UIBeatTracker are deleted. The two instances in
+Projects/FullCampLayout2026.lxp will not load and will appear as missing
+components. Settings to carry over to the new controller, for reference:
+
+    Bass Beat Tracker: Thresh 0.372, Min BPM 99.6, Avg 12, Lock 0.372, Shift -63.8ms
+    Hi-Hat Tracker:    dropped, no longer needed
