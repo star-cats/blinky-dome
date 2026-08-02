@@ -1,0 +1,63 @@
+{
+  "label": "Ben Eye R",
+  "metadata": {
+    "source": "Projects/BenStartingPoint.lxp, fixtures \"Reye top\" and \"Reye Bottom\"",
+    "coordinate_system": "Y-up right-handed, origin at the eye centre, units are project scene units (10 units per metre)",
+    "geometry": "two 120-degree arcs sharing the origin; the bottom arc is pitched 180 to sweep the other way. The extra 180 of yaw on both arcs is Ben's mirror of the left eye -- it is what makes the pair symmetric rather than merely parallel, so do not fold it into the model's bearing yaw.",
+    "origin": "Ben drew this eye centred at (-15, -15, -10) in his project; that offset is removed here so the fixture origin IS the eye centre, which is what lets the model place it on the dome by azimuth and elevation.",
+    "artnet": "144 px = 432 channels per arc; the top arc starts at channel 0 and the bottom at 432, so the eye spills past the 512-channel universe boundary. Carried over from the project as-is.",
+    "note": "Both arcs were toggled off (enabled=false) in the project. That is per-instance runtime state, not geometry, so it is not encoded here. See [[BenEyeL.lxf]] for the mirrored eye.",
+    "total_arcs": 2,
+    "total_pixels": 288
+  },
+  "components": [
+    {
+      "type": "arc",
+      "label": "Reye top",
+      "tag": "small_eye",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "yaw": 180.0,
+      "pitch": 0.0,
+      "roll": 140.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "protocol": "artnet",
+        "enabled": true,
+        "host": "192.168.1.166",
+        "byteOrder": "rgb",
+        "universe": 0,
+        "channel": 0,
+        "sequenceEnabled": false
+      }
+    },
+    {
+      "type": "arc",
+      "label": "Reye Bottom",
+      "tag": "small_eye",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "yaw": 180.0,
+      "pitch": 180.0,
+      "roll": 100.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "protocol": "artnet",
+        "enabled": true,
+        "host": "192.168.1.166",
+        "byteOrder": "rgb",
+        "universe": 0,
+        "channel": 432,
+        "sequenceEnabled": false
+      }
+    }
+  ]
+}

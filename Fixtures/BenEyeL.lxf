@@ -1,0 +1,63 @@
+{
+  "label": "Ben Eye L",
+  "metadata": {
+    "source": "Projects/BenStartingPoint.lxp, fixtures \"Leye top\" and \"Leye Bottom\"",
+    "coordinate_system": "Y-up right-handed, origin at the eye centre, units are project scene units (10 units per metre)",
+    "geometry": "two 120-degree arcs sharing the origin; the bottom arc is pitched 180 to sweep the other way. Arcs lie in the XY plane, so the eye looks along +Z and the model yaws it onto its bearing.",
+    "origin": "Ben drew this eye centred at (15, -15, -10) in his project; that offset is removed here so the fixture origin IS the eye centre, which is what lets the model place it on the dome by azimuth and elevation.",
+    "artnet": "144 px = 432 channels per arc; the top arc starts at channel 0 and the bottom at 432, so the eye spills past the 512-channel universe boundary. Carried over from the project as-is.",
+    "note": "Both arcs were toggled on (enabled=true) in the project. See [[BenEyeR.lxf]] for the mirrored eye.",
+    "total_arcs": 2,
+    "total_pixels": 288
+  },
+  "components": [
+    {
+      "type": "arc",
+      "label": "Leye top",
+      "tag": "small_eye",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 140.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "protocol": "artnet",
+        "enabled": true,
+        "host": "192.168.1.165",
+        "byteOrder": "rgb",
+        "universe": 0,
+        "channel": 0,
+        "sequenceEnabled": false
+      }
+    },
+    {
+      "type": "arc",
+      "label": "Leye Bottom",
+      "tag": "small_eye",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 180.0,
+      "roll": 100.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "protocol": "artnet",
+        "enabled": true,
+        "host": "192.168.1.165",
+        "byteOrder": "rgb",
+        "universe": 0,
+        "channel": 432,
+        "sequenceEnabled": false
+      }
+    }
+  ]
+}

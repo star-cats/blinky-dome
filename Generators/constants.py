@@ -365,17 +365,35 @@ MODEL = {
         # Read off Fixtures/BenEars.lxf, components "Ear L B" / "Ear R B": the
         # outer ear bases, and the point the Y/Z anchoring solves for.
         "ear_base": {"x": 28.0, "y": 7.0, "z": -10.0},
-        # Read off Fixtures/BenEyes.lxf: the shared centre of one eye's two
-        # arcs. x and y position the eye; z is not Ben's standoff but the
-        # component's own offset inside the fixture, which the placement has to
-        # cancel out to land the eye centre itself on the dome surface.
-        "eye_centre": {"x": 15.0, "y": -15.0, "z": -10.0},
-        # Visual trim, applied on top of the derived placement. The derived
-        # numbers reproduce Ben's layout against this dome; these are for
-        # nudging it once you can see it in the preview. Scene units, degrees.
+        # The eyes do not ride the face offset. Ben drew them against a dome a
+        # third of this one's size, so rather than inherit his position they are
+        # placed straight onto this dome's surface in spherical terms, the same
+        # way the stars are: elevation up from the horizon, azimuth as a bearing
+        # about the front (+Z). The pair is symmetric by construction -- the
+        # left eye sits at +azimuth and the right at -azimuth, one elevation
+        # between them, so they cannot drift out of line with each other.
+        #
+        # Each eye yaws onto its own bearing and is left vertical; there is
+        # deliberately no pitch onto the dome normal, matching the stars.
+        # Fixtures/BenEyeL.lxf and BenEyeR.lxf are centred on their own eye, so
+        # the placement lands the eye centre exactly on the surface.
+        #
+        # The defaults reproduce where the eyes sat when they were carried along
+        # by Ben's own layout, so this is a re-parameterisation rather than a
+        # move. standoff pushes both eyes out along the surface normal.
+        "eyes": {
+            "azimuth_degrees": 24,
+            "elevation_degrees": 23,
+            "standoff": 0.0,
+        },
+        # Visual trim for the ears, applied on top of the derived placement.
+        # The derived numbers reproduce Ben's layout against this dome; these
+        # are for nudging it once you can see it in the preview. Scene units,
+        # degrees. The eyes have no equivalent on purpose: azimuth, elevation
+        # and standoff above are their knobs, and a free x/y/z nudge there is
+        # exactly what would pull the pair off the surface or out of symmetry.
         "trim": {
             "ears": {"x": 0.0, "y": 0.0, "z": 0.0, "yaw": 0.0, "pitch": 0.0, "roll": 0.0},
-            "eyes": {"x": 0.0, "y": 0.0, "z": 0.0, "yaw": 0.0, "pitch": 0.0, "roll": 0.0},
         },
     },
     # The V3 dome is a whole second dome, not part of the cat, so it is parked

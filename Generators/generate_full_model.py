@@ -236,41 +236,43 @@ def ear_fixtures(next_id) -> list[dict]:
 
 
 def eye_fixtures(next_id) -> list[dict]:
-    """Ben's eye pair, on the front surface of the dome.
+    """Ben's eyes, one per side, sitting on the dome surface.
 
-    The eyes take the face's Y offset so they keep Ben's ear-to-eye spacing,
-    which puts them a little under 1.8 m up. Their Z is not his, though: he
-    drew them a short standoff in front of a dome a third of this one's size,
-    so instead they are pushed out to where this dome's surface actually is at
-    the x/y they land on. Without that they would float inside the scaffold.
+    Placed spherically rather than inherited from Ben's frame: elevation is the
+    angle up from the horizon, azimuth the bearing about the front (+Z). The
+    two eyes take +azimuth and -azimuth at the same elevation, so the pair is
+    symmetric and level however the knobs are turned. Both fixtures are centred
+    on their own eye, so this lands the eye centres exactly one dome radius out.
+
+    Each eye yaws to face along its own bearing and stays vertical -- no pitch
+    onto the dome normal, same as the stars.
     """
-    offset_y, _ = face_offset()
-    centre = MODEL["face"]["eye_centre"]
-    trim = MODEL["face"]["trim"]["eyes"]
+    eyes = MODEL["face"]["eyes"]
+    elevation = math.radians(eyes["elevation_degrees"])
+    azimuth = math.radians(eyes["azimuth_degrees"])
+    radius = DOME_RADIUS_SCENE + eyes["standoff"]
 
-    y = centre["y"] + offset_y
-    # Dome surface at the eye position. The eyes sit well inside the dome's
-    # radius in both axes, so this is always a real distance. Subtracting the
-    # component's own z is what puts the eye centre on the surface rather than
-    # the fixture origin, which would leave the arcs a metre inside it.
-    z = (
-        math.sqrt(max(0.0, DOME_RADIUS_SCENE**2 - centre["x"] ** 2 - y**2))
-        - centre["z"]
-    )
+    y = radius * math.sin(elevation)
+    # Horizontal distance from the dome axis at this height; the bearing then
+    # splits it into x and z.
+    ring = radius * math.cos(elevation)
 
     return [
         make_fixture(
             next_id(),
-            "Ben Eyes",
-            "BenEyes",
-            x=trim["x"],
-            y=offset_y + trim["y"],
-            z=z + trim["z"],
-            yaw=trim["yaw"],
-            pitch=trim["pitch"],
-            roll=trim["roll"],
+            label,
+            fixture_type,
+            x=side * ring * math.sin(azimuth),
+            y=y,
+            z=ring * math.cos(azimuth),
+            yaw=side * eyes["azimuth_degrees"],
+            # Ben's units are already scene units -- see ear_fixtures.
             scale=1.0,
             tags="eyes",
+        )
+        for label, fixture_type, side in (
+            ("Ben Eye L", "BenEyeL", 1.0),
+            ("Ben Eye R", "BenEyeR", -1.0),
         )
     ]
 
