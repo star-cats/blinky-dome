@@ -88,7 +88,7 @@ Patterns/
     │   ├── Mood.java                      IDLE / AMBIENT / DRIVING
     │   ├── MoodState.java                 registry the trackers look it up through
     │   ├── DriveTracker.java              on-beat pulse gated to DRIVING
-    │   ├── AmbientTracker.java            on-beat pulse scaled by intensity
+    │   ├── AmbientTracker.java            forecast beat waveforms outside IDLE
     │   ├── DropTracker.java               one-shot ramp on the drop
     │   ├── MoodTracker.java               smooth gate for a selected mood
     │   ├── PortableImagePattern.java      image pattern with portable paths
@@ -167,8 +167,7 @@ telling a build from a track simply getting louder needs thresholds that hold fo
 one song and not the next, and it guessed wrong at exactly the moments everyone
 was watching. Audio and bass presence are facts, so these states are worth trusting.
 
-Intensity is still measured, still smoothed, still published and still drives
-AmbientTracker. It just no longer decides anything.
+Intensity is still measured, smoothed, and published. It no longer decides mood.
 
 ### The charts
 
@@ -191,10 +190,11 @@ snapping in on top of it. The ramp is linear, so Gate is the real time from shut
 to fully open — an exponential follower would only be 63% of the way there after
 the time on the dial, and would never quite arrive.
 
-**Ambient Tracker** is the same pulse scaled by smoothed intensity, and is never
-gated. It goes quiet during a breakdown because the room is quiet, not because a
-state machine muted it, and swells back on its own through a build. **Depth**
-blends out the intensity scaling if you want a fixed-brightness layer.
+**Ambient Tracker** follows the controller's best BPM and phase in DRIVING and
+AMBIENT, regardless of whether bass is currently landing. In IDLE it suppresses
+beat triggers and outputs zero. **Output** selects a kick pulse with exponential
+**Decay**, a triangle that runs 0→1 for one beat then 1→0 for the next, or a
+cosine with the same two-beat motion normalized to 0–1.
 
 **Drop Tracker** fires once when bass returns after a quiet stretch — AMBIENT →
 DRIVING — as a trigger plus a linear ramp from 1 to 0 over **Fall**. Linear, not

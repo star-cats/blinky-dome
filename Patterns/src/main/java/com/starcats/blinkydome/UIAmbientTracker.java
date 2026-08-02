@@ -7,11 +7,7 @@ import heronarts.lx.studio.ui.modulation.UIModulator;
 import heronarts.lx.studio.ui.modulation.UIModulatorControls;
 
 /**
- * Panel for {@link AmbientTracker}.
- *
- * Same shape as the drive panel, but the caption reports intensity instead of a
- * mood gate -- this one is never gated, so intensity is the only thing that
- * explains the height of the bar.
+ * Panel for the always-on forecast pulse from {@link AmbientTracker}.
  */
 public class UIAmbientTracker implements UIModulatorControls<AmbientTracker> {
 
@@ -27,14 +23,14 @@ public class UIAmbientTracker implements UIModulatorControls<AmbientTracker> {
     uiModulator.setContentHeight(ROW_HEIGHT);
 
     UI2dContainer knobs = UI2dContainer.newHorizontalContainer(ROW_HEIGHT, 4);
+    addColumn(knobs, newKnob(tracker.output));
     addColumn(knobs, newKnob(tracker.decay));
-    addColumn(knobs, newKnob(tracker.depth));
     knobs.addToContainer(uiModulator);
 
     new UIPulseMeter(ui, METER_WIDTH, ROW_HEIGHT,
       tracker::getValue,
       () -> MoodState.get() == null
         ? "no ctrl"
-        : String.format("int %.2f", tracker.getIntensity())).addToContainer(uiModulator);
+        : String.format("%.2f", tracker.getValue())).addToContainer(uiModulator);
   }
 }
