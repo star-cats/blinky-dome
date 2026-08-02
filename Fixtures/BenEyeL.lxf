@@ -1,11 +1,27 @@
 {
   "label": "Ben Eye L",
+  "parameters": {
+    "ip": {
+      "type": "string",
+      "default": "192.168.1.165",
+      "label": "Controller IP",
+      "description": "Art-Net host driving the left eye"
+    },
+    "universe": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 32767,
+      "label": "Base Universe",
+      "description": "First Art-Net universe; the top arc uses this and the bottom arc the next"
+    }
+  },
   "metadata": {
     "source": "Projects/BenStartingPoint.lxp, fixtures \"Leye top\" and \"Leye Bottom\"",
     "coordinate_system": "Y-up right-handed, origin at the eye centre, units are project scene units (10 units per metre)",
     "geometry": "two 120-degree arcs sharing the origin; the bottom arc is pitched 180 to sweep the other way. Arcs lie in the XY plane, so the eye looks along +Z and the model yaws it onto its bearing.",
     "origin": "Ben drew this eye centred at (15, -15, -10) in his project; that offset is removed here so the fixture origin IS the eye centre, which is what lets the model place it on the dome by azimuth and elevation.",
-    "artnet": "144 px = 432 channels per arc; the top arc starts at channel 0 and the bottom at 432, so the eye spills past the 512-channel universe boundary. Carried over from the project as-is.",
+    "artnet": "144 px = 432 channels per arc, so each arc needs a universe of its own: the top arc on $universe and the bottom on $universe + 1, both at channel 0. LX builds one datagram per output block and never splits across universes, so the old shared-universe layout (channel 0 and 432) asked for 864 channels in a 512-channel universe and could not have worked.",
     "note": "Both arcs were toggled on (enabled=true) in the project. See [[BenEyeR.lxf]] for the mirrored eye.",
     "total_arcs": 2,
     "total_pixels": 288
@@ -28,9 +44,9 @@
       "output": {
         "protocol": "artnet",
         "enabled": true,
-        "host": "192.168.1.165",
+        "host": "$ip",
         "byteOrder": "rgb",
-        "universe": 0,
+        "universe": "$universe",
         "channel": 0,
         "sequenceEnabled": false
       }
@@ -52,10 +68,10 @@
       "output": {
         "protocol": "artnet",
         "enabled": true,
-        "host": "192.168.1.165",
+        "host": "$ip",
         "byteOrder": "rgb",
-        "universe": 0,
-        "channel": 432,
+        "universe": "$universe + 1",
+        "channel": 0,
         "sequenceEnabled": false
       }
     }

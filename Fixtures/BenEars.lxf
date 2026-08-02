@@ -1,11 +1,27 @@
 {
   "label": "Ben Ears",
+  "parameters": {
+    "ip": {
+      "type": "string",
+      "default": "192.168.1.167",
+      "label": "Controller IP",
+      "description": "Art-Net host driving both ears"
+    },
+    "universe": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 32767,
+      "label": "Base Universe",
+      "description": "First Art-Net universe; the ears occupy this and the next four"
+    }
+  },
   "metadata": {
     "source": "Projects/BenStartingPoint.lxp, fixtures \"Ear L A/B\" and \"Ear R A/B\"",
     "coordinate_system": "Y-up right-handed, origin at the project origin, units are project scene units (not metres)",
     "scene_units": "192 LEDs at 0.1 spacing = 19.2 units per strip; the project is built at 10 units per metre, so each strip is 1.92 m",
     "instantiate_at": "x=0 y=0 z=0, scale=1.0 -- the components carry their absolute project positions, so any other placement moves the ears off Ben's layout",
-    "output": "none; these strips were patched to protocol NONE in the project and drive no pixels yet",
+    "artnet": "one controller, all 768 px as a single continuous run packed 170 px per universe (170/170/170/170/88) from $universe. LX builds one datagram per output block and never splits across universes, so each block is written out explicitly. Universes straddle strip boundaries -- the run is continuous, so re-patching a single strip means recutting these segments.",
     "note": "All four strips were toggled off (enabled=false) in the project. That is per-instance runtime state, not geometry, so it is not encoded here -- switch them off on the fixture instance if you want to reproduce it. Setting component \"enabled\": false instead would drop their points from the model entirely.",
     "total_strips": 4,
     "total_pixels": 768
@@ -62,6 +78,58 @@
       "roll": 90.0,
       "numPoints": 192,
       "spacing": 0.1
+    }
+  ],
+  "outputs": [
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "$ip",
+      "universe": "$universe",
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 0,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "$ip",
+      "universe": "$universe + 1",
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 170,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "$ip",
+      "universe": "$universe + 2",
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 340,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "$ip",
+      "universe": "$universe + 3",
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 510,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "$ip",
+      "universe": "$universe + 4",
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 680,
+      "num": 88
     }
   ]
 }
