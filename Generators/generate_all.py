@@ -40,17 +40,12 @@ if GENERATORS_DIR not in sys.path:
 from constants import MIN_PYTHON  # noqa: E402
 
 
-# Order matters in two places: generate_harness_point_sizes rewrites the
-# BlinkyH*.lxf fixtures in place, and generate_full_model assembles the
-# finished fixtures into the .lxm, so it runs last.
+# Order matters: generate_full_model assembles the finished fixtures into the
+# .lxm, so it runs last.
 GENERATORS = (
-    "generate_star",
-    "generate_cat_ear",
     "generate_waterfall",
     "generate_harness_point_sizes",
-    "generate_dome_eye",
     "generate_v3_dome_model",
-    "generate_v3_dome_harness",
     "generate_full_model",
 )
 

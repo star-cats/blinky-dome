@@ -25,14 +25,11 @@ import math
 from collections import Counter
 from pathlib import Path
 
-from constants import FIXTURES_DIR, IN_TO_M, V3_HARNESS
+from constants import FIXTURES_DIR, IN_TO_M, V3_DOME
 
 
-# Sized by hub-sphere radius, in metres, shared with the LED harness so the two
-# describe the same dome. Sizing by a "diameter" instead is what pulled them
-# apart: this dome is widest above its base, so a base or width figure implies a
-# different sphere than the one the harness places LEDs on.
-DEFAULT_DOME_RADIUS_M = V3_HARNESS["dome_radius_m"]
+# Sized by hub-sphere radius, in metres.
+DEFAULT_DOME_RADIUS_M = V3_DOME["radius_m"]
 DEFAULT_STRUT_THICKNESS_IN = 1.0
 DEFAULT_OUTPUT_PATH = FIXTURES_DIR / "v3_dome_model.obj"
 
