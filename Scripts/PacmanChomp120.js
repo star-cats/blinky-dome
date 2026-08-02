@@ -7,11 +7,11 @@
  * One dot per chomp, one chomp per beat.
  */
 
-var BPM = 120;
+var BPM = 114;
 var BEAT_MS = 60000 / BPM;
 
 var DOT_COUNT = 4;
-var CYCLE_MS = BEAT_MS * DOT_COUNT;
+var CYCLE_MS = BEAT_MS * (DOT_COUNT);
 
 var PAC_X = 0.5;
 var PAC_Y = 0.5;
@@ -27,11 +27,24 @@ var TRANSPARENT = null;
 
 knob("angle", "Angle", "PAC-MAN facing angle", 0.5);
 
+function smoothstep(edge0, edge1, x) {
+  let t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+}
+
 function renderPoint(point, deltaMs) {
   var now = Date.now();
   var t = (now % CYCLE_MS) / CYCLE_MS;
-  var color1 = renderScene(point.xn - PAC_X, point.yn - PAC_Y, 1, angle * Math.PI * 2, t);
-  var color2 = renderScene(point.xn - PAC_X + (1-t) * DOT_SPACING * DOT_COUNT, point.yn - PAC_Y, 0.3, angle * Math.PI * 2, t);
+  //var scaleCycle = 1 + t * t * t * t * t * (1/(5 * DOT_RADIUS));
+  var alpha = 0.06;
+  var timeSinceBeat = now * BPM / 60.0 / 1000.0 - Math.floor(now * BPM / 60.0 / 1000.0)
+  var pulse = Math.exp(-(timeSinceBeat * 4.0)) * 0.1;
+  var scaleCycle = 1 + (pulse + t * alpha + smoothstep(0.94, 1, t) * (1 - alpha)) * (1/(5 * DOT_RADIUS));
+  //var panX = t * DOT_SPACING * (DOT_COUNT-1) * (DOT_COUNT)/ (DOT_COUNT + 1) * scaleCycle;
+  var panX = t * DOT_SPACING * scaleCycle;
+  var panX2 = (DOT_SPACING * (DOT_COUNT + 1) - DOT_SPACING * (DOT_COUNT) * t) * scaleCycle;
+  var color1 = renderScene(point.xn - PAC_X - panX, point.yn - PAC_Y, scaleCycle * 1, angle * Math.PI * 2, t, false);
+  var color2 = renderScene(point.xn - PAC_X - panX + panX2, point.yn - PAC_Y, scaleCycle * (5 * DOT_RADIUS), angle * Math.PI * 2, t, true);
 
   if (color2 != TRANSPARENT) {
     return color2;
@@ -53,7 +66,7 @@ function renderPoint(point, deltaMs) {
  * @param {number} t - Progress through the scene from 0 to 1
  * @return {number} Color, or TRANSPARENT where the scene is empty
  */
-function renderScene(x, y, scale, angle, t) {
+function renderScene(x, y, scale, angle, t, retainDots) {
   var faceX = Math.cos(angle);
   var faceY = Math.sin(angle);
   var radius = PAC_RADIUS * scale;
@@ -63,17 +76,19 @@ function renderScene(x, y, scale, angle, t) {
   // Slots travelled so far. Dots are eaten on whole slots, and the jaws shut on
   // whole slots too, so PAC-MAN bites down exactly as a dot reaches him.
   var travel = t * DOT_COUNT;
-  var mouthAngle = lerp(0.08, 0.82, Math.abs(Math.sin(travel * Math.PI)));
+  var mouthAngle = lerp(0.0, 0.82, Math.abs(Math.sin(travel * Math.PI)));
 
-  if (x * x + y * y <= radius * radius &&
-      Math.abs(angleDelta(Math.atan2(y, x), angle)) >= mouthAngle) {
-    return hsb(54, 100, 100);
+  if (retainDots || (!retainDots && t < 0.96)) {
+    if (x * x + y * y <= radius * radius &&
+        Math.abs(angleDelta(Math.atan2(y, x), angle)) >= mouthAngle) {
+      return hsb(54, 100, 100);
+    }
   }
 
   // Dot k starts in slot k and rides in to the mouth. Spacing is wider than a
   // dot, so only the nearest slot can cover this point.
   var slot = Math.round((x * faceX + y * faceY) / spacing + travel);
-  if (slot < 1 || slot > DOT_COUNT - 1) {
+  if (!retainDots && (slot < 1 || slot > DOT_COUNT)) {
     return TRANSPARENT;
   }
   var center = (slot - travel) * spacing;
