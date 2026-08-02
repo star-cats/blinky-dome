@@ -14,7 +14,7 @@ var DOT_COUNT = 4;
 var CYCLE_MS = BEAT_MS * (DOT_COUNT);
 
 var PAC_X = 0.5;
-var PAC_Y = 0.5;
+var PAC_Y = 0.55;
 
 // Sizes at scale 1. The far dot sits at DOT_COUNT * DOT_SPACING = 0.44, so the
 // whole line fits the frame, and PAC-MAN is about two slots across so the dots
@@ -35,16 +35,17 @@ function smoothstep(edge0, edge1, x) {
 function renderPoint(point, deltaMs) {
   var now = Date.now();
   var t = (now % CYCLE_MS) / CYCLE_MS;
-  //var scaleCycle = 1 + t * t * t * t * t * (1/(5 * DOT_RADIUS));
   var alpha = 0.06;
   var timeSinceBeat = now * BPM / 60.0 / 1000.0 - Math.floor(now * BPM / 60.0 / 1000.0)
   var pulse = Math.exp(-(timeSinceBeat * 4.0)) * 0.1;
   var scaleCycle = 1 + (pulse + t * alpha + smoothstep(0.94, 1, t) * (1 - alpha)) * (1/(5 * DOT_RADIUS));
   //var panX = t * DOT_SPACING * (DOT_COUNT-1) * (DOT_COUNT)/ (DOT_COUNT + 1) * scaleCycle;
-  var panX = t * DOT_SPACING * scaleCycle;
-  var panX2 = (DOT_SPACING * (DOT_COUNT + 1) - DOT_SPACING * (DOT_COUNT) * t) * scaleCycle;
-  var color1 = renderScene(point.xn - PAC_X - panX, point.yn - PAC_Y, scaleCycle * 1, angle * Math.PI * 2, t, false);
-  var color2 = renderScene(point.xn - PAC_X - panX + panX2, point.yn - PAC_Y, scaleCycle * (5 * DOT_RADIUS), angle * Math.PI * 2, t, true);
+  var panD = t * DOT_SPACING * scaleCycle;
+  var panD2 = (DOT_SPACING * (DOT_COUNT + 1) - DOT_SPACING * (DOT_COUNT) * t) * scaleCycle;
+  var theta = angle * Math.PI * 2;
+
+  var color1 = renderScene(point.xn - PAC_X + Math.cos(theta) * panD, point.yn - PAC_Y + Math.sin(theta) * panD, scaleCycle * 1, angle * Math.PI * 2, t, false);
+  var color2 = renderScene(point.xn - PAC_X + Math.cos(theta) * (panD - panD2), point.yn - PAC_Y + Math.sin(theta) * (panD - panD2), scaleCycle * (5 * DOT_RADIUS), angle * Math.PI * 2, t, true);
 
   if (color2 != TRANSPARENT) {
     return color2;
