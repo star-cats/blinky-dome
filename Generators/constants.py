@@ -326,6 +326,21 @@ MODEL = {
     # horizontal, azimuth_degrees its bearing around the dome (0 = front, +Z).
     # The star then hangs vertically from there, facing out along the bearing.
     "stars": {
+        # Fixtures/Star.lxf, the hand-written pentagram -- the same file
+        # Projects/BenStartingPoint.lxp patches, so the model and Ben's project
+        # light the identical fixture. Not StarEye.lxf: generate_star.py still
+        # writes that one, and nothing references it while this says "Star".
+        #
+        # Star.lxf is drawn on a unit circle rather than in metres, so it is the
+        # one fixture here whose instance scale is not scene_scale. The model
+        # scales it by the vertex circle it was drawn from
+        # (STAR["geometry"]["outer_radius_m"]), which keeps the lit star at the
+        # diameter_ft the build actually measures. Ben runs it at a flat scale
+        # of 10, which makes his stars 6.8 ft across instead of 4.2.
+        #
+        # NumPoints and Overlap come from STAR["leds"], so the fixture's pixel
+        # count stays tied to the same constants generate_star.py reads.
+        "fixture": "Star",
         "host": "192.168.1.50",
         "elevation_degrees": 31.0,
         "azimuth_degrees": 0.0,

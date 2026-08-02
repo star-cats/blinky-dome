@@ -168,11 +168,18 @@ def star_fixtures(next_id) -> list[dict]:
     y = DOME_RADIUS_SCENE * math.sin(elevation) + star_radius_scene
     z = DOME_RADIUS_SCENE * math.cos(azimuth) * math.cos(elevation)
 
+    # Star.lxf is drawn on a unit circle, not in metres, so it is scaled by the
+    # vertex circle rather than by scene_scale. outer_radius_m is exactly that
+    # circle -- backed out of radius_m so the lit star still measures
+    # diameter_ft tip to tip -- which keeps the star's real size pinned to the
+    # same constant whichever fixture file is patched.
+    star_scale = STAR["geometry"]["outer_radius_m"] * SCENE_SCALE
+
     return [
         make_fixture(
             next_id(),
             instance["label"],
-            "StarEye",
+            stars["fixture"],
             x=x,
             y=y,
             z=z,
@@ -181,8 +188,11 @@ def star_fixtures(next_id) -> list[dict]:
             # longer want, so there is deliberately no pitch here.
             yaw=stars["azimuth_degrees"],
             roll=instance["roll_degrees"],
+            scale=star_scale,
             tags="star",
             json_parameters={
+                "NumPoints": STAR["leds"]["leds_per_strip"],
+                "Overlap": STAR["leds"]["overlap_leds"],
                 "ip": stars["host"],
                 "Universe": instance["universe"],
             },
