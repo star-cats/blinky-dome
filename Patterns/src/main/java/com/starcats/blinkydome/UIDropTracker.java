@@ -44,6 +44,9 @@ public class UIDropTracker implements UIModulatorControls<DropTracker> {
           // Counting down is the difference between "held off" and "broken".
           return String.format("%.0fs", remaining);
         }
+        if (controller.getMood() == Mood.IDLE) {
+          return "idle";
+        }
         return controller.getMood() == Mood.AMBIENT ? "armed" : "ready";
       }).addToContainer(uiModulator);
   }

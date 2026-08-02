@@ -85,11 +85,12 @@ Patterns/
     │   ├── ImageTest.java                 projects a jar-bundled image
     │   ├── BeatClock.java                 beat tracking, no Chromatik in it
     │   ├── PrimaryController.java         tempo + intensity + mood (a modulator)
-    │   ├── Mood.java                      AMBIENT / BUILDING / DRIVING
+    │   ├── Mood.java                      IDLE / AMBIENT / DRIVING
     │   ├── MoodState.java                 registry the trackers look it up through
     │   ├── DriveTracker.java              on-beat pulse gated to DRIVING
     │   ├── AmbientTracker.java            on-beat pulse scaled by intensity
     │   ├── DropTracker.java               one-shot ramp on the drop
+    │   ├── MoodTracker.java               smooth gate for a selected mood
     │   ├── PortableImagePattern.java      image pattern with portable paths
     │   ├── PortableSlideshowPattern.java  slideshow with portable paths
     │   └── MediaPath.java                 media-relative path translation
@@ -137,7 +138,7 @@ Only **Low** drives the beat clock. Mid and High feed intensity.
 | `Beat` | trigger on every beat of the tracked tempo |
 | `BPM` / `Conf` | tempo, and how consistent recent intervals have been |
 | `Intensity` | the same smoothed figure as the value |
-| mood | AMBIENT / BUILDING / DRIVING, read by the other three |
+| mood | IDLE / AMBIENT / DRIVING, read by the supporting trackers |
 
 Intensity is a weighted mix of the three bands (**Lo W** / **Mid W** / **Hi W**,
 normalized) run through a follower with separate **Charge** and **Release** time
@@ -154,8 +155,9 @@ transpose real music.
 
 ### The moods
 
-Two, both decided purely by whether bass is landing:
+Three, decided by audio presence and whether bass is landing:
 
+- **IDLE** — all three inputs remain below **Idle Thresh** (default 0.05) for **Idle Delay** (default 2s).
 - **AMBIENT** — no bass for `Amb Bts` beats (default 6). The floor is empty.
 - **DRIVING** — two consecutive high-confidence bass beats.
 
@@ -163,7 +165,7 @@ There was a third, BUILDING, that tried to recognise a riser from the shape of
 the intensity curve. It was dropped for being too fragile to hang a show on:
 telling a build from a track simply getting louder needs thresholds that hold for
 one song and not the next, and it guessed wrong at exactly the moments everyone
-was watching. Bass or no bass is a fact, so these two are worth trusting.
+was watching. Audio and bass presence are facts, so these states are worth trusting.
 
 Intensity is still measured, still smoothed, still published and still drives
 AmbientTracker. It just no longer decides anything.
@@ -180,7 +182,7 @@ Below it, smoothed intensity over 15 seconds with the current mood named. The
 mood machine runs off that curve, so a transition that looks wrong can be traced
 to the shape that caused it.
 
-### The three trackers
+### The trackers
 
 **Drive Tracker** emits `exp(-t*k/10)` on the controller's beat grid, multiplied
 by a gate that opens only in DRIVING. The gate ramps rather than switching
@@ -199,6 +201,10 @@ DRIVING — as a trigger plus a linear ramp from 1 to 0 over **Fall**. Linear, n
 exponential: this is a one-shot sweep meant to hold the room for a few seconds,
 and exponential spends most of its life near zero.
 
+**Mood Tracker** selects IDLE, AMBIENT, or DRIVING and exponentially approaches
+1 while that mood is active and 0 otherwise. Add three instances for independent
+DriverMood, AmbientMood, and IdleMood values.
+
 **Reset** (default 60s) is the minimum gap between drops. Bass detection is not
 perfect, and a track that loses a beat or two can flicker to ambient and back in
 seconds; without a holdoff every flicker would read as a drop and the biggest
@@ -206,7 +212,7 @@ gesture in the rig would become its most common one. A transition inside the
 window is ignored outright, not queued, so nothing fires the instant it expires.
 The panel counts the remaining seconds so a quiet meter is never ambiguous.
 
-All three output 0 and say "no ctrl" when there is no controller.
+All trackers approach or output 0 when there is no controller.
 
 ### How it's put together
 

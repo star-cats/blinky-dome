@@ -56,6 +56,8 @@ public class UIPrimaryController implements UIModulatorControls<PrimaryControlle
     addColumn(tempoConfig, newDoubleBox(c.minBpm), controlLabel(ui, "Min BPM"));
     addColumn(tempoConfig, newIntegerBox(c.window), controlLabel(ui, "Avg"));
     addColumn(tempoConfig, newIntegerBox(c.beatsUntilAmbient), controlLabel(ui, "Amb Bts"));
+    addColumn(tempoConfig, newDoubleBox(c.idleThreshold), controlLabel(ui, "Idle Thresh"));
+    addColumn(tempoConfig, newDoubleBox(c.idleDelay), controlLabel(ui, "Idle Delay"));
     addColumn(tempoConfig, newButton(c.relearn).setTriggerable(true), controlLabel(ui, "Relearn"));
     tempoConfig.addToContainer(uiModulator);
 

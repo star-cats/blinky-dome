@@ -20,7 +20,7 @@ import heronarts.lx.parameter.TriggerParameter;
  * smooths the bands into a single intensity figure, and reports whether the floor
  * is driving or empty. Everything it learns is published through
  * {@link MoodState} for the supporting trackers -- DriveTracker, AmbientTracker,
- * DropTracker -- to read, so the analysis happens once instead of once per
+ * DropTracker, MoodTracker -- to read, so the analysis happens once instead of once per
  * effect.
  *
  * The beat tracking lives in {@link BeatClock}, which has no Chromatik in it at
@@ -91,6 +91,15 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     new DiscreteParameter("Amb Beats", 6, 1, 33)
     .setDescription("Beats of silence before DRIVING gives way to AMBIENT");
 
+  public final CompoundParameter idleThreshold =
+    new CompoundParameter("Idle Thresh", .05, 0, 1)
+    .setDescription("All three audio inputs must remain below this level to enter IDLE");
+
+  public final CompoundParameter idleDelay =
+    new CompoundParameter("Idle Delay", 2, .1, 30)
+    .setUnits(LXParameter.Units.SECONDS)
+    .setDescription("Seconds all audio inputs must remain quiet before entering IDLE");
+
   public final CompoundParameter charge =
     (CompoundParameter) new CompoundParameter("Charge", .15, .01, 3)
     .setUnits(LXParameter.Units.SECONDS)
@@ -141,15 +150,15 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
 
   private Mood mood = Mood.AMBIENT;
   private int highConfidenceRun = 0;
+  private double quietMs = 0;
+  private boolean dropArmed = false;
 
   private double smoothed = 0;
   private long lastBeatCount = 0;
 
   /**
-   * Bumped every time the mood enters DRIVING, which with two states means every
-   * AMBIENT to DRIVING transition. DropTracker watches this rather than trying to
-   * observe the transition itself, so it stays right whatever order the engine
-   * runs the two in.
+   * Bumped only when DRIVING returns after a driving-to-ambient transition.
+   * Entering IDLE disarms the transition so waking from silence cannot fire a drop.
    */
   private long driveCount = 0;
 
@@ -174,6 +183,8 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     addParameter("window", this.window);
     addParameter("minBpm", this.minBpm);
     addParameter("beatsUntilAmbient", this.beatsUntilAmbient);
+    addParameter("idleThreshold", this.idleThreshold);
+    addParameter("idleDelay", this.idleDelay);
     addParameter("charge", this.charge);
     addParameter("discharge", this.discharge);
     addParameter("lowWeight", this.lowWeight);
@@ -247,7 +258,7 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
   }
 
   /**
-   * Two states, decided entirely by whether bass is landing.
+   * Mood follows total audio silence first, then whether bass is landing.
    *
    * Nothing here consults the intensity curve. That was what made the old
    * BUILDING state fragile -- it had to judge the shape of a signal rather than
@@ -256,6 +267,20 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
    * simply no longer decides anything.
    */
   private void updateMood(double deltaMs) {
+    double inputLevel = Math.max(this.low.getValue(), Math.max(this.mid.getValue(), this.high.getValue()));
+    if (inputLevel < this.idleThreshold.getValue()) {
+      this.quietMs += deltaMs;
+      if (this.quietMs >= this.idleDelay.getValue() * 1000) {
+        setMood(Mood.IDLE);
+        return;
+      }
+    } else {
+      this.quietMs = 0;
+      if (this.mood == Mood.IDLE) {
+        setMood(Mood.AMBIENT);
+      }
+    }
+
     // A sighting only counts once it has survived every filter in the clock and
     // the tempo it agrees with is itself consistent.
     if (this.clock.acceptedSightingThisFrame()) {
@@ -274,14 +299,24 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
       }
     } else if (this.highConfidenceRun >= DRIVING_BEATS) {
       setMood(Mood.DRIVING);
-      ++this.driveCount;
     }
   }
 
   private void setMood(Mood next) {
     if (next != this.mood) {
+      Mood previous = this.mood;
       this.mood = next;
       this.highConfidenceRun = 0;
+      if (next == Mood.IDLE) {
+        this.dropArmed = false;
+      } else if (previous == Mood.DRIVING && next == Mood.AMBIENT) {
+        this.dropArmed = true;
+      } else if (previous == Mood.AMBIENT && next == Mood.DRIVING) {
+        if (this.dropArmed) {
+          ++this.driveCount;
+        }
+        this.dropArmed = false;
+      }
     }
   }
 
@@ -298,6 +333,8 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     this.clock.forget();
     this.mood = Mood.AMBIENT;
     this.highConfidenceRun = 0;
+    this.quietMs = 0;
+    this.dropArmed = false;
     this.historyCount = 0;
     this.historyHead = 0;
     this.bpm.setValue(0);
@@ -355,8 +392,7 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
   }
 
   /**
-   * Monotonic count of entries into DRIVING, which with two moods is every
-   * AMBIENT to DRIVING transition. DropTracker watches this.
+   * Monotonic count of eligible AMBIENT-to-DRIVING drops. IDLE wake-ups are excluded.
    */
   public long getDriveCount() {
     return this.driveCount;

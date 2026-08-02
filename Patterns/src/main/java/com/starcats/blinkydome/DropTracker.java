@@ -11,7 +11,7 @@ import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.TriggerParameter;
 
 /**
- * Fires once, when the floor comes back.
+ * Fires once when DRIVING returns directly from AMBIENT.
  *
  * Watches for {@link Mood#AMBIENT} giving way to {@link Mood#DRIVING} -- bass
  * returning after a stretch without it -- and answers with a single trigger plus
@@ -31,7 +31,7 @@ import heronarts.lx.parameter.TriggerParameter;
 @LXCategory("Blinky Dome")
 @LXModulator.Global("Drop Tracker")
 @LXModulator.Device("Drop Tracker")
-@LXComponent.Description("One-shot ramp fired when bass returns after a quiet stretch")
+@LXComponent.Description("One-shot ramp fired when DRIVING returns from AMBIENT")
 public class DropTracker extends LXModulator implements LXNormalizedParameter, LXTriggerSource {
 
   public final CompoundParameter duration =
@@ -46,7 +46,7 @@ public class DropTracker extends LXModulator implements LXNormalizedParameter, L
 
   public final TriggerParameter drop =
     new TriggerParameter("Drop")
-    .setDescription("Fires once when the floor returns after a quiet stretch (output)");
+    .setDescription("Fires once when DRIVING returns from AMBIENT (output)");
 
   private long lastDriveCount = -1;
   private double ramp = 0;
