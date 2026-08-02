@@ -7,7 +7,7 @@
  * One dot per chomp, one chomp per beat.
  */
 
-var BPM = 114;
+var BPM = 127;
 var BEAT_MS = 60000 / BPM;
 
 var DOT_COUNT = 4;
