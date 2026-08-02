@@ -1,0 +1,67 @@
+{
+  "label": "Ben Ears",
+  "metadata": {
+    "source": "Projects/BenStartingPoint.lxp, fixtures \"Ear L A/B\" and \"Ear R A/B\"",
+    "coordinate_system": "Y-up right-handed, origin at the project origin, units are project scene units (not metres)",
+    "scene_units": "192 LEDs at 0.1 spacing = 19.2 units per strip; the project is built at 10 units per metre, so each strip is 1.92 m",
+    "instantiate_at": "x=0 y=0 z=0, scale=1.0 -- the components carry their absolute project positions, so any other placement moves the ears off Ben's layout",
+    "output": "none; these strips were patched to protocol NONE in the project and drive no pixels yet",
+    "note": "All four strips were toggled off (enabled=false) in the project. That is per-instance runtime state, not geometry, so it is not encoded here -- switch them off on the fixture instance if you want to reproduce it. Setting component \"enabled\": false instead would drop their points from the model entirely.",
+    "total_strips": 4,
+    "total_pixels": 768
+  },
+  "components": [
+    {
+      "type": "strip",
+      "label": "Ear L A",
+      "tag": "strip",
+      "x": 14.0,
+      "y": 14.0,
+      "z": -10.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 42.0,
+      "numPoints": 192,
+      "spacing": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "Ear L B",
+      "tag": "strip",
+      "x": 28.0,
+      "y": 7.0,
+      "z": -10.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 90.0,
+      "numPoints": 192,
+      "spacing": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "Ear R A",
+      "tag": "strip",
+      "x": -13.0,
+      "y": 15.0,
+      "z": -10.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 142.0,
+      "numPoints": 192,
+      "spacing": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "Ear R B",
+      "tag": "strip",
+      "x": -28.0,
+      "y": 7.0,
+      "z": -10.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 90.0,
+      "numPoints": 192,
+      "spacing": 0.1
+    }
+  ]
+}
