@@ -7,7 +7,7 @@
  * One dot per chomp, one chomp per beat.
  */
 
-var BPM = 127;
+var BPM = 123;
 var BEAT_MS = 60000 / BPM;
 
 var DOT_COUNT = 4;
@@ -38,7 +38,7 @@ function renderPoint(point, deltaMs) {
   var alpha = 0.06;
   var timeSinceBeat = now * BPM / 60.0 / 1000.0 - Math.floor(now * BPM / 60.0 / 1000.0)
   var pulse = Math.exp(-(timeSinceBeat * 4.0)) * 0.1;
-  var scaleCycle = 1 + (pulse + t * alpha + smoothstep(0.94, 1, t) * (1 - alpha)) * (1/(5 * DOT_RADIUS));
+  var scaleCycle = 1 + (pulse + t * alpha + smoothstep(0.9, 1, t) * (1 - alpha)) * (1/(5 * DOT_RADIUS));
   //var panX = t * DOT_SPACING * (DOT_COUNT-1) * (DOT_COUNT)/ (DOT_COUNT + 1) * scaleCycle;
   var panD = t * DOT_SPACING * scaleCycle;
   var panD2 = (DOT_SPACING * (DOT_COUNT + 1) - DOT_SPACING * (DOT_COUNT) * t) * scaleCycle;
