@@ -356,12 +356,23 @@ MODEL = {
             "x_offset_m": 10.0,
             "y_offset_m": 0.0,
             "z_offset_m": 0.0,
-            "yaw_degrees": 0.0,
+            "yaw_degrees": 18.0,
             "pitch_degrees": 0.0,
             "roll_degrees": 0.0,
         },
         # ips are the last octet of each junction box on 192.168.123.x, J1-J5.
+        #
+        # fixture_type is the .lxf the model instantiates, which is deliberately
+        # *not* the one generate_v3_dome_harness.py writes. V3DomeHarness1.lxf is
+        # the hand-authored fixture from the dome build (upstream
+        # blinky-dome-chromatik, branch koa_072926): same origin, radius, wiring,
+        # Art-Net outputs and parameter names as the generated V3DomeHarness.lxf,
+        # but a different rotational phase for the triangles, and it is what the
+        # installed dome is actually wired to. The generator still runs and still
+        # writes V3DomeHarness.lxf so the geometry stays reproducible; nothing in
+        # the model references it while this points elsewhere.
         "harness": {
+            "fixture_type": "V3DomeHarness1",
             "ips": [11, 12, 13, 14, 15],
         },
         # v3_dome_model.obj is the same 3V 5/9 dome as the harness, generated
@@ -380,7 +391,7 @@ MODEL = {
         "model": {
             "scale_trim": 1.0,
             "y_trim_m": 0.0,
-            "yaw_phase_degrees": 36.0,
+            "yaw_phase_degrees": -18.0,
         },
     },
     # Hand-imported dome scaffold mesh (Fixtures/dome_model.obj): raw export

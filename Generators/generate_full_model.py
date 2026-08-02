@@ -255,6 +255,11 @@ def v3_harness_fixture(next_id) -> dict:
     sits above the base ring, so the LEDs are lifted by that much to stand on
     the shared placement. Raising the lights is what keeps the scaffold out of
     the ground -- dropping the mesh instead would bury its lower ring.
+
+    Which .lxf this points at is a knob (harness["fixture_type"]) and currently
+    names the hand-authored V3DomeHarness1.lxf rather than the one
+    generate_v3_dome_harness.py writes -- see the note in constants.MODEL. Both
+    share this origin and radius, so the lift above is the same either way.
     """
     harness = MODEL["v3_dome"]["harness"]
     placement = v3_dome_placement()
@@ -262,7 +267,7 @@ def v3_harness_fixture(next_id) -> dict:
     return make_fixture(
         next_id(),
         "V3 Dome Cable Harness",
-        "V3DomeHarness",
+        harness["fixture_type"],
         **placement,
         tags="v3-harness",
         json_parameters={
