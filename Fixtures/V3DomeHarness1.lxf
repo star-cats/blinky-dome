@@ -1,0 +1,6030 @@
+{
+  "label": "V3 Dome Cable Harness",
+  "tags": [
+    "dome",
+    "geodesic",
+    "V3",
+    "harness"
+  ],
+  "parameters": {
+    "ipJ1": {
+      "type": "int",
+      "default": 11,
+      "min": 0,
+      "max": 255,
+      "label": "J1 controller",
+      "description": "Last octet of junction box J1 — its IP is 192.168.123.x"
+    },
+    "ipJ2": {
+      "type": "int",
+      "default": 12,
+      "min": 0,
+      "max": 255,
+      "label": "J2 controller",
+      "description": "Last octet of junction box J2 — its IP is 192.168.123.x"
+    },
+    "ipJ3": {
+      "type": "int",
+      "default": 13,
+      "min": 0,
+      "max": 255,
+      "label": "J3 controller",
+      "description": "Last octet of junction box J3 — its IP is 192.168.123.x"
+    },
+    "ipJ4": {
+      "type": "int",
+      "default": 14,
+      "min": 0,
+      "max": 255,
+      "label": "J4 controller",
+      "description": "Last octet of junction box J4 — its IP is 192.168.123.x"
+    },
+    "ipJ5": {
+      "type": "int",
+      "default": 15,
+      "min": 0,
+      "max": 255,
+      "label": "J5 controller",
+      "description": "Last octet of junction box J5 — its IP is 192.168.123.x"
+    }
+  },
+  "metadata": {
+    "dome_radius_m": 3.5,
+    "led_triangle_edge_m": 0.575,
+    "leds_per_side": 33,
+    "leds_per_triangle": 99,
+    "triangles_per_harness": 4,
+    "harnesses_per_box": 4,
+    "harness_sizes": [
+      4,
+      4,
+      4,
+      3
+    ],
+    "corners_face": "strut-midpoints",
+    "junction_hub": {
+      "el": 46.64,
+      "az": 0
+    },
+    "artnet": "box IP = 192.168.123.<ipJn>, harness = port (universe = port*3-3), 170 px/universe",
+    "coordinate_system": "Y-up right-handed, origin at sphere centre (floor level), units metres",
+    "geometry": "strip components (spacing set), 3 per triangle",
+    "total_triangles": 75,
+    "total_strips": 225,
+    "total_pixels": 7425
+  },
+  "components": [
+    {
+      "type": "strip",
+      "label": "J1 H1 P1 · T20 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 20,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.79221,
+      "y": 2.90814,
+      "z": -0.09444,
+      "direction": {
+        "x": -0.482617,
+        "y": 0.170166,
+        "z": -0.859142
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P1 · T20 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 20,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.52632,
+      "y": 2.99992,
+      "z": -0.58096,
+      "direction": {
+        "x": 0.850651,
+        "y": -0.525731,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P1 · T20 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 20,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.00483,
+      "y": 2.70531,
+      "z": -0.57348,
+      "direction": {
+        "x": -0.368034,
+        "y": 0.355565,
+        "z": 0.859142
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P2 · T36 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 36,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.59139,
+      "y": 2.17135,
+      "z": 0.56365,
+      "direction": {
+        "x": 0.340226,
+        "y": -0.266529,
+        "z": -0.901781
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P2 · T36 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 36,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.78634,
+      "y": 2.01584,
+      "z": 0.06004,
+      "direction": {
+        "x": 0.262866,
+        "y": -0.525731,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P2 · T36 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 36,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.92994,
+      "y": 1.72503,
+      "z": 0.51898,
+      "direction": {
+        "x": -0.603091,
+        "y": 0.79226,
+        "z": 0.092764
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P3 · T46 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 46,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.71938,
+      "y": 1.26928,
+      "z": 1.63114,
+      "direction": {
+        "x": -0.587785,
+        "y": 0,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P3 · T46 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 46,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.38655,
+      "y": 1.27614,
+      "z": 2.08392,
+      "direction": {
+        "x": 0.003473,
+        "y": 0.788121,
+        "z": -0.615511
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P3 · T46 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 46,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.39361,
+      "y": 1.71558,
+      "z": 1.73368,
+      "direction": {
+        "x": 0.584312,
+        "y": -0.788121,
+        "z": -0.193506
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P4 · T61 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 61,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.81948,
+      "y": 1.19212,
+      "z": 1.51534,
+      "direction": {
+        "x": 0.414436,
+        "y": -0.050471,
+        "z": -0.908678
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P4 · T61 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 61,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 3.05427,
+      "y": 1.15656,
+      "z": 1.00599,
+      "direction": {
+        "x": 0.010889,
+        "y": -0.80018,
+        "z": 0.599661
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H1 P4 · T61 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 61,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 3.05673,
+      "y": 0.71084,
+      "z": 1.34827,
+      "direction": {
+        "x": -0.425325,
+        "y": 0.850651,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P1 · T21 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 21,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.52397,
+      "y": 2.21716,
+      "z": 0.6261,
+      "direction": {
+        "x": -0.466831,
+        "y": 0.15526,
+        "z": 0.870611
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P1 · T21 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 21,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.25732,
+      "y": 2.30966,
+      "z": 1.11206,
+      "direction": {
+        "x": -0.262866,
+        "y": 0.525731,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P1 · T21 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 21,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.11482,
+      "y": 2.60145,
+      "z": 0.65339,
+      "direction": {
+        "x": 0.729697,
+        "y": -0.680991,
+        "z": -0.061594
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P2 · T51 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 51,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.98398,
+      "y": 1.62057,
+      "z": 0.54823,
+      "direction": {
+        "x": 0.425325,
+        "y": -0.850651,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P2 · T51 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 51,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 3.22256,
+      "y": 1.1398,
+      "z": 0.38159,
+      "direction": {
+        "x": -0.261316,
+        "y": 0.108709,
+        "z": 0.959112
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P2 · T51 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 51,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 3.07315,
+      "y": 1.20783,
+      "z": 0.91906,
+      "direction": {
+        "x": -0.164009,
+        "y": 0.741942,
+        "z": -0.650095
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P3 · T71 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 71,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 3.25455,
+      "y": 1.07583,
+      "z": -0.28314,
+      "direction": {
+        "x": 0.212778,
+        "y": -0.839479,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P3 · T71 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 71,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 3.37319,
+      "y": 0.60775,
+      "z": 0.00436,
+      "direction": {
+        "x": -0.212778,
+        "y": 0.839479,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P3 · T71 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 71,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 3.25269,
+      "y": 1.08314,
+      "z": 0.27879,
+      "direction": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P4 · T60 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 60,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 3.22113,
+      "y": 1.14627,
+      "z": -0.37593,
+      "direction": {
+        "x": -0.425325,
+        "y": 0.850651,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P4 · T60 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 60,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.9817,
+      "y": 1.62152,
+      "z": -0.55658,
+      "direction": {
+        "x": 0.164009,
+        "y": -0.741942,
+        "z": -0.650095
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H2 P4 · T60 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 60,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 3.07685,
+      "y": 1.20042,
+      "z": -0.91637,
+      "direction": {
+        "x": 0.261316,
+        "y": -0.108709,
+        "z": 0.959112
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P1 · T30 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 30,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.52168,
+      "y": 2.22174,
+      "z": -0.61905,
+      "direction": {
+        "x": -0.729697,
+        "y": 0.680991,
+        "z": -0.061594
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P1 · T30 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 30,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.11075,
+      "y": 2.6028,
+      "z": -0.66097,
+      "direction": {
+        "x": 0.262866,
+        "y": -0.525731,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P1 · T30 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 30,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.26368,
+      "y": 2.30373,
+      "z": -1.11153,
+      "direction": {
+        "x": 0.466831,
+        "y": -0.15526,
+        "z": 0.870611
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P2 · T11 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 11,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.79962,
+      "y": 2.90356,
+      "z": 0.09444,
+      "direction": {
+        "x": 0.368034,
+        "y": -0.355565,
+        "z": 0.859142
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P2 · T11 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 11,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.00062,
+      "y": 2.70679,
+      "z": 0.58096,
+      "direction": {
+        "x": -0.850651,
+        "y": 0.525731,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P2 · T11 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 11,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.52311,
+      "y": 3.00302,
+      "z": 0.57348,
+      "direction": {
+        "x": 0.482617,
+        "y": -0.170166,
+        "z": -0.859142
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P3 · T10 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 10,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.85433,
+      "y": 3.24905,
+      "z": -0.6261,
+      "direction": {
+        "x": 0.347642,
+        "y": -0.348112,
+        "z": -0.870611
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P3 · T10 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 10,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.05632,
+      "y": 3.05192,
+      "z": -1.11206,
+      "direction": {
+        "x": 0.587785,
+        "y": 0,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P3 · T10 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 10,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.38103,
+      "y": 3.05495,
+      "z": -0.65339,
+      "direction": {
+        "x": -0.935427,
+        "y": 0.348112,
+        "z": 0.061594
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P4 · T5 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 5,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.78322,
+      "y": 3.28886,
+      "z": -0.56365,
+      "direction": {
+        "x": -0.390544,
+        "y": 0.185112,
+        "z": 0.901781
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P4 · T5 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 5,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.55693,
+      "y": 3.39369,
+      "z": -0.06004,
+      "direction": {
+        "x": -0.587785,
+        "y": 0,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H3 P4 · T5 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 5,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.2326,
+      "y": 3.39208,
+      "z": -0.51898,
+      "direction": {
+        "x": 0.978329,
+        "y": -0.185112,
+        "z": -0.092764
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P1 · T45 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 45,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.59368,
+      "y": 2.16677,
+      "z": -0.5707,
+      "direction": {
+        "x": 0.603091,
+        "y": -0.79226,
+        "z": 0.092764
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P1 · T45 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 45,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.93291,
+      "y": 1.72271,
+      "z": -0.51112,
+      "direction": {
+        "x": -0.262866,
+        "y": 0.525731,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P1 · T45 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 45,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.78109,
+      "y": 2.02274,
+      "z": -0.06084,
+      "direction": {
+        "x": -0.340226,
+        "y": 0.266529,
+        "z": -0.901781
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P2 · T35 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 35,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.31328,
+      "y": 1.87625,
+      "z": -1.67531,
+      "direction": {
+        "x": -0.146517,
+        "y": 0.673538,
+        "z": 0.724485
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P2 · T35 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 35,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.22518,
+      "y": 2.25767,
+      "z": -1.27209,
+      "direction": {
+        "x": -0.587785,
+        "y": 0,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P2 · T35 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 35,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.89873,
+      "y": 2.2518,
+      "z": -1.72949,
+      "direction": {
+        "x": 0.734303,
+        "y": -0.673538,
+        "z": 0.084532
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P3 · T70 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 70,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 3.05056,
+      "y": 1.16398,
+      "z": -1.00869,
+      "direction": {
+        "x": -0.414436,
+        "y": 0.050471,
+        "z": -0.908678
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P3 · T70 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 70,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.81958,
+      "y": 1.18515,
+      "z": -1.52057,
+      "direction": {
+        "x": 0.425325,
+        "y": -0.850651,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J1 H4 P3 · T70 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J1",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 70,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 3.06034,
+      "y": 0.7104,
+      "z": -1.34035,
+      "direction": {
+        "x": -0.010889,
+        "y": 0.80018,
+        "z": 0.599661
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P1 · T12 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 12,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.64364,
+      "y": 2.90814,
+      "z": 1.67531,
+      "direction": {
+        "x": 0.667956,
+        "y": 0.170166,
+        "z": -0.724485
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P1 · T12 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 12,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.02419,
+      "y": 2.99992,
+      "z": 1.27209,
+      "direction": {
+        "x": 0.262866,
+        "y": -0.525731,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P1 · T12 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 12,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.16493,
+      "y": 2.70531,
+      "z": 1.72949,
+      "direction": {
+        "x": -0.930821,
+        "y": 0.355565,
+        "z": -0.084532
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P2 · T38 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 38,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.26471,
+      "y": 2.17135,
+      "z": 2.63873,
+      "direction": {
+        "x": 0.96278,
+        "y": -0.266529,
+        "z": 0.044908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P2 · T38 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 38,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.80393,
+      "y": 2.01584,
+      "z": 2.66852,
+      "direction": {
+        "x": -0.688191,
+        "y": -0.525731,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P2 · T38 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 38,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.41182,
+      "y": 1.72503,
+      "z": 2.94692,
+      "direction": {
+        "x": -0.274589,
+        "y": 0.79226,
+        "z": -0.544908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P3 · T47 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 47,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.71098,
+      "y": 1.26928,
+      "z": 3.09033,
+      "direction": {
+        "x": -0.951057,
+        "y": 0,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P3 · T47 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 47,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.24444,
+      "y": 1.27614,
+      "z": 2.91371,
+      "direction": {
+        "x": 0.586459,
+        "y": 0.788121,
+        "z": -0.1869
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P3 · T47 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 47,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.90916,
+      "y": 1.71558,
+      "z": 2.8122,
+      "direction": {
+        "x": 0.364598,
+        "y": -0.788121,
+        "z": 0.495917
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P4 · T63 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 63,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.56991,
+      "y": 1.19212,
+      "z": 3.14976,
+      "direction": {
+        "x": 0.992272,
+        "y": -0.050471,
+        "z": 0.113355
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P4 · T63 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 63,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.01294,
+      "y": 1.15656,
+      "z": 3.21565,
+      "direction": {
+        "x": -0.566946,
+        "y": -0.80018,
+        "z": 0.195662
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H1 P4 · T63 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 63,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.3377,
+      "y": 0.71084,
+      "z": 3.32376,
+      "direction": {
+        "x": -0.425325,
+        "y": 0.850651,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P1 · T23 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 23,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.1845,
+      "y": 2.21716,
+      "z": 2.59391,
+      "direction": {
+        "x": -0.972259,
+        "y": 0.15526,
+        "z": -0.174949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P1 · T23 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 23,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.36008,
+      "y": 2.30966,
+      "z": 2.49048,
+      "direction": {
+        "x": 0.688191,
+        "y": 0.525731,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P1 · T23 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 23,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.0321,
+      "y": 2.60145,
+      "z": 2.21322,
+      "direction": {
+        "x": 0.284068,
+        "y": -0.680991,
+        "z": 0.674949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P2 · T53 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 53,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.4007,
+      "y": 1.62057,
+      "z": 3.00734,
+      "direction": {
+        "x": 0.425325,
+        "y": -0.850651,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P2 · T53 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 53,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.63291,
+      "y": 1.1398,
+      "z": 3.18275,
+      "direction": {
+        "x": -0.992921,
+        "y": 0.108709,
+        "z": 0.047856
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P2 · T53 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 53,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.07558,
+      "y": 1.20783,
+      "z": 3.20674,
+      "direction": {
+        "x": 0.567596,
+        "y": 0.741942,
+        "z": -0.356872
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P3 · T72 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 72,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.275,
+      "y": 1.07583,
+      "z": 3.00776,
+      "direction": {
+        "x": -0.409776,
+        "y": -0.839479,
+        "z": 0.356872
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P3 · T72 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 72,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.03823,
+      "y": 0.60775,
+      "z": 3.20944,
+      "direction": {
+        "x": -0.54128,
+        "y": 0.839479,
+        "z": -0.047856
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P3 · T72 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 72,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.73999,
+      "y": 1.08314,
+      "z": 3.17964,
+      "direction": {
+        "x": 0.951057,
+        "y": 0,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P4 · T52 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 52,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.35291,
+      "y": 1.14627,
+      "z": 2.94731,
+      "direction": {
+        "x": 0.16246,
+        "y": 0.850651,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P4 · T52 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 52,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.45074,
+      "y": 1.62152,
+      "z": 2.66377,
+      "direction": {
+        "x": 0.668959,
+        "y": -0.741942,
+        "z": -0.044908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H2 P4 · T52 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 52,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.82232,
+      "y": 1.20042,
+      "z": 2.64309,
+      "direction": {
+        "x": -0.831419,
+        "y": -0.108709,
+        "z": 0.544908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P1 · T22 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 22,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.36799,
+      "y": 2.22174,
+      "z": 2.20696,
+      "direction": {
+        "x": -0.166909,
+        "y": 0.680991,
+        "z": -0.713016
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P1 · T22 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 22,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.28088,
+      "y": 2.6028,
+      "z": 1.80319,
+      "direction": {
+        "x": 0.850651,
+        "y": -0.525731,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P1 · T22 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 22,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.75664,
+      "y": 2.30373,
+      "z": 1.8094,
+      "direction": {
+        "x": -0.683741,
+        "y": -0.15526,
+        "z": 0.713016
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P2 · T13 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 13,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.4663,
+      "y": 2.90356,
+      "z": 1.74072,
+      "direction": {
+        "x": -0.703364,
+        "y": -0.355565,
+        "z": 0.615511
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P2 · T13 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 13,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.0657,
+      "y": 2.70679,
+      "z": 2.08223,
+      "direction": {
+        "x": -0.262866,
+        "y": 0.525731,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P2 · T13 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 13,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.07474,
+      "y": 3.00302,
+      "z": 1.62578,
+      "direction": {
+        "x": 0.966229,
+        "y": -0.170166,
+        "z": 0.193506
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P3 · T6 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 6,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.85946,
+      "y": 3.24905,
+      "z": 0.61905,
+      "direction": {
+        "x": 0.935427,
+        "y": -0.348112,
+        "z": 0.061594
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P3 · T6 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 6,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.38406,
+      "y": 3.05192,
+      "z": 0.66097,
+      "direction": {
+        "x": -0.587785,
+        "y": 0,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P3 · T6 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 6,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.04817,
+      "y": 3.05495,
+      "z": 1.11153,
+      "direction": {
+        "x": -0.347642,
+        "y": 0.348112,
+        "z": -0.870611
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P4 · T1 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 1,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.77809,
+      "y": 3.28886,
+      "z": 0.5707,
+      "direction": {
+        "x": -0.978329,
+        "y": 0.185112,
+        "z": -0.092764
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P4 · T1 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 1,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.2292,
+      "y": 3.39369,
+      "z": 0.51112,
+      "direction": {
+        "x": 0.587785,
+        "y": 0,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H3 P4 · T1 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 1,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.56546,
+      "y": 3.39208,
+      "z": 0.06084,
+      "direction": {
+        "x": 0.390544,
+        "y": -0.185112,
+        "z": 0.901781
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P1 · T37 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 37,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.34426,
+      "y": 2.16677,
+      "z": 2.29038,
+      "direction": {
+        "x": 0.098142,
+        "y": -0.79226,
+        "z": 0.60224
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P1 · T37 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 37,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.39243,
+      "y": 1.72271,
+      "z": 2.63142,
+      "direction": {
+        "x": -0.850651,
+        "y": 0.525731,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P1 · T37 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 37,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.91727,
+      "y": 2.02274,
+      "z": 2.62617,
+      "direction": {
+        "x": 0.752509,
+        "y": 0.266529,
+        "z": -0.60224
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P2 · T31 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 31,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.30816,
+      "y": 1.87625,
+      "z": 1.68236,
+      "direction": {
+        "x": -0.734303,
+        "y": 0.673538,
+        "z": 0.084532
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P2 · T31 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 31,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.89745,
+      "y": 2.25767,
+      "z": 1.72318,
+      "direction": {
+        "x": 0.587785,
+        "y": 0,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P2 · T31 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 31,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.23158,
+      "y": 2.2518,
+      "z": 1.27135,
+      "direction": {
+        "x": 0.146517,
+        "y": -0.673538,
+        "z": 0.724485
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P3 · T62 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 62,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.90199,
+      "y": 1.16398,
+      "z": 2.58956,
+      "direction": {
+        "x": 0.736136,
+        "y": 0.050471,
+        "z": -0.674949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P3 · T62 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 62,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.31744,
+      "y": 1.18515,
+      "z": 2.2117,
+      "direction": {
+        "x": -0.16246,
+        "y": -0.850651,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J2 H4 P3 · T62 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J2",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 62,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.22045,
+      "y": 0.7104,
+      "z": 2.49637,
+      "direction": {
+        "x": -0.573676,
+        "y": 0.80018,
+        "z": 0.174949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P1 · T14 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 14,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.39442,
+      "y": 2.90814,
+      "z": 1.12984,
+      "direction": {
+        "x": 0.895436,
+        "y": 0.170166,
+        "z": 0.411385
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P1 · T14 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 14,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.89334,
+      "y": 2.99992,
+      "z": 1.36716,
+      "direction": {
+        "x": -0.688191,
+        "y": -0.525731,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P1 · T14 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 14,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.28486,
+      "y": 2.70531,
+      "z": 1.64236,
+      "direction": {
+        "x": -0.207245,
+        "y": 0.355565,
+        "z": -0.911385
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P2 · T40 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 40,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.42778,
+      "y": 2.17135,
+      "z": 1.06717,
+      "direction": {
+        "x": 0.254805,
+        "y": -0.266529,
+        "z": 0.929536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P2 · T40 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 40,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.28949,
+      "y": 2.01584,
+      "z": 1.5892,
+      "direction": {
+        "x": -0.688191,
+        "y": -0.525731,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P2 · T40 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 40,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.67542,
+      "y": 1.72503,
+      "z": 1.30231,
+      "direction": {
+        "x": 0.433386,
+        "y": 0.79226,
+        "z": -0.429536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P3 · T48 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 48,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -3.15879,
+      "y": 1.26928,
+      "z": 0.27879,
+      "direction": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P3 · T48 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 48,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -3.15566,
+      "y": 1.27614,
+      "z": -0.28314,
+      "direction": {
+        "x": 0.358978,
+        "y": 0.788121,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P3 · T48 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 48,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.9555,
+      "y": 1.71558,
+      "z": 0.00436,
+      "direction": {
+        "x": -0.358978,
+        "y": -0.788121,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P4 · T65 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 65,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -3.17171,
+      "y": 1.19212,
+      "z": 0.43131,
+      "direction": {
+        "x": 0.198822,
+        "y": -0.050471,
+        "z": 0.978735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P4 · T65 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 65,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -3.06226,
+      "y": 1.15656,
+      "z": 0.98139,
+      "direction": {
+        "x": -0.361281,
+        "y": -0.80018,
+        "z": -0.478735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H1 P4 · T65 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 65,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -3.26544,
+      "y": 0.71084,
+      "z": 0.70593,
+      "direction": {
+        "x": 0.16246,
+        "y": 0.850651,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P1 · T25 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 25,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.40994,
+      "y": 2.21716,
+      "z": 0.97703,
+      "direction": {
+        "x": -0.134058,
+        "y": 0.15526,
+        "z": -0.978735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P1 · T25 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 25,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.47986,
+      "y": 2.30966,
+      "z": 0.42714,
+      "direction": {
+        "x": 0.688191,
+        "y": 0.525731,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P1 · T25 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 25,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.09498,
+      "y": 2.60145,
+      "z": 0.71446,
+      "direction": {
+        "x": -0.554133,
+        "y": -0.680991,
+        "z": 0.478735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P2 · T55 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 55,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.73633,
+      "y": 1.62057,
+      "z": 1.31041,
+      "direction": {
+        "x": -0.16246,
+        "y": -0.850651,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P2 · T55 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 55,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.8314,
+      "y": 1.1398,
+      "z": 1.58546,
+      "direction": {
+        "x": -0.352343,
+        "y": 0.108709,
+        "z": -0.929536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P2 · T55 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 55,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -3.02644,
+      "y": 1.20783,
+      "z": 1.06282,
+      "direction": {
+        "x": 0.514803,
+        "y": 0.741942,
+        "z": 0.429536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P3 · T73 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 73,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.46655,
+      "y": 1.07583,
+      "z": 2.14204,
+      "direction": {
+        "x": -0.466034,
+        "y": -0.839479,
+        "z": -0.279441
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P3 · T73 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 73,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.73152,
+      "y": 0.60775,
+      "z": 1.97918,
+      "direction": {
+        "x": -0.121752,
+        "y": 0.839479,
+        "z": -0.529576
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P3 · T73 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 73,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.79535,
+      "y": 1.08314,
+      "z": 1.68634,
+      "direction": {
+        "x": 0.587785,
+        "y": 0,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P4 · T54 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 54,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.38498,
+      "y": 1.14627,
+      "z": 2.19746,
+      "direction": {
+        "x": 0.525731,
+        "y": 0.850651,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P4 · T54 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 54,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.0851,
+      "y": 1.62152,
+      "z": 2.20289,
+      "direction": {
+        "x": 0.24943,
+        "y": -0.741942,
+        "z": 0.62234
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H2 P4 · T54 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 54,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.9506,
+      "y": 1.20042,
+      "z": 2.54989,
+      "direction": {
+        "x": -0.775161,
+        "y": -0.108709,
+        "z": -0.62234
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P1 · T24 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 24,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.67622,
+      "y": 2.22174,
+      "z": 1.98303,
+      "direction": {
+        "x": 0.626541,
+        "y": 0.680991,
+        "z": -0.379074
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P1 · T24 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 24,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.31912,
+      "y": 2.6028,
+      "z": 1.77541,
+      "direction": {
+        "x": 0.262866,
+        "y": -0.525731,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P1 · T24 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 24,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.17801,
+      "y": 2.30373,
+      "z": 2.2298,
+      "direction": {
+        "x": -0.889406,
+        "y": -0.15526,
+        "z": -0.429943
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P2 · T15 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 15,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.51143,
+      "y": 2.90356,
+      "z": 0.98139,
+      "direction": {
+        "x": -0.802737,
+        "y": -0.355565,
+        "z": -0.478735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P2 · T15 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 15,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.96002,
+      "y": 2.70679,
+      "z": 0.70593,
+      "direction": {
+        "x": 0.688191,
+        "y": 0.525731,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P2 · T15 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 15,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.56931,
+      "y": 3.00302,
+      "z": 0.43131,
+      "direction": {
+        "x": 0.114546,
+        "y": -0.170166,
+        "z": 0.978735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P3 · T7 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 7,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.32316,
+      "y": 3.24905,
+      "z": 1.00869,
+      "direction": {
+        "x": 0.230484,
+        "y": -0.348112,
+        "z": 0.908678
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P3 · T7 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 7,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.20093,
+      "y": 3.05192,
+      "z": 1.52057,
+      "direction": {
+        "x": -0.951057,
+        "y": 0,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P3 · T7 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 7,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.73322,
+      "y": 3.05495,
+      "z": 1.34035,
+      "direction": {
+        "x": 0.720573,
+        "y": 0.348112,
+        "z": -0.599661
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P4 · T2 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 2,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.30233,
+      "y": 3.28886,
+      "z": 0.91637,
+      "direction": {
+        "x": -0.214097,
+        "y": 0.185112,
+        "z": -0.959112
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P4 · T2 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 2,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.41528,
+      "y": 3.39369,
+      "z": 0.37593,
+      "direction": {
+        "x": 0.951057,
+        "y": 0,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H3 P4 · T2 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 2,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.11687,
+      "y": 3.39208,
+      "z": 0.55658,
+      "direction": {
+        "x": -0.73696,
+        "y": -0.185112,
+        "z": 0.650095
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P1 · T39 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 39,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.76288,
+      "y": 2.16677,
+      "z": 1.98623,
+      "direction": {
+        "x": -0.542436,
+        "y": -0.79226,
+        "z": 0.279441
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P1 · T39 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 39,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.07234,
+      "y": 1.72271,
+      "z": 2.13743,
+      "direction": {
+        "x": -0.262866,
+        "y": 0.525731,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P1 · T39 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 39,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.21418,
+      "y": 2.02274,
+      "z": 1.68391,
+      "direction": {
+        "x": 0.805302,
+        "y": 0.266529,
+        "z": 0.529576
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P2 · T32 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 32,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.88676,
+      "y": 1.87625,
+      "z": 2.71506,
+      "direction": {
+        "x": -0.307307,
+        "y": 0.673538,
+        "z": -0.672242
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P2 · T32 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 32,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.0525,
+      "y": 2.25767,
+      "z": 2.33707,
+      "direction": {
+        "x": 0.951057,
+        "y": 0,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P2 · T32 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 32,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.51953,
+      "y": 2.2518,
+      "z": 2.51523,
+      "direction": {
+        "x": -0.64375,
+        "y": -0.673538,
+        "z": 0.363225
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P3 · T64 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 64,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.87507,
+      "y": 1.16398,
+      "z": 2.60912,
+      "direction": {
+        "x": 0.869393,
+        "y": 0.050471,
+        "z": 0.491536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P3 · T64 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 64,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.38732,
+      "y": 1.18515,
+      "z": 2.88747,
+      "direction": {
+        "x": -0.525731,
+        "y": -0.850651,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J3 H4 P3 · T64 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J3",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 64,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.68803,
+      "y": 0.7104,
+      "z": 2.88319,
+      "direction": {
+        "x": -0.343662,
+        "y": 0.80018,
+        "z": -0.491536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P1 · T16 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 16,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.50544,
+      "y": 2.90814,
+      "z": -0.97703,
+      "direction": {
+        "x": -0.114546,
+        "y": 0.170166,
+        "z": 0.978735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P1 · T16 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 16,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.5763,
+      "y": 2.99992,
+      "z": -0.42714,
+      "direction": {
+        "x": -0.688191,
+        "y": -0.525731,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P1 · T16 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 16,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.95902,
+      "y": 2.70531,
+      "z": -0.71446,
+      "direction": {
+        "x": 0.802737,
+        "y": 0.355565,
+        "z": -0.478735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P2 · T42 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 42,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.76517,
+      "y": 2.17135,
+      "z": -1.97918,
+      "direction": {
+        "x": -0.805302,
+        "y": -0.266529,
+        "z": 0.529576
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P2 · T42 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 42,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.21891,
+      "y": 2.01584,
+      "z": -1.68634,
+      "direction": {
+        "x": 0.262866,
+        "y": -0.525731,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P2 · T42 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 42,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.06533,
+      "y": 1.72503,
+      "z": -2.14204,
+      "direction": {
+        "x": 0.542436,
+        "y": 0.79226,
+        "z": 0.279441
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P3 · T49 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 49,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.24126,
+      "y": 1.26928,
+      "z": -2.91803,
+      "direction": {
+        "x": 0.951057,
+        "y": 0,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P3 · T49 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 49,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.70587,
+      "y": 1.27614,
+      "z": -3.08871,
+      "direction": {
+        "x": -0.364598,
+        "y": 0.788121,
+        "z": 0.495917
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P3 · T49 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 49,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.91744,
+      "y": 1.71558,
+      "z": -2.8095,
+      "direction": {
+        "x": -0.586459,
+        "y": -0.788121,
+        "z": -0.1869
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P4 · T67 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 67,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.39031,
+      "y": 1.19212,
+      "z": -2.88319,
+      "direction": {
+        "x": -0.869393,
+        "y": -0.050471,
+        "z": 0.491536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P4 · T67 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 67,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.87965,
+      "y": 1.15656,
+      "z": -2.60912,
+      "direction": {
+        "x": 0.343662,
+        "y": -0.80018,
+        "z": -0.491536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H1 P4 · T67 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 67,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.68045,
+      "y": 0.71084,
+      "z": -2.88747,
+      "direction": {
+        "x": 0.525731,
+        "y": 0.850651,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P1 · T27 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 27,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.67393,
+      "y": 2.21716,
+      "z": -1.99007,
+      "direction": {
+        "x": 0.889406,
+        "y": 0.15526,
+        "z": -0.429943
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P1 · T27 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 27,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.17256,
+      "y": 2.30966,
+      "z": -2.2265,
+      "direction": {
+        "x": -0.262866,
+        "y": 0.525731,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P1 · T27 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 27,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.32687,
+      "y": 2.60145,
+      "z": -1.77166,
+      "direction": {
+        "x": -0.626541,
+        "y": -0.680991,
+        "z": -0.379074
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P2 · T57 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 57,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.09185,
+      "y": 1.62057,
+      "z": -2.19746,
+      "direction": {
+        "x": -0.525731,
+        "y": -0.850651,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P2 · T57 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 57,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.38281,
+      "y": 1.1398,
+      "z": -2.20289,
+      "direction": {
+        "x": 0.775161,
+        "y": 0.108709,
+        "z": -0.62234
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P2 · T57 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 57,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.94602,
+      "y": 1.20783,
+      "z": -2.54989,
+      "direction": {
+        "x": -0.24943,
+        "y": 0.741942,
+        "z": 0.62234
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P3 · T74 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 74,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.79941,
+      "y": 1.07583,
+      "z": -1.68391,
+      "direction": {
+        "x": 0.121752,
+        "y": -0.839479,
+        "z": -0.529576
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P3 · T74 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 74,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.7264,
+      "y": 0.60775,
+      "z": -1.98623,
+      "direction": {
+        "x": 0.466034,
+        "y": 0.839479,
+        "z": -0.279441
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P3 · T74 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 74,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.46762,
+      "y": 1.08314,
+      "z": -2.13743,
+      "direction": {
+        "x": -0.587785,
+        "y": 0,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P4 · T56 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 56,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.82691,
+      "y": 1.14627,
+      "z": -1.5892,
+      "direction": {
+        "x": 0.16246,
+        "y": 0.850651,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P4 · T56 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 56,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.7394,
+      "y": 1.62152,
+      "z": -1.30231,
+      "direction": {
+        "x": -0.514803,
+        "y": -0.741942,
+        "z": 0.429536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H2 P4 · T56 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 56,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -3.02786,
+      "y": 1.20042,
+      "z": -1.06717,
+      "direction": {
+        "x": 0.352343,
+        "y": -0.108709,
+        "z": -0.929536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P1 · T26 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 26,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.40395,
+      "y": 2.22174,
+      "z": -0.98139,
+      "direction": {
+        "x": 0.554133,
+        "y": 0.680991,
+        "z": 0.478735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P1 · T26 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 26,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.09615,
+      "y": 2.6028,
+      "z": -0.70593,
+      "direction": {
+        "x": -0.688191,
+        "y": -0.525731,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P1 · T26 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 26,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.48469,
+      "y": 2.30373,
+      "z": -0.43131,
+      "direction": {
+        "x": 0.134058,
+        "y": -0.15526,
+        "z": -0.978735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P2 · T17 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 17,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.40041,
+      "y": 2.90356,
+      "z": -1.13419,
+      "direction": {
+        "x": 0.207245,
+        "y": -0.355565,
+        "z": -0.911385
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P2 · T17 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 17,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.27706,
+      "y": 2.70679,
+      "z": -1.64594,
+      "direction": {
+        "x": 0.688191,
+        "y": 0.525731,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P2 · T17 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 17,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.89514,
+      "y": 3.00302,
+      "z": -1.35922,
+      "direction": {
+        "x": -0.895436,
+        "y": -0.170166,
+        "z": 0.411385
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P3 · T8 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 8,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -1.05918,
+      "y": 3.24905,
+      "z": 0.00436,
+      "direction": {
+        "x": -0.792981,
+        "y": -0.348112,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P3 · T8 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 8,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -1.50824,
+      "y": 3.05192,
+      "z": 0.27879,
+      "direction": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P3 · T8 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 8,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.50133,
+      "y": 3.05495,
+      "z": -0.28314,
+      "direction": {
+        "x": 0.792981,
+        "y": 0.348112,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P4 · T3 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 3,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.96494,
+      "y": 3.28886,
+      "z": -0.00436,
+      "direction": {
+        "x": 0.84601,
+        "y": 0.185112,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P4 · T3 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 3,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.48586,
+      "y": 3.39369,
+      "z": -0.27879,
+      "direction": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H3 P4 · T3 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 3,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.49323,
+      "y": 3.39208,
+      "z": 0.28314,
+      "direction": {
+        "x": -0.84601,
+        "y": -0.185112,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P1 · T41 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 41,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.43378,
+      "y": 2.16677,
+      "z": -1.06282,
+      "direction": {
+        "x": -0.433386,
+        "y": -0.79226,
+        "z": -0.429536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P1 · T41 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 41,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.6732,
+      "y": 1.72271,
+      "z": -1.31041,
+      "direction": {
+        "x": 0.688191,
+        "y": 0.525731,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P1 · T41 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 41,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.28571,
+      "y": 2.02274,
+      "z": -1.58546,
+      "direction": {
+        "x": -0.254805,
+        "y": 0.266529,
+        "z": 0.929536
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P2 · T33 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 33,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -2.8562,
+      "y": 1.87625,
+      "z": -0.00436,
+      "direction": {
+        "x": 0.544377,
+        "y": 0.673538,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P2 · T33 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 33,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -2.54793,
+      "y": 2.25767,
+      "z": -0.27879,
+      "direction": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P2 · T33 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 33,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -2.55267,
+      "y": 2.2518,
+      "z": 0.28314,
+      "direction": {
+        "x": -0.544377,
+        "y": -0.673538,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P3 · T66 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 66,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -3.06085,
+      "y": 1.16398,
+      "z": -0.97703,
+      "direction": {
+        "x": -0.198822,
+        "y": 0.050471,
+        "z": 0.978735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P3 · T66 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 66,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -3.17485,
+      "y": 1.18515,
+      "z": -0.42714,
+      "direction": {
+        "x": -0.16246,
+        "y": -0.850651,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J4 H4 P3 · T66 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J4",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 66,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -3.26371,
+      "y": 0.7104,
+      "z": -0.71446,
+      "direction": {
+        "x": 0.361281,
+        "y": 0.80018,
+        "z": -0.478735
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P1 · T18 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 18,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.46401,
+      "y": 2.90814,
+      "z": -1.73368,
+      "direction": {
+        "x": -0.966229,
+        "y": 0.170166,
+        "z": 0.193506
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P1 · T18 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 18,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.08087,
+      "y": 2.99992,
+      "z": -1.63114,
+      "direction": {
+        "x": 0.262866,
+        "y": -0.525731,
+        "z": -0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P1 · T18 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 1,
+        "triangle": 18,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.07412,
+      "y": 2.70531,
+      "z": -2.08392,
+      "direction": {
+        "x": 0.703364,
+        "y": 0.355565,
+        "z": 0.615511
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P2 · T44 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 44,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.33685,
+      "y": 2.17135,
+      "z": -2.29038,
+      "direction": {
+        "x": -0.752509,
+        "y": -0.266529,
+        "z": -0.60224
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P2 · T44 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 44,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.91812,
+      "y": 2.01584,
+      "z": -2.63142,
+      "direction": {
+        "x": 0.850651,
+        "y": -0.525731,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P2 · T44 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 2,
+        "triangle": 44,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.39898,
+      "y": 1.72503,
+      "z": -2.62617,
+      "direction": {
+        "x": -0.098142,
+        "y": 0.79226,
+        "z": 0.60224
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P3 · T50 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 50,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.39164,
+      "y": 1.26928,
+      "z": -2.08223,
+      "direction": {
+        "x": 0.587785,
+        "y": 0,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P3 · T50 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 50,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 2.71941,
+      "y": 1.27614,
+      "z": -1.62578,
+      "direction": {
+        "x": -0.584312,
+        "y": 0.788121,
+        "z": -0.193506
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P3 · T50 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 3,
+        "triangle": 50,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.38849,
+      "y": 1.71558,
+      "z": -1.74072,
+      "direction": {
+        "x": -0.003473,
+        "y": -0.788121,
+        "z": -0.615511
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P4 · T69 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 69,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 2.31245,
+      "y": 1.19212,
+      "z": -2.21322,
+      "direction": {
+        "x": -0.736136,
+        "y": -0.050471,
+        "z": -0.674949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P4 · T69 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 69,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.90058,
+      "y": 1.15656,
+      "z": -2.59391,
+      "direction": {
+        "x": 0.573676,
+        "y": -0.80018,
+        "z": 0.174949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H1 P4 · T69 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 1,
+        "port": 1,
+        "position": 4,
+        "triangle": 69,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 2.22686,
+      "y": 0.71084,
+      "z": -2.49048,
+      "direction": {
+        "x": 0.16246,
+        "y": 0.850651,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P1 · T29 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 29,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.3754,
+      "y": 2.21716,
+      "z": -2.20696,
+      "direction": {
+        "x": 0.683741,
+        "y": 0.15526,
+        "z": 0.713016
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P1 · T29 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 29,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.75518,
+      "y": 2.30966,
+      "z": -1.80319,
+      "direction": {
+        "x": -0.850651,
+        "y": 0.525731,
+        "z": 0
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P1 · T29 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 1,
+        "triangle": 29,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.27493,
+      "y": 2.60145,
+      "z": -1.8094,
+      "direction": {
+        "x": 0.166909,
+        "y": -0.680991,
+        "z": -0.713016
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P2 · T59 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 59,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 1.4435,
+      "y": 1.62057,
+      "z": -2.66852,
+      "direction": {
+        "x": -0.16246,
+        "y": -0.850651,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P2 · T59 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 59,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.35874,
+      "y": 1.1398,
+      "z": -2.94692,
+      "direction": {
+        "x": 0.831419,
+        "y": 0.108709,
+        "z": 0.544908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P2 · T59 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 2,
+        "triangle": 59,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.82373,
+      "y": 1.20783,
+      "z": -2.63873,
+      "direction": {
+        "x": -0.668959,
+        "y": 0.741942,
+        "z": -0.044908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P3 · T75 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 75,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.73642,
+      "y": 1.07583,
+      "z": -3.18275,
+      "direction": {
+        "x": 0.54128,
+        "y": -0.839479,
+        "z": -0.047856
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P3 · T75 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 75,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.04651,
+      "y": 0.60775,
+      "z": -3.20674,
+      "direction": {
+        "x": 0.409776,
+        "y": 0.839479,
+        "z": 0.356872
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P3 · T75 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 3,
+        "triangle": 75,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.27028,
+      "y": 1.08314,
+      "z": -3.00734,
+      "direction": {
+        "x": -0.951057,
+        "y": 0,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P4 · T58 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 58,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.63786,
+      "y": 1.14627,
+      "z": -3.17964,
+      "direction": {
+        "x": -0.425325,
+        "y": 0.850651,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P4 · T58 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 58,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.39205,
+      "y": 1.62152,
+      "z": -3.00776,
+      "direction": {
+        "x": -0.567596,
+        "y": -0.741942,
+        "z": -0.356872
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H2 P4 · T58 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 2,
+        "port": 2,
+        "position": 4,
+        "triangle": 58,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.07928,
+      "y": 1.20042,
+      "z": -3.20944,
+      "direction": {
+        "x": 0.992921,
+        "y": -0.108709,
+        "z": 0.047856
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P1 · T28 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 28,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.19049,
+      "y": 2.22174,
+      "z": -2.58956,
+      "direction": {
+        "x": -0.284068,
+        "y": 0.680991,
+        "z": 0.674949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P1 · T28 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 28,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.02363,
+      "y": 2.6028,
+      "z": -2.2117,
+      "direction": {
+        "x": -0.688191,
+        "y": -0.525731,
+        "z": -0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P1 · T28 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 1,
+        "triangle": 28,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.35761,
+      "y": 2.30373,
+      "z": -2.49637,
+      "direction": {
+        "x": 0.972259,
+        "y": -0.15526,
+        "z": -0.174949
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P2 · T19 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 19,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.64593,
+      "y": 2.90356,
+      "z": -1.68236,
+      "direction": {
+        "x": 0.930821,
+        "y": -0.355565,
+        "z": -0.084532
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P2 · T19 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 19,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 1.17075,
+      "y": 2.70679,
+      "z": -1.72318,
+      "direction": {
+        "x": -0.262866,
+        "y": 0.525731,
+        "z": 0.809017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P2 · T19 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 2,
+        "triangle": 19,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 1.01608,
+      "y": 3.00302,
+      "z": -1.27135,
+      "direction": {
+        "x": -0.667956,
+        "y": -0.170166,
+        "z": -0.724485
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P3 · T9 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 9,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.33145,
+      "y": 3.24905,
+      "z": -1.00599,
+      "direction": {
+        "x": -0.720573,
+        "y": -0.348112,
+        "z": -0.599661
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P3 · T9 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 9,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.73121,
+      "y": 3.05192,
+      "z": -1.34827,
+      "direction": {
+        "x": 0.951057,
+        "y": 0,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P3 · T9 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 3,
+        "triangle": 9,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.19465,
+      "y": 3.05495,
+      "z": -1.51534,
+      "direction": {
+        "x": -0.230484,
+        "y": 0.348112,
+        "z": 0.908678
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P4 · T4 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 4,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.29404,
+      "y": 3.28886,
+      "z": -0.91906,
+      "direction": {
+        "x": 0.73696,
+        "y": 0.185112,
+        "z": 0.650095
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P4 · T4 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 4,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.115,
+      "y": 3.39369,
+      "z": -0.54823,
+      "direction": {
+        "x": -0.951057,
+        "y": 0,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H3 P4 · T4 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 3,
+        "port": 3,
+        "position": 4,
+        "triangle": 4,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.4217,
+      "y": 3.39208,
+      "z": -0.38159,
+      "direction": {
+        "x": 0.214097,
+        "y": -0.185112,
+        "z": -0.959112
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P1 · T43 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 43,
+        "side": 1,
+        "flipped": false
+      },
+      "x": 0.25872,
+      "y": 2.16677,
+      "z": -2.64309,
+      "direction": {
+        "x": 0.274589,
+        "y": -0.79226,
+        "z": -0.544908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P1 · T43 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 43,
+        "side": 2,
+        "flipped": false
+      },
+      "x": 0.42021,
+      "y": 1.72271,
+      "z": -2.94731,
+      "direction": {
+        "x": 0.688191,
+        "y": 0.525731,
+        "z": 0.5
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P1 · T43 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 1,
+        "triangle": 43,
+        "side": 3,
+        "flipped": false
+      },
+      "x": 0.80154,
+      "y": 2.02274,
+      "z": -2.66377,
+      "direction": {
+        "x": -0.96278,
+        "y": 0.266529,
+        "z": 0.044908
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P2 · T34 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 34,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.87847,
+      "y": 1.87625,
+      "z": -2.71776,
+      "direction": {
+        "x": 0.64375,
+        "y": 0.673538,
+        "z": 0.363225
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P2 · T34 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 34,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.52221,
+      "y": 2.25767,
+      "z": -2.50937,
+      "direction": {
+        "x": -0.951057,
+        "y": 0,
+        "z": 0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P2 · T34 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 2,
+        "triangle": 34,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -1.0581,
+      "y": 2.2518,
+      "z": -2.34024,
+      "direction": {
+        "x": 0.307307,
+        "y": -0.673538,
+        "z": -0.672242
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P3 · T68 · side 1",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 68,
+        "side": 1,
+        "flipped": false
+      },
+      "x": -0.01664,
+      "y": 1.16398,
+      "z": -3.21296,
+      "direction": {
+        "x": -0.992272,
+        "y": 0.050471,
+        "z": 0.113355
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P3 · T68 · side 2",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 68,
+        "side": 2,
+        "flipped": false
+      },
+      "x": -0.57485,
+      "y": 1.18515,
+      "z": -3.15146,
+      "direction": {
+        "x": 0.425325,
+        "y": -0.850651,
+        "z": -0.309017
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    },
+    {
+      "type": "strip",
+      "label": "J5 H4 P3 · T68 · side 3",
+      "tag": "triangle",
+      "meta": {
+        "box": "J5",
+        "harness": 4,
+        "port": 4,
+        "position": 3,
+        "triangle": 68,
+        "side": 3,
+        "flipped": false
+      },
+      "x": -0.32905,
+      "y": 0.7104,
+      "z": -3.32475,
+      "direction": {
+        "x": 0.566946,
+        "y": 0.80018,
+        "z": 0.195662
+      },
+      "spacing": 0.017424,
+      "numPoints": 33
+    }
+  ],
+  "outputs": [
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 0,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 0,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 1,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 170,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 2,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 340,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 3,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 396,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 4,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 566,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 5,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 736,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 6,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 792,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 7,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 962,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 8,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 1132,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 9,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 1188,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ1",
+      "universe": 10,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 1358,
+      "num": 127
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 0,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 1485,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 1,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 1655,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 2,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 1825,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 3,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 1881,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 4,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2051,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 5,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2221,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 6,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2277,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 7,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2447,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 8,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2617,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 9,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2673,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ2",
+      "universe": 10,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2843,
+      "num": 127
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 0,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 2970,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 1,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 3140,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 2,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 3310,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 3,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 3366,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 4,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 3536,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 5,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 3706,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 6,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 3762,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 7,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 3932,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 8,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 4102,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 9,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 4158,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ3",
+      "universe": 10,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 4328,
+      "num": 127
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 0,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 4455,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 1,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 4625,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 2,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 4795,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 3,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 4851,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 4,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5021,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 5,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5191,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 6,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5247,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 7,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5417,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 8,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5587,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 9,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5643,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ4",
+      "universe": 10,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5813,
+      "num": 127
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 0,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 5940,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 1,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 6110,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 2,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 6280,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 3,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 6336,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 4,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 6506,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 5,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 6676,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 6,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 6732,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 7,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 6902,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 8,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 7072,
+      "num": 56
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 9,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 7128,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "192.168.123.$ipJ5",
+      "universe": 10,
+      "channel": 0,
+      "byteOrder": "rgb",
+      "start": 7298,
+      "num": 127
+    }
+  ]
+}
