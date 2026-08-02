@@ -44,6 +44,7 @@ from constants import MIN_PYTHON  # noqa: E402
 # .lxm, so it runs last.
 GENERATORS = (
     "generate_waterfall",
+    "generate_kyles_curtain",
     "generate_harness_point_sizes",
     "generate_v3_dome_model",
     "generate_full_model",

@@ -81,6 +81,77 @@ V3_DOME = {
 }
 
 
+# Four 20x60 curtains assembled into one 60x80 curtain.
+KYLES_CURTAIN = {
+    "output_file": "KylesCurtain.lxf",
+    "coordinate_system": (
+        "Y-up right-handed, origin at curtain centre, units metres; "
+        "pixels lie in the XY plane"
+    ),
+    "panel": {
+        "pixel_width": 20,
+        "pixel_height": 60,
+        "width_m": 0.5,
+        "height_m": 1.5,
+    },
+    "assembly": {
+        "pixel_width": 60,
+        "pixel_height": 80,
+        "width_m": 1.5,
+        "height_m": 2.0,
+        "serpentine": True,
+        "start_corner": "top_left",
+    },
+    "output": {
+        "protocol": "artnet",
+        "byte_order": "rgb",
+        "universe_size_bytes": 510,
+        "panels": [
+            {
+                "label": "Top",
+                "origin_col": 0,
+                "origin_row": 0,
+                "pixel_width": 60,
+                "pixel_height": 20,
+                "rotation_degrees": 90,
+                "ip_default": "192.168.1.70",
+                "universe_default": 1,
+            },
+            {
+                "label": "Bottom L",
+                "origin_col": 0,
+                "origin_row": 20,
+                "pixel_width": 20,
+                "pixel_height": 60,
+                "rotation_degrees": 0,
+                "ip_default": "192.168.1.71",
+                "universe_default": 11,
+            },
+            {
+                "label": "Bottom C",
+                "origin_col": 20,
+                "origin_row": 20,
+                "pixel_width": 20,
+                "pixel_height": 60,
+                "rotation_degrees": 0,
+                "ip_default": "192.168.1.72",
+                "universe_default": 19,
+            },
+            {
+                "label": "Bottom R",
+                "origin_col": 40,
+                "origin_row": 20,
+                "pixel_width": 20,
+                "pixel_height": 60,
+                "rotation_degrees": 0,
+                "ip_default": "192.168.1.73",
+                "universe_default": 27,
+            },
+        ],
+    },
+}
+
+
 # Full camp model assembly.
 MODEL = {
     "output_file": "full_camp_model_2026.lxm",
@@ -136,6 +207,17 @@ MODEL = {
             "scale_trim": 1.0,
             "y_trim_m": 0.0,
             "yaw_phase_degrees": -18.0,
+        },
+    },
+    "kyles_curtain": {
+        "fixture_type": "KylesCurtain",
+        "placement": {
+            "x_offset_m": 16.0,
+            "y_offset_m": 2.0,
+            "z_offset_m": -4.0,
+            "yaw_degrees": 0.0,
+            "pitch_degrees": 0.0,
+            "roll_degrees": 0.0,
         },
     },
     "dome_model": {
@@ -214,4 +296,20 @@ STAR["leds"]["leds_per_cm"] = leds_per_cm(
 )
 STAR["leds"]["led_spacing_m"] = (
     STAR["geometry"]["strip_length_m"] / (STAR["leds"]["leds_per_strip"] + 1)
+)
+
+
+# Derived KylesCurtain values.
+KYLES_CURTAIN["panel"]["pixel_count"] = (
+    KYLES_CURTAIN["panel"]["pixel_width"] * KYLES_CURTAIN["panel"]["pixel_height"]
+)
+KYLES_CURTAIN["assembly"]["pixel_count"] = (
+    KYLES_CURTAIN["assembly"]["pixel_width"]
+    * KYLES_CURTAIN["assembly"]["pixel_height"]
+)
+KYLES_CURTAIN["assembly"]["pixel_pitch_m"] = (
+    KYLES_CURTAIN["assembly"]["width_m"] / KYLES_CURTAIN["assembly"]["pixel_width"]
+)
+KYLES_CURTAIN["output"]["max_pixels_per_universe"] = (
+    KYLES_CURTAIN["output"]["universe_size_bytes"] // 3
 )

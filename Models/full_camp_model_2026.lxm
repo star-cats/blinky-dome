@@ -103,6 +103,27 @@
           "id": 2005,
           "class": "heronarts.lx.structure.view.LXViewDefinition",
           "internal": {
+            "modulationColor": 2,
+            "modulationControlsExpanded": true,
+            "modulationsExpanded": true
+          },
+          "parameters": {
+            "label": "Kyle's Curtain",
+            "enabled": true,
+            "selector": "kyles-curtain",
+            "normalization": 0,
+            "normalization/name": "RELATIVE",
+            "orientation": 0,
+            "orientation/name": "GLOBAL",
+            "priority": true,
+            "cueActive": false
+          },
+          "children": {}
+        },
+        {
+          "id": 2006,
+          "class": "heronarts.lx.structure.view.LXViewDefinition",
+          "internal": {
             "modulationColor": 1,
             "modulationControlsExpanded": true,
             "modulationsExpanded": true
@@ -393,9 +414,40 @@
       "children": {}
     },
     {
-      "jsonFixtureType": "dome_model",
+      "jsonFixtureType": "KylesCurtain",
       "jsonParameters": {},
       "id": 1009,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Kyle's Curtain",
+        "x": 160.0,
+        "y": 20.0,
+        "z": -40.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 10.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": true,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "kyles-curtain",
+        "fixtureType": "KylesCurtain"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "dome_model",
+      "jsonParameters": {},
+      "id": 1010,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -432,7 +484,7 @@
         "ipJ4": 14,
         "ipJ5": 15
       },
-      "id": 1010,
+      "id": 1011,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -463,7 +515,7 @@
     {
       "jsonFixtureType": "v3_dome_model",
       "jsonParameters": {},
-      "id": 1011,
+      "id": 1012,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,

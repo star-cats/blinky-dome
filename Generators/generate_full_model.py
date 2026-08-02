@@ -49,6 +49,7 @@ MODEL_VIEWS = [
     {"label": "Ears", "selector": "ears", "modulationColor": 3},
     {"label": "Eyes", "selector": "eyes", "modulationColor": 9},
     {"label": "Waterfall", "selector": "waterfall", "modulationColor": 5},
+    {"label": "Kyle's Curtain", "selector": "kyles-curtain", "modulationColor": 2},
     {"label": "Small Dome", "selector": "v3-harness", "modulationColor": 1},
 ]
 
@@ -294,6 +295,24 @@ def waterfall_fixture(next_id) -> dict:
     )
 
 
+def kyles_curtain_fixture(next_id) -> dict:
+    """Kyle's curtain, placed as a flat metre-based grid."""
+    curtain = MODEL["kyles_curtain"]
+    placement = curtain["placement"]
+    return make_fixture(
+        next_id(),
+        "Kyle's Curtain",
+        curtain["fixture_type"],
+        x=placement["x_offset_m"] * SCENE_SCALE,
+        y=placement["y_offset_m"] * SCENE_SCALE,
+        z=placement["z_offset_m"] * SCENE_SCALE,
+        yaw=placement["yaw_degrees"],
+        pitch=placement["pitch_degrees"],
+        roll=placement["roll_degrees"],
+        tags="kyles-curtain",
+    )
+
+
 def v3_dome_placement() -> dict:
     """Shared transform for the V3 dome's LED harness and its scaffold mesh.
 
@@ -396,6 +415,7 @@ def build_model() -> dict:
         *ear_fixtures(next_id),
         *eye_fixtures(next_id),
         waterfall_fixture(next_id),
+        kyles_curtain_fixture(next_id),
         dome_model_fixture(next_id),
         v3_harness_fixture(next_id),
         v3_dome_model_fixture(next_id),
