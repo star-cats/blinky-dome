@@ -10,8 +10,10 @@ Assembles every fixture into one Chromatik model, positioned in scene units
   - The StarEye grouping (four co-located stars rolled into a pinwheel) stands
     upright against the dome, resting on its bottom tip at a configurable
     bearing and angle above the horizon.
-  - The two CatEars sit atop the dome, spread left/right, leaning outward by
-    a configurable tilt angle.
+  - Ben's ear pair sits atop the dome and his eye pair on its front surface.
+    Both come from Projects/BenStartingPoint.lxp and carry his absolute
+    coordinates, so they are translated into place at scale 1.0 rather than
+    scaled up from metres like everything else here.
   - The V3 dome cable harness is a separate dome of its own, so it is parked
     beside the cat on the +X axis rather than overlapping it. Its scaffold
     mesh shares that placement (one physical structure) and adds only a
@@ -45,6 +47,7 @@ FIRST_VIEW_ID = 2001
 MODEL_VIEWS = [
     {"label": "Third Eye", "selector": "star", "modulationColor": 7},
     {"label": "Ears", "selector": "ears", "modulationColor": 3},
+    {"label": "Eyes", "selector": "eyes", "modulationColor": 9},
     {"label": "Waterfall", "selector": "waterfall", "modulationColor": 5},
     {"label": "Small Dome", "selector": "v3-harness", "modulationColor": 1},
 ]
@@ -188,34 +191,87 @@ def star_fixtures(next_id) -> list[dict]:
     ]
 
 
-def ear_fixtures(next_id) -> list[dict]:
-    """Two CatEars atop the dome, spread +/-X and leaning outward by tilt."""
-    tilt_degrees = MODEL["ears"]["tilt_degrees"]
-    tilt = math.radians(tilt_degrees)
-    x = DOME_RADIUS_SCENE * math.sin(tilt)
-    y = DOME_RADIUS_SCENE * math.cos(tilt)
+def face_offset() -> tuple[float, float]:
+    """Where Ben's project frame lands in this model, as a (y, z) translation.
 
-    # The ear fixture is symmetric about its Y axis, so each side only needs a
-    # roll leaning its up-direction outward (radially) at the tilted position.
+    BenEars.lxf and BenEyes.lxf carry absolute coordinates from
+    Projects/BenStartingPoint.lxp, drawn at the same 10 units/m this model
+    uses, so they are translated rather than scaled (see constants.MODEL
+    "face"). X needs no offset: Ben's pairs are already centred on x = 0.
+
+    Y slides the ear bases up to ears["tilt_degrees"] on the dome, the spot the
+    two CatEar instances used to occupy. Z slides the ear plane onto the dome's
+    z = 0 great circle, so the ears stand on top rather than in front.
+    """
+    tilt = math.radians(MODEL["ears"]["tilt_degrees"])
+    base = MODEL["face"]["ear_base"]
+    return (
+        DOME_RADIUS_SCENE * math.cos(tilt) - base["y"],
+        -base["z"],
+    )
+
+
+def ear_fixtures(next_id) -> list[dict]:
+    """Ben's ear pair, one fixture holding both ears, atop the dome."""
+    offset_y, offset_z = face_offset()
+    trim = MODEL["face"]["trim"]["ears"]
     return [
         make_fixture(
             next_id(),
-            "Ear L",
-            "CatEar",
-            x=x,
-            y=y,
-            roll=-tilt_degrees,
+            "Ben Ears",
+            "BenEars",
+            x=trim["x"],
+            y=offset_y + trim["y"],
+            z=offset_z + trim["z"],
+            yaw=trim["yaw"],
+            pitch=trim["pitch"],
+            roll=trim["roll"],
+            # Ben's units are already scene units, so this fixture is placed
+            # 1:1. Handing it scene_scale like the metre-based fixtures would
+            # inflate the ears tenfold.
+            scale=1.0,
             tags="ears",
-        ),
+        )
+    ]
+
+
+def eye_fixtures(next_id) -> list[dict]:
+    """Ben's eye pair, on the front surface of the dome.
+
+    The eyes take the face's Y offset so they keep Ben's ear-to-eye spacing,
+    which puts them a little under 1.8 m up. Their Z is not his, though: he
+    drew them a short standoff in front of a dome a third of this one's size,
+    so instead they are pushed out to where this dome's surface actually is at
+    the x/y they land on. Without that they would float inside the scaffold.
+    """
+    offset_y, _ = face_offset()
+    centre = MODEL["face"]["eye_centre"]
+    trim = MODEL["face"]["trim"]["eyes"]
+
+    y = centre["y"] + offset_y
+    # Dome surface at the eye position. The eyes sit well inside the dome's
+    # radius in both axes, so this is always a real distance. Subtracting the
+    # component's own z is what puts the eye centre on the surface rather than
+    # the fixture origin, which would leave the arcs a metre inside it.
+    z = (
+        math.sqrt(max(0.0, DOME_RADIUS_SCENE**2 - centre["x"] ** 2 - y**2))
+        - centre["z"]
+    )
+
+    return [
         make_fixture(
             next_id(),
-            "Ear R",
-            "CatEar",
-            x=-x,
-            y=y,
-            roll=tilt_degrees,
-            tags="ears",
-        ),
+            "Ben Eyes",
+            "BenEyes",
+            x=trim["x"],
+            y=offset_y + trim["y"],
+            z=z + trim["z"],
+            yaw=trim["yaw"],
+            pitch=trim["pitch"],
+            roll=trim["roll"],
+            scale=1.0,
+            tags="eyes",
+        )
     ]
 
 
@@ -326,6 +382,7 @@ def build_model() -> dict:
     fixtures = [
         *star_fixtures(next_id),
         *ear_fixtures(next_id),
+        *eye_fixtures(next_id),
         waterfall_fixture(next_id),
         dome_model_fixture(next_id),
         v3_harness_fixture(next_id),

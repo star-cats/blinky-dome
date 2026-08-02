@@ -61,6 +61,27 @@
           "id": 2003,
           "class": "heronarts.lx.structure.view.LXViewDefinition",
           "internal": {
+            "modulationColor": 9,
+            "modulationControlsExpanded": true,
+            "modulationsExpanded": true
+          },
+          "parameters": {
+            "label": "Eyes",
+            "enabled": true,
+            "selector": "eyes",
+            "normalization": 0,
+            "normalization/name": "RELATIVE",
+            "orientation": 0,
+            "orientation/name": "GLOBAL",
+            "priority": true,
+            "cueActive": false
+          },
+          "children": {}
+        },
+        {
+          "id": 2004,
+          "class": "heronarts.lx.structure.view.LXViewDefinition",
+          "internal": {
             "modulationColor": 5,
             "modulationControlsExpanded": true,
             "modulationsExpanded": true
@@ -79,7 +100,7 @@
           "children": {}
         },
         {
-          "id": 2004,
+          "id": 2005,
           "class": "heronarts.lx.structure.view.LXViewDefinition",
           "internal": {
             "modulationColor": 1,
@@ -240,7 +261,7 @@
       "children": {}
     },
     {
-      "jsonFixtureType": "CatEar",
+      "jsonFixtureType": "BenEars",
       "jsonParameters": {},
       "id": 1005,
       "class": "heronarts.lx.structure.JsonFixture",
@@ -250,14 +271,14 @@
         "modulationsExpanded": true
       },
       "parameters": {
-        "label": "Ear L",
-        "x": 27.972176,
-        "y": 39.948407,
-        "z": 0.0,
+        "label": "Ben Ears",
+        "x": 0.0,
+        "y": 32.948407,
+        "z": 10.0,
         "yaw": 0.0,
         "pitch": 0.0,
-        "roll": -35.0,
-        "scale": 10.0,
+        "roll": 0.0,
+        "scale": 1.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -266,12 +287,12 @@
         "mute": false,
         "solo": false,
         "tags": "ears",
-        "fixtureType": "CatEar"
+        "fixtureType": "BenEars"
       },
       "children": {}
     },
     {
-      "jsonFixtureType": "CatEar",
+      "jsonFixtureType": "BenEyes",
       "jsonParameters": {},
       "id": 1006,
       "class": "heronarts.lx.structure.JsonFixture",
@@ -281,14 +302,14 @@
         "modulationsExpanded": true
       },
       "parameters": {
-        "label": "Ear R",
-        "x": -27.972176,
-        "y": 39.948407,
-        "z": 0.0,
+        "label": "Ben Eyes",
+        "x": 0.0,
+        "y": 32.948407,
+        "z": 52.792202,
         "yaw": 0.0,
         "pitch": 0.0,
-        "roll": 35.0,
-        "scale": 10.0,
+        "roll": 0.0,
+        "scale": 1.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -296,8 +317,8 @@
         "identify": false,
         "mute": false,
         "solo": false,
-        "tags": "ears",
-        "fixtureType": "CatEar"
+        "tags": "eyes",
+        "fixtureType": "BenEyes"
       },
       "children": {}
     },
