@@ -225,6 +225,28 @@ MODEL = {
         "pitch_degrees": 90.0,
         "yaw_degrees": 18.0,
     },
+    # Hand-imported UI mesh of the waterfall sheet (Fixtures/waterfall_model.obj).
+    # Parked on the big dome at the origin, like the Waterfall LED fixture and
+    # the dome scaffold mesh, so it is placed by these knobs alone.
+    #
+    # scale 0.01 is the same millimetres-to-scene-units conversion dome_model.obj
+    # uses, and is not a guess: that mesh measures 4876.8 across, exactly the
+    # 16 ft dome radius in mm, and lands on the dome at this scale.
+    #
+    # Unlike dome_model.obj this export is already Y-up and already sits on
+    # y = 0, so it needs no pitch and no lift. It does need yaw: the sheet hangs
+    # on the mesh's -X side, and -90 swings that onto the dome's -Z back, which
+    # is where WATERFALL says the LED sheet climbs. Zero it out if the export
+    # turns out to be oriented some other way.
+    "waterfall_model": {
+        "scale": 0.01,
+        "x_offset": 0.0,
+        "y_offset": 0.0,
+        "z_offset": 0.0,
+        "yaw_degrees": -90.0,
+        "pitch_degrees": 0.0,
+        "roll_degrees": 0.0,
+    },
 }
 
 
