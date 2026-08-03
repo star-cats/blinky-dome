@@ -1,0 +1,159 @@
+{
+  "label": "face",
+  "parameters": {
+    "output01": {
+      "label": "Leye top On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Leye top is enabled"
+    },
+    "host01": {
+      "label": "Leye top Host",
+      "type": "string",
+      "default": "192.168.1.165",
+      "description": "Output host for Leye top"
+    },
+    "output02": {
+      "label": "Leye Bottom On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Leye Bottom is enabled"
+    },
+    "host02": {
+      "label": "Leye Bottom Host",
+      "type": "string",
+      "default": "192.168.1.165",
+      "description": "Output host for Leye Bottom"
+    },
+    "output03": {
+      "label": "Reye top On",
+      "type": "boolean",
+      "default": false,
+      "description": "Whether output to Reye top is enabled"
+    },
+    "host03": {
+      "label": "Reye top Host",
+      "type": "string",
+      "default": "192.168.1.166",
+      "description": "Output host for Reye top"
+    },
+    "output04": {
+      "label": "Reye Bottom On",
+      "type": "boolean",
+      "default": false,
+      "description": "Whether output to Reye Bottom is enabled"
+    },
+    "host04": {
+      "label": "Reye Bottom Host",
+      "type": "string",
+      "default": "192.168.1.166",
+      "description": "Output host for Reye Bottom"
+    }
+  },
+  "components": [
+    {
+      "label": "Leye top",
+      "tags": [
+        "small_eye"
+      ],
+      "type": "arc",
+      "x": 15.0,
+      "y": -15.0,
+      "z": -10.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 140.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "enabled": "$output01",
+        "host": "$host01",
+        "byteOrder": "rgb",
+        "protocol": "artnet",
+        "universe": 0,
+        "channel": 0,
+        "sequenceEnabled": false
+      }
+    },
+    {
+      "label": "Leye Bottom",
+      "tags": [
+        "small_eye"
+      ],
+      "type": "arc",
+      "x": 15.0,
+      "y": -15.0,
+      "z": -10.0,
+      "yaw": 0.0,
+      "pitch": 180.0,
+      "roll": 100.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "enabled": "$output02",
+        "host": "$host02",
+        "byteOrder": "rgb",
+        "protocol": "artnet",
+        "universe": 0,
+        "channel": 432,
+        "sequenceEnabled": false
+      }
+    },
+    {
+      "label": "Reye top",
+      "tags": [
+        "small_eye"
+      ],
+      "type": "arc",
+      "x": -15.0,
+      "y": -15.0,
+      "z": -10.0,
+      "yaw": 180.0,
+      "pitch": 0.0,
+      "roll": 140.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "enabled": "$output03",
+        "host": "$host03",
+        "byteOrder": "rgb",
+        "protocol": "artnet",
+        "universe": 0,
+        "channel": 0,
+        "sequenceEnabled": false
+      }
+    },
+    {
+      "label": "Reye Bottom",
+      "tags": [
+        "small_eye"
+      ],
+      "type": "arc",
+      "x": -15.0,
+      "y": -15.0,
+      "z": -10.0,
+      "yaw": 180.0,
+      "pitch": 180.0,
+      "roll": 100.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "enabled": "$output04",
+        "host": "$host04",
+        "byteOrder": "rgb",
+        "protocol": "artnet",
+        "universe": 0,
+        "channel": 432,
+        "sequenceEnabled": false
+      }
+    }
+  ]
+}
