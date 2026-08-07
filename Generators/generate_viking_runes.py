@@ -20,7 +20,9 @@ Run:
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 from PIL import Image, ImageDraw
 
@@ -43,6 +45,16 @@ TRANSPARENT = (0, 0, 0, 0)
 
 Point = tuple[float, float]
 Segment = tuple[Point, Point]
+
+
+@dataclass(frozen=True)
+class GlyphSpec:
+    """Rune branches and an optional non-lexical angular motif."""
+
+    label: str
+    left: tuple[str, ...]
+    right: tuple[str, ...]
+    motif: Optional[str] = None
 
 
 # Coordinates are normalized, Y-down. These are branch-only forms drawn on the
@@ -127,47 +139,91 @@ BRANCHES: dict[str, tuple[Segment, ...]] = {
 }
 
 
-# Row-major 6x6 layout. These use Younger Futhark components appropriate to the
-# Viking Age. A few doubled pairs (nn, aa, tt) reflect historically attested
-# same-rune ligatures; they remain readable because each branch takes one side.
-BINDS: tuple[tuple[str, str], ...] = (
-    ("f", "th"),
-    ("a", "r"),
-    ("t", "b"),
-    ("h", "b"),
-    ("n", "r"),
-    ("k", "m"),
-    ("u", "a"),
-    ("f", "r"),
-    ("th", "a"),
-    ("o", "k"),
-    ("l", "n"),
-    ("m", "yr"),
-    ("b", "t"),
-    ("r", "n"),
-    ("a", "l"),
-    ("u", "th"),
-    ("f", "m"),
-    ("s", "t"),
-    ("n", "n"),
-    ("a", "a"),
-    ("t", "t"),
-    ("k", "yr"),
-    ("o", "r"),
-    ("h", "m"),
-    ("b", "n"),
-    ("r", "a"),
-    ("l", "th"),
-    ("yr", "f"),
-    ("m", "k"),
-    ("s", "a"),
-    ("th", "r"),
-    ("u", "l"),
-    ("f", "b"),
-    ("o", "m"),
-    ("n", "t"),
-    ("b", "yr"),
+# Angular motifs used only by the intricate half. They are modern visual
+# devices, not claims of historically fixed "courage" or "love" formulas.
+# Every stroke joins the shared stave or another motif stroke; none introduces
+# a second near-parallel central stave.
+MOTIFS: dict[str, tuple[Segment, ...]] = {
+    "crown": (
+        ((0.0, -0.95), (-0.68, -0.30)),
+        ((0.0, -0.95), (0.68, -0.30)),
+    ),
+    "diamond": (
+        ((0.0, -0.62), (-0.58, 0.0)),
+        ((-0.58, 0.0), (0.0, 0.62)),
+        ((0.0, 0.62), (0.58, 0.0)),
+        ((0.58, 0.0), (0.0, -0.62)),
+    ),
+    "roots": (
+        ((0.0, 0.88), (-0.66, 0.28)),
+        ((0.0, 0.88), (0.66, 0.28)),
+    ),
+    "wings": (
+        ((0.0, -0.40), (-0.70, -0.82)),
+        ((0.0, -0.40), (0.70, -0.82)),
+        ((0.0, 0.10), (-0.64, -0.24)),
+        ((0.0, 0.10), (0.64, -0.24)),
+    ),
+    "cross": (
+        ((-0.66, -0.62), (0.66, 0.62)),
+        ((0.66, -0.62), (-0.66, 0.62)),
+    ),
+    "embrace": (
+        ((0.0, -0.58), (-0.62, -0.10)),
+        ((-0.62, -0.10), (0.0, 0.70)),
+        ((0.0, -0.58), (0.62, -0.10)),
+        ((0.62, -0.10), (0.0, 0.70)),
+    ),
+}
+
+
+# First three rows: restrained two-rune ligatures built like written bind-runes.
+SIMPLE_GLYPHS: tuple[GlyphSpec, ...] = (
+    GlyphSpec("f-th", ("f",), ("th",)),
+    GlyphSpec("a-r", ("a",), ("r",)),
+    GlyphSpec("t-b", ("t",), ("b",)),
+    GlyphSpec("h-b", ("h",), ("b",)),
+    GlyphSpec("n-r", ("n",), ("r",)),
+    GlyphSpec("k-m", ("k",), ("m",)),
+    GlyphSpec("u-a", ("u",), ("a",)),
+    GlyphSpec("f-r", ("f",), ("r",)),
+    GlyphSpec("th-a", ("th",), ("a",)),
+    GlyphSpec("o-k", ("o",), ("k",)),
+    GlyphSpec("l-n", ("l",), ("n",)),
+    GlyphSpec("m-yr", ("m",), ("yr",)),
+    GlyphSpec("b-t", ("b",), ("t",)),
+    GlyphSpec("r-n", ("r",), ("n",)),
+    GlyphSpec("a-l", ("a",), ("l",)),
+    GlyphSpec("u-th", ("u",), ("th",)),
+    GlyphSpec("f-m", ("f",), ("m",)),
+    GlyphSpec("s-t", ("s",), ("t",)),
 )
+
+
+# Last three rows: denser modern symbolic compositions. Concept labels are
+# aesthetic direction only; they are not presented as canonical translations.
+INTRICATE_GLYPHS: tuple[GlyphSpec, ...] = (
+    GlyphSpec("courage", ("t", "n"), ("r",), "crown"),
+    GlyphSpec("love", ("m",), ("m",), "embrace"),
+    GlyphSpec("protection", ("th", "h"), ("th",), "diamond"),
+    GlyphSpec("strength", ("u", "t"), ("u",), "cross"),
+    GlyphSpec("journey", ("r", "yr"), ("l",), "roots"),
+    GlyphSpec("wisdom", ("o", "n"), ("k",), "crown"),
+    GlyphSpec("balance", ("a", "t"), ("a",), "diamond"),
+    GlyphSpec("resilience", ("b", "n"), ("yr",), "roots"),
+    GlyphSpec("victory", ("t", "f"), ("l",), "wings"),
+    GlyphSpec("kinship", ("m", "a"), ("yr",), "diamond"),
+    GlyphSpec("guardianship", ("th", "l"), ("th", "k"), "crown"),
+    GlyphSpec("renewal", ("u", "a"), ("yr",), "roots"),
+    GlyphSpec("focus", ("k", "n"), ("k",), "cross"),
+    GlyphSpec("honor", ("t", "o"), ("f",), "wings"),
+    GlyphSpec("hearth", ("b",), ("m",), "embrace"),
+    GlyphSpec("resolve", ("n", "yr"), ("l",), "cross"),
+    GlyphSpec("fortune", ("f", "a"), ("u",), "roots"),
+    GlyphSpec("harmony", ("m", "h"), ("m",), "embrace"),
+)
+
+GLYPHS = SIMPLE_GLYPHS + INTRICATE_GLYPHS
 
 
 def sector_bounds(index: int) -> tuple[int, int, int, int]:
@@ -192,13 +248,16 @@ def mirror_x(segment: Segment) -> Segment:
     return ((-start[0], start[1]), (-end[0], end[1]))
 
 
-def bind_segments(first: str, second: str) -> tuple[Segment, ...]:
-    """Join two rune branch sets around one, and only one, shared stave."""
-    segments = (
-        (SHARED_STAVE,)
-        + tuple(mirror_x(segment) for segment in BRANCHES[first])
-        + BRANCHES[second]
+def bind_segments(spec: GlyphSpec) -> tuple[Segment, ...]:
+    """Join all branch groups around one, and only one, shared stave."""
+    left = tuple(
+        mirror_x(segment)
+        for rune in spec.left
+        for segment in BRANCHES[rune]
     )
+    right = tuple(segment for rune in spec.right for segment in BRANCHES[rune])
+    ornament = MOTIFS[spec.motif] if spec.motif is not None else ()
+    segments = (SHARED_STAVE,) + left + right + ornament
     return tuple(dict.fromkeys(canonical(segment) for segment in segments))
 
 
@@ -245,13 +304,15 @@ def render_glyph(segments: tuple[Segment, ...], width: int, height: int) -> Imag
 
 
 def generate_sheet() -> Image.Image:
-    if len(BINDS) != COLUMNS * ROWS:
-        raise ValueError(f"Expected {COLUMNS * ROWS} bind runes, found {len(BINDS)}")
+    if len(SIMPLE_GLYPHS) != 18 or len(INTRICATE_GLYPHS) != 18:
+        raise ValueError("The atlas must contain 18 simple and 18 intricate glyphs")
+    if len(GLYPHS) != COLUMNS * ROWS:
+        raise ValueError(f"Expected {COLUMNS * ROWS} bind runes, found {len(GLYPHS)}")
 
     sheet = Image.new("RGBA", (ATLAS_SIZE, ATLAS_SIZE), TRANSPARENT)
-    for index, (first, second) in enumerate(BINDS):
+    for index, spec in enumerate(GLYPHS):
         left, top, right, bottom = sector_bounds(index)
-        tile = render_glyph(bind_segments(first, second), right - left, bottom - top)
+        tile = render_glyph(bind_segments(spec), right - left, bottom - top)
         # A cell-sized tile pasted at exact sector bounds is an explicit clip:
         # no source pixel can ever land in a neighboring sector.
         sheet.alpha_composite(tile, (left, top))
@@ -264,11 +325,11 @@ def validate_sheet(sheet: Image.Image) -> None:
         raise ValueError(f"Expected {ATLAS_SIZE}x{ATLAS_SIZE} RGBA, got {sheet.mode} {sheet.size}")
 
     alpha = sheet.getchannel("A")
-    for index, names in enumerate(BINDS):
+    for index, spec in enumerate(GLYPHS):
         left, top, right, bottom = sector_bounds(index)
         local_box = alpha.crop((left, top, right, bottom)).getbbox()
         if local_box is None:
-            raise ValueError(f"Glyph {index} {names} is empty")
+            raise ValueError(f"Glyph {index} {spec.label} is empty")
 
         glyph_left, glyph_top, glyph_right, glyph_bottom = local_box
         cell_width = right - left
@@ -281,7 +342,7 @@ def validate_sheet(sheet: Image.Image) -> None:
         )
         if min(gutters) < CELL_GUTTER - 1:
             raise ValueError(
-                f"Glyph {index} {names} violates its sector gutter: {gutters}"
+                f"Glyph {index} {spec.label} violates its sector gutter: {gutters}"
             )
 
         glyph_center = (
@@ -295,7 +356,7 @@ def validate_sheet(sheet: Image.Image) -> None:
         )
         if center_error > CENTER_TOLERANCE:
             raise ValueError(
-                f"Glyph {index} {names} is off-center by {center_error:.2f}px"
+                f"Glyph {index} {spec.label} is off-center by {center_error:.2f}px"
             )
 
 
@@ -305,7 +366,10 @@ def main() -> None:
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(OUTPUT_PATH, "PNG", optimize=True)
     print(f"wrote {OUTPUT_PATH}")
-    print(f"validated {len(BINDS)} centered glyphs with isolated sectors")
+    print(
+        f"validated {len(SIMPLE_GLYPHS)} simple + {len(INTRICATE_GLYPHS)} "
+        "intricate centered glyphs with isolated sectors"
+    )
 
 
 if __name__ == "__main__":

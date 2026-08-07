@@ -58,7 +58,7 @@ var STOCK = 0xfff2f2ee; // the white the card is printed on
 var BLACK = 0xff000000;
 
 knobi("suit", "Suit", "Suit: heart, diamond, club, spade", 0, 4);
-knobi("rank", "Rank", "Rank: A, 2-10, J, Q, K", 12, 13);
+knobi("rank", "Rank", "Rank: A, 2-10, J, Q, K", 0, 13);
 
 knob("angle", "Angle", "Rotation about the vertical axis, 0 = face on, 180 = back on", 0);
 knob("spin", "Spin", "Continuous rotation added to Angle; 0.5 is still", 0.5);
@@ -336,16 +336,15 @@ function renderFace(u, v) {
   var rankV = (0.5 - RANK_Y) * cardH;
   var h = SPRITE_H * cardH;
 
+  // Second pass is the same index through a point reflection: same offsets
+  // negated, same art turned upside down.
   for (var i = 0; i < 2; ++i) {
     var rotated = (i === 1);
-    var su = rotated ? -cu : cu;
-    var sv = rotated ? -suitV : suitV;
-    var ru = rotated ? -cu : cu;
-    var rv = rotated ? -rankV : rankV;
+    var s = rotated ? -1 : 1;
 
-    color = over(color, sprite(suitImage, u, v, su, sv, h, rotated));
+    color = over(color, sprite(suitImage, u, v, s * cu, s * suitV, h, rotated));
 
-    var glyph = sprite(rankImage, u, v, ru, rv, h, rotated);
+    var glyph = sprite(rankImage, u, v, s * cu, s * rankV, h, rotated);
     color = over(color, tintRank ? recolor(glyph, rankTint) : glyph);
   }
   return color;
@@ -356,8 +355,10 @@ function renderBack(u, v) {
   if (backImage == null) {
     return STOCK;
   }
-  // Mirrored horizontally: turning the card about its vertical axis reverses
-  // which way the back's own left and right point on screen.
+  // The horizontal texture coordinate runs backwards along the card's own
+  // u axis, which is what makes the back read the right way round on screen:
+  // physically turning a card about its vertical axis reverses which way its
+  // reverse side faces.
   return over(STOCK, texel(backImage, 0.5 - u / cardW, 0.5 - v / cardH));
 }
 
