@@ -26,6 +26,29 @@
  * Color is blackbody, not a gradient: temperature maps to Kelvin between the
  * Cool and Hot knobs and then to RGB, so a low Hot burns deep orange and a high
  * one runs through white into blue.
+ *
+ * ---------------------------------------------------------------------------
+ *
+ * Fuel comes from three source balls, indexed 0, 1 and 2, moved by a
+ * choreographer. Every state places them as a formation keyed on that index, so
+ * the three always read as one figure rather than three independent lights.
+ *
+ * Nothing about a ball is drawn — a ball is only where fuel and momentum enter
+ * the fluid, and everything visible is the fire's response to that. Two rules
+ * make the motion legible:
+ *
+ *   A ball never jumps. Choreography sets a target and a shared PID-ish
+ *   controller flies the ball there, so a state change is a move rather than a
+ *   cut, and the fire keeps burning across it.
+ *
+ *   A ball smears. Its emission for a step is spread evenly along the segment it
+ *   travelled in that step, so total fuel is conserved and a fast ball paints a
+ *   thin streak instead of a dotted line of discs. It also drags the fluid along
+ *   its heading, scaled by Advect.
+ *
+ * Balls pass through each other freely; only PLACER cares where the others are.
+ * Choreo picks a random state other than the current one, and Cue means
+ * something different in each — see the choreography section below.
  */
 
 var FloatArray = Java.type("float[]");
@@ -72,14 +95,102 @@ var DRAG = 0.4;
 
 var LUT_SIZE = 256;
 
+// ------------------------------------------------------------------ choreography
+//
+// Held internally for now rather than exposed. Every state derives its timing
+// from this one clock, so they stay in step with each other and with anything
+// else running at the same tempo.
+var CHOREO_BPM = 120;
+var CHOREO_PHASE = 0;
+
+var BALL_COUNT = 3;
+
+// A ball's speed limit, in frame-widths per second. This is not a look control —
+// it bounds the length of the segment one step can smear over, which bounds the
+// work the swept stamp does.
+var MAX_BALL_SPEED = 4;
+
+// Longest swept stamp, in sub-discs. A ball at the speed limit crosses about
+// four hundredths of the frame in a substep, so this is slack, not a budget.
+var MAX_SWEEP_STAMPS = 24;
+
+// How fast a ball's radius multiplier chases the value choreography asks for.
+// Slow enough that FIRELINE's shrink to nothing reads as a fade rather than as
+// the ball being switched off.
+var RADIUS_CHASE = 2.5;
+
+var STATE_ORBIT = 0;
+var STATE_COLUMNS = 1;
+var STATE_PINGPONG = 2;
+var STATE_PLACER = 3;
+var STATE_FIRELINE = 4;
+var STATE_COUNT = 5;
+var STATE_NAMES = ["ORBIT", "COLUMNS", "PINGPONG", "PLACER", "FIRELINE"];
+
+// ORBIT: beats per revolution, and the two slow LFOs that deform the circle.
+var ORBIT_BEATS = 8;
+var ORBIT_SQUASH_BEATS = 23;
+var ORBIT_SQUASH_DEPTH = 0.55;
+var ORBIT_AXIS_BEATS = 37;
+
+// COLUMNS: beats for a full up-and-down, how far up and down that is, and how
+// lazily the target crawls along the path when the cue is not forcing it.
+var COLUMN_BEATS = 8;
+var COLUMN_TRAVEL = 0.42;
+var COLUMN_FOLLOW = 0.55;
+
+// PINGPONG: travel speed range in frame-widths per second, how far off a clean
+// bounce a reflection is allowed to be, and the inset of the walls it bounces
+// off. The imperfection is the point — three balls reflecting perfectly stay
+// on the same three paths forever.
+var PING_SPEED_MIN = 0.1;
+var PING_SPEED_MAX = 0.32;
+var PING_ANGLE_JITTER = 0.3;
+var PING_SPEED_JITTER = 0.14;
+var PING_MARGIN = 0.06;
+
+// PLACER: minimum center-to-center distance between two targets, as a multiple
+// of the Radius knob, and how hard to try before settling for the best of a bad
+// set. A wide Radius makes the constraint unsatisfiable for three balls in a
+// unit box, and a pattern that hangs is worse than one that crowds.
+var PLACER_SEPARATION = 1.3;
+var PLACER_ATTEMPTS = 64;
+
+// FIRELINE: the launch, the fall, and the strip left behind.
+var FIRE_LAUNCH_VX = 0.45;
+var FIRE_LAUNCH_VY_MIN = 0.35;
+var FIRE_LAUNCH_VY_MAX = 0.8;
+var FIRE_GRAVITY = 1.5;
+var FIRE_GROUND = 0.02;
+var FIRELINE_FADE = 1.0;
+var FIRELINE_ROWS = 3;
+var FIRELINE_DENSITY = 0.5;
+var FIRELINE_LIFT = 9;
+
 // ---------------------------------------------------------------------- source
 
-knob("srcLevel", "Source", "How hard fuel is injected at the source", 0.65);
-knob("srcRadius", "Radius", "Source radius, as a fraction of the frame", 0.35);
-knob("srcX", "Source X", "Source center, horizontal", 0.5);
-knob("srcY", "Source Y", "Source center, vertical", 0.08);
-knob("jet", "Jet", "Upward velocity injected at the source", 0.15);
+knob("srcLevel", "Source", "How hard fuel is injected at each source ball", 0.65);
+knob("srcRadius", "Radius", "Source radius shared by all three balls", 0.18);
+knob("srcX", "Center X", "Formation center, horizontal", 0.5);
+knob("srcY", "Center Y", "Formation center, vertical", 0.5);
+knob("spread", "Spread", "Formation size — orbit radius, column separation", 0.3);
+knob("jet", "Jet", "Upward velocity injected at each ball", 0.15);
 knob("flicker", "Flicker", "How much the source strength wavers over time", 0.4);
+knob("advect", "Advect", "How hard a moving ball drags the fluid along its heading", 0.5);
+
+// ----------------------------------------------------------------- ball motion
+//
+// One controller, shared by all three balls. Chase is the spring pulling a ball
+// to its target, Damping is what stops it overshooting, and Trim is the integral
+// term — it kills the steady-state droop of a ball being pushed by its own
+// fire, and it is the one that will wind up and wobble if leaned on.
+
+knob("pidP", "Chase", "How hard a ball is pulled toward its target", 0.4);
+knob("pidD", "Damping", "How hard that pull is resisted; low overshoots", 0.5);
+knob("pidI", "Trim", "Integral correction for persistent error", 0);
+
+trigger("choreo", "Choreo", "Transition to a random other choreography state", onChoreoTrigger);
+trigger("cue", "Cue", "Accent the current state; means something different in each", onCueTrigger);
 
 // ----------------------------------------------------------------------- fluid
 
@@ -148,6 +259,421 @@ function init() {
 
   simAccumulator = 0;
   simClock = 0;
+
+  initBalls();
+}
+
+// ----------------------------------------------------------- the source balls
+//
+// Three of them, and the index is part of the choreography rather than just a
+// loop counter: ball 0 leads the column, ball 0 is the first third of the orbit,
+// and so on. Each carries its own position, velocity, target and integral term,
+// plus the previous position that the swept stamp needs.
+
+var balls = [];
+var choreoState = STATE_ORBIT;
+
+// Triggers fire from whatever thread rang them, so they are counted here and
+// spent in preRender, where the choreography actually lives. Counting rather
+// than flagging means two cues inside one frame both land.
+var pendingChoreo = 0;
+var pendingCue = 0;
+
+// ORBIT's angle is accumulated rather than derived from the beat clock, because
+// the cue reverses it: a derived angle would snap to the mirrored position the
+// instant the sign flipped.
+var orbitPhase = 0;
+var orbitDir = 1;
+
+// FIRELINE's strip. Always here, only ever nonzero in that state or during the
+// second it takes to fade out of one.
+var fireLineLevel = 0;
+var fireLineTarget = 0;
+
+function initBalls() {
+  balls.length = 0;
+  for (var i = 0; i < BALL_COUNT; ++i) {
+    balls.push({
+      index: i,
+      x: 0.5, y: 0.5,
+      px: 0.5, py: 0.5,
+      vx: 0, vy: 0,
+      tx: 0.5, ty: 0.5,
+      ix: 0, iy: 0,
+      radiusMul: 1,
+      radiusTarget: 1,
+      // FIRELINE flies the ball directly instead of through the controller.
+      ballistic: false,
+      landed: false,
+      // PINGPONG's bouncing point, which the ball chases.
+      bx: 0.5, by: 0.5,
+      dirX: 1, dirY: 0,
+      speed: 0
+    });
+  }
+  fireLineLevel = 0;
+  fireLineTarget = 0;
+  orbitPhase = 0;
+  orbitDir = 1;
+  enterState(STATE_ORBIT);
+}
+
+function onChoreoTrigger() {
+  ++pendingChoreo;
+}
+
+function onCueTrigger() {
+  ++pendingCue;
+}
+
+/** Beats since the script loaded, on the internal tempo. */
+function beats() {
+  return simClock * (CHOREO_BPM / 60) + CHOREO_PHASE;
+}
+
+function randomRange(lo, hi) {
+  return lo + Math.random() * (hi - lo);
+}
+
+/** The shared source radius in normalized units, before a ball's multiplier. */
+function baseRadius() {
+  return Math.max(lerp(0.02, 0.6, srcRadius), 1 / Math.min(W1, H1));
+}
+
+// ------------------------------------------------------------ state machine
+
+function randomOtherState(current) {
+  // Uniform over the four states that are not the current one: pick from that
+  // many, then step over the hole.
+  var pick = Math.floor(Math.random() * (STATE_COUNT - 1));
+  if (pick >= current) {
+    ++pick;
+  }
+  return pick;
+}
+
+function enterState(next) {
+  exitState(choreoState);
+  choreoState = next;
+
+  var i, ball;
+  if (next === STATE_PINGPONG) {
+    // Each ball leaves on its own heading, from where it already is — the
+    // formation reads as one that scatters rather than one that restarts.
+    for (i = 0; i < balls.length; ++i) {
+      ball = balls[i];
+      var angle = Math.random() * Math.PI * 2;
+      ball.dirX = Math.cos(angle);
+      ball.dirY = Math.sin(angle);
+      ball.speed = randomRange(PING_SPEED_MIN, PING_SPEED_MAX);
+      ball.bx = clamp(ball.x, PING_MARGIN, 1 - PING_MARGIN);
+      ball.by = clamp(ball.y, PING_MARGIN, 1 - PING_MARGIN);
+    }
+  } else if (next === STATE_PLACER) {
+    placeBalls();
+  } else if (next === STATE_FIRELINE) {
+    for (i = 0; i < balls.length; ++i) {
+      ball = balls[i];
+      ball.ballistic = true;
+      ball.landed = false;
+      ball.vx = randomRange(-FIRE_LAUNCH_VX, FIRE_LAUNCH_VX);
+      ball.vy = randomRange(FIRE_LAUNCH_VY_MIN, FIRE_LAUNCH_VY_MAX);
+    }
+  }
+}
+
+function exitState(previous) {
+  if (previous === STATE_FIRELINE) {
+    // Leaving takes the balls off ballistic control and hands them back to the
+    // controller at full size; the strip fades on its own from here.
+    fireLineTarget = 0;
+    for (var i = 0; i < balls.length; ++i) {
+      balls[i].ballistic = false;
+      balls[i].landed = false;
+      balls[i].radiusTarget = 1;
+      balls[i].ix = 0;
+      balls[i].iy = 0;
+    }
+  }
+}
+
+// --------------------------------------------------------------- the states
+
+/**
+ * ORBIT — the three spaced a third of a turn apart on a circle around the
+ * formation center, under two slow LFOs: one squashing the vertical axis, one
+ * rotating the axis the squash happens on. Cue reverses the direction.
+ */
+function updateOrbit(dt, cued) {
+  if (cued) {
+    orbitDir = -orbitDir;
+  }
+  orbitPhase += dt * (CHOREO_BPM / 60) / ORBIT_BEATS * Math.PI * 2 * orbitDir;
+
+  var b = beats();
+  var squash = 1 - ORBIT_SQUASH_DEPTH * 0.5 * (1 - Math.cos(b * Math.PI * 2 / ORBIT_SQUASH_BEATS));
+  var axis = b * Math.PI * 2 / ORBIT_AXIS_BEATS;
+  var cosAxis = Math.cos(axis);
+  var sinAxis = Math.sin(axis);
+  var radius = lerp(0.08, 0.45, spread);
+
+  for (var i = 0; i < balls.length; ++i) {
+    var ball = balls[i];
+    var angle = orbitPhase + i * Math.PI * 2 / BALL_COUNT;
+    var ex = Math.cos(angle) * radius;
+    var ey = Math.sin(angle) * radius * squash;
+    ball.tx = srcX + ex * cosAxis - ey * sinAxis;
+    ball.ty = srcY + ex * sinAxis + ey * cosAxis;
+    ball.radiusTarget = 1;
+  }
+}
+
+/**
+ * COLUMNS — ball 0 rides the center column top to bottom, balls 1 and 2 ride
+ * columns either side of it in antiphase.
+ *
+ * The target crawls along the path rather than sitting on it, so the balls run
+ * late and the formation breathes. Cue drops the target exactly on the path,
+ * which the balls then chase — the target snaps, the balls do not.
+ */
+function updateColumns(dt, cued) {
+  var phase = beats() * Math.PI * 2 / COLUMN_BEATS;
+  var offset = lerp(0.08, 0.42, spread);
+  var follow = cued ? 1 : clamp(dt * COLUMN_FOLLOW, 0, 1);
+
+  for (var i = 0; i < balls.length; ++i) {
+    var ball = balls[i];
+    var idealX = srcX + (i === 0 ? 0 : (i === 1 ? -offset : offset));
+    var idealY = 0.5 + COLUMN_TRAVEL * Math.sin(phase + (i === 0 ? 0 : Math.PI));
+    ball.tx += (idealX - ball.tx) * follow;
+    ball.ty += (idealY - ball.ty) * follow;
+    ball.radiusTarget = 1;
+  }
+}
+
+/**
+ * PINGPONG — each ball chases a point that flies straight and bounces off the
+ * walls, with the bounce deliberately imperfect so the three drift apart
+ * instead of running the same loop forever. Cue does nothing here.
+ */
+function updatePingpong(dt) {
+  var lo = PING_MARGIN;
+  var hi = 1 - PING_MARGIN;
+
+  for (var i = 0; i < balls.length; ++i) {
+    var ball = balls[i];
+    ball.bx += ball.dirX * ball.speed * dt;
+    ball.by += ball.dirY * ball.speed * dt;
+
+    var bounced = false;
+    if (ball.bx < lo) { ball.bx = lo; ball.dirX = -ball.dirX; bounced = true; }
+    else if (ball.bx > hi) { ball.bx = hi; ball.dirX = -ball.dirX; bounced = true; }
+    if (ball.by < lo) { ball.by = lo; ball.dirY = -ball.dirY; bounced = true; }
+    else if (ball.by > hi) { ball.by = hi; ball.dirY = -ball.dirY; bounced = true; }
+
+    if (bounced) {
+      var angle = Math.atan2(ball.dirY, ball.dirX) + randomRange(-PING_ANGLE_JITTER, PING_ANGLE_JITTER);
+      ball.dirX = Math.cos(angle);
+      ball.dirY = Math.sin(angle);
+      ball.speed = clamp(
+        ball.speed * randomRange(1 - PING_SPEED_JITTER, 1 + PING_SPEED_JITTER),
+        PING_SPEED_MIN,
+        PING_SPEED_MAX
+      );
+    }
+
+    ball.tx = ball.bx;
+    ball.ty = ball.by;
+    ball.radiusTarget = 1;
+  }
+}
+
+/**
+ * PLACER — the balls hold still until a cue scatters them to fresh positions.
+ *
+ * Targets are rejection-sampled so no two sit closer than PLACER_SEPARATION
+ * times the Radius knob. That constraint has no solution once Radius is wide, so
+ * the search is capped and keeps the roomiest set it saw rather than looping.
+ */
+function placeBalls() {
+  var minDistance = PLACER_SEPARATION * baseRadius();
+  var margin = clamp(baseRadius() * 0.5, 0.02, 0.3);
+  var lo = margin;
+  var hi = 1 - margin;
+
+  var bestX = [];
+  var bestY = [];
+  var bestScore = -1;
+
+  for (var attempt = 0; attempt < PLACER_ATTEMPTS; ++attempt) {
+    var xs = [];
+    var ys = [];
+    for (var i = 0; i < balls.length; ++i) {
+      xs.push(randomRange(lo, hi));
+      ys.push(randomRange(lo, hi));
+    }
+
+    // Score a candidate set by its tightest pair, so the fallback is the most
+    // spread out set the search happened to see.
+    var closest = Infinity;
+    for (var a = 0; a < xs.length; ++a) {
+      for (var b = a + 1; b < xs.length; ++b) {
+        var dx = xs[a] - xs[b];
+        var dy = ys[a] - ys[b];
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < closest) {
+          closest = d;
+        }
+      }
+    }
+    if (closest > bestScore) {
+      bestScore = closest;
+      bestX = xs;
+      bestY = ys;
+    }
+    if (closest >= minDistance) {
+      break;
+    }
+  }
+
+  for (var k = 0; k < balls.length; ++k) {
+    balls[k].tx = bestX[k];
+    balls[k].ty = bestY[k];
+  }
+}
+
+function updatePlacer(dt, cued) {
+  if (cued) {
+    placeBalls();
+  }
+  for (var i = 0; i < balls.length; ++i) {
+    balls[i].radiusTarget = 1;
+  }
+}
+
+/**
+ * FIRELINE — the balls are thrown, fall on a parabola, and land.
+ *
+ * This is the one state that flies the balls directly instead of through the
+ * controller: the spec is a ballistic arc, and a chased target would round the
+ * apex off into a lob. The first ball down lights the strip along the bottom of
+ * the frame, which fades up over a second; landed balls shrink away, leaving the
+ * strip burning on its own.
+ */
+function updateFireline(dt) {
+  for (var i = 0; i < balls.length; ++i) {
+    var ball = balls[i];
+    if (ball.landed) {
+      ball.radiusTarget = 0;
+      continue;
+    }
+
+    ball.vy -= FIRE_GRAVITY * dt;
+    ball.x += ball.vx * dt;
+    ball.y += ball.vy * dt;
+
+    // Reflect off the sides so a hard throw lands inside the frame instead of
+    // sailing out of it and dropping fuel where nothing can see it.
+    if (ball.x < 0) { ball.x = -ball.x; ball.vx = -ball.vx; }
+    else if (ball.x > 1) { ball.x = 2 - ball.x; ball.vx = -ball.vx; }
+
+    if (ball.y <= FIRE_GROUND) {
+      ball.y = FIRE_GROUND;
+      ball.vx = 0;
+      ball.vy = 0;
+      ball.landed = true;
+      ball.radiusTarget = 0;
+      fireLineTarget = 1;
+    }
+
+    ball.tx = ball.x;
+    ball.ty = ball.y;
+  }
+}
+
+// ------------------------------------------------------- the controller
+
+/**
+ * Fly every ball to its target.
+ *
+ * A spring to the target, damping against its own velocity, and an integral term
+ * for the droop that a ball sitting in its own updraft otherwise keeps. The
+ * integral is clamped: a target a ball cannot reach — one parked outside the
+ * frame by a wide Spread — would otherwise wind it up without limit and fire the
+ * ball across the frame when the state changed.
+ */
+function driveBalls(dt) {
+  var kp = lerp(2, 120, pidP);
+  var kd = lerp(0.5, 20, pidD);
+  var ki = lerp(0, 40, pidI);
+
+  for (var i = 0; i < balls.length; ++i) {
+    var ball = balls[i];
+
+    if (!ball.ballistic) {
+      var ex = ball.tx - ball.x;
+      var ey = ball.ty - ball.y;
+
+      ball.ix = clamp(ball.ix + ex * dt, -0.5, 0.5);
+      ball.iy = clamp(ball.iy + ey * dt, -0.5, 0.5);
+
+      ball.vx += (kp * ex + ki * ball.ix - kd * ball.vx) * dt;
+      ball.vy += (kp * ey + ki * ball.iy - kd * ball.vy) * dt;
+
+      var speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+      if (speed > MAX_BALL_SPEED) {
+        var scale = MAX_BALL_SPEED / speed;
+        ball.vx *= scale;
+        ball.vy *= scale;
+      }
+
+      ball.x += ball.vx * dt;
+      ball.y += ball.vy * dt;
+    }
+
+    ball.radiusMul += (ball.radiusTarget - ball.radiusMul) * clamp(dt * RADIUS_CHASE, 0, 1);
+
+    // A ball whose state went bad would keep emitting at a poisoned position
+    // forever, so it gets parked at the formation center rather than lost.
+    if (!isFinite(ball.x) || !isFinite(ball.y) || !isFinite(ball.vx) || !isFinite(ball.vy)) {
+      ball.x = clamp(srcX, 0, 1);
+      ball.y = clamp(srcY, 0, 1);
+      ball.vx = 0;
+      ball.vy = 0;
+      ball.ix = 0;
+      ball.iy = 0;
+      ball.px = ball.x;
+      ball.py = ball.y;
+    }
+  }
+}
+
+/** One choreography step: spend the cue, place the targets, fly the balls. */
+function updateChoreography(dt) {
+  var cued = pendingCue > 0;
+  pendingCue = 0;
+
+  if (choreoState === STATE_ORBIT) {
+    updateOrbit(dt, cued);
+  } else if (choreoState === STATE_COLUMNS) {
+    updateColumns(dt, cued);
+  } else if (choreoState === STATE_PINGPONG) {
+    updatePingpong(dt);
+  } else if (choreoState === STATE_PLACER) {
+    updatePlacer(dt, cued);
+  } else {
+    updateFireline(dt);
+  }
+
+  driveBalls(dt);
+
+  // Linear so the second the spec asks for is actually a second.
+  var fadeStep = dt / FIRELINE_FADE;
+  if (fireLineLevel < fireLineTarget) {
+    fireLineLevel = Math.min(fireLineTarget, fireLineLevel + fadeStep);
+  } else if (fireLineLevel > fireLineTarget) {
+    fireLineLevel = Math.max(fireLineTarget, fireLineLevel - fadeStep);
+  }
 }
 
 // ------------------------------------------------------------------- sampling
@@ -218,40 +744,32 @@ function advectScalars(dt) {
 }
 
 /**
- * Feed the source.
+ * Lay one soft-edged disc of fuel into the grid.
  *
- * Fuel and a little heat are laid into a soft-edged disc, and the same disc gets
- * an upward push so the plume leaves with some momentum rather than waiting for
- * buoyancy to build it. Only the disc's bounding box is visited — the source is
- * usually a small part of the grid and this runs every substep.
+ * Only the disc's bounding box is visited, since a source is a small part of the
+ * grid and this runs several times a substep. Everything passed in is already
+ * the share for this one stamp — a swept ball divides its step's fuel, push and
+ * coupling by the number of stamps before calling.
+ *
+ * @param {number} cx - Disc center, normalized
+ * @param {number} cy - Disc center, normalized
+ * @param {number} radius - Disc radius, normalized
+ * @param {number} rate - Fuel deposited at the center of the disc
+ * @param {number} push - Upward velocity added at the center, in cells/sec
+ * @param {number} dragU - Fluid velocity to drag toward, in cells/sec
+ * @param {number} dragV - Fluid velocity to drag toward, in cells/sec
+ * @param {number} coupling - How completely to drag; 0 leaves the fluid alone
  */
-function injectSource(dt) {
-  // Floored at one cell: a disc smaller than the grid spacing can fall between
-  // every cell center and inject nothing at all, which reads as the pattern
-  // being broken rather than as the source being small.
-  var radius = Math.max(lerp(0.02, 0.6, srcRadius), 1 / Math.min(W1, H1));
-  var strength = srcLevel * srcLevel * 9;
-  if (strength <= 0) {
-    return;
-  }
-
-  // A slow perlin waver, so a lit source breathes instead of sitting still.
-  var waver = 1 + flicker * Noise.stb_perlin_noise3(simClock * 1.7, 0, 0, 0, 0, 0) * 1.6;
-  if (waver < 0) {
-    waver = 0;
-  }
-  var rate = strength * waver * dt;
-  var push = jet * jet * 45 * waver * dt;
-
-  var xMin = Math.max(0, Math.floor((srcX - radius) * W1));
-  var xMax = Math.min(W1, Math.ceil((srcX + radius) * W1));
-  var yMin = Math.max(0, Math.floor((srcY - radius) * H1));
-  var yMax = Math.min(H1, Math.ceil((srcY + radius) * H1));
+function stampDisc(cx, cy, radius, rate, push, dragU, dragV, coupling) {
+  var xMin = Math.max(0, Math.floor((cx - radius) * W1));
+  var xMax = Math.min(W1, Math.ceil((cx + radius) * W1));
+  var yMin = Math.max(0, Math.floor((cy - radius) * H1));
+  var yMax = Math.min(H1, Math.ceil((cy + radius) * H1));
 
   for (var y = yMin; y <= yMax; ++y) {
-    var ny = y / H1 - srcY;
+    var ny = y / H1 - cy;
     for (var x = xMin; x <= xMax; ++x) {
-      var nx = x / W1 - srcX;
+      var nx = x / W1 - cx;
       var d = Math.sqrt(nx * nx + ny * ny) / radius;
       if (d >= 1) {
         continue;
@@ -266,6 +784,138 @@ function injectSource(dt) {
       var h = heat[i] + rate * falloff * 0.5;
       heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
       velV[i] += push * falloff;
+
+      if (coupling > 0) {
+        // Drag rather than shove: the fluid is pulled a fraction of the way to
+        // the ball's own velocity. Being a blend and not an impulse, it cannot
+        // add energy without bound however fast the ball is going or however
+        // many stamps land on the same cell.
+        var k = coupling * falloff;
+        if (k > 1) {
+          k = 1;
+        }
+        velU[i] += (dragU - velU[i]) * k;
+        velV[i] += (dragV - velV[i]) * k;
+      }
+    }
+  }
+}
+
+/**
+ * Feed the three source balls, smearing each along the path it just travelled.
+ *
+ * A ball that moved gets its step's fuel spread evenly over that segment instead
+ * of dropped at the end of it, which is what makes a fast ball read as a streak
+ * rather than as a row of blobs — and it conserves fuel, so crossing the frame
+ * quickly lays down a thin line rather than three discs' worth at every stop.
+ */
+function injectSources(dt) {
+  var strength = srcLevel * srcLevel * 9;
+  var base = baseRadius();
+
+  for (var b = 0; b < balls.length; ++b) {
+    var ball = balls[b];
+    var radius = base * ball.radiusMul;
+
+    // Below a cell across there is nothing left to stamp; a shrinking FIRELINE
+    // ball reaches this and stops emitting rather than dithering single cells.
+    if (strength <= 0 || radius < 0.5 / Math.min(W1, H1)) {
+      ball.px = ball.x;
+      ball.py = ball.y;
+      continue;
+    }
+
+    // Each ball wavers on its own phase — one shared waver would pulse all
+    // three together and read as the whole pattern flickering.
+    var waver = 1 + flicker * Noise.stb_perlin_noise3(simClock * 1.7, ball.index * 13.7, 0, 0, 0, 0) * 1.6;
+    if (waver < 0) {
+      waver = 0;
+    }
+
+    var dx = ball.x - ball.px;
+    var dy = ball.y - ball.py;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Half a radius between stamps keeps the swept trail solid; a lone stamp
+    // for a ball that barely moved keeps a still ball cheap.
+    var stamps = 1;
+    if (distance > 0) {
+      stamps = Math.ceil(distance / Math.max(radius * 0.5, 1e-4));
+      if (stamps < 1) {
+        stamps = 1;
+      } else if (stamps > MAX_SWEEP_STAMPS) {
+        stamps = MAX_SWEEP_STAMPS;
+      }
+    }
+
+    var rate = strength * waver * dt / stamps;
+    var push = jet * jet * 45 * waver * dt / stamps;
+
+    // The fluid is dragged toward the ball's own velocity, converted from
+    // frame-widths per second into the grid's cells per second.
+    var dragU = ball.vx * W1;
+    var dragV = ball.vy * H1;
+    var coupling = advect * advect * 12 * dt / stamps;
+
+    for (var s = 0; s < stamps; ++s) {
+      // Stamp centers sit on the segment, offset half a step so the trail is
+      // symmetric about the path rather than piling up on one end of it.
+      var t = (s + 0.5) / stamps;
+      stampDisc(
+        ball.px + dx * t,
+        ball.py + dy * t,
+        radius,
+        rate,
+        push,
+        dragU,
+        dragV,
+        coupling
+      );
+    }
+
+    ball.px = ball.x;
+    ball.py = ball.y;
+  }
+
+  injectFireLine(dt);
+}
+
+/**
+ * FIRELINE's strip: the whole bottom edge as one source.
+ *
+ * Present in every state and silent in all but one — its level is what fades,
+ * so the strip lights over a second when the balls land and dies over a second
+ * when the choreography moves on, rather than switching with the state.
+ */
+function injectFireLine(dt) {
+  if (fireLineLevel <= 0) {
+    return;
+  }
+
+  var strength = srcLevel * srcLevel * 9 * FIRELINE_DENSITY * fireLineLevel;
+  if (strength <= 0) {
+    return;
+  }
+  var rows = Math.min(FIRELINE_ROWS, H);
+  var lift = FIRELINE_LIFT * fireLineLevel * dt;
+
+  for (var x = 0; x < W; ++x) {
+    // Flicker varies along the strip as well as over time, so the line breaks
+    // into tongues instead of pulsing as one bar.
+    var waver = 1 + flicker * Noise.stb_perlin_noise3(x * 0.35, simClock * 2.2, 0, 0, 0, 0) * 1.3;
+    if (waver < 0) {
+      waver = 0;
+    }
+    var rate = strength * waver * dt;
+
+    for (var y = 0; y < rows; ++y) {
+      var falloff = 1 - y / rows;
+      var i = y * W + x;
+      var f = fuel[i] + rate * falloff;
+      fuel[i] = f > 1 ? 1 : f;
+      var h = heat[i] + rate * falloff * 0.5;
+      heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
+      velV[i] += lift * waver * falloff;
     }
   }
 }
@@ -460,8 +1110,11 @@ function project() {
 }
 
 function simulate(dt) {
+  // Choreography moves first so the swept stamp smears over exactly the motion
+  // that belongs to this substep.
+  updateChoreography(dt);
   advectVelocity(dt);
-  injectSource(dt);
+  injectSources(dt);
   combust(dt);
   applyVorticity(dt);
   applyForces(dt);
@@ -529,6 +1182,15 @@ var glowScale = 0;
 function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   if (velU == null) {
     init();
+  }
+
+  // Spent here rather than inside the substep loop: a state change is one
+  // event, and firing it in each substep of a frame would re-roll the state
+  // several times over.
+  while (pendingChoreo > 0) {
+    --pendingChoreo;
+    enterState(randomOtherState(choreoState));
+    print("FluidFire.js: choreography -> " + STATE_NAMES[choreoState]);
   }
 
   var dt = isFinite(deltaMs) ? clamp(deltaMs / 1000, 0, 0.25) : 0;
