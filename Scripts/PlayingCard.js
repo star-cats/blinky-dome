@@ -49,10 +49,15 @@ var CARD_ASPECT = 0.714;
 // fractions of the width, vertical ones fractions of the height, and sprite
 // heights are fractions of the height — a sprite's width follows from its own
 // pixel aspect, so nothing the user drops in gets stretched.
-var INDEX_X = 0.155;
-var SUIT_Y = 0.105;
-var RANK_Y = 0.255;
-var SPRITE_H = 0.135;
+//
+// At this size the index is no longer a corner mark — a sprite is over a third
+// of the card wide, so the column has to sit further in to keep the pip on the
+// card, and the pair has to spread far enough down that the two copies do not
+// collide across the middle.
+var INDEX_X = 0.225;
+var SUIT_Y = 0.15;
+var RANK_Y = 0.34;
+var SPRITE_H = 0.2;
 
 var CORNER_RADIUS = 0.055; // fraction of card height
 var STOCK = 0xfff2f2ee; // the white the card is printed on
