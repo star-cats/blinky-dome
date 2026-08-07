@@ -124,8 +124,13 @@ var STATE_COLUMNS = 1;
 var STATE_PINGPONG = 2;
 var STATE_PLACER = 3;
 var STATE_FIRELINE = 4;
-var STATE_COUNT = 5;
 var STATE_NAMES = ["ORBIT", "COLUMNS", "PINGPONG", "PLACER", "FIRELINE"];
+
+// Which states the Choreo trigger is allowed to pick from. A state left out of
+// this list still works and can still be entered by name — it is simply not in
+// the rotation. PLACER is out temporarily; put it back by restoring it here,
+// nothing else needs to change.
+var CHOREO_ROTATION = [STATE_ORBIT, STATE_COLUMNS, STATE_PINGPONG, STATE_FIRELINE];
 
 // ORBIT: beats per revolution, the two slow LFOs that deform the circle, and how
 // many cues it takes to turn the orbit around. Reversing on every cue makes the
@@ -143,15 +148,15 @@ var ORBIT_AXIS_BEATS = 37;
 // setpoint and no clock — a ball is always going to the top or going to the
 // bottom, and it only turns around once it has actually got there.
 var COLUMN_TRAVEL = 0.42;
-var COLUMN_CREEP_BEATS = 16;
+var COLUMN_CREEP_BEATS = 5.33;
 var COLUMN_ARRIVE = 0.04;
 
 // PINGPONG: travel speed range in frame-widths per second, how far off a clean
 // bounce a reflection is allowed to be, and the inset of the walls it bounces
 // off. The imperfection is the point — three balls reflecting perfectly stay
 // on the same three paths forever.
-var PING_SPEED_MIN = 0.6;
-var PING_SPEED_MAX = 1.92;
+var PING_SPEED_MIN = 0.48;
+var PING_SPEED_MAX = 1.536;
 var PING_ANGLE_JITTER = 0.3;
 var PING_SPEED_JITTER = 0.14;
 var PING_MARGIN = 0.06;
@@ -191,16 +196,44 @@ var FIRE_LAUNCH_VY_MAX = 0.8;
 var FIRE_GRAVITY = 1.5;
 var FIRE_GROUND = 0.02;
 var FIRELINE_FADE = 1.0;
-var FIRELINE_ROWS = 3;
-var FIRELINE_DENSITY = 3;
-var FIRELINE_LIFT = 40;
-var FIRELINE_SWIRL = 30;
+var FIRELINE_DENSITY = 6;
+var FIRELINE_LIFT = 960;
+var FIRELINE_SWIRL = 60;
+
+// How much of the frame the strip occupies, bottom up. A fraction rather than a
+// row count so it stays the same tenth of the picture whatever GRID_H is set to.
+var FIRELINE_HEIGHT = 0.18;
+
+// Multiplier on how fast the strip's noise fields move. The three slices keep
+// their relative rates — source, gust and lateral each churn at their own speed,
+// and this scales all of them together.
+var FIRELINE_NOISE_SWEEP = 4.5;
+
+// Multiplier on how finely those fields are sampled across the strip. Higher is
+// more detail per unit width, so the strip breaks into more and narrower tongues
+// rather than a few broad ones.
+var FIRELINE_NOISE_SCALE = 4;
 
 // How hard the strip's own noise swings its output. This rides on top of
 // Flicker rather than under it: Flicker is a knob the whole pattern shares and
 // can be turned off, and the strip has to churn on its own regardless — the
 // gusting is what the fire line is, not a decoration on it.
 var FIRELINE_GUST = 0.8;
+
+// The same gust as it applies to the lift, and over 1 on purpose so the
+// multiplier goes negative between tongues.
+//
+// This is the constant that decides whether the strip churns or just sits there
+// glowing, and the reason is the pressure solve. The fluid is incompressible and
+// the strip sits on a solid floor, so a push that is the same all the way across
+// asks for fluid to leave the bottom of the frame with nothing coming in beneath
+// it to replace it. The projection step is entitled to refuse that, and does:
+// the uniform part of the lift is very nearly cancelled every step, however
+// large it is. What survives is the part that varies across the strip, because
+// fluid rising in one column can be fed by fluid sinking in the next. Pushing
+// down between the tongues is therefore not a stylistic flourish — it is what
+// buys the upward push its right to exist.
+var FIRELINE_GUST_LIFT = 1.6;
 
 // ---------------------------------------------------------------------- source
 
@@ -211,7 +244,7 @@ knob("srcY", "Center Y", "Formation center, vertical", 0.5);
 knob("spread", "Spread", "Formation size — orbit radius, column separation", 0.3);
 knob("jet", "Jet", "Upward velocity injected at each ball", 0.15);
 knob("flicker", "Flicker", "How much the source strength wavers over time", 0.4);
-knob("advect", "Advect", "How hard a moving ball drags the fluid along its heading", 0.5);
+knob("advect", "Advect", "How hard the balls and the fire line drive the fluid; 200:1 range", 0.64);
 
 // ----------------------------------------------------------------- ball motion
 //
@@ -385,16 +418,41 @@ function baseRadius() {
   return Math.max(lerp(0.02, 0.6, srcRadius), 1 / Math.min(W1, H1));
 }
 
+/**
+ * How hard the sources drive the fluid, as a multiplier on their own speed.
+ *
+ * Decades rather than a straight line, because this is a knob whose useful
+ * settings are not evenly spaced: the difference between 0.1 and 0.3 is the
+ * difference between a hint of a wake and a visible one, while the difference
+ * between 10 and 15 is nothing at all. Two and a bit decades, so a quarter turn
+ * is a nudge and the top is a blowtorch.
+ *
+ * A value of 1 means a source drives the fluid near it to roughly its own speed,
+ * which makes the knob readable: 3 is three times as fast as the thing that made
+ * it, and that is what a wake looks like.
+ */
+function advectStrength() {
+  return Math.pow(10, lerp(-1, 1.3, advect));
+}
+
 // ------------------------------------------------------------ state machine
 
 function randomOtherState(current) {
-  // Uniform over the four states that are not the current one: pick from that
-  // many, then step over the hole.
-  var pick = Math.floor(Math.random() * (STATE_COUNT - 1));
-  if (pick >= current) {
-    ++pick;
+  // Uniform over the rotation minus whatever is playing now. Built as a list
+  // rather than indexed around a hole, because the rotation is no longer every
+  // state and the current one may not even be in it.
+  var choices = [];
+  for (var i = 0; i < CHOREO_ROTATION.length; ++i) {
+    if (CHOREO_ROTATION[i] !== current) {
+      choices.push(CHOREO_ROTATION[i]);
+    }
   }
-  return pick;
+  if (choices.length === 0) {
+    // Every rotation entry is the current state. Staying put is the only honest
+    // answer, and it beats whatever an empty pick would return.
+    return current;
+  }
+  return choices[Math.floor(Math.random() * choices.length)];
 }
 
 function enterState(next) {
@@ -946,11 +1004,10 @@ function advectScalars(dt) {
  * @param {number} radius - Disc radius, normalized
  * @param {number} rate - Fuel deposited at the center of the disc
  * @param {number} push - Upward velocity added at the center, in cells/sec
- * @param {number} dragU - Fluid velocity to drag toward, in cells/sec
- * @param {number} dragV - Fluid velocity to drag toward, in cells/sec
- * @param {number} coupling - How completely to drag; 0 leaves the fluid alone
+ * @param {number} kickU - Velocity added at the center along the ball's heading
+ * @param {number} kickV - Velocity added at the center along the ball's heading
  */
-function stampDisc(cx, cy, radius, rate, push, dragU, dragV, coupling) {
+function stampDisc(cx, cy, radius, rate, push, kickU, kickV) {
   var xMin = Math.max(0, Math.floor((cx - radius) * W1));
   var xMax = Math.min(W1, Math.ceil((cx + radius) * W1));
   var yMin = Math.max(0, Math.floor((cy - radius) * H1));
@@ -975,18 +1032,16 @@ function stampDisc(cx, cy, radius, rate, push, dragU, dragV, coupling) {
       heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
       velV[i] += push * falloff;
 
-      if (coupling > 0) {
-        // Drag rather than shove: the fluid is pulled a fraction of the way to
-        // the ball's own velocity. Being a blend and not an impulse, it cannot
-        // add energy without bound however fast the ball is going or however
-        // many stamps land on the same cell.
-        var k = coupling * falloff;
-        if (k > 1) {
-          k = 1;
-        }
-        velU[i] += (dragU - velU[i]) * k;
-        velV[i] += (dragV - velV[i]) * k;
-      }
+      // A kick along the ball's heading, added rather than blended toward.
+      //
+      // Blending toward the ball's own velocity was the obvious way to write
+      // this and it has a ceiling built into it: the fluid can be pulled up to
+      // the ball's speed and never past it, so a slowly swaying ball could not
+      // stir the fire however hard it was asked to. Adding has no such ceiling —
+      // what bounds it is DRAG, which gives the fluid a terminal velocity of
+      // roughly the acceleration it is being fed.
+      velU[i] += kickU * falloff;
+      velV[i] += kickV * falloff;
     }
   }
 }
@@ -1003,6 +1058,7 @@ function stampDisc(cx, cy, radius, rate, push, dragU, dragV, coupling) {
 function injectSources(dt) {
   var strength = srcLevel * srcLevel * 9;
   var base = baseRadius();
+  var drive = advectStrength();
 
   for (var b = 0; b < balls.length; ++b) {
     var ball = balls[b];
@@ -1042,11 +1098,11 @@ function injectSources(dt) {
     var rate = strength * waver * dt;
     var push = jet * jet * 45 * waver * dt;
 
-    // The fluid is dragged toward the ball's own velocity, converted from
-    // frame-widths per second into the grid's cells per second.
-    var dragU = ball.vx * W1;
-    var dragV = ball.vy * H1;
-    var coupling = advect * advect * 12 * dt;
+    // The fluid is driven along the ball's own velocity, converted from
+    // frame-widths per second into the grid's cells per second. At a drive of 1
+    // the fluid ends up moving about as fast as the ball that stirred it.
+    var kickU = ball.vx * W1 * drive * dt;
+    var kickV = ball.vy * H1 * drive * dt;
 
     for (var s = 0; s < stamps; ++s) {
       // Stamp centers sit on the segment, offset half a step so the trail is
@@ -1058,9 +1114,8 @@ function injectSources(dt) {
         radius,
         rate,
         push,
-        dragU,
-        dragV,
-        coupling
+        kickU,
+        kickV
       );
     }
 
@@ -1087,14 +1142,24 @@ function injectFireLine(dt) {
   if (strength <= 0) {
     return;
   }
-  var rows = Math.min(FIRELINE_ROWS, H);
-  var lift = FIRELINE_LIFT * fireLineLevel * dt;
-  var swirl = FIRELINE_SWIRL * fireLineLevel * dt;
+  // The strip drives the fluid off the same knob the balls do, so turning up
+  // Advect turns up everything the sources do to the fire rather than only the
+  // part of it that happens to be moving.
+  var drive = advectStrength();
+  var rows = clamp(Math.round(H * FIRELINE_HEIGHT), 1, H);
+  var lift = FIRELINE_LIFT * drive * fireLineLevel * dt;
+  var swirl = FIRELINE_SWIRL * drive * fireLineLevel * dt;
+  var sweep = simClock * FIRELINE_NOISE_SWEEP;
 
   for (var x = 0; x < W; ++x) {
+    // The column's coordinate in the noise fields. All three slices read from
+    // it, so tightening the sampling tightens the whole strip together instead
+    // of putting the gusts and the flicker on different scales.
+    var u = x * FIRELINE_NOISE_SCALE;
+
     // Flicker varies along the strip as well as over time, so the line breaks
     // into tongues instead of pulsing as one bar.
-    var waver = 1 + flicker * Noise.stb_perlin_noise3(x * 0.35, simClock * 2.2, 0, 0, 0, 0) * 1.3;
+    var waver = 1 + flicker * Noise.stb_perlin_noise3(u * 0.35, sweep * 2.2, 0, 0, 0, 0) * 1.3;
     if (waver < 0) {
       waver = 0;
     }
@@ -1102,15 +1167,22 @@ function injectFireLine(dt) {
     // the fuel and the lift under it, so a patch that is burning hard is also
     // the patch throwing itself upward — which is what a tongue of flame is,
     // rather than a bright spot and a draught that happen to share an address.
-    var gust = 1 + FIRELINE_GUST * Noise.stb_perlin_noise3(x * 0.7, simClock * 2.6, 3.1, 0, 0, 0);
+    var gustNoise = Noise.stb_perlin_noise3(u * 0.7, sweep * 2.6, 3.1, 0, 0, 0);
+
+    // Fuel keeps a floor at zero, because negative fuel is not a thing.
+    var gust = 1 + FIRELINE_GUST * gustNoise;
     if (gust < 0) {
       gust = 0;
     }
 
+    // The lift deliberately keeps no such floor: it has to be allowed to pull
+    // down between the tongues, or the pressure solve cancels the whole push.
+    var gustLift = 1 + FIRELINE_GUST_LIFT * gustNoise;
+
     // A second, faster noise on a different slice pushes sideways as well as up.
     // Lift alone gives a flat sheet of flame; this is what makes the strip curl
     // into separate tongues that lean and cross as they climb.
-    var lateral = Noise.stb_perlin_noise3(x * 0.55, simClock * 3.1, 7.3, 0, 0, 0);
+    var lateral = Noise.stb_perlin_noise3(u * 0.55, sweep * 3.1, 7.3, 0, 0, 0);
 
     var rate = strength * waver * gust * dt;
 
@@ -1121,7 +1193,7 @@ function injectFireLine(dt) {
       fuel[i] = f > 1 ? 1 : f;
       var h = heat[i] + rate * falloff * 0.5;
       heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
-      velV[i] += lift * waver * gust * falloff;
+      velV[i] += lift * waver * gustLift * falloff;
       velU[i] += swirl * lateral * falloff;
     }
   }
