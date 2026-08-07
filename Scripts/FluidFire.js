@@ -127,8 +127,12 @@ var STATE_FIRELINE = 4;
 var STATE_COUNT = 5;
 var STATE_NAMES = ["ORBIT", "COLUMNS", "PINGPONG", "PLACER", "FIRELINE"];
 
-// ORBIT: beats per revolution, and the two slow LFOs that deform the circle.
+// ORBIT: beats per revolution, the two slow LFOs that deform the circle, and how
+// many cues it takes to turn the orbit around. Reversing on every cue makes the
+// orbit twitch; making the cue count to eight turns the reversal into something
+// that arrives on the bar you were building toward.
 var ORBIT_BEATS = 5;
+var ORBIT_CUES_PER_FLIP = 8;
 var ORBIT_SQUASH_BEATS = 23;
 var ORBIT_SQUASH_DEPTH = 0.55;
 var ORBIT_AXIS_BEATS = 37;
@@ -164,16 +168,18 @@ var PLACER_ATTEMPTS = 64;
 // so x and y never close the same figure twice and the wander reads as alive
 // rather than as an orbit. Each ball is detuned again off its index so the
 // three do not sway as one.
-var PLACER_SWAY = 0.03;
-var PLACER_SWAY_HZ_X = 1.7;
-var PLACER_SWAY_HZ_Y = 2.3;
+var PLACER_SWAY = 0.09;
+var PLACER_SWAY_HZ_X = 0.85;
+var PLACER_SWAY_HZ_Y = 1.15;
 var PLACER_SWAY_DETUNE = 0.037;
 
 // How long a ball may sit on its spot before it goes looking for another one,
 // and how close to that spot counts as sitting on it. The tolerance has to clear
 // the sway, or a ball that has plainly arrived would never be found stationary —
-// it is always moving a little, and that is the point of the sway.
-var PLACER_SETTLE_TIME = 0.75;
+// it is always moving a little, and that is the point of the sway. It follows
+// the sway rather than being set independently, so widening one cannot silently
+// break the other.
+var PLACER_SETTLE_TIME = 2.0;
 var PLACER_SETTLED = PLACER_SWAY * 1.6;
 
 // FIRELINE: the launch, the fall, and the strip left behind. The strip burns
@@ -186,9 +192,15 @@ var FIRE_GRAVITY = 1.5;
 var FIRE_GROUND = 0.02;
 var FIRELINE_FADE = 1.0;
 var FIRELINE_ROWS = 3;
-var FIRELINE_DENSITY = 1.5;
-var FIRELINE_LIFT = 22;
-var FIRELINE_SWIRL = 14;
+var FIRELINE_DENSITY = 3;
+var FIRELINE_LIFT = 40;
+var FIRELINE_SWIRL = 30;
+
+// How hard the strip's own noise swings its output. This rides on top of
+// Flicker rather than under it: Flicker is a knob the whole pattern shares and
+// can be turned off, and the strip has to churn on its own regardless — the
+// gusting is what the fire line is, not a decoration on it.
+var FIRELINE_GUST = 0.8;
 
 // ---------------------------------------------------------------------- source
 
@@ -307,6 +319,7 @@ var pendingCue = 0;
 // instant the sign flipped.
 var orbitPhase = 0;
 var orbitDir = 1;
+var orbitCueCount = 0;
 
 
 // FIRELINE's strip. Always here, only ever nonzero in that state or during the
@@ -346,6 +359,7 @@ function initBalls() {
   fireLineTarget = 0;
   orbitPhase = 0;
   orbitDir = 1;
+  orbitCueCount = 0;
   enterState(STATE_ORBIT);
 }
 
@@ -388,7 +402,11 @@ function enterState(next) {
   choreoState = next;
 
   var i, ball;
-  if (next === STATE_COLUMNS) {
+  if (next === STATE_ORBIT) {
+    // A fresh count per visit, so the first cue after arriving is always the
+    // first of eight rather than however many were left over last time.
+    orbitCueCount = 0;
+  } else if (next === STATE_COLUMNS) {
     // Ball 0 heads for the top and the other two for the bottom, each setpoint
     // starting from the far end so all three have the same full traverse ahead
     // of them. Equal distances at equal speed is what keeps the two groups in
@@ -443,11 +461,21 @@ function exitState(previous) {
 /**
  * ORBIT — the three spaced a third of a turn apart on a circle around the
  * formation center, under two slow LFOs: one squashing the vertical axis, one
- * rotating the axis the squash happens on. Cue reverses the direction.
+ * rotating the axis the squash happens on.
+ *
+ * Cues are counted rather than acted on: every eighth one reverses the orbit,
+ * and the seven in between do nothing visible. The count is of cues actually
+ * fired, not of frames that saw one, so two cues inside a single frame both
+ * land — at eight to a reversal, a swallowed cue would put every later reversal
+ * on the wrong beat.
  */
-function updateOrbit(dt, cued) {
-  if (cued) {
-    orbitDir = -orbitDir;
+function updateOrbit(dt, cues) {
+  if (cues > 0) {
+    orbitCueCount += cues;
+    if (orbitCueCount >= ORBIT_CUES_PER_FLIP) {
+      orbitCueCount -= ORBIT_CUES_PER_FLIP;
+      orbitDir = -orbitDir;
+    }
   }
   orbitPhase += dt * (CHOREO_BPM / 60) / ORBIT_BEATS * Math.PI * 2 * orbitDir;
 
@@ -485,7 +513,7 @@ function updateOrbit(dt, cued) {
  * has the length of the frame to cross, and flipping then would turn it around
  * before it ever made the trip.
  */
-function updateColumns(dt, cued) {
+function updateColumns(dt, cues) {
   var offset = lerp(0.08, 0.42, spread);
   var creep = (2 * COLUMN_TRAVEL) / COLUMN_CREEP_BEATS * (CHOREO_BPM / 60) * dt;
 
@@ -495,7 +523,7 @@ function updateColumns(dt, cued) {
 
     ball.tx = srcX + (i === 0 ? 0 : (i === 1 ? -offset : offset));
 
-    if (cued) {
+    if (cues > 0) {
       ball.ty = destY;
     } else if (ball.ty < destY) {
       ball.ty = Math.min(destY, ball.ty + creep);
@@ -610,13 +638,19 @@ function placeBalls() {
 /**
  * Move one ball to a fresh spot, leaving the others where they are.
  *
- * Distance is measured against every ball's home including this one's current
- * one, so the ball is pushed away from where it already is as well as away from
- * the other two — a "new placement" a ball cannot see itself travel to is not
- * one. Same capped search as placeBalls, and the same reason for the cap.
+ * Two different distances have to hold. Against the other balls it is the usual
+ * separation, and against its own current spot it is at least a sway and a half
+ * — otherwise a narrow Radius lets the search hand back a spot the ball is
+ * already standing in, and since standing there is what triggered the move, it
+ * would sit and re-roll every PLACER_SETTLE_TIME without ever going anywhere.
+ *
+ * Candidates are scored on how well they satisfy both as a fraction, so the
+ * fallback after a failed search is the most balanced near-miss rather than one
+ * that is generous about the others and useless about itself.
  */
 function placeOne(ball) {
-  var minDistance = PLACER_SEPARATION * baseRadius();
+  var minOther = PLACER_SEPARATION * baseRadius();
+  var minSelf = Math.max(minOther, PLACER_SETTLED * 1.5);
   var margin = clamp(baseRadius() * 0.5, 0.02, 0.3);
   var lo = margin;
   var hi = 1 - margin;
@@ -629,22 +663,30 @@ function placeOne(ball) {
     var x = randomRange(lo, hi);
     var y = randomRange(lo, hi);
 
-    var closest = Infinity;
+    var selfDx = x - ball.hx;
+    var selfDy = y - ball.hy;
+    var selfDistance = Math.sqrt(selfDx * selfDx + selfDy * selfDy);
+
+    var otherDistance = Infinity;
     for (var i = 0; i < balls.length; ++i) {
+      if (balls[i] === ball) {
+        continue;
+      }
       var dx = x - balls[i].hx;
       var dy = y - balls[i].hy;
       var d = Math.sqrt(dx * dx + dy * dy);
-      if (d < closest) {
-        closest = d;
+      if (d < otherDistance) {
+        otherDistance = d;
       }
     }
 
-    if (closest > bestScore) {
-      bestScore = closest;
+    var score = Math.min(selfDistance / minSelf, otherDistance / minOther);
+    if (score > bestScore) {
+      bestScore = score;
       bestX = x;
       bestY = y;
     }
-    if (closest >= minDistance) {
+    if (score >= 1) {
       break;
     }
   }
@@ -669,8 +711,8 @@ function placeOne(ball) {
  * ever moves them. "Held its spot" is measured against the ball's home rather
  * than its speed, because the sway means its speed never reaches zero.
  */
-function updatePlacer(dt, cued) {
-  if (cued) {
+function updatePlacer(dt, cues) {
+  if (cues > 0) {
     placeBalls();
   }
 
@@ -795,17 +837,20 @@ function driveBalls(dt) {
 
 /** One choreography step: spend the cue, place the targets, fly the balls. */
 function updateChoreography(dt) {
-  var cued = pendingCue > 0;
+  // The count, not a flag: ORBIT counts cues to eight before it acts on them,
+  // and collapsing two that arrived in one frame into a single "yes" would drop
+  // one. States that only care whether a cue happened read it as truthy.
+  var cues = pendingCue;
   pendingCue = 0;
 
   if (choreoState === STATE_ORBIT) {
-    updateOrbit(dt, cued);
+    updateOrbit(dt, cues);
   } else if (choreoState === STATE_COLUMNS) {
-    updateColumns(dt, cued);
+    updateColumns(dt, cues);
   } else if (choreoState === STATE_PINGPONG) {
     updatePingpong(dt);
   } else if (choreoState === STATE_PLACER) {
-    updatePlacer(dt, cued);
+    updatePlacer(dt, cues);
   } else {
     updateFireline(dt);
   }
@@ -1053,12 +1098,21 @@ function injectFireLine(dt) {
     if (waver < 0) {
       waver = 0;
     }
-    var rate = strength * waver * dt;
+    // The strip's own gusting, on noise slices of its own. One gust drives both
+    // the fuel and the lift under it, so a patch that is burning hard is also
+    // the patch throwing itself upward — which is what a tongue of flame is,
+    // rather than a bright spot and a draught that happen to share an address.
+    var gust = 1 + FIRELINE_GUST * Noise.stb_perlin_noise3(x * 0.7, simClock * 2.6, 3.1, 0, 0, 0);
+    if (gust < 0) {
+      gust = 0;
+    }
 
     // A second, faster noise on a different slice pushes sideways as well as up.
     // Lift alone gives a flat sheet of flame; this is what makes the strip curl
     // into separate tongues that lean and cross as they climb.
     var lateral = Noise.stb_perlin_noise3(x * 0.55, simClock * 3.1, 7.3, 0, 0, 0);
+
+    var rate = strength * waver * gust * dt;
 
     for (var y = 0; y < rows; ++y) {
       var falloff = 1 - y / rows;
@@ -1067,7 +1121,7 @@ function injectFireLine(dt) {
       fuel[i] = f > 1 ? 1 : f;
       var h = heat[i] + rate * falloff * 0.5;
       heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
-      velV[i] += lift * waver * falloff;
+      velV[i] += lift * waver * gust * falloff;
       velU[i] += swirl * lateral * falloff;
     }
   }
