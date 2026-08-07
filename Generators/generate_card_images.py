@@ -52,6 +52,24 @@ RANK_INK = (24, 24, 28, 255)
 BACK_INK = (28, 58, 140, 255)
 BACK_PAPER = (240, 240, 244, 255)
 
+# The medallion the logo sits on, a shade deeper than the panel so the white
+# artwork separates from it rather than from the lattice around it.
+MEDALLION_INK = (16, 34, 92, 255)
+
+# The logo on the back of the card. Its size and the medallion's are given
+# against the card rather than against each other, so widening the ring leaves
+# the cat where it is instead of dragging it along.
+LOGO_PATH = os.path.join(os.path.dirname(OUT_DIR), "starcats_white.png")
+
+# Half the panel: the medallion spans the blue field edge to edge, its ring
+# landing tangent to the panel's sides. PIL draws an outline inward from the
+# bounding box, so this radius is the ring's outer edge, not its centerline.
+MEDALLION_R = 0.45
+
+# The artwork's long side — its height, this being a tall cat — as a fraction
+# of card width.
+LOGO_SIZE = 0.655
+
 # "1" is written out alongside "A" so both spellings resolve to a file; the
 # pattern's default rank list uses A.
 RANKS = ["A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -198,7 +216,43 @@ def write_back():
         radius=w * 0.04, fill=255)
     lattice.putalpha(ImageChops.multiply(lattice.getchannel("A"), mask))
     img.alpha_composite(lattice)
-    finish(img, BACK_SIZE, os.path.join(OUT_DIR, "back.png"))
+
+    # The logo is white and so is the lattice, so it cannot simply be laid on
+    # top — it would dissolve wherever a lattice line crossed it. Clearing a
+    # medallion out of the pattern first is what buys the contrast: solid ink,
+    # a shade deeper than the panel, with a white ring to read as deliberate
+    # rather than as a hole.
+    cx, cy = w / 2, h / 2
+    r = w * MEDALLION_R
+    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=MEDALLION_INK,
+                 outline=BACK_PAPER, width=int(w * 0.011))
+
+    # Downsample before the logo goes on. The logo is already antialiased at
+    # 512px and the medallion is smaller than that, so it wants scaling down
+    # once — not up by SS and back, which would only cost it its edges.
+    back = img.resize(BACK_SIZE, Image.LANCZOS)
+    paste_logo(back, BACK_SIZE[0] * LOGO_SIZE)
+    back.save(os.path.join(OUT_DIR, "back.png"))
+    print("wrote", os.path.relpath(os.path.join(OUT_DIR, "back.png"), os.path.dirname(OUT_DIR)))
+
+
+def paste_logo(back, extent):
+    """Center LOGO_PATH on the card, `extent` pixels across its long side."""
+    if not os.path.exists(LOGO_PATH):
+        print("skipped logo, no", LOGO_PATH)
+        return
+    logo = Image.open(LOGO_PATH).convert("RGBA")
+    # Fit the artwork's ink, not its canvas — the source has transparent
+    # margins, and sizing to the canvas would leave the cat floating small
+    # inside its ring.
+    box = logo.getbbox()
+    if box:
+        logo = logo.crop(box)
+    scale = extent / max(logo.size)
+    logo = logo.resize((max(1, round(logo.width * scale)),
+                        max(1, round(logo.height * scale))), Image.LANCZOS)
+    back.alpha_composite(logo, (round(back.width / 2 - logo.width / 2),
+                                round(back.height / 2 - logo.height / 2)))
 
 
 def main():
