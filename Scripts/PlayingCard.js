@@ -8,14 +8,16 @@
  * result is exact at any LED density and the perspective is real rather than
  * faked with a horizontal squash.
  *
- * ANGLE is the whole animation interface: 0 is the face square to the viewer,
- * 180 is the back square to the viewer, and everything between is a turn about
- * the vertical axis. An external controller should drive it through
- * setCardAngle() rather than by writing the knob.
+ * The card is driven by beats, not by an angle. Fire the BEAT trigger — wire it
+ * to a tempo, an onset detector, a MIDI note — and the card is thrown into a
+ * spin that bleeds off exponentially. Kick sets how far one beat turns it,
+ * Decay how long that takes to die away, and Spin adds a constant drift
+ * underneath. Nothing can assign the angle: a card mid-flip has momentum, and
+ * snapping it would throw away the state that makes the flip read as a flip.
  *
- *   setCardAngle(90)    // edge on
- *   setCardAngle(180)   // showing its back
- *   clearCardAngle()    // back to the Angle and Spin knobs
+ * Each time the card passes 180 degrees — square on to its back, the one
+ * instant where the face is entirely hidden — the next card off a shuffled deck
+ * is dealt, so the deck changes without the change ever being seen.
  *
  * Art comes from Images/Cards/ as PNGs with alpha — see
  * Generators/generate_card_images.py, which writes a placeholder set. The face
@@ -57,13 +59,24 @@ var STOCK = 0xfff2f2ee; // the white the card is printed on
 
 var BLACK = 0xff000000;
 
-knobi("suit", "Suit", "Suit: heart, diamond, club, spade", 0, 4);
-knobi("rank", "Rank", "Rank: A, 2-10, J, Q, K", 0, 13);
+// A pulse turns the card KICK_MAX degrees at most, so the knob reads as "how
+// far does one beat throw it" — a half turn, a full turn, four turns.
+var KICK_MAX = 1440;
 
-knob("angle", "Angle", "Rotation about the vertical axis, 0 = face on, 180 = back on", 0);
-knob("spin", "Spin", "Continuous rotation added to Angle; 0.5 is still", 0.5);
+// Bounds on the decay time constant. The floor is what keeps a hard, short
+// decay from asking for an unbounded angular velocity.
+var TAU_MIN = 0.06;
+var TAU_MAX = 2.0;
+
+knobi("suit", "Suit", "Suit when Deal is off: heart, diamond, club, spade", 0, 4);
+knobi("rank", "Rank", "Rank when Deal is off: A, 2-10, J, Q, K", 0, 13);
+
+trigger("beat", "Beat", "Kick the card into a spin — wire this to a beat", onBeat);
+knob("kick", "Kick", "How far one beat turns the card, up to four full turns", 0.25);
+knob("decay", "Decay", "How long a beat's spin takes to bleed off", 0.3);
+knob("spin", "Spin", "Constant rotation underneath the beats; 0.5 is still", 0.5);
+
 knob("persp", "Persp", "Perspective strength; 0 is an orthographic projection", 0.45);
-
 knob("size", "Size", "Card height as a fraction of the frame", 0.6);
 knob("posx", "X", "Card center, horizontal", 0.5);
 knob("posy", "Y", "Card center, vertical", 0.5);
@@ -71,33 +84,94 @@ knob("posy", "Y", "Card center, vertical", 0.5);
 knob("shade", "Shade", "How much the card dims as it turns edge on", 0.4);
 knob("level", "Level", "Overall brightness", 1);
 
+toggle("deal", "Deal", "Deal a new card each time the back turns to the viewer", true);
 toggle("tintRank", "Tint", "Recolor the rank glyph to the suit color", true);
 toggle("autoAspect", "Aspect", "Correct for a non-square model", true);
 
-// ---------------------------------------------------------------- card angle
+// ----------------------------------------------------------------- card angle
 //
-// Held outside the knob so a controller can drive the card without fighting a
-// parameter, and so spin can accumulate across frames at whatever rate the
-// engine happens to be running.
+// The card's rotation is integrated, not set: a constant rate from the Spin
+// knob plus a decaying impulse per beat. Nothing outside can assign an angle,
+// which is the point — a card mid-flip has momentum, and snapping it would
+// throw away the only state that makes the flip read as a flip.
 
+/** Unwrapped, and left that way — a double holds days of spinning exactly. */
 var cardAngleDeg = 0;
-var spinAngleDeg = 0;
-var angleOverride = null;
+
+/** Degrees per second still owed by past beats. */
+var kickVelocity = 0;
 
 /**
- * Set the card's rotation directly, in degrees. 0 is face on, 180 is back on.
+ * Beats that arrived since the last frame.
  *
- * The override holds until clearCardAngle(), which is what makes this usable
- * from a controller: it does not have to be re-set every frame to keep the
- * knob and the spin from taking the card back.
+ * Counted rather than applied, because the trigger fires from whatever thread
+ * rang it and the angle belongs to the render pass. Counting also means two
+ * beats inside one frame both land.
  */
-function setCardAngle(deg) {
-  angleOverride = deg;
+var pendingBeats = 0;
+
+/** Add a beat's worth of spin. Wired to the Beat trigger; call it directly too. */
+function onBeat() {
+  ++pendingBeats;
 }
 
-/** Hand the card back to the Angle and Spin knobs. */
-function clearCardAngle() {
-  angleOverride = null;
+// ---------------------------------------------------------------- the deck
+//
+// A new card is dealt as the card passes 180 degrees — square on to its back,
+// the one instant in the turn where the face is completely hidden, so the
+// change is never seen happening.
+//
+// Dealt from a shuffled 52 rather than drawn at random: random repeats itself,
+// and a card that flips to become the card it already was reads as a dropped
+// frame rather than a deal.
+
+var deck = [];
+var deckPos = 0;
+var dealtSuit = 0;
+var dealtRank = 0;
+
+/** Which 180-crossing the card is past; a change in this arms a deal. */
+var flipIndex = backOnIndex(cardAngleDeg);
+
+/** A crossing has happened and is waiting for the face to be out of sight. */
+var dealPending = false;
+
+/**
+ * How many back-on angles — 180, 540, 900 ... — the card has passed.
+ *
+ * Counting rather than testing a window means a beat violent enough to spin
+ * the card several times in one frame still registers as having flipped.
+ */
+function backOnIndex(deg) {
+  return Math.floor((deg - 180) / 360);
+}
+
+function shuffleDeck() {
+  deck.length = 0;
+  for (var i = 0; i < SUITS.length * RANKS.length; ++i) {
+    deck.push(i);
+  }
+  for (var j = deck.length - 1; j > 0; --j) {
+    var k = Math.floor(Math.random() * (j + 1));
+    var swap = deck[j];
+    deck[j] = deck[k];
+    deck[k] = swap;
+  }
+  deckPos = 0;
+}
+
+function dealNext() {
+  if (deckPos >= deck.length) {
+    shuffleDeck();
+  }
+  var card = deck[deckPos++];
+  dealtSuit = card % SUITS.length;
+  dealtRank = (card / SUITS.length) | 0;
+}
+
+function init() {
+  shuffleDeck();
+  dealNext();
 }
 
 // -------------------------------------------------------------- image loading
@@ -259,13 +333,7 @@ var shading, aspectX;
 var suitImage, rankImage, backImage, rankTint;
 
 function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
-  if (angleOverride != null) {
-    cardAngleDeg = angleOverride;
-  } else {
-    // Knob 0.5 is still, the ends are one revolution per second either way.
-    spinAngleDeg += (spin - 0.5) * 2 * 360 * deltaMs / 1000;
-    cardAngleDeg = angle * 360 + spinAngleDeg;
-  }
+  advance(deltaMs / 1000);
 
   var theta = cardAngleDeg * Math.PI / 180;
   cosT = Math.cos(theta);
@@ -291,10 +359,78 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
     aspectX = model.xRange / model.yRange;
   }
 
-  suitImage = loadImage(SUITS[suit]);
-  rankImage = loadImage(RANKS[rank]);
+  var suitName = SUITS[deal ? dealtSuit : suit];
+  suitImage = loadImage(suitName);
+  rankImage = loadImage(RANKS[deal ? dealtRank : rank]);
   backImage = loadImage("back");
-  rankTint = suitTint(SUITS[suit]);
+  rankTint = suitTint(suitName);
+}
+
+/**
+ * Move the card forward by dt seconds.
+ *
+ * A beat sets the card spinning and the spin bleeds away exponentially, so the
+ * angle over one beat is the integral of a decaying exponential — which has a
+ * closed form, used here rather than stepped. That makes the turn per beat
+ * exactly the Kick knob's value regardless of frame rate, and it stays exact
+ * when the engine hitches.
+ *
+ * Velocity is derived from the distance rather than dialed directly for the
+ * same reason: total turn is v0 * tau, so scaling v0 by 1/tau leaves Kick
+ * meaning "degrees per beat" no matter where Decay sits.
+ */
+function advance(dt) {
+  // A bad dt only ever means "no time passed" — better a paused card than one
+  // whose angle is poisoned by it.
+  if (!isFinite(dt)) {
+    dt = 0;
+  }
+  // tau is a divisor, so it gets a floor rather than a check: a zero would turn
+  // a beat into infinite velocity rather than a fast one. NaN is handled before
+  // the clamp because clamp passes it straight through — every comparison
+  // against NaN is false — and a knob stuck at NaN would then reset the card
+  // every frame instead of just spinning it.
+  var tau = isFinite(decay) ? clamp(lerp(TAU_MIN, TAU_MAX, decay), TAU_MIN, TAU_MAX) : TAU_MIN;
+
+  while (pendingBeats > 0) {
+    --pendingBeats;
+    kickVelocity += kick * KICK_MAX / tau;
+  }
+
+  var remaining = Math.exp(-dt / tau);
+  cardAngleDeg += (spin - 0.5) * 2 * 360 * dt + kickVelocity * tau * (1 - remaining);
+  kickVelocity *= remaining;
+
+  // Both of these feed back into themselves every frame, so a NaN or an
+  // infinity is not a glitch that passes — it is a state the card never leaves.
+  // Worse, it fails silently: every comparison against NaN is false, so
+  // onCard() rejects every point and the card does not draw wrong, it just
+  // vanishes until someone reloads the script. Two checks a frame is a cheap
+  // price for that never being the failure mode.
+  if (!isFinite(cardAngleDeg) || !isFinite(kickVelocity)) {
+    cardAngleDeg = 0;
+    kickVelocity = 0;
+    // Resync the crossing counter too, or the jump back to zero reads as a
+    // flip and deals a card the viewer never saw turn.
+    flipIndex = backOnIndex(cardAngleDeg);
+    dealPending = false;
+  }
+
+  var index = backOnIndex(cardAngleDeg);
+  if (index !== flipIndex) {
+    flipIndex = index;
+    dealPending = true;
+  }
+
+  // Arming the deal on the crossing but holding it until the back is actually
+  // toward the viewer: a beat hard enough to turn the card several times inside
+  // one frame can land the crossing anywhere, and swapping the face while it is
+  // in view is the one thing this must never do. At worst the new card waits
+  // for the next time the card looks away.
+  if (dealPending && Math.cos(cardAngleDeg * Math.PI / 180) < 0) {
+    dealPending = false;
+    dealNext();
+  }
 }
 
 /**
@@ -381,8 +517,14 @@ function onCard(u, v) {
 function renderPoint(point, deltaMs) {
   // Screen coordinates, centered on the card and corrected so the card is not
   // stretched by a model that is wider than it is tall.
+  //
+  // Vertical runs the other way from the card's own axis: yn counts up the
+  // model while v counts up the card from its center, and the sprite layout
+  // and the image rows below both measure down from the top. Negating here
+  // rather than in three places downstream keeps one convention. Flip the sign
+  // back if a model ever turns up with yn already running top to bottom.
   var sx = (point.xn - posx) * aspectX;
-  var sy = point.yn - posy;
+  var sy = posy - point.yn;
 
   // Invert the projection. A card point (u, v) sits at world
   // (u*cos, v, u*sin), which projects to sx = u*cos / (1 - u*sin*k). Solving
