@@ -41,10 +41,10 @@
  *   controller flies the ball there, so a state change is a move rather than a
  *   cut, and the fire keeps burning across it.
  *
- *   A ball smears. Its emission for a step is spread evenly along the segment it
- *   travelled in that step, so total fuel is conserved and a fast ball paints a
- *   thin streak instead of a dotted line of discs. It also drags the fluid along
- *   its heading, scaled by Advect.
+ *   A ball smears. Every point along the segment it travelled in a step gets the
+ *   full source strength rather than a share of it, so a moving ball lays a
+ *   solid trail that burns as hard as the ball itself and drags the fluid along
+ *   its whole heading, scaled by Advect.
  *
  * Balls pass through each other freely; only PLACER cares where the others are.
  * Choreo picks a random state other than the current one, and Cue means
@@ -128,23 +128,26 @@ var STATE_COUNT = 5;
 var STATE_NAMES = ["ORBIT", "COLUMNS", "PINGPONG", "PLACER", "FIRELINE"];
 
 // ORBIT: beats per revolution, and the two slow LFOs that deform the circle.
-var ORBIT_BEATS = 8;
+var ORBIT_BEATS = 5;
 var ORBIT_SQUASH_BEATS = 23;
 var ORBIT_SQUASH_DEPTH = 0.55;
 var ORBIT_AXIS_BEATS = 37;
 
-// COLUMNS: beats for a full up-and-down, how far up and down that is, and how
-// lazily the target crawls along the path when the cue is not forcing it.
-var COLUMN_BEATS = 8;
+// COLUMNS: how far from the middle the two ends sit, how many beats a setpoint
+// takes to creep the whole way between them when nothing is cueing it, and how
+// close a ball has to get to count as having arrived. There is no middle
+// setpoint and no clock — a ball is always going to the top or going to the
+// bottom, and it only turns around once it has actually got there.
 var COLUMN_TRAVEL = 0.42;
-var COLUMN_FOLLOW = 0.55;
+var COLUMN_CREEP_BEATS = 16;
+var COLUMN_ARRIVE = 0.04;
 
 // PINGPONG: travel speed range in frame-widths per second, how far off a clean
 // bounce a reflection is allowed to be, and the inset of the walls it bounces
 // off. The imperfection is the point — three balls reflecting perfectly stay
 // on the same three paths forever.
-var PING_SPEED_MIN = 0.1;
-var PING_SPEED_MAX = 0.32;
+var PING_SPEED_MIN = 0.6;
+var PING_SPEED_MAX = 1.92;
 var PING_ANGLE_JITTER = 0.3;
 var PING_SPEED_JITTER = 0.14;
 var PING_MARGIN = 0.06;
@@ -156,7 +159,26 @@ var PING_MARGIN = 0.06;
 var PLACER_SEPARATION = 1.3;
 var PLACER_ATTEMPTS = 64;
 
-// FIRELINE: the launch, the fall, and the strip left behind.
+// PLACER sway: a parked ball breathes around its spot on two detuned sinusoids,
+// one per axis. The frequencies are deliberately not a ratio of small integers,
+// so x and y never close the same figure twice and the wander reads as alive
+// rather than as an orbit. Each ball is detuned again off its index so the
+// three do not sway as one.
+var PLACER_SWAY = 0.03;
+var PLACER_SWAY_HZ_X = 1.7;
+var PLACER_SWAY_HZ_Y = 2.3;
+var PLACER_SWAY_DETUNE = 0.037;
+
+// How long a ball may sit on its spot before it goes looking for another one,
+// and how close to that spot counts as sitting on it. The tolerance has to clear
+// the sway, or a ball that has plainly arrived would never be found stationary —
+// it is always moving a little, and that is the point of the sway.
+var PLACER_SETTLE_TIME = 0.75;
+var PLACER_SETTLED = PLACER_SWAY * 1.6;
+
+// FIRELINE: the launch, the fall, and the strip left behind. The strip burns
+// harder than a ball does and throws its fuel upward — it is the wall of flame
+// the balls died to light, not a row of pilot lights.
 var FIRE_LAUNCH_VX = 0.45;
 var FIRE_LAUNCH_VY_MIN = 0.35;
 var FIRE_LAUNCH_VY_MAX = 0.8;
@@ -164,8 +186,9 @@ var FIRE_GRAVITY = 1.5;
 var FIRE_GROUND = 0.02;
 var FIRELINE_FADE = 1.0;
 var FIRELINE_ROWS = 3;
-var FIRELINE_DENSITY = 0.5;
-var FIRELINE_LIFT = 9;
+var FIRELINE_DENSITY = 1.5;
+var FIRELINE_LIFT = 22;
+var FIRELINE_SWIRL = 14;
 
 // ---------------------------------------------------------------------- source
 
@@ -285,6 +308,7 @@ var pendingCue = 0;
 var orbitPhase = 0;
 var orbitDir = 1;
 
+
 // FIRELINE's strip. Always here, only ever nonzero in that state or during the
 // second it takes to fade out of one.
 var fireLineLevel = 0;
@@ -300,6 +324,13 @@ function initBalls() {
       vx: 0, vy: 0,
       tx: 0.5, ty: 0.5,
       ix: 0, iy: 0,
+      // PLACER's parked spot. The target is this plus the sway, so the sway
+      // never walks the ball away from where it was placed. stillTime is how
+      // long it has been sitting on that spot.
+      hx: 0.5, hy: 0.5,
+      stillTime: 0,
+      // COLUMNS' destination end: +1 is the top, -1 is the bottom.
+      colDest: 1,
       radiusMul: 1,
       radiusTarget: 1,
       // FIRELINE flies the ball directly instead of through the controller.
@@ -357,7 +388,17 @@ function enterState(next) {
   choreoState = next;
 
   var i, ball;
-  if (next === STATE_PINGPONG) {
+  if (next === STATE_COLUMNS) {
+    // Ball 0 heads for the top and the other two for the bottom, each setpoint
+    // starting from the far end so all three have the same full traverse ahead
+    // of them. Equal distances at equal speed is what keeps the two groups in
+    // antiphase for as long as the state runs.
+    for (i = 0; i < balls.length; ++i) {
+      ball = balls[i];
+      ball.colDest = (i === 0) ? 1 : -1;
+      ball.ty = 0.5 - COLUMN_TRAVEL * ball.colDest;
+    }
+  } else if (next === STATE_PINGPONG) {
     // Each ball leaves on its own heading, from where it already is — the
     // formation reads as one that scatters rather than one that restarts.
     for (i = 0; i < balls.length; ++i) {
@@ -429,24 +470,47 @@ function updateOrbit(dt, cued) {
 }
 
 /**
- * COLUMNS — ball 0 rides the center column top to bottom, balls 1 and 2 ride
- * columns either side of it in antiphase.
+ * COLUMNS — ball 0 rides the center column, balls 1 and 2 ride columns either
+ * side of it, and the two groups head for opposite ends.
  *
- * The target crawls along the path rather than sitting on it, so the balls run
- * late and the formation breathes. Cue drops the target exactly on the path,
- * which the balls then chase — the target snaps, the balls do not.
+ * A ball is only ever going to the top or going to the bottom; there is no
+ * middle setpoint and nothing on a timer. Left alone, the setpoint creeps toward
+ * that end over COLUMN_CREEP_BEATS and the ball follows it up the column. A cue
+ * commits: the setpoint goes the whole way at once and the controller flies the
+ * ball there, which is the difference between the column drifting and the column
+ * being thrown.
+ *
+ * The destination only flips once the ball itself has arrived — not once the
+ * setpoint has. After a cue the setpoint is there instantly while the ball still
+ * has the length of the frame to cross, and flipping then would turn it around
+ * before it ever made the trip.
  */
 function updateColumns(dt, cued) {
-  var phase = beats() * Math.PI * 2 / COLUMN_BEATS;
   var offset = lerp(0.08, 0.42, spread);
-  var follow = cued ? 1 : clamp(dt * COLUMN_FOLLOW, 0, 1);
+  var creep = (2 * COLUMN_TRAVEL) / COLUMN_CREEP_BEATS * (CHOREO_BPM / 60) * dt;
 
   for (var i = 0; i < balls.length; ++i) {
     var ball = balls[i];
-    var idealX = srcX + (i === 0 ? 0 : (i === 1 ? -offset : offset));
-    var idealY = 0.5 + COLUMN_TRAVEL * Math.sin(phase + (i === 0 ? 0 : Math.PI));
-    ball.tx += (idealX - ball.tx) * follow;
-    ball.ty += (idealY - ball.ty) * follow;
+    var destY = 0.5 + COLUMN_TRAVEL * ball.colDest;
+
+    ball.tx = srcX + (i === 0 ? 0 : (i === 1 ? -offset : offset));
+
+    if (cued) {
+      ball.ty = destY;
+    } else if (ball.ty < destY) {
+      ball.ty = Math.min(destY, ball.ty + creep);
+    } else if (ball.ty > destY) {
+      ball.ty = Math.max(destY, ball.ty - creep);
+    }
+
+    // Both conditions matter. The setpoint test keeps a ball that entered the
+    // state already sitting at its destination from turning around on the first
+    // frame — its setpoint starts at the far end, so it has not arrived at
+    // anything yet, however close it happens to be standing.
+    if (Math.abs(ball.ty - destY) < 1e-9 && Math.abs(ball.y - destY) <= COLUMN_ARRIVE) {
+      ball.colDest = -ball.colDest;
+    }
+
     ball.radiusTarget = 1;
   }
 }
@@ -537,17 +601,98 @@ function placeBalls() {
   }
 
   for (var k = 0; k < balls.length; ++k) {
-    balls[k].tx = bestX[k];
-    balls[k].ty = bestY[k];
+    balls[k].hx = bestX[k];
+    balls[k].hy = bestY[k];
+    balls[k].stillTime = 0;
   }
 }
 
+/**
+ * Move one ball to a fresh spot, leaving the others where they are.
+ *
+ * Distance is measured against every ball's home including this one's current
+ * one, so the ball is pushed away from where it already is as well as away from
+ * the other two — a "new placement" a ball cannot see itself travel to is not
+ * one. Same capped search as placeBalls, and the same reason for the cap.
+ */
+function placeOne(ball) {
+  var minDistance = PLACER_SEPARATION * baseRadius();
+  var margin = clamp(baseRadius() * 0.5, 0.02, 0.3);
+  var lo = margin;
+  var hi = 1 - margin;
+
+  var bestX = ball.hx;
+  var bestY = ball.hy;
+  var bestScore = -1;
+
+  for (var attempt = 0; attempt < PLACER_ATTEMPTS; ++attempt) {
+    var x = randomRange(lo, hi);
+    var y = randomRange(lo, hi);
+
+    var closest = Infinity;
+    for (var i = 0; i < balls.length; ++i) {
+      var dx = x - balls[i].hx;
+      var dy = y - balls[i].hy;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if (d < closest) {
+        closest = d;
+      }
+    }
+
+    if (closest > bestScore) {
+      bestScore = closest;
+      bestX = x;
+      bestY = y;
+    }
+    if (closest >= minDistance) {
+      break;
+    }
+  }
+
+  ball.hx = bestX;
+  ball.hy = bestY;
+  ball.stillTime = 0;
+}
+
+/**
+ * PLACER — never quite still, and never settled for long.
+ *
+ * The sway is two sinusoids per ball, x and y on different frequencies so the
+ * ball traces an open Lissajous figure instead of a circle, and each ball
+ * detuned off its index so the three drift out of step with each other. It is
+ * applied to the target rather than the position, so it arrives through the
+ * controller and the balls lag it the way they lag everything else.
+ *
+ * A ball that has held its spot for PLACER_SETTLE_TIME goes and finds another,
+ * on its own clock rather than the formation's — so the three trade places
+ * continuously and a cue is a scatter on top of that, not the only thing that
+ * ever moves them. "Held its spot" is measured against the ball's home rather
+ * than its speed, because the sway means its speed never reaches zero.
+ */
 function updatePlacer(dt, cued) {
   if (cued) {
     placeBalls();
   }
+
+  var tau = Math.PI * 2;
   for (var i = 0; i < balls.length; ++i) {
-    balls[i].radiusTarget = 1;
+    var ball = balls[i];
+    var detune = 1 + i * PLACER_SWAY_DETUNE;
+    ball.tx = ball.hx + PLACER_SWAY * Math.sin(tau * PLACER_SWAY_HZ_X * detune * simClock + i * 2.1);
+    ball.ty = ball.hy + PLACER_SWAY * Math.sin(tau * PLACER_SWAY_HZ_Y * detune * simClock + i * 3.7);
+    ball.radiusTarget = 1;
+
+    var dx = ball.x - ball.hx;
+    var dy = ball.y - ball.hy;
+    if (dx * dx + dy * dy <= PLACER_SETTLED * PLACER_SETTLED) {
+      ball.stillTime += dt;
+      if (ball.stillTime >= PLACER_SETTLE_TIME) {
+        placeOne(ball);
+      }
+    } else {
+      // Still travelling — the clock only runs once it has arrived.
+      ball.stillTime = 0;
+    }
   }
 }
 
@@ -747,9 +892,9 @@ function advectScalars(dt) {
  * Lay one soft-edged disc of fuel into the grid.
  *
  * Only the disc's bounding box is visited, since a source is a small part of the
- * grid and this runs several times a substep. Everything passed in is already
- * the share for this one stamp — a swept ball divides its step's fuel, push and
- * coupling by the number of stamps before calling.
+ * grid and this runs several times a substep. Each stamp of a swept ball is a
+ * full-strength one: overlapping stamps saturate against the fuel and heat
+ * ceilings rather than accumulating without limit.
  *
  * @param {number} cx - Disc center, normalized
  * @param {number} cy - Disc center, normalized
@@ -804,10 +949,11 @@ function stampDisc(cx, cy, radius, rate, push, dragU, dragV, coupling) {
 /**
  * Feed the three source balls, smearing each along the path it just travelled.
  *
- * A ball that moved gets its step's fuel spread evenly over that segment instead
- * of dropped at the end of it, which is what makes a fast ball read as a streak
- * rather than as a row of blobs — and it conserves fuel, so crossing the frame
- * quickly lays down a thin line rather than three discs' worth at every stop.
+ * Every stamp along the segment gets the full source strength and the full
+ * advection, not a share of it — the trail a moving ball leaves burns as hard as
+ * the ball does, so speed buys length rather than costing brightness. Fuel and
+ * heat clamp per cell, so a slow ball laying many overlapping stamps saturates
+ * instead of running away.
  */
 function injectSources(dt) {
   var strength = srcLevel * srcLevel * 9;
@@ -848,14 +994,14 @@ function injectSources(dt) {
       }
     }
 
-    var rate = strength * waver * dt / stamps;
-    var push = jet * jet * 45 * waver * dt / stamps;
+    var rate = strength * waver * dt;
+    var push = jet * jet * 45 * waver * dt;
 
     // The fluid is dragged toward the ball's own velocity, converted from
     // frame-widths per second into the grid's cells per second.
     var dragU = ball.vx * W1;
     var dragV = ball.vy * H1;
-    var coupling = advect * advect * 12 * dt / stamps;
+    var coupling = advect * advect * 12 * dt;
 
     for (var s = 0; s < stamps; ++s) {
       // Stamp centers sit on the segment, offset half a step so the trail is
@@ -898,6 +1044,7 @@ function injectFireLine(dt) {
   }
   var rows = Math.min(FIRELINE_ROWS, H);
   var lift = FIRELINE_LIFT * fireLineLevel * dt;
+  var swirl = FIRELINE_SWIRL * fireLineLevel * dt;
 
   for (var x = 0; x < W; ++x) {
     // Flicker varies along the strip as well as over time, so the line breaks
@@ -908,6 +1055,11 @@ function injectFireLine(dt) {
     }
     var rate = strength * waver * dt;
 
+    // A second, faster noise on a different slice pushes sideways as well as up.
+    // Lift alone gives a flat sheet of flame; this is what makes the strip curl
+    // into separate tongues that lean and cross as they climb.
+    var lateral = Noise.stb_perlin_noise3(x * 0.55, simClock * 3.1, 7.3, 0, 0, 0);
+
     for (var y = 0; y < rows; ++y) {
       var falloff = 1 - y / rows;
       var i = y * W + x;
@@ -916,6 +1068,7 @@ function injectFireLine(dt) {
       var h = heat[i] + rate * falloff * 0.5;
       heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
       velV[i] += lift * waver * falloff;
+      velU[i] += swirl * lateral * falloff;
     }
   }
 }
