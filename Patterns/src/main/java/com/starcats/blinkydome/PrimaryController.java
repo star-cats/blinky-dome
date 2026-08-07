@@ -140,6 +140,10 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     new TriggerParameter("Beat")
     .setDescription("Fires on every beat of the tracked tempo (output)");
 
+  public final BooleanParameter syncTempo =
+    new BooleanParameter("Sync Tempo", false)
+    .setDescription("Copy the detected BPM to Chromatik's global tempo each frame (opt-in)");
+
   public final TriggerParameter relearn =
     new TriggerParameter("Relearn")
     .setDescription("Forget the tempo and start listening from scratch");
@@ -194,6 +198,7 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     addParameter("confidence", this.confidence);
     addParameter("intensity", this.intensity);
     addParameter("beat", this.beat);
+    addParameter("syncTempo", this.syncTempo);
     addParameter("relearn", this.relearn);
     this.relearn.onTrigger(this::forget);
     MoodState.register(this);
@@ -220,8 +225,12 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
       this.lastBeatCount = this.clock.getBeatCount();
       this.beat.trigger();
     }
-    this.bpm.setValue(this.clock.getBpm());
+    double detectedBpm = this.clock.getBpm();
+    this.bpm.setValue(detectedBpm);
     this.confidence.setValue(this.clock.getConfidence());
+    if (this.syncTempo.isOn() && detectedBpm > 0) {
+      getLX().engine.tempo.bpm.setValue(detectedBpm);
+    }
 
     updateIntensity(deltaMs);
     updateMood(deltaMs);

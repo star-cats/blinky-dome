@@ -52,24 +52,32 @@ public class UIPrimaryController implements UIModulatorControls<PrimaryControlle
     addColumn(beatConfig, newKnob(c.shift));
     beatConfig.addToContainer(uiModulator);
 
-    UI2dContainer tempoConfig = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
-    addColumn(tempoConfig, newDoubleBox(c.minBpm), controlLabel(ui, "Min BPM"));
-    addColumn(tempoConfig, newIntegerBox(c.window), controlLabel(ui, "Avg"));
-    addColumn(tempoConfig, newIntegerBox(c.beatsUntilAmbient), controlLabel(ui, "Amb Bts"));
-    addColumn(tempoConfig, newDoubleBox(c.idleThreshold), controlLabel(ui, "Idle Thresh"));
-    addColumn(tempoConfig, newDoubleBox(c.idleDelay), controlLabel(ui, "Idle Delay"));
-    addColumn(tempoConfig, newButton(c.relearn).setTriggerable(true), controlLabel(ui, "Relearn"));
-    tempoConfig.addToContainer(uiModulator);
+    // Tempo config split across two rows so the panel stays readable when
+    // the side panel is narrow.
+    UI2dContainer tempoConfig1 = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
+    addColumn(tempoConfig1, newDoubleBox(c.minBpm), controlLabel(ui, "Min BPM"));
+    addColumn(tempoConfig1, newIntegerBox(c.window), controlLabel(ui, "Avg"));
+    addColumn(tempoConfig1, newIntegerBox(c.beatsUntilAmbient), controlLabel(ui, "Amb Bts"));
+    addColumn(tempoConfig1, newButton(c.relearn).setTriggerable(true), controlLabel(ui, "Relearn"));
+    tempoConfig1.addToContainer(uiModulator);
 
-    // Smoothing and the band mix in one row -- with the build detector gone
-    // there is not enough left here to justify two.
-    UI2dContainer mix = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
-    addColumn(mix, newDoubleBox(c.charge), controlLabel(ui, "Charge"));
-    addColumn(mix, newDoubleBox(c.discharge), controlLabel(ui, "Release"));
-    addColumn(mix, newDoubleBox(c.lowWeight), controlLabel(ui, "Lo W"));
-    addColumn(mix, newDoubleBox(c.midWeight), controlLabel(ui, "Mid W"));
-    addColumn(mix, newDoubleBox(c.highWeight), controlLabel(ui, "Hi W"));
-    mix.addToContainer(uiModulator);
+    UI2dContainer tempoConfig2 = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
+    addColumn(tempoConfig2, newDoubleBox(c.idleThreshold), controlLabel(ui, "Idle Thresh"));
+    addColumn(tempoConfig2, newDoubleBox(c.idleDelay), controlLabel(ui, "Idle Delay"));
+    addColumn(tempoConfig2, newButton(c.syncTempo), controlLabel(ui, "Sync Tempo"));
+    tempoConfig2.addToContainer(uiModulator);
+
+    // Smoothing + band mix — also two rows so it never gets clipped.
+    UI2dContainer mix1 = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
+    addColumn(mix1, newDoubleBox(c.charge), controlLabel(ui, "Charge"));
+    addColumn(mix1, newDoubleBox(c.discharge), controlLabel(ui, "Release"));
+    mix1.addToContainer(uiModulator);
+
+    UI2dContainer mix2 = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
+    addColumn(mix2, newDoubleBox(c.lowWeight), controlLabel(ui, "Lo W"));
+    addColumn(mix2, newDoubleBox(c.midWeight), controlLabel(ui, "Mid W"));
+    addColumn(mix2, newDoubleBox(c.highWeight), controlLabel(ui, "Hi W"));
+    mix2.addToContainer(uiModulator);
 
     float width = uiModulator.getContentWidth();
     new UIBeatChart(ui, c, width, BEAT_CHART_HEIGHT).addToContainer(uiModulator);
