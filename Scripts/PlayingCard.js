@@ -59,6 +59,9 @@ var SUIT_Y = 0.15;
 var RANK_Y = 0.34;
 var SPRITE_H = 0.2;
 
+// Vertical sense of the printed face, relative to the back. See renderFace.
+var FACE_V_SIGN = -1;
+
 var CORNER_RADIUS = 0.055; // fraction of card height
 var STOCK = 0xfff2f2ee; // the white the card is printed on
 
@@ -469,8 +472,19 @@ function sprite(image, u, v, cu, cv, h, rotated) {
   return texel(image, fu, fv);
 }
 
-/** The printed face: stock, then a corner index in each of two corners. */
+/**
+ * The printed face: stock, then a corner index in each of two corners.
+ *
+ * FACE_V_SIGN is empirical, and I could not derive it. On paper the face and
+ * the back share one vertical convention — the sprite path and the back path
+ * both map card-up to image-row-zero, and feeding the same bitmap through both
+ * renders it the same way up in simulation. On the actual rig they disagree:
+ * with the back reading correctly the face comes out flipped, and only
+ * inverting one of them fixes it. Set it to 1 to collapse the two paths back
+ * together if a model ever turns up where they agree.
+ */
 function renderFace(u, v) {
+  v *= FACE_V_SIGN;
   var color = STOCK;
   var cu = (INDEX_X - 0.5) * cardW;
   var suitV = (0.5 - SUIT_Y) * cardH;
@@ -523,13 +537,15 @@ function renderPoint(point, deltaMs) {
   // Screen coordinates, centered on the card and corrected so the card is not
   // stretched by a model that is wider than it is tall.
   //
-  // Vertical runs the other way from the card's own axis: yn counts up the
-  // model while v counts up the card from its center, and the sprite layout
-  // and the image rows below both measure down from the top. Negating here
-  // rather than in three places downstream keeps one convention. Flip the sign
-  // back if a model ever turns up with yn already running top to bottom.
+  // yn counts up the model and v counts up the card, so these agree and the
+  // subtraction is the plain one. Inverting it flips both faces together —
+  // there is only one vertical convention here, shared by the sprite layout
+  // and the back — and the front survives that inversion looking almost
+  // plausible: the index simply moves to the other diagonal, and a mirrored
+  // rank glyph is nearly unreadable as wrong at LED resolution. The logo on
+  // the back is the only thing on either face asymmetric enough to catch it.
   var sx = (point.xn - posx) * aspectX;
-  var sy = posy - point.yn;
+  var sy = point.yn - posy;
 
   // Invert the projection. A card point (u, v) sits at world
   // (u*cos, v, u*sin), which projects to sx = u*cos / (1 - u*sin*k). Solving
