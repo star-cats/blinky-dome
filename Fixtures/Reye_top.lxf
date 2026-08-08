@@ -1,0 +1,45 @@
+{
+  "label": "Reye_top",
+  "parameters": {
+    "output01": {
+      "label": "Reye top On",
+      "type": "boolean",
+      "default": false,
+      "description": "Whether output to Reye top is enabled"
+    },
+    "host01": {
+      "label": "Reye top Host",
+      "type": "string",
+      "default": "192.168.1.158",
+      "description": "Output host for Reye top"
+    }
+  },
+  "components": [
+    {
+      "label": "Reye top",
+      "tags": [
+        "small_eye"
+      ],
+      "type": "arc",
+      "x": -15.0,
+      "y": -15.0,
+      "z": -10.0,
+      "yaw": 180.0,
+      "pitch": 0.0,
+      "roll": 140.0,
+      "numPoints": 144,
+      "radius": 5.0,
+      "degrees": 120.0,
+      "mode": "origin",
+      "output": {
+        "enabled": "$output01",
+        "host": "$host01",
+        "byteOrder": "rgb",
+        "protocol": "artnet",
+        "universe": 0,
+        "channel": 0,
+        "sequenceEnabled": false
+      }
+    }
+  ]
+}
