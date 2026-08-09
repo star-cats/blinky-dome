@@ -22,6 +22,12 @@ import heronarts.lx.pattern.LXPattern;
  * frame, giving the animation a continuous temporal seam. The iteration budget
  * rises with depth so the boundary does not disappear before the handoff.</p>
  *
+ * <p>The expensive escape calculation runs on an offscreen grid at half the
+ * model's inferred horizontal and vertical resolution (about one quarter as
+ * many evaluations as LEDs). Each LED then bilinearly samples that grid. This
+ * is intentionally a luminance grid rather than a color grid, so interpolation
+ * preserves the normalized grayscale signal used for downstream recoloring.</p>
+ *
  * <p>Power continuously moves through the Multibrot family. Julia Morph moves
  * both initial values from the Mandelbrot state ({@code z = 0, c = pixel}) to
  * the Julia state ({@code z = pixel, c = Julia Re + Julia Im i}). Output is a
@@ -90,6 +96,11 @@ public class SeahorseFractalPattern extends LXPattern {
   private double zoomOctaves = 0;
   private double cameraAngle = 0;
 
+  /** Half-resolution offscreen luminance raster, resized when the model changes. */
+  private double[] raster = new double[0];
+  private int rasterWidth = 0;
+  private int rasterHeight = 0;
+
   public SeahorseFractalPattern(LX lx) {
     super(lx);
     addParameter("zoomSpeed", this.zoomSpeed);
@@ -125,25 +136,81 @@ public class SeahorseFractalPattern extends LXPattern {
       ? smoothstep(blendStart, LOOP_ZOOM_OCTAVES, this.zoomOctaves)
       : 0;
 
+    ensureRasterSize(aspectX);
+    renderRaster(cosCamera, sinCamera, aspectX, blending, blend);
+
     for (LXPoint point : this.model.points) {
-      final double screenX = (point.xn - .5) * aspectX;
-      final double screenY = point.yn - .5;
-      final double rotatedX = screenX * cosCamera - screenY * sinCamera;
-      final double rotatedY = screenX * sinCamera + screenY * cosCamera;
-
-      double output = intensityForEscape(
-        sampleFractal(rotatedX, rotatedY, this.zoomOctaves)
-      );
-      if (blending) {
-        final double recursiveDepth = this.zoomOctaves - LOOP_ZOOM_OCTAVES;
-        final double recursiveOutput = intensityForEscape(
-          sampleFractal(rotatedX, rotatedY, recursiveDepth)
-        );
-        output = lerp(output, recursiveOutput, blend);
-      }
-
-      this.colors[point.index] = LXColor.grayn(clamp(output));
+      this.colors[point.index] = LXColor.grayn(sampleRaster(point.xn, point.yn));
     }
+  }
+
+  /**
+   * Infers a square-pixel full-resolution raster from point count and model
+   * aspect, then halves each dimension. This gives roughly N/4 fractal samples
+   * for N LEDs without assuming that the active model is a particular panel.
+   */
+  private void ensureRasterSize(double aspectX) {
+    final int pointCount = Math.max(1, this.model.points.length);
+    final double rasterAspect = clamp(aspectX, .25, 4);
+    final int width = Math.max(2, (int) Math.round(Math.sqrt(pointCount * rasterAspect) * .5));
+    final int height = Math.max(2, (int) Math.round(Math.sqrt(pointCount / rasterAspect) * .5));
+
+    if (width != this.rasterWidth || height != this.rasterHeight) {
+      this.rasterWidth = width;
+      this.rasterHeight = height;
+      this.raster = new double[width * height];
+    }
+  }
+
+  private void renderRaster(
+    double cosCamera,
+    double sinCamera,
+    double aspectX,
+    boolean blending,
+    double blend
+  ) {
+    final double recursiveDepth = this.zoomOctaves - LOOP_ZOOM_OCTAVES;
+    final double xScale = 1. / (this.rasterWidth - 1);
+    final double yScale = 1. / (this.rasterHeight - 1);
+
+    for (int y = 0; y < this.rasterHeight; ++y) {
+      final double screenY = y * yScale - .5;
+      final int row = y * this.rasterWidth;
+
+      for (int x = 0; x < this.rasterWidth; ++x) {
+        final double screenX = (x * xScale - .5) * aspectX;
+        final double rotatedX = screenX * cosCamera - screenY * sinCamera;
+        final double rotatedY = screenX * sinCamera + screenY * cosCamera;
+        double output = intensityForEscape(
+          sampleFractal(rotatedX, rotatedY, this.zoomOctaves)
+        );
+
+        if (blending) {
+          final double recursiveOutput = intensityForEscape(
+            sampleFractal(rotatedX, rotatedY, recursiveDepth)
+          );
+          output = lerp(output, recursiveOutput, blend);
+        }
+        this.raster[row + x] = clamp(output);
+      }
+    }
+  }
+
+  /** Bilinear interpolation of the half-resolution luminance raster. */
+  private double sampleRaster(double u, double v) {
+    final double x = clamp(u) * (this.rasterWidth - 1);
+    final double y = clamp(v) * (this.rasterHeight - 1);
+    final int x0 = (int) x;
+    final int y0 = (int) y;
+    final int x1 = Math.min(x0 + 1, this.rasterWidth - 1);
+    final int y1 = Math.min(y0 + 1, this.rasterHeight - 1);
+    final double tx = x - x0;
+    final double ty = y - y0;
+    final int row0 = y0 * this.rasterWidth;
+    final int row1 = y1 * this.rasterWidth;
+    final double top = lerp(this.raster[row0 + x0], this.raster[row0 + x1], tx);
+    final double bottom = lerp(this.raster[row1 + x0], this.raster[row1 + x1], tx);
+    return lerp(top, bottom, ty);
   }
 
   /** Returns fractional escape time, or -1 for a point inside the filled set. */
