@@ -1,149 +1,6 @@
 {
-  "version": "1.2.0",
-  "timestamp": 0,
-  "children": {
-    "views": {
-      "id": 2000,
-      "class": "heronarts.lx.structure.view.LXViewEngine",
-      "internal": {
-        "modulationColor": 0,
-        "modulationControlsExpanded": true,
-        "modulationsExpanded": true
-      },
-      "parameters": {
-        "label": "LX"
-      },
-      "children": {},
-      "views": [
-        {
-          "id": 2001,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
-            "modulationColor": 7,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Third Eye",
-            "enabled": true,
-            "selector": "star",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        },
-        {
-          "id": 2002,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
-            "modulationColor": 3,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Ears",
-            "enabled": true,
-            "selector": "ears",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        },
-        {
-          "id": 2003,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
-            "modulationColor": 9,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Eyes",
-            "enabled": true,
-            "selector": "eyes",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        },
-        {
-          "id": 2004,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
-            "modulationColor": 5,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Waterfall",
-            "enabled": true,
-            "selector": "waterfall",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        },
-        {
-          "id": 2005,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
-            "modulationColor": 2,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Kyle's Curtain",
-            "enabled": true,
-            "selector": "kyles-curtain",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        },
-        {
-          "id": 2006,
-          "class": "heronarts.lx.structure.view.LXViewDefinition",
-          "internal": {
-            "modulationColor": 1,
-            "modulationControlsExpanded": true,
-            "modulationsExpanded": true
-          },
-          "parameters": {
-            "label": "Small Dome",
-            "enabled": true,
-            "selector": "v3-harness",
-            "normalization": 0,
-            "normalization/name": "RELATIVE",
-            "orientation": 0,
-            "orientation/name": "GLOBAL",
-            "priority": true,
-            "cueActive": false
-          },
-          "children": {}
-        }
-      ]
-    }
-  },
+  "version": "1.2.1",
+  "timestamp": 1785725065446,
   "fixtures": [
     {
       "jsonFixtureType": "Star",
@@ -169,6 +26,8 @@
         "pitch": 0.0,
         "roll": 142.0,
         "scale": 6.209666211131877,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -205,6 +64,8 @@
         "pitch": 0.0,
         "roll": -167.0,
         "scale": 6.209666211131877,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -241,6 +102,8 @@
         "pitch": 0.0,
         "roll": -182.0,
         "scale": 6.209666211131877,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -277,6 +140,8 @@
         "pitch": 0.0,
         "roll": -197.0,
         "scale": 6.209666211131877,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -291,7 +156,10 @@
     },
     {
       "jsonFixtureType": "BenEars",
-      "jsonParameters": {},
+      "jsonParameters": {
+        "ip": "192.168.1.167",
+        "universe": 0
+      },
       "id": 1005,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
@@ -308,6 +176,8 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -322,7 +192,10 @@
     },
     {
       "jsonFixtureType": "BenEyeL",
-      "jsonParameters": {},
+      "jsonParameters": {
+        "ip": "192.168.1.165",
+        "universe": 0
+      },
       "id": 1006,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
@@ -339,6 +212,8 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -353,7 +228,10 @@
     },
     {
       "jsonFixtureType": "BenEyeR",
-      "jsonParameters": {},
+      "jsonParameters": {
+        "ip": "192.168.1.166",
+        "universe": 0
+      },
       "id": 1007,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
@@ -370,6 +248,8 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 1.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -401,6 +281,8 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 10.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -415,7 +297,16 @@
     },
     {
       "jsonFixtureType": "KylesCurtain",
-      "jsonParameters": {},
+      "jsonParameters": {
+        "ipTop": "192.168.1.70",
+        "universeTop": 1,
+        "ipBottomL": "192.168.1.71",
+        "universeBottomL": 11,
+        "ipBottomC": "192.168.1.72",
+        "universeBottomC": 19,
+        "ipBottomR": "192.168.1.73",
+        "universeBottomR": 27
+      },
       "id": 1009,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
@@ -424,7 +315,7 @@
         "modulationsExpanded": true
       },
       "parameters": {
-        "label": "Kyle's Curtain",
+        "label": "Kyle\u0027s Curtain",
         "x": 160.0,
         "y": 20.0,
         "z": -40.0,
@@ -432,6 +323,8 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 10.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -463,6 +356,8 @@
         "pitch": 90.0,
         "roll": 0.0,
         "scale": 0.01,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -484,7 +379,7 @@
         "ipJ4": 14,
         "ipJ5": 15
       },
-      "id": 1011,
+      "id": 1012,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -500,7 +395,9 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 10.0,
-        "selected": false,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -515,7 +412,7 @@
     {
       "jsonFixtureType": "v3_dome_model",
       "jsonParameters": {},
-      "id": 1012,
+      "id": 1013,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -531,6 +428,8 @@
         "pitch": 0.0,
         "roll": 0.0,
         "scale": 10.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
         "enabled": true,
@@ -546,11 +445,28 @@
   ],
   "normalization": {
     "normalizationMode": 0,
+    "normalizationMode/name": "AUTOMATIC",
     "normalizationX": 0.0,
     "normalizationY": 0.0,
     "normalizationZ": 0.0,
     "normalizationWidth": 1000.0,
     "normalizationHeight": 1000.0,
     "normalizationDepth": 1000.0
+  },
+  "labelConfig": {
+    "showFixtureLabels": false,
+    "fixtureLabelHorizontalAlignment": 0,
+    "fixtureLabelHorizontalAlignment/name": "LEFT",
+    "fixtureLabelVerticalAlignment": 0,
+    "fixtureLabelVerticalAlignment/name": "TOP",
+    "fixtureLabelPositionX": 1,
+    "fixtureLabelPositionX/name": "TRANSFORM",
+    "fixtureLabelPositionY": 4,
+    "fixtureLabelPositionY/name": "MAX",
+    "fixtureLabelPositionZ": 0,
+    "fixtureLabelPositionZ/name": "POSITION",
+    "fixtureLabelOffsetX": 0.0,
+    "fixtureLabelOffsetY": 1.0,
+    "fixtureLabelOffsetZ": 0.0
   }
 }

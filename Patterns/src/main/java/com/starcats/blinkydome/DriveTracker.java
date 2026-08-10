@@ -27,6 +27,12 @@ import heronarts.lx.parameter.TriggerParameter;
  *
  * Usable either way round: {@link #beat} for anything that fires discretely, and
  * the modulator's own value for anything that should follow the decay.
+ *
+ * The two outputs are gated differently, on purpose. The value rides the ramp, so
+ * it slides in and out. The trigger cannot -- a beat either fires or it does not,
+ * and a half-open gate has no meaning for something discrete -- so it is gated on
+ * the mood itself: no beats until DRIVING, none after it, however far through the
+ * ramp the value happens to be.
  */
 @LXCategory("Blinky Dome")
 @LXModulator.Global("Drive Tracker")
@@ -45,7 +51,7 @@ public class DriveTracker extends LXModulator implements LXNormalizedParameter, 
 
   public final TriggerParameter beat =
     new TriggerParameter("Beat")
-    .setDescription("Fires on each beat while the gate is open (output)");
+    .setDescription("Fires on each beat while the mood is DRIVING (output)");
 
   private long lastBeatCount = -1;
   private double gate = 0;
@@ -74,11 +80,19 @@ public class DriveTracker extends LXModulator implements LXNormalizedParameter, 
 
     // Counter rather than a per-frame flag, so this is right whichever order the
     // engine happens to run the two modulators in.
+    //
+    // The count is followed in every mood but only fired on in DRIVING. Skipping
+    // the bookkeeping while gated shut would leave a stale count behind, and the
+    // first frame back in DRIVING would then see it differ from the live one and
+    // fire a beat that had not just happened -- landing off the grid, which is
+    // the one thing this modulator exists to get right.
     long beats = controller.getBeatCount();
-    if (this.lastBeatCount >= 0 && beats != this.lastBeatCount) {
+    boolean onBeat = this.lastBeatCount >= 0 && beats != this.lastBeatCount;
+    this.lastBeatCount = beats;
+
+    if (onBeat && controller.getMood() == Mood.DRIVING) {
       this.beat.trigger();
     }
-    this.lastBeatCount = beats;
 
     this.gate = slew(this.gate, controller.getMood() == Mood.DRIVING ? 1 : 0, deltaMs);
     return envelope(controller.getSinceBeatMs()) * this.gate;

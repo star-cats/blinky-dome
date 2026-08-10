@@ -1,0 +1,19 @@
+{
+  "label": "Waterfall Model",
+  "tags": [
+    "waterfall",
+    "mesh"
+  ],
+  "metadata": {
+    "description": "UI mesh of the waterfall sheet and its support; waterfall_model.obj is a hand-imported export (millimetres, Y-up, base on y=0, oriented via the model instance transform)",
+    "units": "millimetres, like dome_model.obj -- the model instance scales by 0.01 to reach scene units (mm -> m is /1000, scene units are metres * 10)",
+    "orientation": "Y-up as exported, so unlike dome_model.obj it needs no pitch. The sheet hangs on the mesh's -X side, so the model yaws it onto the dome's -Z back to match the Waterfall LED fixture."
+  },
+  "ui": {
+    "mesh": {
+      "type": "uniformFill",
+      "color": "0x10666666",
+      "file": "waterfall_model.obj"
+    }
+  }
+}

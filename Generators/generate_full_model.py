@@ -404,6 +404,33 @@ def dome_model_fixture(next_id) -> dict:
     )
 
 
+def waterfall_model_fixture(next_id) -> dict:
+    """LED-less UI mesh of the waterfall sheet (hand-imported .obj).
+
+    Sits on the big dome at the origin, alongside the Waterfall LED fixture it
+    depicts. Like the dome scaffold mesh it is a raw export, so it carries its
+    own scale and orientation from MODEL["waterfall_model"] rather than the
+    scene placement -- see the notes there for where those numbers come from.
+    """
+    mesh = MODEL["waterfall_model"]
+    return make_fixture(
+        next_id(),
+        "Waterfall Model",
+        "waterfall_model",
+        x=mesh["x_offset"],
+        y=mesh["y_offset"],
+        z=mesh["z_offset"],
+        yaw=mesh["yaw_degrees"],
+        pitch=mesh["pitch_degrees"],
+        roll=mesh["roll_degrees"],
+        scale=mesh["scale"],
+        # Same tag as the LED fixture it depicts, so the Waterfall view shows
+        # the sheet along with its pixels -- the mesh contributes no points of
+        # its own, exactly like v3_dome_model riding the v3-harness tag.
+        tags="waterfall",
+    )
+
+
 def build_model() -> dict:
     counter = iter(range(FIRST_FIXTURE_ID, FIRST_FIXTURE_ID + 1000))
 
@@ -417,6 +444,7 @@ def build_model() -> dict:
         waterfall_fixture(next_id),
         kyles_curtain_fixture(next_id),
         dome_model_fixture(next_id),
+        waterfall_model_fixture(next_id),
         v3_harness_fixture(next_id),
         v3_dome_model_fixture(next_id),
     ]
