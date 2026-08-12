@@ -67,6 +67,11 @@ public class UIPrimaryController implements UIModulatorControls<PrimaryControlle
     addColumn(tempoConfig2, newButton(c.syncTempo), controlLabel(ui, "Sync Tempo"));
     tempoConfig2.addToContainer(uiModulator);
 
+    UI2dContainer octaveRow = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
+    addColumn(octaveRow, newDoubleBox(c.preferredMinBpm), controlLabel(ui, "Prefer Min"));
+    addColumn(octaveRow, newDoubleBox(c.preferredMaxBpm), controlLabel(ui, "Prefer Max"));
+    octaveRow.addToContainer(uiModulator);
+
     // Smoothing + band mix — also two rows so it never gets clipped.
     UI2dContainer mix1 = UI2dContainer.newHorizontalContainer(CONFIG_ROW_HEIGHT, 4);
     addColumn(mix1, newDoubleBox(c.charge), controlLabel(ui, "Charge"));

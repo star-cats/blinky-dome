@@ -87,6 +87,14 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     new BoundedParameter("Min BPM", 95, 40, 200)
     .setDescription("Hard tempo floor -- every beat is still tracked, but the reported BPM never reads below this");
 
+  public final BoundedParameter preferredMinBpm =
+    new BoundedParameter("Prefer Min", 90, 40, 200)
+    .setDescription("Soft musical floor: if the tracked BPM lands under this we DOUBLE it (assumes the gate missed every other beat). Set below your real slow-song floor to allow slow tracking; set higher to force fast BPMs when the gate is unreliable. Ignored unless > Min BPM.");
+
+  public final BoundedParameter preferredMaxBpm =
+    new BoundedParameter("Prefer Max", 200, 40, 400)
+    .setDescription("Ceiling for the doubling: no matter how slow the raw tempo, we won't double past this.");
+
   public final DiscreteParameter beatsUntilAmbient =
     new DiscreteParameter("Amb Beats", 6, 1, 33)
     .setDescription("Beats of silence before DRIVING gives way to AMBIENT");
@@ -186,6 +194,8 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
     addParameter("shift", this.shift);
     addParameter("window", this.window);
     addParameter("minBpm", this.minBpm);
+    addParameter("preferredMinBpm", this.preferredMinBpm);
+    addParameter("preferredMaxBpm", this.preferredMaxBpm);
     addParameter("beatsUntilAmbient", this.beatsUntilAmbient);
     addParameter("idleThreshold", this.idleThreshold);
     addParameter("idleDelay", this.idleDelay);
@@ -216,6 +226,8 @@ public class PrimaryController extends LXModulator implements LXNormalizedParame
   protected double computeValue(double deltaMs) {
     this.clock.threshold = this.threshold.getValue();
     this.clock.minBpm = this.minBpm.getValue();
+    this.clock.preferredMinBpm = this.preferredMinBpm.getValue();
+    this.clock.preferredMaxBpm = this.preferredMaxBpm.getValue();
     this.clock.averagingWindow = this.window.getValuei();
     this.clock.lock = this.lock.getValue();
     this.clock.shiftMs = this.shift.getValue();

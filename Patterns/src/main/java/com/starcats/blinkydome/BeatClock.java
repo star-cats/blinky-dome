@@ -108,6 +108,24 @@ public class BeatClock {
    */
   public double minBpm = 95;
 
+  /**
+   * Soft musical-range floor. Whenever the tracked tempo lands below this
+   * we assume the bass gate is only catching every other beat and DOUBLE the
+   * tempo. Set below the real minimum BPM you care about — e.g. 65 to allow
+   * genuine 65 BPM songs through, or 90 to force everything toward the fast
+   * end when the gate can't be trusted to catch every kick.
+   *
+   * Zero disables the check (raw output). Ignored if it isn't strictly
+   * greater than {@link #minBpm}.
+   */
+  public double preferredMinBpm = 90;
+
+  /**
+   * Ceiling for the doubling check — no matter how slow the raw tempo, we
+   * won't fold it above this. Prevents runaway doubling on very slow input.
+   */
+  public double preferredMaxBpm = 200;
+
   /** How many intervals the moving average covers. */
   public int averagingWindow = 8;
 
@@ -244,6 +262,20 @@ public class BeatClock {
     if (this.intervalCount >= MIN_SAMPLES) {
       double deviation = Math.abs(interval - this.rawPeriodMs) / this.rawPeriodMs;
       if (deviation > OUTLIER_TOLERANCE) {
+        // Missed-beat check: an interval that's a near-integer multiple of
+        // the tracked period isn't a tempo change, it's the gate skipping
+        // beats. Treat it as if we caught them: reset the outlier counter,
+        // do NOT record the fat interval, and let the clock keep running.
+        // Without this, a stretch of saturating bass on a locked track drops
+        // us to half BPM as soon as OUTLIER_PATIENCE elapses.
+        for (int mult = 2; mult <= 4; ++mult) {
+          double folded = interval / mult;
+          double foldedDev = Math.abs(folded - this.rawPeriodMs) / this.rawPeriodMs;
+          if (foldedDev < OUTLIER_TOLERANCE) {
+            this.outlierRun = 0;
+            return;
+          }
+        }
         if (++this.outlierRun < OUTLIER_PATIENCE) {
           return;
         }
@@ -296,6 +328,40 @@ public class BeatClock {
     // Scaled so "average miss equals the outlier tolerance" reads as zero.
     double relative = (spread / samples) / mean;
     this.confidence = Math.max(0, Math.min(1, 1 - relative / OUTLIER_TOLERANCE));
+
+    // Octave-up: if the tracked BPM landed under the preferred musical
+    // range, assume the gate was under-counting and double until we clear
+    // that floor. This runs after normal averaging, so a genuine slow song
+    // (below preferredMinBpm) still gets the option — the user opts into
+    // slow tracking by setting preferredMinBpm at or below their real min.
+    applyOctavePreference();
+  }
+
+  /**
+   * Double the tempo until it lands in [preferredMinBpm, preferredMaxBpm],
+   * folding every stored interval alongside so future outlier checks are
+   * against the new period. No-op if the preference is disabled or already
+   * satisfied.
+   */
+  private void applyOctavePreference() {
+    if (this.preferredMinBpm <= 0 || this.preferredMinBpm <= this.minBpm) return;
+    if (this.bpm <= 0 || this.periodMs <= 0) return;
+    // Guard: don't runaway on numerical junk.
+    int guard = 0;
+    while (this.bpm < this.preferredMinBpm
+           && this.bpm * 2 <= this.preferredMaxBpm
+           && guard++ < 8) {
+      this.periodMs    /= 2;
+      this.rawPeriodMs /= 2;
+      this.bpm         *= 2;
+      // The clock's position is measured in beats — double it so the
+      // wall-clock beat time we're currently in stays where the audio
+      // put it, just now split into two beats at the new tempo.
+      this.beatPosition *= 2;
+      for (int i = 0; i < MAX_WINDOW; ++i) {
+        this.intervals[i] /= 2;
+      }
+    }
   }
 
   public boolean hasTempo() {
