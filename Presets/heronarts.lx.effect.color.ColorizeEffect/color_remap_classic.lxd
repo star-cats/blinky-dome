@@ -1,0 +1,75 @@
+{
+  "version": "1.2.1",
+  "timestamp": 1786579656699,
+  "id": 1080850,
+  "class": "heronarts.lx.effect.color.ColorizeEffect",
+  "internal": {
+    "modulationColor": 0,
+    "modulationControlsExpanded": true,
+    "modulationsExpanded": true,
+    "presetFile": "color_remap_classic.lxd",
+    "expanded": true,
+    "expandedCue": true,
+    "expandedAux": true,
+    "modulationExpanded": false
+  },
+  "parameters": {
+    "label": "Colorize",
+    "midiFilter/enabled": true,
+    "midiFilter/channel": 16,
+    "midiFilter/channel/name": "OMNI",
+    "midiFilter/minNote": 0,
+    "midiFilter/noteRange": 128,
+    "midiFilter/minVelocity": 1,
+    "midiFilter/velocityRange": 127,
+    "view": 0,
+    "viewPriority": 0,
+    "enabled": true,
+    "locked": false,
+    "source": 0,
+    "source/name": "BRIGHTNESS",
+    "gradientHue": 0.0,
+    "gradientSaturation": 0.0,
+    "gradientBrightness": 0.0,
+    "colorMode": 3,
+    "colorMode/name": "PALETTE",
+    "blendMode": 0,
+    "blendMode/name": "RGB",
+    "color1/brightness": 27.421871185302734,
+    "color1/saturation": 100.0,
+    "color1/hue": 242.6484375,
+    "color2/brightness": 27.421871185302734,
+    "color2/saturation": 100.0,
+    "color2/hue": 242.6484375,
+    "paletteIndex": 1,
+    "paletteStops": 5,
+    "paletteInvert": false,
+    "paletteDepth": 1.0,
+    "primaryHue": 0.0,
+    "primarySaturation": 0.0,
+    "primaryBrightness": 0.0,
+    "amount": 1.0,
+    "filterThreshold": 0.19328125376341632,
+    "filterMode": 0,
+    "filterMode/name": "LEAVE"
+  },
+  "children": {
+    "modulation": {
+      "id": 1080851,
+      "class": "heronarts.lx.modulation.LXModulationEngine",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "Modulation"
+      },
+      "children": {},
+      "modulators": [],
+      "modulations": [],
+      "triggers": []
+    }
+  },
+  "deviceVersion": -1
+}
