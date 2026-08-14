@@ -81,7 +81,7 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
 
   // These mappings leave useful room at both ends. Drain Time is linear and
   // its default value (0.2) maps exactly to one second.
-  dropsPerSecond = lerp(0.2, 10, rainRate);
+  dropsPerSecond = lerp(0.2, 30, rainRate);
   fillPerDrop = lerp(0.01, 0.2, fill);
   rainAcceleration = lerp(0.25, 6, acceleration);
   drainSeconds = lerp(0.1, 4.6, drain);
@@ -194,4 +194,3 @@ function renderPoint(point, deltaMs) {
 function clampInt(value, low, high) {
   return Math.max(low, Math.min(high, value | 0));
 }
-

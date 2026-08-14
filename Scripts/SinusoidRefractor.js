@@ -27,15 +27,47 @@
  * crossings stay the same brightness as the strokes that make them instead of
  * blowing out to white.
  *
- * The luminosity wave runs along the length, in scene units, so it stays put on
- * the curve as the wave steepens and travels at a constant rate regardless of
- * its own wavelength. Output is pure luminosity, one 0-1 whiteness per LED.
+ * Every oscillator is two counter-propagating waves added together: the
+ * primary, and a secondary at half its amplitude running the other way at 0.65
+ * of its speed. Same spatial frequency, opposite sign on the time term, so it
+ * is a partial standing wave — the crests do not simply march, they swell and
+ * shrink and stall as the two components move through each other, and the
+ * figure never quite repeats.
+ *
+ * There is exactly one clock. All nine share the same accumulated wt, and the
+ * secondary derives its own from the same number, so Speed at rest freezes
+ * everything together and no oscillator can wander off on a clock of its own.
+ *
+ * That is what Speed Spread is built around. Giving each auxiliary its own w
+ * seems like the obvious way to spread their rates, but rates integrate: once
+ * they have drifted apart, winding the knob back to zero leaves them stranded
+ * wherever they got to, and scaling an accumulator that has been growing for
+ * ten minutes turns any small move of the knob into a wild jump. So the spread
+ * is added, not integrated — a bounded phase offset that slides each auxiliary
+ * back and forth around the shared phase. At any setting the eight are ahead
+ * of and behind the center by varying amounts, which reads as their advancing
+ * at different rates; at zero the offset is exactly zero and they collapse back
+ * onto the central wave with no residue, from wherever they had got to.
+ *
+ * Output is pure luminosity, one 0-1 whiteness per LED.
  */
 
 var TAU = Math.PI * 2;
 
 /** One central oscillator and eight to hide behind it. */
 var SINUSOIDS = 9;
+
+/** The counter-propagating partner every oscillator carries. */
+var SECONDARY_AMPLITUDE = 0.5;
+var SECONDARY_SPEED = 0.65;
+
+/**
+ * How fast the Speed Spread offsets slide, in radians a second.
+ *
+ * Slow enough that over a few seconds an auxiliary reads as simply running at
+ * its own rate, rather than as visibly oscillating about the center.
+ */
+var SPREAD_SLIDE = TAU / 11;
 
 knob("amp", "Amplitude", "How far the central sinusoid swings", 0.3);
 knob("freq", "Frequency", "Cycles down the height of the scene", 0.25);
@@ -48,9 +80,8 @@ knob("thick", "Thickness", "Stroke width of the central sinusoid", 0.25);
 knob("falloff", "Falloff", "How fast the outer strokes thin; low keeps them near-equal", 0.5);
 knob("soft", "Soft", "Edge softness, as a fraction of each stroke's own width", 0.3);
 
-knob("waveLen", "Wave", "Length of one dark-to-light ramp along the curve", 0.45);
-knob("waveSpeed", "Wave Speed", "Travel along the curve; 0.5 is still, below runs down", 0.65);
-knob("waveDepth", "Wave Depth", "How much the wave darkens the curve; 0 is off", 0.85);
+knob("speed", "Speed", "How fast every sinusoid advances; 0.5 is still", 0.5);
+knob("speedSpread", "Speed Spread", "Spreads the advance rate across the other eight", 0);
 
 knob("zoom", "Zoom", "Scale of the scene; center is 1x, ends are 1/4x and 4x", 0.5);
 knob("rot", "Rotate", "Rotation of the scene, a full turn across the knob", 0);
@@ -68,6 +99,12 @@ var sinOffset = [];
 var sinThick = [];
 var sinSoft = [];
 
+/** The one accumulated wt every oscillator and both waves are driven from. */
+var advance = 0;
+
+/** Where the Speed Spread offsets have sild to; independent of any knob. */
+var slide = 0;
+
 // Per-frame values.
 var amplitude = 0;
 var cosT = 1;
@@ -76,9 +113,6 @@ var invZoom = 1;
 var panWorldX = 0;
 var panWorldY = 0;
 var aspectX = 1;
-var waveLength = 1;
-var wavePhase = 0;
-var waveAmount = 1;
 
 function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   var dt = isFinite(deltaMs) ? clamp(deltaMs / 1000, 0, 0.25) : 0;
@@ -103,6 +137,13 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   var softFraction = Math.max(lerp(0.02, 2, soft), 1e-3);
   var detuneAmount = lerp(0, 0.5, detune);
 
+  // One full turn a second at either end of the knob. The slide runs at a
+  // fixed rate whatever the knobs say, so that scaling it by Speed Spread is a
+  // clean fade rather than a jump from wherever an accumulator had got to.
+  advance = wrapTau(advance + (speed - 0.5) * 2 * TAU * dt);
+  slide = wrapTau(slide + SPREAD_SLIDE * dt);
+  var spreadAmount = speedSpread * TAU;
+
   for (var i = 0; i < SINUSOIDS; ++i) {
     // Rank 0 is the center; the rest come in pairs, one to each side, so the
     // bundle stays symmetric however far it is pushed.
@@ -113,21 +154,20 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
     sinThick[i] = thickBase * Math.pow(thinning, rank);
     sinSoft[i] = Math.max(sinThick[i] * softFraction, 1e-5);
 
-    // The center is never detuned or scattered — it is the reference the others
-    // are revealed against, and it has to hold still while they move.
+    // The center is never detuned, scattered or sped up relative to the rest —
+    // it is the reference the others are revealed against, and it has to hold
+    // its own course while they move off it.
     var wobble = rank === 0 ? 0 : signed11(i, 0);
     var slip = rank === 0 ? 0 : signed11(i, 1);
-    sinRate[i] = baseRate * (1 + detuneAmount * wobble);
-    sinPhase[i] = scatter * Math.PI * slip;
-  }
+    var lag = rank === 0 ? 0 : balanced11(i);
+    var stagger = rank === 0 ? 0 : signed11(i, 3) * Math.PI;
 
-  // Wavelength and phase both live in scene units, so the wave travels at a
-  // fixed rate whatever its length, and changing its length does not fling it
-  // down the curve. Kept wrapped so it cannot drift into float mush.
-  waveLength = lerp(0.04, 4, waveLen);
-  waveAmount = waveDepth;
-  wavePhase += dt * (waveSpeed - 0.5) * 2 * 0.55;
-  wavePhase -= Math.floor(wavePhase / waveLength) * waveLength;
+    sinRate[i] = baseRate * (1 + detuneAmount * wobble);
+    // Both terms vanish exactly at their knob's zero, which is what lets the
+    // bundle collapse back onto one curve rather than merely close to one.
+    sinPhase[i] = scatter * TAU * slip +
+      spreadAmount * lag * Math.sin(slide + stagger);
+  }
 }
 
 function renderPoint(point, deltaMs) {
@@ -140,9 +180,16 @@ function renderPoint(point, deltaMs) {
 
   var best = 0;
   for (var i = 0; i < SINUSOIDS; ++i) {
-    var arg = sinRate[i] * wy + sinPhase[i];
-    var curve = amplitude * Math.sin(arg);
-    var slope = amplitude * sinRate[i] * Math.cos(arg);
+    // Same spatial term, opposite sign on time: one wave runs up the scene and
+    // its half-height partner runs down it, and what is drawn is their sum.
+    var spatial = sinRate[i] * wy + sinPhase[i];
+    var up = spatial + advance;
+    var down = spatial - SECONDARY_SPEED * advance;
+
+    var curve = amplitude *
+      (Math.sin(up) + SECONDARY_AMPLITUDE * Math.sin(down));
+    var slope = amplitude * sinRate[i] *
+      (Math.cos(up) + SECONDARY_AMPLITUDE * Math.cos(down));
 
     // Perpendicular distance to the tangent, then measured against this
     // curve's own offset so a pushed-out copy is a true parallel of it.
@@ -164,16 +211,7 @@ function renderPoint(point, deltaMs) {
     }
   }
 
-  if (best <= 0) {
-    return hsb(0, 0, 0);
-  }
-
-  // A sawtooth in distance along the curve: a linear climb out of the dark,
-  // then a hard reset. Depth mixes it against a plain unmodulated stroke.
-  var ramp = wrap01((wy - wavePhase) / waveLength);
-  var wave = 1 - waveAmount + waveAmount * ramp;
-
-  return hsb(0, 0, best * wave * level * 100);
+  return hsb(0, 0, best * level * 100);
 }
 
 /** Deterministic, decorrelated -1..1 value for an oscillator and a salt. */
@@ -182,6 +220,24 @@ function signed11(i, salt) {
   return (s - Math.floor(s)) * 2 - 1;
 }
 
-function wrap01(value) {
-  return value - Math.floor(value);
+/**
+ * Deterministic -1..1 value for one of the eight, from a set that is balanced
+ * by construction: evenly spaced across the range, summing to zero.
+ *
+ * The hash used for detune and scatter is fine for an offset that only has to
+ * look irregular, but it cannot be trusted to straddle zero over a sample of
+ * eight — for these indices it lands in -0.03..0.71, all but one on the same
+ * side. That is invisible in a phase offset and ruinous in a rate: the whole
+ * bundle would creep one way instead of splitting around a stationary center.
+ * The step of 3 across 8 slots is a full cycle, so consecutive oscillators
+ * still get rates from opposite ends and the spread does not read as a ramp.
+ */
+function balanced11(i) {
+  var slot = ((i - 1) * 3) % (SINUSOIDS - 1);
+  return slot / ((SINUSOIDS - 2) / 2) - 1;
+}
+
+/** Keeps accumulated phase in 0..TAU so it cannot drift into float mush. */
+function wrapTau(value) {
+  return value - Math.floor(value / TAU) * TAU;
 }
