@@ -1,60 +1,47 @@
 /**
  * A vertical sinusoid with eight more hidden inside it, which fan out, detune
- * and scatter as you open the controls.
+ * and scatter as Spread opens.
  *
- * All nine oscillators are always being drawn. At rest they are the same curve
- * exactly — same amplitude, same frequency, same phase, same place — and they
- * are drawn thinnest-last onto the thickest, so the outer eight sit entirely
- * within the central one's stroke and nothing betrays them. Spread pushes them
- * off it in alternating pairs, Detune walks their frequencies apart so they
- * open like a fan down the length, and Scatter breaks their phase lock. Any of
- * the three reveals the same eight curves in a different way, and backing all
- * three off collapses them back into one line rather than into a smear.
+ * Everything is written in the wave's own frame, where a sinusoid is just
+ *
+ *   y = a1*sin(k1*x + phase1) + a2*sin(k2*x + phase2)
+ *
+ * and nothing else. There is no vertical special case and no rotation inside
+ * that function, because the LED's coordinates are transformed by the inverse
+ * of the scene rotation before it is ever called — the scene turns by turning
+ * the points the other way, and what the curve sees is always a plain x running
+ * along it and a plain y across it. A vertical sinusoid is that same canonical
+ * curve looked at sideways, which is the last quarter turn of the transform.
+ *
+ * Two waves, not one: the second runs the other way, so what is drawn is a
+ * partial standing wave whose crests swell and stall rather than simply march.
+ *
+ * Each oscillator owns its parameters, and its own two clocks, which integrate
+ * its own rates every frame at full deviation, always. Detune sets its k,
+ * Scatter its phases, Speed Spread its rates. None of them is scaled on its way
+ * into anything — they define what this oscillator IS.
+ *
+ * Spread alone decides how much of that is seen. Every oscillator evaluates
+ * twice per LED, once with the central oscillator's parameters and once with
+ * its own, and Spread interpolates linearly between the two displacements and
+ * between zero and its own lateral offset. At Spread 0 every one of the nine
+ * evaluates to the central curve exactly — not nearly, identically — whatever
+ * the other knobs say and however long they have been running. There is nothing
+ * to unwind, because the deviation was never accumulated into anything: it is
+ * recomputed from scratch every frame and multiplied by the knob at the end.
+ *
+ * Nothing is wrapped into 0..TAU. A wrapped phase cannot be interpolated — the
+ * moment one oscillator wraps past another the lerp runs backwards through the
+ * whole cycle — and doubles hold radians for weeks at these rates anyway.
  *
  * Thickness falls geometrically with rank, which is what makes the hiding work:
- * a curve that is thinner than the one in front of it cannot peek out from
- * behind it. It also means a spread bundle reads with a clear center of mass
- * instead of nine equal ribbons.
+ * a curve thinner than the one in front of it cannot peek out from behind it.
  *
  * Distance to a sinusoid has no closed form, so each curve uses the linearized
- * distance: the horizontal gap to the curve, divided by the local slope's
- * hypotenuse. That is the perpendicular distance to the curve's tangent line,
- * which is what keeps a stroke from fattening up as the wave steepens — the
- * naive horizontal gap would draw a line that bulges at every zero crossing.
- * It is a first-order approximation and it tightens as strokes get thinner.
- *
- * Curves are combined by taking the brightest rather than by adding, so
- * crossings stay the same brightness as the strokes that make them instead of
- * blowing out to white.
- *
- * Every oscillator is two counter-propagating waves added together, each with
- * its own speed, so what is drawn is a partial standing wave — the crests do
- * not simply march, they swell and shrink and stall as the two components move
- * through each other, and the figure never quite repeats.
- *
- * Every oscillator also runs its own two clocks, integrating its own rates
- * every frame, at full deviation, always — whatever the knobs say. Nothing is
- * ever scaled on its way into an accumulator.
- *
- * The knobs are pure linear interpolants, applied at the last moment, in the
- * render loop. For each oscillator there are two versions of every quantity:
- * the fully deviated one and the central one. Spread, Detune, Scatter and
- * Speed Spread each just crossfade between them:
- *
- *   rate     = lerp(center rate,     own detuned rate,  Detune)
- *   phase    = lerp(0,               own scatter phase, Scatter)
- *   advance  = lerp(center advance,  own advance,       Speed Spread)
- *   offset   = lerp(0,               own offset,        Spread)
- *
- * At zero every one of those returns the center's own value identically, so the
- * bundle is not approximately collapsed, it is the same nine copies of one
- * curve. There is no state to unwind, because no knob ever wrote to state.
- *
- * This is also why nothing here is wrapped into 0..TAU. A wrapped accumulator
- * cannot be interpolated — the moment one oscillator's phase wraps past its
- * neighbour's, the lerp between them runs backwards through the whole cycle
- * instead of along the short way, and the bundle tears. Doubles hold radians
- * for weeks at these rates; a wrap would buy nothing and cost the interpolant.
+ * distance: the gap in y, divided by the local slope's hypotenuse. That is the
+ * perpendicular distance to the tangent, which keeps a stroke from fattening up
+ * where the wave steepens. Curves are combined by taking the brightest, so
+ * crossings stay stroke-brightness instead of blowing out.
  *
  * Output is pure luminosity, one 0-1 whiteness per LED.
  */
@@ -64,10 +51,10 @@ var TAU = Math.PI * 2;
 /** One central oscillator and eight to hide behind it. */
 var SINUSOIDS = 9;
 
-/** The counter-propagating partner every oscillator carries. */
+/** The counter-running partner every oscillator carries, relative to a1. */
 var SECONDARY_AMPLITUDE = 0.8;
 
-/** Deviations at full knob: rate difference in rad/s, and the rest as factors. */
+/** Deviation of an outermost oscillator at full knob. */
 var SPEED_SPREAD_RATE = TAU;
 var DETUNE_MAX = 0.5;
 var SCATTER_MAX = TAU;
@@ -76,17 +63,17 @@ var SPREAD_MAX = 0.13;
 knob("amp", "Amplitude", "How far the central sinusoid swings", 0.3);
 knob("freq", "Frequency", "Cycles down the height of the scene", 0.25);
 
-knob("spread", "Spread", "Pushes the other eight out from the center in pairs", 0);
-knob("detune", "Detune", "Walks the others' frequencies away from the center's", 0);
-knob("scatter", "Scatter", "Breaks the others' phase lock; 0 is perfectly in sync", 0);
+knob("spread", "Spread", "Reveals the other eight; 0 collapses them onto the center", 0);
+knob("detune", "Detune", "How far the others' frequencies sit from the center's", 0);
+knob("scatter", "Scatter", "How far the others' phases sit from the center's", 0);
+knob("speedSpread", "Speed Spread", "How far the others' advance rates sit from the center's", 0);
 
 knob("thick", "Thickness", "Stroke width of the central sinusoid", 0.25);
 knob("falloff", "Falloff", "How fast the outer strokes thin; low keeps them near-equal", 0.5);
 knob("soft", "Soft", "Edge softness, as a fraction of each stroke's own width", 0.3);
 
-knob("speed", "Speed", "How fast every sinusoid advances; 0.5 is still", 0.5);
-knob("speed2", "Speed2", "How fast countermotion is", 0.5);
-knob("speedSpread", "Speed Spread", "Spreads the advance rate across the other eight", 0);
+knob("speed", "Speed", "How fast the wave advances; 0.5 is still", 0.5);
+knob("speed2", "Speed2", "How fast the counter-running wave advances; 0.5 is still", 0.5);
 
 knob("zoom", "Zoom", "Scale of the scene; center is 1x, ends are 1/4x and 4x", 0.5);
 knob("rot", "Rotate", "Rotation of the scene, a full turn across the knob", 0);
@@ -97,28 +84,28 @@ knob("level", "Level", "Overall brightness", 1);
 
 toggle("autoAspect", "Aspect", "Keep the scene square on a non-square model", true);
 
-// One entry per oscillator, resolved in preRender rather than per LED. Every
-// one of these is the FULLY deviated version; the knobs interpolate towards
-// them from the center's values, in renderPoint.
-var sinRate = [];
-var sinPhase = [];
+// One oscillator's worth of curve parameters per entry, at full deviation.
+// Index 0 is the central oscillator, which deviates from itself by nothing and
+// is therefore also the reference every other one interpolates back towards.
+var sinK = [];
+var sinPhase1 = [];
+var sinPhase2 = [];
 var sinOffset = [];
 var sinThick = [];
 var sinSoft = [];
 
-// Each oscillator's own two clocks, integrated at its own full-deviation rates
-// every frame regardless of any knob. Index 0 is the center, and doubles as the
-// aligned reference the others are interpolated back towards.
-var sinAdvance = [];
+// Each oscillator's own two clocks, integrated at its own rates every frame
+// whatever the knobs say. Never scaled, never wrapped.
+var sinAdvance1 = [];
 var sinAdvance2 = [];
 for (var n = 0; n < SINUSOIDS; ++n) {
-  sinAdvance[n] = 0;
+  sinAdvance1[n] = 0;
   sinAdvance2[n] = 0;
 }
 
 // Per-frame values.
-var centerRate = 0;
-var amplitude = 0;
+var amp1 = 0;
+var amp2 = 0;
 var cosT = 1;
 var sinT = 0;
 var invZoom = 1;
@@ -141,17 +128,16 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
     aspectX = model.xRange / model.yRange;
   }
 
-  amplitude = lerp(0, 0.5, amp);
-  centerRate = TAU * lerp(0.25, 8, freq);
+  amp1 = lerp(0, 0.5, amp);
+  amp2 = amp1 * SECONDARY_AMPLITUDE;
+
+  var centerK = TAU * lerp(0.25, 8, freq);
+  var centerOmega1 = (speed - 0.5) * 6 * TAU;
+  var centerOmega2 = (speed2 - 0.5) * 6 * TAU;
+
   var thickBase = lerp(0.003, 0.08, thick);
   var thinning = lerp(1, 0.3, falloff);
   var softFraction = Math.max(lerp(0.02, 2, soft), 1e-3);
-
-  // The center's two rates. Every oscillator's own rates are these plus its own
-  // full-deviation offset, and every clock runs at its own rate always — no
-  // knob is allowed near an accumulator, or winding it back could not undo it.
-  var centerOmega = (speed - 0.5) * 6 * TAU;
-  var centerOmega2 = (speed2 - 0.5) * 6 * TAU;
 
   for (var i = 0; i < SINUSOIDS; ++i) {
     // Rank 0 is the center; the rest come in pairs, one to each side, so the
@@ -162,61 +148,69 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
     sinThick[i] = thickBase * Math.pow(thinning, rank);
     sinSoft[i] = Math.max(sinThick[i] * softFraction, 1e-5);
 
-    // The center deviates from itself by nothing, on every axis, so it is
-    // unmoved by all four knobs and the others always have something to
-    // return to.
+    // The center deviates from itself by nothing on every axis, so it is fixed
+    // under all four knobs and the others always have something to return to.
     var wobble = rank === 0 ? 0 : signed11(i, 0);
     var slip = rank === 0 ? 0 : signed11(i, 1);
-    var lag = rank === 0 ? 0 : balanced11(i, 3);
+    var lag1 = rank === 0 ? 0 : balanced11(i, 3);
     var lag2 = rank === 0 ? 0 : balanced11(i, 5);
 
-    sinOffset[i] = rank * side * SPREAD_MAX;
-    sinRate[i] = centerRate * (1 + DETUNE_MAX * wobble);
-    sinPhase[i] = SCATTER_MAX * slip;
-
-    sinAdvance[i] += (centerOmega + SPEED_SPREAD_RATE * lag) * dt;
+    sinAdvance1[i] += (centerOmega1 + SPEED_SPREAD_RATE * lag1) * dt;
     sinAdvance2[i] += (centerOmega2 + SPEED_SPREAD_RATE * lag2) * dt;
+
+    sinK[i] = centerK * (1 + DETUNE_MAX * detune * wobble);
+    sinOffset[i] = rank * side * SPREAD_MAX;
+    // The second wave's phase runs down by the same convention the first runs
+    // up, which is what makes the pair counter-propagate.
+    sinPhase1[i] = sinAdvance1[i] + SCATTER_MAX * scatter * slip;
+    sinPhase2[i] = -sinAdvance2[i] + SCATTER_MAX * scatter * slip;
   }
+}
+
+/** y = a1*sin(k1*x + phase1) + a2*sin(k2*x + phase2). Nothing more. */
+function waveY(x, a1, k1, phase1, a2, k2, phase2) {
+  return a1 * Math.sin(k1 * x + phase1) + a2 * Math.sin(k2 * x + phase2);
+}
+
+/** Its slope, dy/dx, at the same x. */
+function waveSlope(x, a1, k1, phase1, a2, k2, phase2) {
+  return a1 * k1 * Math.cos(k1 * x + phase1) + a2 * k2 * Math.cos(k2 * x + phase2);
 }
 
 function renderPoint(point, deltaMs) {
   var sx = (point.xn - 0.5) * aspectX;
   var sy = (point.yn - 0.5);
 
-  // Screen back to the scene: unrotate, unzoom, then translate.
-  var wx = (cosT * sx + sinT * sy) * invZoom + panWorldX;
-  var wy = (-sinT * sx + cosT * sy) * invZoom + panWorldY;
+  // Undo the scene transform: rotate the point by the inverse of the scene's
+  // rotation, unzoom it, and shift it by the pan.
+  var rx = (cosT * sx + sinT * sy) * invZoom + panWorldX;
+  var ry = (-sinT * sx + cosT * sy) * invZoom + panWorldY;
 
-  // The center's own state is the far end of every interpolation below.
-  var homeRate = centerRate;
-  var homeAdvance = sinAdvance[0];
-  var homeAdvance2 = sinAdvance2[0];
+  // Then the last quarter turn into the wave's own frame: x runs along the
+  // curve, y across it. This is the only thing making the sinusoid vertical.
+  var x = ry;
+  var y = rx;
+
+  // The central oscillator's curve, which every oscillator is interpolated
+  // back towards, and which is the same for all nine.
+  var centerY = waveY(x, amp1, sinK[0], sinPhase1[0], amp2, sinK[0], sinPhase2[0]);
+  var centerSlope = waveSlope(x, amp1, sinK[0], sinPhase1[0], amp2, sinK[0], sinPhase2[0]);
 
   var best = 0;
   for (var i = 0; i < SINUSOIDS; ++i) {
-    // Every knob is a straight lerp from the center's value to this
-    // oscillator's fully deviated one. At zero each returns the center's value
-    // exactly, which is what makes the bundle collapse rather than nearly so.
-    var rate = homeRate + (sinRate[i] - homeRate) * detune;
-    var phase = sinPhase[i] * scatter;
-    var adv = homeAdvance + (sinAdvance[i] - homeAdvance) * speedSpread;
-    var adv2 = homeAdvance2 + (sinAdvance2[i] - homeAdvance2) * speedSpread;
-    var offset = sinOffset[i] * spread;
+    // This oscillator as it would be if it were fully revealed.
+    var targetY = waveY(x, amp1, sinK[i], sinPhase1[i], amp2, sinK[i], sinPhase2[i]) +
+      sinOffset[i];
+    var targetSlope = waveSlope(x, amp1, sinK[i], sinPhase1[i], amp2, sinK[i], sinPhase2[i]);
 
-    // Same spatial term, opposite sign on time: one wave runs up the scene and
-    // its partner runs down it, and what is drawn is their sum.
-    var spatial = rate * wy + phase;
-    var up = spatial + adv;
-    var down = spatial - adv2;
+    // Spread is the whole reveal: a straight lerp from the center's curve to
+    // this one's. At 0 it is the center's curve exactly, for every oscillator.
+    var curveY = centerY + (targetY - centerY) * spread;
+    var slope = centerSlope + (targetSlope - centerSlope) * spread;
 
-    var curve = amplitude *
-      (Math.sin(up) + SECONDARY_AMPLITUDE * Math.sin(down));
-    var slope = amplitude * rate *
-      (Math.cos(up) + SECONDARY_AMPLITUDE * Math.cos(down));
-
-    // Perpendicular distance to the tangent, then measured against this
-    // curve's own offset so a pushed-out copy is a true parallel of it.
-    var away = (wx - curve) / Math.sqrt(1 + slope * slope) - offset;
+    // Perpendicular distance to the tangent rather than the gap in y, so the
+    // stroke keeps its width where the wave steepens.
+    var away = (y - curveY) / Math.sqrt(1 + slope * slope);
     if (away < 0) {
       away = -away;
     }
