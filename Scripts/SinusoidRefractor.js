@@ -58,7 +58,7 @@ var TAU = Math.PI * 2;
 var SINUSOIDS = 9;
 
 /** The counter-propagating partner every oscillator carries. */
-var SECONDARY_AMPLITUDE = 0.5;
+var SECONDARY_AMPLITUDE = 0.8;
 var SECONDARY_SPEED = 0.65;
 
 /**
@@ -81,6 +81,7 @@ knob("falloff", "Falloff", "How fast the outer strokes thin; low keeps them near
 knob("soft", "Soft", "Edge softness, as a fraction of each stroke's own width", 0.3);
 
 knob("speed", "Speed", "How fast every sinusoid advances; 0.5 is still", 0.5);
+knob("speed2", "Speed2", "How fast countermotion is", 0.5);
 knob("speedSpread", "Speed Spread", "Spreads the advance rate across the other eight", 0);
 
 knob("zoom", "Zoom", "Scale of the scene; center is 1x, ends are 1/4x and 4x", 0.5);
@@ -101,6 +102,7 @@ var sinSoft = [];
 
 /** The one accumulated wt every oscillator and both waves are driven from. */
 var advance = 0;
+var advance2 = 0;
 
 /** Where the Speed Spread offsets have sild to; independent of any knob. */
 var slide = 0;
@@ -140,7 +142,8 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   // One full turn a second at either end of the knob. The slide runs at a
   // fixed rate whatever the knobs say, so that scaling it by Speed Spread is a
   // clean fade rather than a jump from wherever an accumulator had got to.
-  advance = wrapTau(advance + (speed - 0.5) * 2 * TAU * dt);
+  advance = wrapTau(advance + (speed - 0.5) * 6 * TAU * dt);
+  advance2 = advance2 + (speed2 - 0.5) * 6 * TAU * dt;
   slide = wrapTau(slide + SPREAD_SLIDE * dt);
   var spreadAmount = speedSpread * TAU;
 
@@ -184,7 +187,7 @@ function renderPoint(point, deltaMs) {
     // its half-height partner runs down it, and what is drawn is their sum.
     var spatial = sinRate[i] * wy + sinPhase[i];
     var up = spatial + advance;
-    var down = spatial - SECONDARY_SPEED * advance;
+    var down = spatial - advance2;
 
     var curve = amplitude *
       (Math.sin(up) + SECONDARY_AMPLITUDE * Math.sin(down));
@@ -239,5 +242,5 @@ function balanced11(i) {
 
 /** Keeps accumulated phase in 0..TAU so it cannot drift into float mush. */
 function wrapTau(value) {
-  return value - Math.floor(value / TAU) * TAU;
+  return value;// - Math.floor(value / TAU) * TAU;
 }
