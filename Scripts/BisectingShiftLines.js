@@ -31,12 +31,11 @@
  * point is the one you see, and a paint correctly buries every line older than
  * the cut while leaving every line drawn after it on top.
  *
- * The tones are the four quarters 0, 1/3, 2/3, 1, and a field and the lines
- * drawn on it are always two steps apart around that cycle, so whatever the
- * field is, the lines on it land far away and stay legible — sometimes lighter
- * than their ground and sometimes darker. They are flat: a mark is its tone
- * edge to edge, and the only blending anywhere is the pixel of anti-aliasing at
- * a mark's border.
+ * The tones are the four quarters 0, 1/3, 2/3, 1. Lines are black on every field
+ * but the black one, where they go light because black on black is nothing, so
+ * the piece reads as black ruling over flat ground with the darkest sections
+ * inverting. They are flat: a mark is its tone edge to edge, and the only
+ * blending anywhere is the pixel of anti-aliasing at a mark's border.
  *
  * The four states — top, bottom, left, right — are one piece of code. A state is
  * an axis and a sign, and everything else is written against a coordinate `t`
@@ -84,14 +83,19 @@ var KIND_PAINT = 1;
  * The four tones a revealed field can take, and the tone the lines drawn on each
  * of them get.
  *
- * The pairing is two steps around the cycle of four, which is the furthest apart
- * two of them can be: every field gets lines that are a long way from it, so a
- * cut never lands lines on a ground they cannot be told apart from. Half the
- * fields end up with lines lighter than they are and half with lines darker,
- * which is where the inversions come from.
+ * Lines are black on every field that carries any light at all, so the picture
+ * reads as black rule-work laid over flat ground and the ruling stays one thing
+ * throughout rather than changing identity with each cut. The black field is the
+ * one exception, because black lines on it would be no lines at all; there they
+ * go light instead, and that is the only place in the piece where the ruling is
+ * lighter than what it sits on.
+ *
+ * Every pair here differs, which is what guarantees a line is always visible
+ * against its own ground. See beginShift for the other half of that guarantee —
+ * a field never opens onto the tone already showing.
  */
 var BG_LEVELS = [0, 0.33, 0.66, 1];
-var LINE_LEVELS = [0.66, 1, 0, 0.33];
+var LINE_LEVELS = [0.66, 0, 0, 0];
 
 /** The ground before the first cut, and the lines that go on it. */
 var BASE_INDEX = 0;
