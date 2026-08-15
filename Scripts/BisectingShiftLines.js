@@ -503,13 +503,52 @@ function addLine(axis, pos, base, len, dir, half, born, od, cut, lvl) {
 }
 
 /** Flood everything past `bound` on `axis`, on the `dir` side of it. */
-function addPaint(axis, bound, dir, lvl) {
+function addPaint(axis, bound, dir, lvl, od, born) {
   var slot = allocItem();
   itemKind[slot] = KIND_PAINT;
   itemAxis[slot] = axis;
   itemBase[slot] = bound;
   itemDir[slot] = dir;
+  itemOd[slot] = od;
+  itemBorn[slot] = born;
+  itemCut[slot] = Infinity;
   itemLevel[slot] = lvl;
+}
+
+/**
+ * Send in the field that the coming cut will open onto — a beat before the cut.
+ *
+ * A field is a half-plane, so it has no far end to hide, but it does have a
+ * boundary, and dropping that boundary onto the frame's far edge at the moment
+ * of the cut is a pop: square-on the edge is off screen and nothing shows, but a
+ * turned frame reaches past it into the corner, and a whole triangle of new tone
+ * would appear out of nowhere. So the field starts an overrun further out, where
+ * even a turned frame cannot see it, and slides that overrun off before it is
+ * needed. It has to be sent early to do this — hence a beat ahead — and it
+ * arrives exactly as the cut lands, boundary already on the edge and still.
+ *
+ * Square-on, the whole slide happens beyond the frame and is invisible; the
+ * field still begins to enter the picture precisely on the cut. Turned, the
+ * corner fills gradually instead of blinking. Either way the boundary is where
+ * it should be by the time it matters, so nothing downstream — the split, the
+ * camera, the cut line — knows this happened.
+ *
+ * One useful side effect: the field reaches the boundary just as the phase's
+ * lines are trimmed back to it, and it already covers everything past that
+ * point, so the trim has nothing left to reveal and the snap is seamless.
+ */
+function beginField(beat) {
+  var axis = STATE_AXIS[phaseState];
+  var flip = STATE_FLIP[phaseState];
+  var dir = flip ? -1 : 1;
+  var edge = phaseBase(axis, flip) + dir * axisSpan[axis];
+
+  // Never the tone already on screen, or the cut would open onto its own ground
+  // and the whole thing it is there to announce would be invisible.
+  var pick = (sectionIndex + 1 + Math.floor(Math.random() * 3)) % 4;
+  addPaint(axis, edge, dir, BG_LEVELS[pick], axisOver[axis], beat);
+  sectionIndex = pick;
+  sectionLevel = LINE_LEVELS[pick];
 }
 
 /** Where this phase's lines start from, in world coordinates. */
@@ -577,13 +616,6 @@ function beginShift(beat) {
     itemCut[i] = beat;
   }
 
-  // Never the tone already on screen, or the cut would open onto its own ground
-  // and the whole thing it is there to announce would be invisible.
-  var pick = (sectionIndex + 1 + Math.floor(Math.random() * 3)) % 4;
-  addPaint(axis, edge, dir, BG_LEVELS[pick]);
-  sectionIndex = pick;
-  sectionLevel = LINE_LEVELS[pick];
-
   // The cut line keeps its overdraw for good rather than being trimmed to the
   // frame, because nothing ever cuts across *it* — so it is carried as a line
   // that is simply longer, already cut, with the overrun folded into its base
@@ -649,6 +681,12 @@ function onBeat(beat) {
 
   if (k < phaseCount) {
     spawnLine(k, beat);
+    // The last line of the phase shares its beat with the field being sent in
+    // for the cut that follows. Spawned first, so it still belongs to the tone
+    // it was composed against rather than the one arriving.
+    if (k === phaseCount - 1) {
+      beginField(beat);
+    }
   } else {
     beginShift(beat);
   }
@@ -774,6 +812,7 @@ function updateItems() {
   var wu0 = -Infinity, wu1 = Infinity;
   var wv0 = -Infinity, wv1 = Infinity;
   var floor = 0;
+  var paintBound = 0;
 
   for (i = itemN - 1; i >= 0; --i) {
     // The window clipped to the frame. Once this is empty nothing older than
@@ -791,14 +830,20 @@ function updateItems() {
     var extent = true;
 
     if (itemKind[i] === KIND_PAINT) {
+      // A field slides the last of its overrun off before it is due, so that by
+      // the time it is anyone's business it is already sitting on the boundary.
+      var pq = (beats - itemBorn[i]) * rateMul;
+      if (pq < 0) { pq = 0; } else if (pq > 1) { pq = 1; }
+      paintBound = itemBase[i] + dir * itemOd[i] * (1 - pq);
+
       bu0 = bv0 = -Infinity;
       bu1 = bv1 = Infinity;
       if (dir > 0) {
-        if (axis === 0) { bu0 = itemBase[i]; } else { bv0 = itemBase[i]; }
+        if (axis === 0) { bu0 = paintBound; } else { bv0 = paintBound; }
       } else {
-        if (axis === 0) { bu1 = itemBase[i]; } else { bv1 = itemBase[i]; }
+        if (axis === 0) { bu1 = paintBound; } else { bv1 = paintBound; }
       }
-      itemSLo[i] = itemBase[i] - (axis === 0 ? camU : camV);
+      itemSLo[i] = paintBound - (axis === 0 ? camU : camV);
       itemSHi[i] = itemSLo[i];
       itemSPos[i] = 0;
     } else {
@@ -853,13 +898,16 @@ function updateItems() {
       bu1 >= du0 && bu0 <= du1 && bv1 >= dv0 && bv0 <= dv1;
 
     // Older marks see the window with this paint's half-plane taken out of it.
+    // Taken where the boundary is *now*, mid-slide or not — and a field only
+    // ever covers more as it settles, so a mark buried under one stays buried
+    // and dropping it is still permanent-safe.
     if (itemKind[i] === KIND_PAINT) {
       if (dir > 0) {
-        if (axis === 0) { if (itemBase[i] < wu1) { wu1 = itemBase[i]; } }
-        else { if (itemBase[i] < wv1) { wv1 = itemBase[i]; } }
+        if (axis === 0) { if (paintBound < wu1) { wu1 = paintBound; } }
+        else { if (paintBound < wv1) { wv1 = paintBound; } }
       } else {
-        if (axis === 0) { if (itemBase[i] > wu0) { wu0 = itemBase[i]; } }
-        else { if (itemBase[i] > wv0) { wv0 = itemBase[i]; } }
+        if (axis === 0) { if (paintBound > wu0) { wu0 = paintBound; } }
+        else { if (paintBound > wv0) { wv0 = paintBound; } }
       }
     }
   }
