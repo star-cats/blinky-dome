@@ -195,7 +195,21 @@ var rateMul = 1;
 var softW = 0.02;
 var started = false;
 
+/**
+ * The engine's own constructor hook, called once when the script loads and again
+ * whenever the model changes.
+ *
+ * It must not read a knob. This runs from initModel, which is well before the
+ * engine binds the control values into scope, so `count` and friends are simply
+ * not defined yet and touching one is a fatal error. All it does is ask for a
+ * restart; resetScene does the real work on the next frame, by which time both
+ * the knobs and the new model are there to be read.
+ */
 function init() {
+  started = false;
+}
+
+function resetScene() {
   lineN = 0;
   drawN = 0;
   beats = 0;
@@ -423,7 +437,7 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
 
   updateFrame(model);
   if (!started) {
-    init();
+    resetScene();
   }
 
   rateMul = 1 + 2 * clamp(rate, 0, 1);
@@ -454,10 +468,14 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
 /**
  * Work out where the frame sits on the scene square.
  *
- * The square is sized to circumscribe the frame, so that whatever the rotation
- * is, no LED can ever land outside the composition and see its edge. Everything
- * specified as a fraction of the frame — splits, line placements, thicknesses —
- * is converted through the margin and span this leaves.
+ * The square circumscribes the frame, which is what makes the world isotropic:
+ * one unit means the same distance along either axis however oblong the model
+ * is, so a rotation cannot skew and a line has one thickness rather than two.
+ * Everything specified as a fraction of the frame — splits, line placements,
+ * thicknesses — is converted through the margin and span this leaves.
+ *
+ * The square's actual size cancels out of every one of those conversions, so it
+ * is the aspect ratio doing the work here and not the circumscribing.
  */
 function updateFrame(model) {
   aspectX = 1;

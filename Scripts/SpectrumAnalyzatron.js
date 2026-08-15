@@ -1,10 +1,10 @@
 /**
  * Spectrum Analyzatron
  *
- * Draws 10-20 horizontal frequency bars stacked symmetrically up and down the
- * local x=0 centerline. Each bar grows equally left and right from that line:
- * its body is exactly 0.75, its two outer caps are exactly 1, and every point
- * outside the visualizer is 0.
+ * Draws 10-40 frequency bars repeatedly across the horizontal axis. Every bar
+ * grows symmetrically up and down from y=0, fading smoothly from 0.2 at the
+ * centerline to 1 at its two tips. The spectrum tiles forever in X and a speed
+ * control pans those tiles left or right; the bars themselves never rotate.
  *
  * Chromatik's JavaScript wrapper does not expose the audio engine directly, so
  * getAudioMeter() walks back to the owning ScriptPattern once at load and then
@@ -13,28 +13,26 @@
  * pattern alone.
  */
 
-var TAU = Math.PI * 2;
-var MAX_BARS = 20;
+var MAX_BARS = 40;
 
-knob("bars", "Bars", "Number of spectrum bars, from 10 to 20", 0.5);
-knob("gain", "Gain", "Input gain, from -24 dB to +48 dB; default is 0 dB", 1 / 3);
-knob("slope", "Slope", "Frequency tilt, from -24 to +24 dB per octave", 0.5);
+knob("bars", "Bars", "Number of spectrum bars, from 10 to 40", 1.0);
+knob("gain", "Gain", "Input gain, from -24 dB to +48 dB", 0.14839843730442226);
+knob("slope", "Slope", "Frequency tilt, from -24 to +24 dB per octave", 0.562421876078588);
 knob("minFreq", "Min Freq", "Lowest analyzer band included", 0);
 knob("maxFreq", "Max Freq", "Highest analyzer band included", 1);
-knob("minDb", "Min", "Input floor, from -96 dB to -24 dB", 0.44);
-knob("maxDb", "Max", "Input ceiling, from -48 dB to 0 dB", 0.75);
+knob("minDb", "Min", "Input floor, from -96 dB to -24 dB", 0.5726953108824091);
+knob("maxDb", "Max", "Input ceiling, from -48 dB to 0 dB", 1.0);
 
-knob("attack", "Attack", "Time for a bar to reach a new peak", 0.12);
-knob("decay", "Decay", "Time for the peak to settle to its sustain level", 0.2);
-knob("sustain", "Sustain", "Fraction held while that frequency remains present", 0.72);
-knob("release", "Release", "Time for a silent bar to return to zero", 0.28);
+knob("attack", "Attack", "Time for a bar to reach a new peak", 0.1807031260151416);
+knob("decay", "Decay", "Time for the peak to settle to its sustain level", 0.10179687525233022);
+knob("sustain", "Sustain", "Fraction held while that frequency remains present", 0.08085937765892592);
+knob("release", "Release", "Time for a silent bar to return to zero", 0.3007812491935329);
 
-knob("zoom", "Zoom", "Visualizer scale; center is 1x, ends are 1/4x and 4x", 0.5);
-knob("rotate", "Rotate", "Angular speed; center is still, ends reverse direction", 0.5);
+knob("zoom", "Zoom", "Spectrum tile scale; center is 1x, ends are 1/4x and 4x", 0.5779687613467104);
+knob("speed", "Speed", "Horizontal pan speed; center is still, left/right reverse", 0.5387890615529614);
 
-// Small gaps make adjacent bars distinct. Cap is the bright row at each end.
+// Small gaps make adjacent bars distinct.
 var BAR_FILL = 0.78;
-var CAP_THICKNESS = 0.012;
 var SIGNAL_GATE = 0.004;
 
 var meter = null;
@@ -46,10 +44,8 @@ var envelopePhase = [];
 var barHeight = [];
 
 var activeBars = 15;
-var angle = 0;
+var panPhase = 0;
 var sceneScale = 1;
-var sceneCos = 1;
-var sceneSin = 0;
 var aspectX = 1;
 
 function init() {
@@ -104,17 +100,14 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   }
 
   var dt = isFinite(deltaMs) ? clamp(deltaMs / 1000, 0, 0.1) : 0;
-  activeBars = Math.max(10, Math.min(20, Math.round(10 + bars * 10)));
+  activeBars = Math.max(10, Math.min(40, Math.round(10 + bars * 30)));
 
   // Four octaves of camera scale centered at 1x.
   sceneScale = Math.pow(2, (zoom - 0.5) * 4);
 
-  // The knob is velocity, not position: +/- one revolution per second.
-  var turnsPerSecond = (rotate - 0.5) * 2;
-  angle += turnsPerSecond * TAU * dt;
-  angle -= Math.floor(angle / TAU) * TAU;
-  sceneCos = Math.cos(angle);
-  sceneSin = Math.sin(angle);
+  // Velocity rather than position: the two ends pan one whole tile per second.
+  panPhase += (speed - 0.5) * 2 * dt;
+  panPhase -= Math.floor(panPhase);
 
   if (model && model.xRange > 0 && model.yRange > 0) {
     aspectX = model.xRange / model.yRange;
@@ -162,8 +155,7 @@ function updateSpectrum(dt) {
     }
 
     advanceEnvelope(bar, target, dt, attackSec, decaySec, releaseSec);
-    // Leave room for both horizontal halves and their bright outer caps.
-    barHeight[bar] = envelope[bar] * (0.48 - CAP_THICKNESS);
+    barHeight[bar] = envelope[bar] * 0.48;
   }
 }
 
@@ -240,30 +232,26 @@ function expMap(minimum, maximum, amount) {
 }
 
 function renderPoint(point, deltaMs) {
-  // Center screen space, correct its aspect, then inverse-transform the scene.
+  // One spectrum tile occupies sceneScale corrected screen units. Fractional
+  // wrapping makes it repeat without seams at every integer tile boundary.
   var dx = (point.xn - 0.5) * aspectX;
-  var dy = point.yn - 0.5;
-  var x = (sceneCos * dx + sceneSin * dy) / sceneScale;
-  var y = (-sceneSin * dx + sceneCos * dy) / sceneScale;
+  var tileX = dx / sceneScale - panPhase + 0.5;
+  tileX -= Math.floor(tileX);
 
-  // Horizontal bars are stacked evenly and symmetrically along local x=0.
-  if (y < -0.5 || y >= 0.5) {
-    return hsb(0, 0, 0);
-  }
-
-  var slot = (y + 0.5) * activeBars;
+  var slot = tileX * activeBars;
   var bar = Math.floor(slot);
   var within = slot - bar;
   if (within < (1 - BAR_FILL) * 0.5 || within > (1 + BAR_FILL) * 0.5) {
     return hsb(0, 0, 0);
   }
 
-  var halfLength = barHeight[bar];
-  var distance = Math.abs(x);
-  if (halfLength <= 0 || distance > halfLength + CAP_THICKNESS) {
+  // Spectrum value is always the Y dimension and is mirrored about y=0.
+  var height = barHeight[bar];
+  var distance = Math.abs(point.yn - 0.5) / sceneScale;
+  if (height <= 0 || distance > height + 1e-9) {
     return hsb(0, 0, 0);
   }
 
-  var value = distance >= halfLength - CAP_THICKNESS ? 1 : 0.75;
+  var value = 0.2 + 0.8 * Math.min(1, distance / height);
   return hsb(0, 0, value * 100);
 }
