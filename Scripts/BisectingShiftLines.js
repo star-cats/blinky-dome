@@ -140,6 +140,26 @@ var EDGE_MARGIN = 0.05;
 /** Full cycles of the tone phase per second at the top of the Speed knob. */
 var PHASE_RATE = 0.25;
 
+/**
+ * How far past each end of the frame a line is drawn while it is being laid
+ * down, as a fraction of the frame's span on its own axis.
+ *
+ * A line that stops exactly at the frame edge has an end, and turning the scene
+ * swings that end into view — the line is then plainly a segment that halts in
+ * mid-air rather than something running off the side of the world, and the whole
+ * illusion goes with it. Drawing half a frame further at each end puts both ends
+ * outside anything a rotation can reach.
+ *
+ * Whether a half is *enough* is a matter of geometry rather than taste, and it
+ * depends on the model: the visible square, turned, reaches a half-diagonal from
+ * center, which is 0.5 in scene units whatever the aspect. An end sits
+ * span/2 + overdraw from center, so clearing it wants overdraw >= 0.5 - span/2.
+ * On a squarish model a half of the span is comfortably more than that; on a
+ * wide one the short axis needs a little more, so axisOver takes whichever is
+ * larger and the ends stay hidden either way.
+ */
+var OVERDRAW = 0.5;
+
 knob("bpm", "BPM", "Tempo everything is cut to; 0.5 is 120", 0.5);
 knob("rate", "Rate", "How much quicker than a beat a line extends or the scene shifts; 0 is exactly one beat, 1 is three times", 0);
 knob("count", "Count", "Lines drawn per phase, before the cut", 0.5);
@@ -197,6 +217,8 @@ var itemLen = [];    // line: how far it reaches once fully extended
 var itemDir = [];    // line: which way it grows; paint: which side it covers
 var itemHalf = [];   // line: half its thickness
 var itemBorn = [];   // line: musical time, in beats, it started extending
+var itemOd = [];     // line: how far it overruns each end while being laid down
+var itemCut = [];    // line: the beat its phase was cut, or Infinity if it has not been
 var itemLevel = [];  // the flat tone it lays down
 var itemN = 0;
 
@@ -267,6 +289,7 @@ var aspectX = 1;
 var sceneR = Math.SQRT2;
 var axisMargin = [0, 0];  // where the frame starts, on the scene square
 var axisSpan = [1, 1];    // and how much of the square it covers
+var axisOver = [0, 0];    // and how far a line being drawn overruns each end of it
 var cosT = 1;
 var sinT = 0;
 
@@ -449,6 +472,8 @@ function allocItem() {
       itemDir[i - 1] = itemDir[i];
       itemHalf[i - 1] = itemHalf[i];
       itemBorn[i - 1] = itemBorn[i];
+      itemOd[i - 1] = itemOd[i];
+      itemCut[i - 1] = itemCut[i];
       itemLevel[i - 1] = itemLevel[i];
     }
     --itemN;
@@ -462,16 +487,18 @@ function allocItem() {
  * Everything is in world coordinates, which is the whole trick: from here on the
  * mark never moves, and every shift is the camera moving instead.
  */
-function addLine(axis, pos, base, dir, half, born, lvl) {
+function addLine(axis, pos, base, len, dir, half, born, od, cut, lvl) {
   var slot = allocItem();
   itemKind[slot] = KIND_LINE;
   itemAxis[slot] = axis;
   itemPos[slot] = pos;
   itemBase[slot] = base;
-  itemLen[slot] = axisSpan[axis];
+  itemLen[slot] = len;
   itemDir[slot] = dir;
   itemHalf[slot] = half;
   itemBorn[slot] = born;
+  itemOd[slot] = od;
+  itemCut[slot] = cut;
   itemLevel[slot] = lvl;
 }
 
@@ -497,15 +524,18 @@ function spawnLine(k, beat) {
   addLine(
     axis,
     planPos[k] + (axis === 0 ? camV : camU),
-    // Edge of frame to edge of frame, so a beat of extending is exactly a
-    // traverse of what you can see and the cut that follows is exactly the
-    // fraction of the frame the split asks for.
+    // Edge of frame to edge of frame, so the cut that follows is exactly the
+    // fraction of the frame the split asks for. The overdraw hangs off either
+    // end of that and is not part of it.
     phaseBase(axis, flip),
+    axisSpan[axis],
     flip ? -1 : 1,
     planHalf[k],
     // The beat itself rather than the current time, so a long frame cannot let a
     // line start late and drift off the grid.
     beat,
+    axisOver[axis],
+    Infinity,
     sectionLevel
   );
 }
@@ -533,6 +563,20 @@ function beginShift(beat) {
 
   var edge = phaseBase(axis, flip) + dir * axisSpan[axis];
 
+  // Everything still uncut belongs to the phase now ending — nothing else can,
+  // since every earlier phase was cut when it ended. Recording the beat here is
+  // what lets a line work out, on its own, that its leading end is now the
+  // boundary and its trailing overdraw is on its way out.
+  for (var i = itemN - 1; i >= 0; --i) {
+    if (itemKind[i] !== KIND_LINE) {
+      continue;
+    }
+    if (isFinite(itemCut[i])) {
+      break;
+    }
+    itemCut[i] = beat;
+  }
+
   // Never the tone already on screen, or the cut would open onto its own ground
   // and the whole thing it is there to announce would be invisible.
   var pick = (sectionIndex + 1 + Math.floor(Math.random() * 3)) % 4;
@@ -540,15 +584,24 @@ function beginShift(beat) {
   sectionIndex = pick;
   sectionLevel = LINE_LEVELS[pick];
 
+  // The cut line keeps its overdraw for good rather than being trimmed to the
+  // frame, because nothing ever cuts across *it* — so it is carried as a line
+  // that is simply longer, already cut, with the overrun folded into its base
+  // and length. Otherwise turning the scene would show its two ends stopping
+  // inside the picture, which is exactly what the overdraw exists to prevent.
+  var od = axisOver[perp];
   addLine(
     perp,
     edge,
-    phaseBase(perp, false),
+    phaseBase(perp, false) - od,
+    axisSpan[perp] + 2 * od,
     1,
     randomHalf(),
-    // A beat in the past, so it is already fully extended on the frame it
-    // appears: the cut is struck, not drawn.
-    beat - 1,
+    beat,
+    0,
+    // Already cut, so it arrives at its full length rather than extending into
+    // it: the cut is struck, not drawn.
+    -1,
     sectionLevel
   );
 
@@ -672,6 +725,14 @@ function updateFrame(model) {
   axisSpan[1] = 1 / sceneR;
   axisMargin[0] = (1 - axisSpan[0]) * 0.5;
   axisMargin[1] = (1 - axisSpan[1]) * 0.5;
+
+  // The asked-for half of a span, or as much more as it takes to put a line's
+  // end past the half-diagonal a turned frame can reach. See OVERDRAW.
+  for (var a = 0; a < 2; ++a) {
+    var wanted = OVERDRAW * axisSpan[a];
+    var needed = 0.5 - axisSpan[a] * 0.5;
+    axisOver[a] = wanted > needed ? wanted : needed;
+  }
 }
 
 /**
@@ -741,14 +802,34 @@ function updateItems() {
       itemSHi[i] = itemSLo[i];
       itemSPos[i] = 0;
     } else {
-      var p = (beats - itemBorn[i]) * rateMul;
-      var len = p >= 1 ? 1 : ease(p < 0 ? 0 : p);
-      extent = len > 0;
-
+      // A line's two ends live on different clocks.
+      //
+      // Until its phase is cut it is being laid down, overrunning both ends of
+      // the frame: it starts as nothing out beyond the near edge and its leading
+      // end sweeps the whole overrun length. The cut then takes that leading end
+      // instantly back to the boundary — that snap is the picture coming apart,
+      // and it wants to be a cut and not a retraction. The trailing overrun has
+      // no such reason to be abrupt, so it eases out linearly across the shift,
+      // leaving the line exactly frame-length once everything settles.
       var base = itemBase[i];
-      var end = base + dir * itemLen[i] * len;
-      var alo = base < end ? base : end;
-      var ahi = base < end ? end : base;
+      var od = itemOd[i];
+      var trail, head;
+
+      if (beats < itemCut[i]) {
+        var p = (beats - itemBorn[i]) * rateMul;
+        var grown = p >= 1 ? 1 : ease(p < 0 ? 0 : p);
+        extent = grown > 0;
+        trail = base - dir * od;
+        head = trail + dir * (itemLen[i] + 2 * od) * grown;
+      } else {
+        var q = (beats - itemCut[i]) * rateMul;
+        if (q < 0) { q = 0; } else if (q > 1) { q = 1; }
+        trail = base - dir * od * (1 - q);
+        head = base + dir * itemLen[i];
+      }
+
+      var alo = trail < head ? trail : head;
+      var ahi = trail < head ? head : trail;
       var plo = itemPos[i] - itemHalf[i];
       var phi = itemPos[i] + itemHalf[i];
 
@@ -812,6 +893,8 @@ function updateItems() {
       itemDir[keep] = itemDir[i];
       itemHalf[keep] = itemHalf[i];
       itemBorn[keep] = itemBorn[i];
+      itemOd[keep] = itemOd[i];
+      itemCut[keep] = itemCut[i];
       itemLevel[keep] = itemLevel[i];
     }
     ++keep;
