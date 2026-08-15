@@ -52,7 +52,7 @@
  * extending is one traverse of it.
  *
  * The composition is therefore exactly frame-sized, and turning it swings its
- * corners in: past a few degrees of spin the outer corners of the frame fall
+ * corners in: at any angle off the square the outer corners of the frame fall
  * outside the picture and sit at the opening tone. That is the honest reading of
  * a design whose whole vocabulary — top, bottom, left, right, half way up — is
  * written against the edges of a frame, and on a fixture that is not a filled
@@ -109,7 +109,7 @@ var LINES_MAX = 5;
  * Nothing is ever erased, so the count is set entirely by how fast updateItems
  * can prove marks buried. That turns out to be fast, because a cut buries in
  * bulk: over two hours the retained list peaks at 60 and the drawn subset at
- * about 40, whatever the aspect and whatever the spin.
+ * about 40, whatever the aspect and whatever the angle.
  *
  * The ceiling has to clear that by a wide margin, because once it binds the
  * overflow in allocItem starts evicting the oldest mark whether or not anyone
@@ -137,6 +137,9 @@ var PRUNE_MARGIN = 0.7;
 /** Slack on the visibility test, so a mark's soft edge is never clipped. */
 var EDGE_MARGIN = 0.05;
 
+/** Full cycles of the tone phase per second at the top of the Speed knob. */
+var PHASE_RATE = 0.25;
+
 knob("bpm", "BPM", "Tempo everything is cut to; 0.5 is 120", 0.5);
 knob("rate", "Rate", "How much quicker than a beat a line extends or the scene shifts; 0 is exactly one beat, 1 is three times", 0);
 knob("count", "Count", "Lines drawn per phase, before the cut", 0.5);
@@ -147,7 +150,25 @@ knob("spread", "Spread", "How far the cut wanders from that, a quarter of the fr
 knob("minThick", "Min", "Thinnest a line can be", 0.12);
 knob("maxThick", "Max", "Thickest a line can be", 0.3);
 
-knob("spin", "Spin", "How fast the scene turns; 0.5 is still", 0.55);
+knob("angle", "Angle", "Where the scene is turned to; a full turn across the knob", 0);
+
+/**
+ * Advances `phase`, which every tone is shifted by on the way out.
+ *
+ * Zero leaves the picture exactly as composed, and that is the point of the
+ * strict wrap in renderPoint: at rest this control does nothing at all rather
+ * than something very small.
+ *
+ * A warning about turning it up, because the tones are levels and the shift is
+ * cyclic, which are not the same kind of thing. Tone 1 and tone 0 are one step
+ * apart on a cycle of length 1, so any nonzero phase drives them to the same
+ * value — and the white field is exactly the one whose lines are black. Sweep
+ * this and the white sections go flat, their ruling swallowed, until the phase
+ * comes back around. Every other field keeps its lines throughout. If you want
+ * the sweep without that, the fix is in the tone table: no two entries of
+ * BG_LEVELS and LINE_LEVELS that need to stay apart may differ by exactly 1.
+ */
+knob("speed", "Speed", "How fast the tones cycle; 0 leaves them alone", 0);
 // Deliberately low. Every mark is flat to its own edge, so this is strictly the
 // anti-aliasing on that edge and not shading: at 0.12 the transition is under 1%
 // of the frame, which is about half a pixel on a fixture 60 points across —
@@ -246,9 +267,14 @@ var aspectX = 1;
 var sceneR = Math.SQRT2;
 var axisMargin = [0, 0];  // where the frame starts, on the scene square
 var axisSpan = [1, 1];    // and how much of the square it covers
-var theta = 0;
 var cosT = 1;
 var sinT = 0;
+
+/** Cycles 0..1 under the Speed knob; every tone leaves shifted by it. */
+var phase = 0;
+
+/** The starting ground, phase-shifted; refreshed each frame by updateItems. */
+var groundLevel = BG_LEVELS[BASE_INDEX];
 var rateMul = 1;
 var softW = 0.02;
 var thickLo = 0.01;
@@ -276,7 +302,7 @@ function resetScene() {
   lastBeat = -1;
   camU = camV = camBaseU = camBaseV = 0;
   shiftDU = shiftDV = 0;
-  theta = 0;
+  phase = 0;
   sectionIndex = BASE_INDEX;
   sectionLevel = LINE_LEVELS[BASE_INDEX];
   // The whole frame is fair game for the opening phase, since nothing has been
@@ -288,6 +314,29 @@ function resetScene() {
 /** Smoothstep. Both the extending and the shifting run on it. */
 function ease(p) {
   return p * p * (3 - 2 * p);
+}
+
+/**
+ * A tone, moved around the cycle by the current phase.
+ *
+ * Applied to each mark's own tone rather than to the finished pixel, which for
+ * everything but the hairline of anti-aliasing at a border is the same
+ * arithmetic — inside a mark the pixel *is* that mark's tone. At a border it is
+ * the difference between right and wrong. Shifting afterwards would blend the
+ * two original tones and then wrap the blend, and wherever the wrap fell inside
+ * that blend the seam would sweep the whole range and draw a bright-then-dark
+ * outline around every shape in the picture. Shifting first means the seam only
+ * ever interpolates between the two tones actually being shown.
+ *
+ * It is also a good deal cheaper here: a few dozen marks a frame rather than
+ * once for every LED.
+ *
+ * The wrap is strict rather than a floor, so a phase of zero is an exact
+ * identity and tone 1 stays white instead of dropping to black at rest.
+ */
+function shiftTone(v) {
+  v += phase;
+  return v > 1 ? v - 1 : v;
 }
 
 /** A half-thickness somewhere in the range the two knobs bracket. */
@@ -570,9 +619,16 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
     resetScene();
   }
 
-  theta += (spin - 0.5) * 2 * TAU * 0.15 * dt;
+  // Set, not accumulated: the knob is the angle itself, so moving it puts the
+  // scene where it says rather than changing how fast it drifts from here.
+  var theta = clamp(angle, 0, 1) * TAU;
   cosT = Math.cos(theta);
   sinT = Math.sin(theta);
+
+  // Kept inside 0..1 so the wrap in renderPoint only ever has to fire once, and
+  // so it cannot drift into the range where a float stops resolving small steps.
+  phase += clamp(speed, 0, 1) * PHASE_RATE * dt;
+  phase -= Math.floor(phase);
 
   // Musical time, accumulated rather than divided out of a wall clock, so that
   // moving the tempo knob changes the rate from here on instead of jumping the
@@ -643,6 +699,8 @@ function updateFrame(model) {
  */
 function updateItems() {
   var i;
+
+  groundLevel = shiftTone(BG_LEVELS[BASE_INDEX]);
 
   // The frame in world coordinates, at each of the two margins: the loose one
   // decides what is worth keeping against a reversal, the tight one what is
@@ -741,7 +799,7 @@ function updateItems() {
       drawHi[drawN] = itemSHi[i];
       drawHalf[drawN] = itemHalf[i];
       drawDir[drawN] = itemDir[i];
-      drawLevel[drawN] = itemLevel[i];
+      drawLevel[drawN] = shiftTone(itemLevel[i]);
       ++drawN;
     }
 
@@ -818,8 +876,9 @@ function renderPoint(point, deltaMs) {
   }
 
   // Whatever light got past every mark falls on the ground the picture started
-  // from, which is the only thing under all of it.
-  accum += remaining * BG_LEVELS[BASE_INDEX];
+  // from, which is the only thing under all of it. Already phase-shifted, in
+  // step with every drawLevel above.
+  accum += remaining * groundLevel;
 
   return hsb(hue * 360, sat * 100, clamp(accum, 0, 1) * level * 100);
 }

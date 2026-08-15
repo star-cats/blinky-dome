@@ -3,8 +3,9 @@
  *
  * Draws 10-40 frequency bars repeatedly across the horizontal axis. Every bar
  * grows symmetrically up and down from y=0, fading smoothly from 0.2 at the
- * centerline to 1 at its two tips. The spectrum tiles forever in X and a speed
- * control pans those tiles left or right; the bars themselves never rotate.
+ * centerline to 1 at its two tips. The spectrum tiles forever along its local
+ * X axis, may be set to a fixed angle, and cycles its visible output values by
+ * an internal phase.
  *
  * Chromatik's JavaScript wrapper does not expose the audio engine directly, so
  * getAudioMeter() walks back to the owning ScriptPattern once at load and then
@@ -14,6 +15,7 @@
  */
 
 var MAX_BARS = 40;
+var TAU = Math.PI * 2;
 
 knob("bars", "Bars", "Number of spectrum bars, from 10 to 40", 1.0);
 knob("gain", "Gain", "Input gain, from -24 dB to +48 dB", 0.14839843730442226);
@@ -29,10 +31,10 @@ knob("sustain", "Sustain", "Fraction held while that frequency remains present",
 knob("release", "Release", "Time for a silent bar to return to zero", 0.3007812491935329);
 
 knob("zoom", "Zoom", "Spectrum tile scale; center is 1x, ends are 1/4x and 4x", 0.5779687613467104);
-knob("speed", "Speed", "Horizontal pan speed; center is still, left/right reverse", 0.5387890615529614);
+knob("angle", "Angle", "Direct spectrum angle; the knob spans one full turn", 0);
+knob("panSpeed", "Pan Speed", "Horizontal pan speed; center is still, left/right reverse", 0.5387890615529614);
+knob("phaseSpeed", "Phase Speed", "Output phase speed, from stopped to one-half cycle per second", 0.5387890615529614);
 
-// Small gaps make adjacent bars distinct.
-var BAR_FILL = 0.78;
 var SIGNAL_GATE = 0.004;
 
 var meter = null;
@@ -45,7 +47,10 @@ var barHeight = [];
 
 var activeBars = 15;
 var panPhase = 0;
+var valuePhase = 0;
 var sceneScale = 1;
+var sceneCos = 1;
+var sceneSin = 0;
 var aspectX = 1;
 
 function init() {
@@ -105,9 +110,17 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   // Four octaves of camera scale centered at 1x.
   sceneScale = Math.pow(2, (zoom - 0.5) * 4);
 
-  // Velocity rather than position: the two ends pan one whole tile per second.
-  panPhase += (speed - 0.5) * 2 * dt;
+  // Angle is an absolute UI value. Only the output phase accumulates over time.
+  var radians = angle * TAU;
+  sceneCos = Math.cos(radians);
+  sceneSin = Math.sin(radians);
+
+  // Independent positional phase: +/- one whole spectrum tile per second.
+  panPhase += (panSpeed - 0.5) * 2 * dt;
   panPhase -= Math.floor(panPhase);
+
+  valuePhase += phaseSpeed * 0.5 * dt;
+  valuePhase -= Math.floor(valuePhase);
 
   if (model && model.xRange > 0 && model.yRange > 0) {
     aspectX = model.xRange / model.yRange;
@@ -232,26 +245,39 @@ function expMap(minimum, maximum, amount) {
 }
 
 function renderPoint(point, deltaMs) {
-  // One spectrum tile occupies sceneScale corrected screen units. Fractional
-  // wrapping makes it repeat without seams at every integer tile boundary.
+  // Inverse-rotate into the spectrum's local coordinates. One tile occupies
+  // sceneScale corrected units and fractional wrapping repeats it forever.
   var dx = (point.xn - 0.5) * aspectX;
-  var tileX = dx / sceneScale - panPhase + 0.5;
+  var dy = point.yn - 0.5;
+  var x = (sceneCos * dx + sceneSin * dy) / sceneScale;
+  var y = (-sceneSin * dx + sceneCos * dy) / sceneScale;
+
+  var tileX = x - panPhase + 0.5;
   tileX -= Math.floor(tileX);
 
-  var slot = tileX * activeBars;
-  var bar = Math.floor(slot);
-  var within = slot - bar;
-  if (within < (1 - BAR_FILL) * 0.5 || within > (1 + BAR_FILL) * 0.5) {
-    return hsb(0, 0, 0);
+  // Sample at bar centers and interpolate neighboring heights. Hard black
+  // separator gaps alias against discrete LED columns while panning: a gap can
+  // momentarily land on every point in a physical column. This continuous
+  // reconstruction has no such zero-width traps and wraps across the seam.
+  var barPosition = tileX * activeBars - 0.5;
+  var leftRaw = Math.floor(barPosition);
+  var blend = barPosition - leftRaw;
+  blend = blend * blend * (3 - 2 * blend);
+  var left = leftRaw % activeBars;
+  if (left < 0) {
+    left += activeBars;
   }
+  var right = (left + 1) % activeBars;
 
-  // Spectrum value is always the Y dimension and is mirrored about y=0.
-  var height = barHeight[bar];
-  var distance = Math.abs(point.yn - 0.5) / sceneScale;
+  // Spectrum value is always local Y and is mirrored about its centerline.
+  var height = barHeight[left] + (barHeight[right] - barHeight[left]) * blend;
+  var distance = Math.abs(y);
   if (height <= 0 || distance > height + 1e-9) {
     return hsb(0, 0, 0);
   }
 
   var value = 0.2 + 0.8 * Math.min(1, distance / height);
+  value = value + valuePhase;
+  value -= Math.floor(value);
   return hsb(0, 0, value * 100);
 }
