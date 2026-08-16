@@ -6,10 +6,14 @@
  * acceleration, so its position is quadratic in time. Each drop leaves a
  * white trail that ramps from 1 at the drop to 0 at the tail.
  *
- * A drop adds water when it reaches the surface in its own column. Water is
- * drawn at 0.4, with a bright 0.85 top edge. Once a column reaches the top it
- * enters a linear drain cycle; impacts during that cycle do not interrupt it,
- * and the column starts accepting water again when it is empty.
+ * A drop adds water when it reaches the surface in its own column. A column is
+ * one continuous gradient rather than a flat fill: full brightness exactly at
+ * the surface, easing off to 0.8 across a thin top edge, and from there falling
+ * away to 0.1 at the floor. The ramp is measured against the column's own height,
+ * so it stretches as the column fills and the water always reads as depth
+ * rather than as a bar that got taller. Once a column reaches the top it enters
+ * a linear drain cycle; impacts during that cycle do not interrupt it, and the
+ * column starts accepting water again when it is empty.
  */
 
 var MIN_BINS = 10;
@@ -21,6 +25,14 @@ var TRAIL_LENGTH = 0.2;
 
 // Thickness of the bright surface on a water column.
 var WATER_EDGE = 0.018;
+
+// The column's gradient: full at the surface, easing to WATER_BODY over the
+// edge, then away to WATER_FLOOR at the bottom. The floor sits above zero so a
+// deep column still reads as water all the way down rather than fading out into
+// the unlit frame.
+var WATER_SURFACE = 1;
+var WATER_BODY = 0.8;
+var WATER_FLOOR = 0.1;
 
 knob("bins", "Bins", "Integer column count from 10 to 40", 1);
 knob("rainRate", "Rain Rate", "Automatic rain emission rate", 0.35);
@@ -170,7 +182,17 @@ function renderPoint(point, deltaMs) {
   var surface = water[column];
 
   if (surface > 0 && y <= surface) {
-    value = y >= Math.max(0, surface - WATER_EDGE) ? 0.85 : 0.4;
+    // Depth below the surface, and the edge clipped to what the column can
+    // actually hold — a column shallower than the edge is all edge, which is
+    // also what keeps the second ramp from dividing by a zero-height body.
+    var depth = surface - y;
+    var edge = WATER_EDGE < surface ? WATER_EDGE : surface;
+
+    if (depth <= edge) {
+      value = lerp(WATER_SURFACE, WATER_BODY, depth / edge);
+    } else {
+      value = lerp(WATER_BODY, WATER_FLOOR, (depth - edge) / (surface - edge));
+    }
   }
 
   // Multiple drops may share a column. Max-compositing preserves the defined
