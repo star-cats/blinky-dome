@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.UnaryOperator;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import heronarts.lx.LX;
@@ -87,6 +88,10 @@ final class MediaPath {
     if (!parameters.has(KEY_FILE_NAME)) {
       return;
     }
-    parameters.addProperty(KEY_FILE_NAME, op.apply(parameters.get(KEY_FILE_NAME).getAsString()));
+    JsonElement fileName = parameters.get(KEY_FILE_NAME);
+    if (fileName == null || fileName.isJsonNull()) {
+      return;
+    }
+    parameters.addProperty(KEY_FILE_NAME, op.apply(fileName.getAsString()));
   }
 }
