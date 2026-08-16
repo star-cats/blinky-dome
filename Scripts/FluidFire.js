@@ -81,6 +81,14 @@ var MAX_SUBSTEPS = 4;
 // pins the top of the color ramp and the core of the flame goes white.
 var BURN_TEMP = 1.4;
 
+// How much hotter than a fully burning cell a source is allowed to drive one.
+// Combustion tops out at BURN_TEMP, and a source clamped to the same ceiling
+// could never be more than as hot as the fire it lit — turning Source up past
+// the point where it saturated bought nothing. Twice that gives the knob its
+// top half back: the extra heat is past the top of the color ramp so the core
+// does not change color, it lifts harder and stays lit longer on the way up.
+var SOURCE_TEMP = BURN_TEMP * 2;
+
 // Spatial frequency of the turbulence stream function, in cells.
 var TURB_SCALE = 0.09;
 
@@ -237,14 +245,14 @@ var FIRELINE_GUST_LIFT = 1.6;
 
 // ---------------------------------------------------------------------- source
 
-knob("srcLevel", "Source", "How hard fuel is injected at each source ball", 0.65);
-knob("srcRadius", "Radius", "Source radius shared by all three balls", 0.18);
-knob("srcX", "Center X", "Formation center, horizontal", 0.5);
-knob("srcY", "Center Y", "Formation center, vertical", 0.5);
-knob("spread", "Spread", "Formation size — orbit radius, column separation", 0.3);
-knob("jet", "Jet", "Upward velocity injected at each ball", 0.15);
-knob("flicker", "Flicker", "How much the source strength wavers over time", 0.4);
-knob("advect", "Advect", "How hard the balls and the fire line drive the fluid; 200:1 range", 0.64);
+knob("srcLevel", "Source", "How hard fuel is injected at each source ball", 1);
+knob("srcRadius", "Radius", "Source radius shared by all three balls", 0.224);
+knob("srcX", "Center X", "Formation center, horizontal", 0.46);
+knob("srcY", "Center Y", "Formation center, vertical", 0.393);
+knob("spread", "Spread", "Formation size — orbit radius, column separation", 0.598);
+knob("jet", "Jet", "Upward velocity injected at each ball", 0.471);
+knob("flicker", "Flicker", "How much the source strength wavers over time", 0.277);
+knob("advect", "Advect", "How hard the balls and the fire line drive the fluid; 200:1 range", 0.71);
 
 // ----------------------------------------------------------------- ball motion
 //
@@ -253,7 +261,7 @@ knob("advect", "Advect", "How hard the balls and the fire line drive the fluid; 
 // term — it kills the steady-state droop of a ball being pushed by its own
 // fire, and it is the one that will wind up and wobble if leaned on.
 
-knob("pidP", "Chase", "How hard a ball is pulled toward its target", 0.4);
+knob("pidP", "Chase", "How hard a ball is pulled toward its target", 0.922);
 knob("pidD", "Damping", "How hard that pull is resisted; low overshoots", 0.5);
 knob("pidI", "Trim", "Integral correction for persistent error", 0);
 
@@ -262,26 +270,26 @@ trigger("cue", "Cue", "Accent the current state; means something different in ea
 
 // ----------------------------------------------------------------------- fluid
 
-knob("buoyancy", "Buoyancy", "How hard heat lifts the fluid", 0.62);
-knob("cooling", "Cooling", "Radiative cooling rate; sets the flame's height", 0.3);
-knob("burn", "Burn", "How fast fuel is consumed once it is lit", 0.5);
-knob("vorticity", "Vorticity", "Curl put back into the flame; 0 is a smooth plume", 0.5);
+knob("buoyancy", "Buoyancy", "How hard heat lifts the fluid", 0.911);
+knob("cooling", "Cooling", "Radiative cooling rate; sets the flame's height", 0.392);
+knob("burn", "Burn", "How fast fuel is consumed once it is lit", 0.882);
+knob("vorticity", "Vorticity", "Curl put back into the flame; 0 is a smooth plume", 1);
 knob("wind", "Wind", "Sideways push; 0.5 is still", 0.5);
-knob("turbulence", "Turbulence", "Divergence-free noise stirred into the velocity", 0.4);
-knob("smoke", "Smoke", "Soot given off by burning fuel", 0.35);
-knob("speed", "Speed", "Simulation time scale", 0.5);
+knob("turbulence", "Turbulence", "Divergence-free noise stirred into the velocity", 0.936);
+knob("smoke", "Smoke", "Soot given off by burning fuel", 0.202);
+knob("speed", "Speed", "Simulation time scale", 0.22);
 
 // ---------------------------------------------------------------------- render
 
-knob("coolK", "Cool", "Color temperature of the coolest visible gas", 0.3);
-knob("hotK", "Hot", "Color temperature of the flame core; high burns white to blue", 0.45);
-knob("falloff", "Falloff", "Contrast of the temperature-to-brightness curve", 0.3);
-knob("smokeGlow", "Smoke Glow", "How brightly soot renders on its own", 0.22);
-knob("level", "Level", "Overall brightness", 0.9);
+knob("coolK", "Cool", "Color temperature of the coolest visible gas", 0.662);
+knob("hotK", "Hot", "Color temperature of the flame core; high burns white to blue", 0.998);
+knob("falloff", "Falloff", "Contrast of the temperature-to-brightness curve", 0.742);
+knob("smokeGlow", "Smoke Glow", "How brightly soot renders on its own", 0.097);
+knob("level", "Level", "Overall brightness", 1);
 
-knobi("solver", "Solver", "Pressure solver iterations; more is rounder and slower", 14, 41);
+knobi("solver", "Solver", "Pressure solver iterations; more is rounder and slower", 16, 41);
 
-toggle("lid", "Lid", "Close the top of the box instead of letting the plume out", false);
+toggle("lid", "Lid", "Close the top of the box instead of letting the plume out", true);
 
 // ------------------------------------------------------------------ the fields
 //
@@ -1029,7 +1037,7 @@ function stampDisc(cx, cy, radius, rate, push, kickU, kickV) {
       var f = fuel[i] + rate * falloff;
       fuel[i] = f > 1 ? 1 : f;
       var h = heat[i] + rate * falloff * 0.5;
-      heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
+      heat[i] = h > SOURCE_TEMP ? SOURCE_TEMP : h;
       velV[i] += push * falloff;
 
       // A kick along the ball's heading, added rather than blended toward.
@@ -1192,7 +1200,7 @@ function injectFireLine(dt) {
       var f = fuel[i] + rate * falloff;
       fuel[i] = f > 1 ? 1 : f;
       var h = heat[i] + rate * falloff * 0.5;
-      heat[i] = h > BURN_TEMP ? BURN_TEMP : h;
+      heat[i] = h > SOURCE_TEMP ? SOURCE_TEMP : h;
       velV[i] += lift * waver * gustLift * falloff;
       velU[i] += swirl * lateral * falloff;
     }

@@ -97,6 +97,16 @@ public class FluidFirePattern extends LXPattern {
    */
   private static final double BURN_TEMP = 1.4;
 
+  /**
+   * How much hotter than a fully burning cell a source is allowed to drive one.
+   * Combustion tops out at BURN_TEMP, and a source clamped to the same ceiling
+   * could never be more than as hot as the fire it lit -- turning Source up past
+   * the point where it saturated bought nothing. Twice that gives the knob its
+   * top half back: the extra heat is past the top of the color ramp so the core
+   * does not change color, it lifts harder and stays lit longer on the way up.
+   */
+  private static final double SOURCE_TEMP = BURN_TEMP * 2;
+
   /** Spatial frequency of the turbulence stream function, in cells. */
   private static final double TURB_SCALE = .09;
 
@@ -263,35 +273,35 @@ public class FluidFirePattern extends LXPattern {
   // -------------------------------------------------------------------- source
 
   public final CompoundParameter srcLevel =
-    new CompoundParameter("Source", .65, 0, 1)
+    new CompoundParameter("Source", 1, 0, 1)
     .setDescription("How hard fuel is injected at each source ball");
 
   public final CompoundParameter srcRadius =
-    new CompoundParameter("Radius", .18, 0, 1)
+    new CompoundParameter("Radius", .224, 0, 1)
     .setDescription("Source radius shared by all three balls");
 
   public final CompoundParameter srcX =
-    new CompoundParameter("Center X", .5, 0, 1)
+    new CompoundParameter("Center X", .46, 0, 1)
     .setDescription("Formation center, horizontal");
 
   public final CompoundParameter srcY =
-    new CompoundParameter("Center Y", .5, 0, 1)
+    new CompoundParameter("Center Y", .393, 0, 1)
     .setDescription("Formation center, vertical");
 
   public final CompoundParameter spread =
-    new CompoundParameter("Spread", .3, 0, 1)
+    new CompoundParameter("Spread", .598, 0, 1)
     .setDescription("Formation size -- orbit radius, column separation");
 
   public final CompoundParameter jet =
-    new CompoundParameter("Jet", .15, 0, 1)
+    new CompoundParameter("Jet", .471, 0, 1)
     .setDescription("Upward velocity injected at each ball");
 
   public final CompoundParameter flicker =
-    new CompoundParameter("Flicker", .4, 0, 1)
+    new CompoundParameter("Flicker", .277, 0, 1)
     .setDescription("How much the source strength wavers over time");
 
   public final CompoundParameter advect =
-    new CompoundParameter("Advect", .64, 0, 1)
+    new CompoundParameter("Advect", .71, 0, 1)
     .setDescription("How hard the balls and the fire line drive the fluid; 200:1 range");
 
   // --------------------------------------------------------------- ball motion
@@ -302,7 +312,7 @@ public class FluidFirePattern extends LXPattern {
   // it is the one that will wind up and wobble if leaned on.
 
   public final CompoundParameter pidP =
-    new CompoundParameter("Chase", .4, 0, 1)
+    new CompoundParameter("Chase", .922, 0, 1)
     .setDescription("How hard a ball is pulled toward its target");
 
   public final CompoundParameter pidD =
@@ -322,7 +332,7 @@ public class FluidFirePattern extends LXPattern {
     .setDescription("Accent the current state; means something different in each");
 
   public final CompoundParameter phase =
-    new CompoundParameter("Phase", 0, -.5, .5)
+    new CompoundParameter("Phase", .003, -.5, .5)
     .setPolarity(LXParameter.Polarity.BIPOLAR)
     .setDescription("Slide the choreography earlier or later against the beat grid, in beats");
 
@@ -338,19 +348,19 @@ public class FluidFirePattern extends LXPattern {
   // --------------------------------------------------------------------- fluid
 
   public final CompoundParameter buoyancy =
-    new CompoundParameter("Buoyancy", .62, 0, 1)
+    new CompoundParameter("Buoyancy", .911, 0, 1)
     .setDescription("How hard heat lifts the fluid");
 
   public final CompoundParameter cooling =
-    new CompoundParameter("Cooling", .3, 0, 1)
+    new CompoundParameter("Cooling", .392, 0, 1)
     .setDescription("Radiative cooling rate; sets the flame's height");
 
   public final CompoundParameter burn =
-    new CompoundParameter("Burn", .5, 0, 1)
+    new CompoundParameter("Burn", .882, 0, 1)
     .setDescription("How fast fuel is consumed once it is lit");
 
   public final CompoundParameter vorticity =
-    new CompoundParameter("Vorticity", .5, 0, 1)
+    new CompoundParameter("Vorticity", 1, 0, 1)
     .setDescription("Curl put back into the flame; 0 is a smooth plume");
 
   public final CompoundParameter wind =
@@ -359,45 +369,45 @@ public class FluidFirePattern extends LXPattern {
     .setDescription("Sideways push; 0.5 is still");
 
   public final CompoundParameter turbulence =
-    new CompoundParameter("Turb", .4, 0, 1)
+    new CompoundParameter("Turb", .936, 0, 1)
     .setDescription("Divergence-free noise stirred into the velocity");
 
   public final CompoundParameter smoke =
-    new CompoundParameter("Smoke", .35, 0, 1)
+    new CompoundParameter("Smoke", .202, 0, 1)
     .setDescription("Soot given off by burning fuel");
 
   public final CompoundParameter speed =
-    new CompoundParameter("Speed", .5, 0, 1)
+    new CompoundParameter("Speed", .22, 0, 1)
     .setDescription("Simulation time scale");
 
   // -------------------------------------------------------------------- render
 
   public final CompoundParameter coolK =
-    new CompoundParameter("Cool", .3, 0, 1)
+    new CompoundParameter("Cool", .662, 0, 1)
     .setDescription("Color temperature of the coolest visible gas");
 
   public final CompoundParameter hotK =
-    new CompoundParameter("Hot", .45, 0, 1)
+    new CompoundParameter("Hot", .998, 0, 1)
     .setDescription("Color temperature of the flame core; high burns white to blue");
 
   public final CompoundParameter falloff =
-    new CompoundParameter("Falloff", .3, 0, 1)
+    new CompoundParameter("Falloff", .742, 0, 1)
     .setDescription("Contrast of the temperature-to-brightness curve");
 
   public final CompoundParameter smokeGlow =
-    new CompoundParameter("Glow", .22, 0, 1)
+    new CompoundParameter("Glow", .097, 0, 1)
     .setDescription("How brightly soot renders on its own");
 
   public final CompoundParameter level =
-    new CompoundParameter("Level", .9, 0, 1)
+    new CompoundParameter("Level", 1, 0, 1)
     .setDescription("Overall brightness");
 
   public final DiscreteParameter solver =
-    new DiscreteParameter("Solver", 14, 1, 41)
+    new DiscreteParameter("Solver", 16, 1, 41)
     .setDescription("Pressure solver iterations; more is rounder and slower");
 
   public final BooleanParameter lid =
-    new BooleanParameter("Lid", false)
+    new BooleanParameter("Lid", true)
     .setDescription("Close the top of the box instead of letting the plume out");
 
   // ----------------------------------------------------------------- the fields
@@ -1253,7 +1263,7 @@ public class FluidFirePattern extends LXPattern {
         double f = this.fuel[i] + rate * falloff;
         this.fuel[i] = (f > 1) ? 1 : f;
         double h = this.heat[i] + rate * falloff * .5;
-        this.heat[i] = (h > BURN_TEMP) ? BURN_TEMP : h;
+        this.heat[i] = (h > SOURCE_TEMP) ? SOURCE_TEMP : h;
         this.velV[i] += push * falloff;
 
         // A kick along the ball's heading, added rather than blended toward.
@@ -1419,7 +1429,7 @@ public class FluidFirePattern extends LXPattern {
         double f = this.fuel[i] + rate * falloff;
         this.fuel[i] = (f > 1) ? 1 : f;
         double h = this.heat[i] + rate * falloff * .5;
-        this.heat[i] = (h > BURN_TEMP) ? BURN_TEMP : h;
+        this.heat[i] = (h > SOURCE_TEMP) ? SOURCE_TEMP : h;
         this.velV[i] += lift * waver * gustLift * falloff;
         this.velU[i] += swirl * lateral * falloff;
       }
