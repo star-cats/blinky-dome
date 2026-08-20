@@ -3,8 +3,9 @@
  *
  * Displaces the current input colors in X and Y with two seamless noise maps.
  * Perlin drives broad horizontal flow while Swirl supplies a more directional
- * vertical ripple. Their texture coordinates drift at different rates, and
- * both displaced color coordinates wrap across the model boundaries.
+ * vertical ripple. Their texture coordinates drift at different rates. The
+ * noise repeats seamlessly, while displaced input-color samples clip at the
+ * model boundaries.
  */
 
 var ImageIO = Java.type("javax.imageio.ImageIO");
@@ -24,7 +25,7 @@ var BIN_COUNT = 32;
 var MAX_DISPLACEMENT = 0.28;
 
 knob("speed", "Motion Speed", "How quickly the two distortion fields drift", 0.35);
-knob("intensity", "Distortion", "Maximum wrapped X/Y displacement", 0.4);
+knob("intensity", "Distortion", "Maximum edge-clipped X/Y displacement", 0.4);
 
 var xNoise = null;
 var yNoise = null;
@@ -86,8 +87,8 @@ function renderPoint(point, deltaMs, enabledAmount, inputColor) {
     point.xn * 1.35 + phaseY * 0.43,
     point.yn * 1.35 + phaseY);
 
-  var sampleX = wrap01(point.xn + dx * displacement);
-  var sampleY = wrap01(point.yn + dy * displacement);
+  var sampleX = clamp(point.xn + dx * displacement, 0, 1);
+  var sampleY = clamp(point.yn + dy * displacement, 0, 1);
   var distortedColor = sampleSource(sampleX, sampleY);
   return LXColor.lerp(inputColor, distortedColor, clamp(enabledAmount, 0, 1));
 }
@@ -98,14 +99,14 @@ function renderPoint(point, deltaMs, enabledAmount, inputColor) {
  * points sample already-distorted output from earlier points.
  */
 function sampleSource(u, v) {
-  var x = wrap01(u) * LOOKUP_SIZE;
-  var y = wrap01(v) * LOOKUP_SIZE;
+  var x = clamp(u, 0, 1) * (LOOKUP_SIZE - 1);
+  var y = clamp(v, 0, 1) * (LOOKUP_SIZE - 1);
   var floorX = Math.floor(x);
   var floorY = Math.floor(y);
-  var x0 = floorX % LOOKUP_SIZE;
-  var y0 = floorY % LOOKUP_SIZE;
-  var x1 = (x0 + 1) % LOOKUP_SIZE;
-  var y1 = (y0 + 1) % LOOKUP_SIZE;
+  var x0 = floorX;
+  var y0 = floorY;
+  var x1 = Math.min(x0 + 1, LOOKUP_SIZE - 1);
+  var y1 = Math.min(y0 + 1, LOOKUP_SIZE - 1);
   var tx = x - floorX;
   var ty = y - floorY;
 
@@ -122,7 +123,7 @@ function sampleSource(u, v) {
   );
 }
 
-/** Build a toroidal nearest-point lookup for arbitrary LX models. */
+/** Build an edge-clipped nearest-point lookup for arbitrary LX models. */
 function buildSourceLookup(model) {
   indexedModel = model;
   indexedPointCount = model.points.length;
@@ -135,8 +136,8 @@ function buildSourceLookup(model) {
 
   for (var i = 0; i < model.points.length; ++i) {
     var point = model.points[i];
-    var bx = Math.min(BIN_COUNT - 1, Math.floor(wrap01(point.xn) * BIN_COUNT));
-    var by = Math.min(BIN_COUNT - 1, Math.floor(wrap01(point.yn) * BIN_COUNT));
+    var bx = Math.min(BIN_COUNT - 1, Math.floor(clamp(point.xn, 0, 1) * BIN_COUNT));
+    var by = Math.min(BIN_COUNT - 1, Math.floor(clamp(point.yn, 0, 1) * BIN_COUNT));
     var bin = by * BIN_COUNT + bx;
     pointNext[i] = binHead[bin];
     binHead[bin] = i;
@@ -148,47 +149,33 @@ function buildSourceLookup(model) {
   }
 
   for (var y = 0; y < LOOKUP_SIZE; ++y) {
-    var v = y / LOOKUP_SIZE;
+    var v = y / (LOOKUP_SIZE - 1);
     for (var x = 0; x < LOOKUP_SIZE; ++x) {
-      var u = x / LOOKUP_SIZE;
+      var u = x / (LOOKUP_SIZE - 1);
       sourceLookup[y * LOOKUP_SIZE + x] = nearestPointIndex(model, u, v);
     }
   }
 }
 
-/**
- * Find the nearest model point on a wrapped XY plane. Bins expand in rings;
- * once the nearest possible unsearched bin is farther than the current winner,
- * the result is exact and the search stops.
- */
+/** Find the nearest model point on a clipped XY plane using expanding bins. */
 function nearestPointIndex(model, u, v) {
-  var centerX = Math.floor(u * BIN_COUNT) % BIN_COUNT;
-  var centerY = Math.floor(v * BIN_COUNT) % BIN_COUNT;
+  var centerX = Math.min(BIN_COUNT - 1, Math.floor(clamp(u, 0, 1) * BIN_COUNT));
+  var centerY = Math.min(BIN_COUNT - 1, Math.floor(clamp(v, 0, 1) * BIN_COUNT));
   nearestBestPoint = -1;
   nearestBestDistanceSq = Infinity;
 
-  for (var radius = 0; radius <= Math.ceil(BIN_COUNT / 2); ++radius) {
+  for (var radius = 0; radius < BIN_COUNT; ++radius) {
     if (radius == 0) {
       var centerBin = centerY * BIN_COUNT + centerX;
       inspectBin(model, centerBin, u, v);
     } else {
       for (var dx = -radius; dx <= radius; ++dx) {
-        var topBin = wrapIndex(centerY - radius, BIN_COUNT) * BIN_COUNT +
-          wrapIndex(centerX + dx, BIN_COUNT);
-        inspectBin(model, topBin, u, v);
-
-        var bottomBin = wrapIndex(centerY + radius, BIN_COUNT) * BIN_COUNT +
-          wrapIndex(centerX + dx, BIN_COUNT);
-        inspectBin(model, bottomBin, u, v);
+        inspectBinAt(model, centerX + dx, centerY - radius, u, v);
+        inspectBinAt(model, centerX + dx, centerY + radius, u, v);
       }
       for (var dy = -radius + 1; dy < radius; ++dy) {
-        var leftBin = wrapIndex(centerY + dy, BIN_COUNT) * BIN_COUNT +
-          wrapIndex(centerX - radius, BIN_COUNT);
-        inspectBin(model, leftBin, u, v);
-
-        var rightBin = wrapIndex(centerY + dy, BIN_COUNT) * BIN_COUNT +
-          wrapIndex(centerX + radius, BIN_COUNT);
-        inspectBin(model, rightBin, u, v);
+        inspectBinAt(model, centerX - radius, centerY + dy, u, v);
+        inspectBinAt(model, centerX + radius, centerY + dy, u, v);
       }
     }
 
@@ -204,13 +191,17 @@ function nearestPointIndex(model, u, v) {
   return nearestBestPoint >= 0 ? model.points[nearestBestPoint].index : model.points[0].index;
 }
 
+function inspectBinAt(model, bx, by, u, v) {
+  if (bx >= 0 && bx < BIN_COUNT && by >= 0 && by < BIN_COUNT) {
+    inspectBin(model, by * BIN_COUNT + bx, u, v);
+  }
+}
+
 function inspectBin(model, bin, u, v) {
   for (var i = binHead[bin]; i >= 0; i = pointNext[i]) {
     var point = model.points[i];
     var dx = Math.abs(point.xn - u);
     var dy = Math.abs(point.yn - v);
-    dx = Math.min(dx, 1 - dx);
-    dy = Math.min(dy, 1 - dy);
     var distanceSq = dx * dx + dy * dy;
     if (distanceSq < nearestBestDistanceSq) {
       nearestBestDistanceSq = distanceSq;
@@ -254,10 +245,6 @@ function grayOf(argb) {
 
 function wrap01(value) {
   return value - Math.floor(value);
-}
-
-function wrapIndex(value, size) {
-  return ((value % size) + size) % size;
 }
 
 function mediaRoot() {
