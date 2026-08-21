@@ -46,6 +46,16 @@ var SPIRAL_SOFTEN = 0.04;
 var MAX_RATE = 0.35;
 var MAX_ZOOM = 4;
 
+// Phases wrap at 2, not 1, because every axis that lands in reflectRange is
+// mirrored: it runs out and back, so its period is two spans and wrapping at one
+// would flip the mirror parity and pop. The angular axes only need 1 (a turn of
+// TAU is a turn of nothing), and 2 is a whole number of those too, so one period
+// keeps every consumer seamless. Nothing here needs a periodic reset for
+// floating point — the accumulator stays inside [0,2) forever, and each fold is
+// exactly invariant under a step of 2, so the wrap is silent rather than merely
+// rare.
+var PHASE_PERIOD = 2;
+
 var WEDGE = 0;
 var TILE = 1;
 var SPIRAL = 2;
@@ -91,12 +101,13 @@ var nearestBestDistanceSq = Infinity;
 function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   var dt = isFinite(deltaMs) ? clamp(deltaMs / 1000, 0, 0.25) : 0;
 
-  // Phases live in [0,1) and wrap exactly, so they stay precise indefinitely
-  // instead of accumulating into a float where a knob turn stops registering.
-  driftX = wrap01(driftX + dt * (speedX - 0.5) * 2 * MAX_RATE);
-  driftY = wrap01(driftY + dt * (speedY - 0.5) * 2 * MAX_RATE);
-  shiftX = wrap01(driftX + phaseX);
-  shiftY = wrap01(driftY + phaseY);
+  // Phases stay inside one period, so they never lose precision to a growing
+  // exponent — and since every fold is invariant across that period, the wrap
+  // itself is invisible. See PHASE_PERIOD.
+  driftX = wrap(driftX + dt * (speedX - 0.5) * 2 * MAX_RATE, PHASE_PERIOD);
+  driftY = wrap(driftY + dt * (speedY - 0.5) * 2 * MAX_RATE, PHASE_PERIOD);
+  shiftX = wrap(driftX + phaseX, PHASE_PERIOD);
+  shiftY = wrap(driftY + phaseY, PHASE_PERIOD);
 
   folds = Math.max(1, symmetry);
   wedgeWidth = TAU / folds;
@@ -171,9 +182,13 @@ function foldWedge(x, y) {
   var r = Math.sqrt(x * x + y * y);
   var a = reflectInto(Math.atan2(y, x), wedgeWidth) + shiftX * TAU;
 
-  // Radial shift just pushes the read outward; the mirror in the UV conversion
-  // turns what runs off the frame into a continuous fold back inward.
-  var rs = r + shiftY * sceneR;
+  // Reflected into the frame's disc rather than pushed off it. An open-ended
+  // push has no period, so the phase wrap had nowhere seamless to land and the
+  // read snapped back by a full radius once a cycle. Folding gives the radial
+  // axis a period of two spans, matching every other axis, and it costs nothing
+  // at rest: r never exceeds sceneR at unit zoom, so this is the identity until
+  // the shift actually moves.
+  var rs = reflectRange(r + shiftY * sceneR, 0, sceneR);
   foldResult.x = rs * Math.cos(a);
   foldResult.y = rs * Math.sin(a);
   return foldResult;
