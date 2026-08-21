@@ -21,8 +21,8 @@ import heronarts.lx.parameter.CompoundParameter;
  * Perlin drives broad horizontal flow while Swirl supplies a more directional
  * vertical ripple. Their texture coordinates drift at different rates and in
  * different directions, which is what keeps the two axes from locking into one
- * diagonal translation. The noise repeats seamlessly; displaced samples clip at
- * the model boundaries.
+ * diagonal translation. Perlin repeats while Swirl mirrors at its non-matching
+ * edges; displaced samples clip at the model boundaries.
  *
  * Sampling is off a snapshot taken before anything is written, and that is not
  * an optimization — it is the whole correctness argument for an effect that
@@ -59,7 +59,8 @@ public class NoiseRippleDistortionEffect extends LXEffect {
   /**
    * Keeps accumulated phases numerically bounded without interrupting any of
    * the fractional-rate texture trajectories. Both .31 and .43 produce whole-
-   * number texture offsets over this interval, so the eventual wrap is seamless.
+   * number texture offsets over this interval (even ones for mirrored Swirl),
+   * so the eventual wrap is seamless.
    */
   private static final double PHASE_WRAP = 10000;
 
@@ -156,7 +157,10 @@ public class NoiseRippleDistortionEffect extends LXEffect {
       double dx = signedNoise(this.xNoise,
         point.xn * 1.7 + this.phaseX,
         point.yn * 1.7 + this.phaseX * .31);
-      double dy = signedNoise(this.yNoise,
+      // Swirl is not actually seamless at its image edges. Mirror sampling
+      // keeps those edges continuous instead of squeezing the mismatch into a
+      // one-pixel crease that pops as it moves across sparse model points.
+      double dy = signedMirroredNoise(this.yNoise,
         point.xn * 1.35 + this.phaseY * .43,
         point.yn * 1.35 + this.phaseY);
 
@@ -288,6 +292,11 @@ public class NoiseRippleDistortionEffect extends LXEffect {
     return clamp((gray - image.center) / image.halfSpan, -1, 1);
   }
 
+  private static double signedMirroredNoise(Texture image, double u, double v) {
+    double gray = sampleGrayMirrored(image, u, v);
+    return clamp((gray - image.center) / image.halfSpan, -1, 1);
+  }
+
   /** Bilinear grayscale texture sampling with seamless wrapping on both axes. */
   private static double sampleGray(Texture image, double u, double v) {
     u = wrap01(u);
@@ -302,6 +311,25 @@ public class NoiseRippleDistortionEffect extends LXEffect {
     int y1 = (y0 + 1) % image.h;
     double tx = x - floorX;
     double ty = y - floorY;
+    double a = grayOf(image.px[y0 * image.w + x0]);
+    double b = grayOf(image.px[y0 * image.w + x1]);
+    double c = grayOf(image.px[y1 * image.w + x0]);
+    double d = grayOf(image.px[y1 * image.w + x1]);
+    return lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
+  }
+
+  /** Bilinear grayscale sampling with reflection at each texture edge. */
+  private static double sampleGrayMirrored(Texture image, double u, double v) {
+    u = mirror01(u);
+    v = mirror01(v);
+    double x = u * (image.w - 1);
+    double y = v * (image.h - 1);
+    int x0 = (int) Math.floor(x);
+    int y0 = (int) Math.floor(y);
+    int x1 = Math.min(x0 + 1, image.w - 1);
+    int y1 = Math.min(y0 + 1, image.h - 1);
+    double tx = x - x0;
+    double ty = y - y0;
     double a = grayOf(image.px[y0 * image.w + x0]);
     double b = grayOf(image.px[y0 * image.w + x1]);
     double c = grayOf(image.px[y1 * image.w + x0]);
@@ -357,6 +385,11 @@ public class NoiseRippleDistortionEffect extends LXEffect {
 
   private static double wrap01(double value) {
     return value - Math.floor(value);
+  }
+
+  private static double mirror01(double value) {
+    double mirrored = wrap(value, 2);
+    return (mirrored <= 1) ? mirrored : 2 - mirrored;
   }
 
   private static double wrap(double value, double period) {

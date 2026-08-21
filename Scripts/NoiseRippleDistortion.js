@@ -3,9 +3,9 @@
  *
  * Displaces the current input colors in X and Y with two seamless noise maps.
  * Perlin drives broad horizontal flow while Swirl supplies a more directional
- * vertical ripple. Their texture coordinates drift at different rates. The
- * noise repeats seamlessly, while displaced input-color samples clip at the
- * model boundaries.
+ * vertical ripple. Their texture coordinates drift at different rates. Perlin
+ * repeats while Swirl mirrors at its non-matching edges, and displaced input-
+ * color samples clip at the model boundaries.
  */
 
 var ImageIO = Java.type("javax.imageio.ImageIO");
@@ -25,7 +25,8 @@ var BIN_COUNT = 32;
 var MAX_DISPLACEMENT = 0.28;
 // Keep accumulated phases numerically bounded without interrupting any of the
 // fractional-rate texture trajectories. Both .31 and .43 produce whole-number
-// texture offsets over this interval, so the eventual wrap is seamless.
+// texture offsets over this interval (even ones for mirrored Swirl), so the
+// eventual wrap is seamless.
 var PHASE_WRAP = 10000;
 
 knob("speed", "Motion Speed", "How quickly the two distortion fields drift", 0.35);
@@ -87,7 +88,10 @@ function renderPoint(point, deltaMs, enabledAmount, inputColor) {
   var dx = signedNoise(xNoise,
     point.xn * 1.7 + phaseX,
     point.yn * 1.7 + phaseX * 0.31);
-  var dy = signedNoise(yNoise,
+  // Swirl is not actually seamless at its image edges. Mirror sampling keeps
+  // those edges continuous instead of squeezing the mismatch into a one-pixel
+  // crease that pops as it moves across sparse model points.
+  var dy = signedMirroredNoise(yNoise,
     point.xn * 1.35 + phaseY * 0.43,
     point.yn * 1.35 + phaseY);
 
@@ -219,6 +223,11 @@ function signedNoise(image, u, v) {
   return clamp((gray - image.center) / image.halfSpan, -1, 1);
 }
 
+function signedMirroredNoise(image, u, v) {
+  var gray = sampleGrayMirrored(image, u, v);
+  return clamp((gray - image.center) / image.halfSpan, -1, 1);
+}
+
 /** Bilinear grayscale texture sampling with seamless wrapping on both axes. */
 function sampleGray(image, u, v) {
   u = wrap01(u);
@@ -240,6 +249,25 @@ function sampleGray(image, u, v) {
   return lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
 }
 
+/** Bilinear grayscale sampling with reflection at each texture edge. */
+function sampleGrayMirrored(image, u, v) {
+  u = mirror01(u);
+  v = mirror01(v);
+  var x = u * (image.w - 1);
+  var y = v * (image.h - 1);
+  var x0 = Math.floor(x);
+  var y0 = Math.floor(y);
+  var x1 = Math.min(x0 + 1, image.w - 1);
+  var y1 = Math.min(y0 + 1, image.h - 1);
+  var tx = x - x0;
+  var ty = y - y0;
+  var a = grayOf(image.px[y0 * image.w + x0]);
+  var b = grayOf(image.px[y0 * image.w + x1]);
+  var c = grayOf(image.px[y1 * image.w + x0]);
+  var d = grayOf(image.px[y1 * image.w + x1]);
+  return lerp(lerp(a, b, tx), lerp(c, d, tx), ty);
+}
+
 function grayOf(argb) {
   var r = (argb >> 16) & 0xff;
   var g = (argb >> 8) & 0xff;
@@ -249,6 +277,11 @@ function grayOf(argb) {
 
 function wrap01(value) {
   return value - Math.floor(value);
+}
+
+function mirror01(value) {
+  var mirrored = wrap(value, 2);
+  return mirrored <= 1 ? mirrored : 2 - mirrored;
 }
 
 function wrap(value, period) {
