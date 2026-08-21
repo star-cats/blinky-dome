@@ -23,6 +23,10 @@ var MEDIA_ROOT = null;
 var LOOKUP_SIZE = 128;
 var BIN_COUNT = 32;
 var MAX_DISPLACEMENT = 0.28;
+// Keep accumulated phases numerically bounded without interrupting any of the
+// fractional-rate texture trajectories. Both .31 and .43 produce whole-number
+// texture offsets over this interval, so the eventual wrap is seamless.
+var PHASE_WRAP = 10000;
 
 knob("speed", "Motion Speed", "How quickly the two distortion fields drift", 0.35);
 knob("intensity", "Distortion", "Maximum edge-clipped X/Y displacement", 0.4);
@@ -55,8 +59,8 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
 
   // Deliberately different rates and directions keep the two axes from locking
   // into one diagonal translation.
-  phaseX = wrap01(phaseX + dt * rate);
-  phaseY = wrap01(phaseY - dt * rate * 0.63);
+  phaseX = wrap(phaseX + dt * rate, PHASE_WRAP);
+  phaseY = wrap(phaseY - dt * rate * 0.63, PHASE_WRAP);
   displacement = intensity * MAX_DISPLACEMENT;
 
   if (sourceColors == null || sourceColors.length != colors.length) {
@@ -245,6 +249,10 @@ function grayOf(argb) {
 
 function wrap01(value) {
   return value - Math.floor(value);
+}
+
+function wrap(value, period) {
+  return value - Math.floor(value / period) * period;
 }
 
 function mediaRoot() {

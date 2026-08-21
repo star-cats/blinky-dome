@@ -56,6 +56,12 @@ public class NoiseRippleDistortionEffect extends LXEffect {
   private static final int LOOKUP_SIZE = 128;
   private static final int BIN_COUNT = 32;
   private static final double MAX_DISPLACEMENT = .28;
+  /**
+   * Keeps accumulated phases numerically bounded without interrupting any of
+   * the fractional-rate texture trajectories. Both .31 and .43 produce whole-
+   * number texture offsets over this interval, so the eventual wrap is seamless.
+   */
+  private static final double PHASE_WRAP = 10000;
 
   public final CompoundParameter speed =
     new CompoundParameter("Motion Speed", .35, 0, 1)
@@ -118,8 +124,8 @@ public class NoiseRippleDistortionEffect extends LXEffect {
 
     // Deliberately different rates and directions keep the two axes from
     // locking into one diagonal translation.
-    this.phaseX = wrap01(this.phaseX + dt * rate);
-    this.phaseY = wrap01(this.phaseY - dt * rate * .63);
+    this.phaseX = wrap(this.phaseX + dt * rate, PHASE_WRAP);
+    this.phaseY = wrap(this.phaseY - dt * rate * .63, PHASE_WRAP);
     this.displacement = this.intensity.getValue() * MAX_DISPLACEMENT;
 
     if (this.indexedModel != this.model
@@ -351,6 +357,10 @@ public class NoiseRippleDistortionEffect extends LXEffect {
 
   private static double wrap01(double value) {
     return value - Math.floor(value);
+  }
+
+  private static double wrap(double value, double period) {
+    return value - Math.floor(value / period) * period;
   }
 
   private static double clamp(double v, double low, double high) {
