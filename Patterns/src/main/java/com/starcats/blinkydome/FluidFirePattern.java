@@ -134,9 +134,6 @@ public class FluidFirePattern extends LXPattern {
    */
   private static final double MAX_BALL_SPEED = 4;
 
-  /** Longest swept stamp, in sub-discs. Slack rather than a budget. */
-  private static final int MAX_SWEEP_STAMPS = 24;
-
   /**
    * How fast a ball's radius multiplier chases the value choreography asks for.
    * Slow enough that FIRELINE's shrink to nothing reads as a fade rather than as
@@ -277,31 +274,31 @@ public class FluidFirePattern extends LXPattern {
     .setDescription("How hard fuel is injected at each source ball");
 
   public final CompoundParameter srcRadius =
-    new CompoundParameter("Radius", .224, 0, 1)
+    new CompoundParameter("Radius", .21933594313275528, 0, 1)
     .setDescription("Source radius shared by all three balls");
 
   public final CompoundParameter srcX =
-    new CompoundParameter("Center X", .46, 0, 1)
+    new CompoundParameter("Center X", .5026562500651925, 0, 1)
     .setDescription("Formation center, horizontal");
 
   public final CompoundParameter srcY =
-    new CompoundParameter("Center Y", .393, 0, 1)
+    new CompoundParameter("Center Y", .5, 0, 1)
     .setDescription("Formation center, vertical");
 
   public final CompoundParameter spread =
-    new CompoundParameter("Spread", .598, 0, 1)
+    new CompoundParameter("Spread", .7318359429991688, 0, 1)
     .setDescription("Formation size -- orbit radius, column separation");
 
   public final CompoundParameter jet =
-    new CompoundParameter("Jet", .471, 0, 1)
+    new CompoundParameter("Jet", .5620312509126961, 0, 1)
     .setDescription("Upward velocity injected at each ball");
 
   public final CompoundParameter flicker =
-    new CompoundParameter("Flicker", .277, 0, 1)
+    new CompoundParameter("Flicker", .7418749998323619, 0, 1)
     .setDescription("How much the source strength wavers over time");
 
   public final CompoundParameter advect =
-    new CompoundParameter("Advect", .71, 0, 1)
+    new CompoundParameter("Advect", .7695703179488191, 0, 1)
     .setDescription("How hard the balls and the fire line drive the fluid; 200:1 range");
 
   // --------------------------------------------------------------- ball motion
@@ -312,7 +309,7 @@ public class FluidFirePattern extends LXPattern {
   // it is the one that will wind up and wobble if leaned on.
 
   public final CompoundParameter pidP =
-    new CompoundParameter("Chase", .922, 0, 1)
+    new CompoundParameter("Chase", .4, 0, 1)
     .setDescription("How hard a ball is pulled toward its target");
 
   public final CompoundParameter pidD =
@@ -332,7 +329,7 @@ public class FluidFirePattern extends LXPattern {
     .setDescription("Accent the current state; means something different in each");
 
   public final CompoundParameter phase =
-    new CompoundParameter("Phase", .003, -.5, .5)
+    new CompoundParameter("Phase", 0, -.5, .5)
     .setPolarity(LXParameter.Polarity.BIPOLAR)
     .setDescription("Slide the choreography earlier or later against the beat grid, in beats");
 
@@ -348,15 +345,15 @@ public class FluidFirePattern extends LXPattern {
   // --------------------------------------------------------------------- fluid
 
   public final CompoundParameter buoyancy =
-    new CompoundParameter("Buoyancy", .911, 0, 1)
+    new CompoundParameter("Buoyancy", 1, 0, 1)
     .setDescription("How hard heat lifts the fluid");
 
   public final CompoundParameter cooling =
-    new CompoundParameter("Cooling", .392, 0, 1)
+    new CompoundParameter("Cooling", .3628906246012775, 0, 1)
     .setDescription("Radiative cooling rate; sets the flame's height");
 
   public final CompoundParameter burn =
-    new CompoundParameter("Burn", .882, 0, 1)
+    new CompoundParameter("Burn", .5, 0, 1)
     .setDescription("How fast fuel is consumed once it is lit");
 
   public final CompoundParameter vorticity =
@@ -369,45 +366,45 @@ public class FluidFirePattern extends LXPattern {
     .setDescription("Sideways push; 0.5 is still");
 
   public final CompoundParameter turbulence =
-    new CompoundParameter("Turb", .936, 0, 1)
+    new CompoundParameter("Turb", 1, 0, 1)
     .setDescription("Divergence-free noise stirred into the velocity");
 
   public final CompoundParameter smoke =
-    new CompoundParameter("Smoke", .202, 0, 1)
+    new CompoundParameter("Smoke", .35, 0, 1)
     .setDescription("Soot given off by burning fuel");
 
   public final CompoundParameter speed =
-    new CompoundParameter("Speed", .22, 0, 1)
+    new CompoundParameter("Speed", .5, 0, 1)
     .setDescription("Simulation time scale");
 
   // -------------------------------------------------------------------- render
 
   public final CompoundParameter coolK =
-    new CompoundParameter("Cool", .662, 0, 1)
+    new CompoundParameter("Cool", .3, 0, 1)
     .setDescription("Color temperature of the coolest visible gas");
 
   public final CompoundParameter hotK =
-    new CompoundParameter("Hot", .998, 0, 1)
+    new CompoundParameter("Hot", .45, 0, 1)
     .setDescription("Color temperature of the flame core; high burns white to blue");
 
   public final CompoundParameter falloff =
-    new CompoundParameter("Falloff", .742, 0, 1)
+    new CompoundParameter("Falloff", .5702734446938849, 0, 1)
     .setDescription("Contrast of the temperature-to-brightness curve");
 
   public final CompoundParameter smokeGlow =
-    new CompoundParameter("Glow", .097, 0, 1)
+    new CompoundParameter("Glow", .19390624327934347, 0, 1)
     .setDescription("How brightly soot renders on its own");
 
   public final CompoundParameter level =
-    new CompoundParameter("Level", 1, 0, 1)
+    new CompoundParameter("Level", .9, 0, 1)
     .setDescription("Overall brightness");
 
   public final DiscreteParameter solver =
-    new DiscreteParameter("Solver", 16, 1, 41)
+    new DiscreteParameter("Solver", 14, 1, 41)
     .setDescription("Pressure solver iterations; more is rounder and slower");
 
   public final BooleanParameter lid =
-    new BooleanParameter("Lid", true)
+    new BooleanParameter("Lid", false)
     .setDescription("Close the top of the box instead of letting the plume out");
 
   // ----------------------------------------------------------------- the fields
@@ -1233,24 +1230,32 @@ public class FluidFirePattern extends LXPattern {
   }
 
   /**
-   * Lay one soft-edged disc of fuel into the grid.
+   * Lay one soft-edged swept disc (a capsule) of fuel into the grid.
    *
-   * Only the disc's bounding box is visited, since a source is a small part of the
-   * grid and this runs several times a substep. Each stamp of a swept ball is a
-   * full-strength one: overlapping stamps saturate against the fuel and heat
-   * ceilings rather than accumulating without limit.
+   * Distance is measured to the complete segment, not to a row of sample stamps.
+   * Every cell touched anywhere during the move therefore receives source and
+   * current at full strength, with no speed-, radius-, or frame-dependent gaps.
    */
-  private void stampDisc(double cx, double cy, double radius, double rate,
+  private void stampSweptDisc(double x0, double y0, double x1, double y1,
+      double radius, double rate,
       double push, double kickU, double kickV) {
-    int xMin = Math.max(0, (int) Math.floor((cx - radius) * this.W1));
-    int xMax = Math.min(this.W1, (int) Math.ceil((cx + radius) * this.W1));
-    int yMin = Math.max(0, (int) Math.floor((cy - radius) * this.H1));
-    int yMax = Math.min(this.H1, (int) Math.ceil((cy + radius) * this.H1));
+    int xMin = Math.max(0, (int) Math.floor((Math.min(x0, x1) - radius) * this.W1));
+    int xMax = Math.min(this.W1, (int) Math.ceil((Math.max(x0, x1) + radius) * this.W1));
+    int yMin = Math.max(0, (int) Math.floor((Math.min(y0, y1) - radius) * this.H1));
+    int yMax = Math.min(this.H1, (int) Math.ceil((Math.max(y0, y1) + radius) * this.H1));
+    double segmentX = x1 - x0;
+    double segmentY = y1 - y0;
+    double segmentLengthSq = segmentX * segmentX + segmentY * segmentY;
 
     for (int y = yMin; y <= yMax; ++y) {
-      double ny = (double) y / this.H1 - cy;
+      double py = (double) y / this.H1;
       for (int x = xMin; x <= xMax; ++x) {
-        double nx = (double) x / this.W1 - cx;
+        double px = (double) x / this.W1;
+        double t = (segmentLengthSq > 0)
+          ? clamp(((px - x0) * segmentX + (py - y0) * segmentY) / segmentLengthSq, 0, 1)
+          : 0;
+        double nx = px - (x0 + segmentX * t);
+        double ny = py - (y0 + segmentY * t);
         double d = Math.sqrt(nx * nx + ny * ny) / radius;
         if (d >= 1) {
           continue;
@@ -1266,7 +1271,7 @@ public class FluidFirePattern extends LXPattern {
         this.heat[i] = (h > SOURCE_TEMP) ? SOURCE_TEMP : h;
         this.velV[i] += push * falloff;
 
-        // A kick along the ball's heading, added rather than blended toward.
+        // A kick along the ball's dragged motion, added rather than blended toward.
         //
         // Blending toward the ball's own velocity was the obvious way to write
         // this and it has a ceiling built into it: the fluid can be pulled up to
@@ -1281,13 +1286,12 @@ public class FluidFirePattern extends LXPattern {
   }
 
   /**
-   * Feed the three source balls, smearing each along the path it just travelled.
+   * Feed the three source balls across every point of the path just travelled.
    *
-   * Every stamp along the segment gets the full source strength and the full
-   * advection, not a share of it -- the trail a moving ball leaves burns as hard
-   * as the ball does, so speed buys length rather than costing brightness. Fuel
-   * and heat clamp per cell, so a slow ball laying many overlapping stamps
-   * saturates instead of running away.
+   * The swept disc applies one full-strength source operation to the entire
+   * capsule. Speed buys length rather than costing brightness, and using actual
+   * displacement for the current means reflected or constrained motion pushes in
+   * the direction the source really travelled.
    */
   private void injectSources(double dt) {
     double srcAmount = this.srcLevel.getValue();
@@ -1319,35 +1323,26 @@ public class FluidFirePattern extends LXPattern {
 
       double dx = ball.x - ball.px;
       double dy = ball.y - ball.py;
-      double distance = Math.sqrt(dx * dx + dy * dy);
-
-      // Half a radius between stamps keeps the swept trail solid; a lone stamp
-      // for a ball that barely moved keeps a still ball cheap.
-      int stamps = 1;
-      if (distance > 0) {
-        stamps = (int) Math.ceil(distance / Math.max(radius * .5, 1e-4));
-        if (stamps < 1) {
-          stamps = 1;
-        } else if (stamps > MAX_SWEEP_STAMPS) {
-          stamps = MAX_SWEEP_STAMPS;
-        }
-      }
-
       double rate = strength * waver * dt;
       double push = jetAmount * jetAmount * 45 * waver * dt;
 
-      // The fluid is driven along the ball's own velocity, converted from
-      // frame-widths per second into the grid's cells per second. At a drive of 1
-      // the fluid ends up moving about as fast as the ball that stirred it.
-      double kickU = ball.vx * this.W1 * drive * dt;
-      double kickV = ball.vy * this.H1 * drive * dt;
+      // Convert actual displacement into grid cells/sec and then into this
+      // step's impulse. This deliberately follows the dragged path, including
+      // reflections and constraints, rather than trusting stale planned velocity.
+      double motionU = (dt > 0) ? dx / dt : 0;
+      double motionV = (dt > 0) ? dy / dt : 0;
+      double kickU = motionU * this.W1 * drive * dt;
+      double kickV = motionV * this.H1 * drive * dt;
 
-      for (int s = 0; s < stamps; ++s) {
-        // Stamp centers sit on the segment, offset half a step so the trail is
-        // symmetric about the path rather than piling up on one end of it.
-        double t = (s + .5) / stamps;
-        stampDisc(ball.px + dx * t, ball.py + dy * t, radius, rate, push, kickU, kickV);
-      }
+      stampSweptDisc(
+        ball.px, ball.py,
+        ball.x, ball.y,
+        radius,
+        rate,
+        push,
+        kickU,
+        kickV
+      );
 
       ball.px = ball.x;
       ball.py = ball.y;

@@ -118,10 +118,6 @@ var BALL_COUNT = 3;
 // work the swept stamp does.
 var MAX_BALL_SPEED = 4;
 
-// Longest swept stamp, in sub-discs. A ball at the speed limit crosses about
-// four hundredths of the frame in a substep, so this is slack, not a budget.
-var MAX_SWEEP_STAMPS = 24;
-
 // How fast a ball's radius multiplier chases the value choreography asks for.
 // Slow enough that FIRELINE's shrink to nothing reads as a fade rather than as
 // the ball being switched off.
@@ -246,13 +242,13 @@ var FIRELINE_GUST_LIFT = 1.6;
 // ---------------------------------------------------------------------- source
 
 knob("srcLevel", "Source", "How hard fuel is injected at each source ball", 1);
-knob("srcRadius", "Radius", "Source radius shared by all three balls", 0.224);
-knob("srcX", "Center X", "Formation center, horizontal", 0.46);
-knob("srcY", "Center Y", "Formation center, vertical", 0.393);
-knob("spread", "Spread", "Formation size — orbit radius, column separation", 0.598);
-knob("jet", "Jet", "Upward velocity injected at each ball", 0.471);
-knob("flicker", "Flicker", "How much the source strength wavers over time", 0.277);
-knob("advect", "Advect", "How hard the balls and the fire line drive the fluid; 200:1 range", 0.71);
+knob("srcRadius", "Radius", "Source radius shared by all three balls", 0.21933594313275528);
+knob("srcX", "Center X", "Formation center, horizontal", 0.5026562500651925);
+knob("srcY", "Center Y", "Formation center, vertical", 0.5);
+knob("spread", "Spread", "Formation size — orbit radius, column separation", 0.7318359429991688);
+knob("jet", "Jet", "Upward velocity injected at each ball", 0.5620312509126961);
+knob("flicker", "Flicker", "How much the source strength wavers over time", 0.7418749998323619);
+knob("advect", "Advect", "How hard the balls and the fire line drive the fluid; 200:1 range", 0.7695703179488191);
 
 // ----------------------------------------------------------------- ball motion
 //
@@ -261,7 +257,7 @@ knob("advect", "Advect", "How hard the balls and the fire line drive the fluid; 
 // term — it kills the steady-state droop of a ball being pushed by its own
 // fire, and it is the one that will wind up and wobble if leaned on.
 
-knob("pidP", "Chase", "How hard a ball is pulled toward its target", 0.922);
+knob("pidP", "Chase", "How hard a ball is pulled toward its target", 0.4);
 knob("pidD", "Damping", "How hard that pull is resisted; low overshoots", 0.5);
 knob("pidI", "Trim", "Integral correction for persistent error", 0);
 
@@ -270,26 +266,26 @@ trigger("cue", "Cue", "Accent the current state; means something different in ea
 
 // ----------------------------------------------------------------------- fluid
 
-knob("buoyancy", "Buoyancy", "How hard heat lifts the fluid", 0.911);
-knob("cooling", "Cooling", "Radiative cooling rate; sets the flame's height", 0.392);
-knob("burn", "Burn", "How fast fuel is consumed once it is lit", 0.882);
+knob("buoyancy", "Buoyancy", "How hard heat lifts the fluid", 1);
+knob("cooling", "Cooling", "Radiative cooling rate; sets the flame's height", 0.3628906246012775);
+knob("burn", "Burn", "How fast fuel is consumed once it is lit", 0.5);
 knob("vorticity", "Vorticity", "Curl put back into the flame; 0 is a smooth plume", 1);
 knob("wind", "Wind", "Sideways push; 0.5 is still", 0.5);
-knob("turbulence", "Turbulence", "Divergence-free noise stirred into the velocity", 0.936);
-knob("smoke", "Smoke", "Soot given off by burning fuel", 0.202);
-knob("speed", "Speed", "Simulation time scale", 0.22);
+knob("turbulence", "Turbulence", "Divergence-free noise stirred into the velocity", 1);
+knob("smoke", "Smoke", "Soot given off by burning fuel", 0.35);
+knob("speed", "Speed", "Simulation time scale", 0.5);
 
 // ---------------------------------------------------------------------- render
 
-knob("coolK", "Cool", "Color temperature of the coolest visible gas", 0.662);
-knob("hotK", "Hot", "Color temperature of the flame core; high burns white to blue", 0.998);
-knob("falloff", "Falloff", "Contrast of the temperature-to-brightness curve", 0.742);
-knob("smokeGlow", "Smoke Glow", "How brightly soot renders on its own", 0.097);
-knob("level", "Level", "Overall brightness", 1);
+knob("coolK", "Cool", "Color temperature of the coolest visible gas", 0.3);
+knob("hotK", "Hot", "Color temperature of the flame core; high burns white to blue", 0.45);
+knob("falloff", "Falloff", "Contrast of the temperature-to-brightness curve", 0.5702734446938849);
+knob("smokeGlow", "Smoke Glow", "How brightly soot renders on its own", 0.19390624327934347);
+knob("level", "Level", "Overall brightness", 0.9);
 
-knobi("solver", "Solver", "Pressure solver iterations; more is rounder and slower", 16, 41);
+knobi("solver", "Solver", "Pressure solver iterations; more is rounder and slower", 14, 41);
 
-toggle("lid", "Lid", "Close the top of the box instead of letting the plume out", true);
+toggle("lid", "Lid", "Close the top of the box instead of letting the plume out", false);
 
 // ------------------------------------------------------------------ the fields
 //
@@ -1000,31 +996,40 @@ function advectScalars(dt) {
 }
 
 /**
- * Lay one soft-edged disc of fuel into the grid.
+ * Lay one soft-edged swept disc (a capsule) of fuel into the grid.
  *
- * Only the disc's bounding box is visited, since a source is a small part of the
- * grid and this runs several times a substep. Each stamp of a swept ball is a
- * full-strength one: overlapping stamps saturate against the fuel and heat
- * ceilings rather than accumulating without limit.
+ * Distance is measured to the complete segment, not to a row of sample stamps.
+ * Every cell touched anywhere during the move therefore receives source and
+ * current at full strength, with no speed-, radius-, or frame-dependent gaps.
  *
- * @param {number} cx - Disc center, normalized
- * @param {number} cy - Disc center, normalized
+ * @param {number} x0 - Previous center X, normalized
+ * @param {number} y0 - Previous center Y, normalized
+ * @param {number} x1 - Current center X, normalized
+ * @param {number} y1 - Current center Y, normalized
  * @param {number} radius - Disc radius, normalized
  * @param {number} rate - Fuel deposited at the center of the disc
  * @param {number} push - Upward velocity added at the center, in cells/sec
- * @param {number} kickU - Velocity added at the center along the ball's heading
- * @param {number} kickV - Velocity added at the center along the ball's heading
+ * @param {number} kickU - Velocity added along the dragged motion
+ * @param {number} kickV - Velocity added along the dragged motion
  */
-function stampDisc(cx, cy, radius, rate, push, kickU, kickV) {
-  var xMin = Math.max(0, Math.floor((cx - radius) * W1));
-  var xMax = Math.min(W1, Math.ceil((cx + radius) * W1));
-  var yMin = Math.max(0, Math.floor((cy - radius) * H1));
-  var yMax = Math.min(H1, Math.ceil((cy + radius) * H1));
+function stampSweptDisc(x0, y0, x1, y1, radius, rate, push, kickU, kickV) {
+  var xMin = Math.max(0, Math.floor((Math.min(x0, x1) - radius) * W1));
+  var xMax = Math.min(W1, Math.ceil((Math.max(x0, x1) + radius) * W1));
+  var yMin = Math.max(0, Math.floor((Math.min(y0, y1) - radius) * H1));
+  var yMax = Math.min(H1, Math.ceil((Math.max(y0, y1) + radius) * H1));
+  var segmentX = x1 - x0;
+  var segmentY = y1 - y0;
+  var segmentLengthSq = segmentX * segmentX + segmentY * segmentY;
 
   for (var y = yMin; y <= yMax; ++y) {
-    var ny = y / H1 - cy;
+    var py = y / H1;
     for (var x = xMin; x <= xMax; ++x) {
-      var nx = x / W1 - cx;
+      var px = x / W1;
+      var t = segmentLengthSq > 0
+        ? clamp(((px - x0) * segmentX + (py - y0) * segmentY) / segmentLengthSq, 0, 1)
+        : 0;
+      var nx = px - (x0 + segmentX * t);
+      var ny = py - (y0 + segmentY * t);
       var d = Math.sqrt(nx * nx + ny * ny) / radius;
       if (d >= 1) {
         continue;
@@ -1040,7 +1045,7 @@ function stampDisc(cx, cy, radius, rate, push, kickU, kickV) {
       heat[i] = h > SOURCE_TEMP ? SOURCE_TEMP : h;
       velV[i] += push * falloff;
 
-      // A kick along the ball's heading, added rather than blended toward.
+      // A kick along the ball's dragged motion, added rather than blended toward.
       //
       // Blending toward the ball's own velocity was the obvious way to write
       // this and it has a ceiling built into it: the fluid can be pulled up to
@@ -1055,13 +1060,12 @@ function stampDisc(cx, cy, radius, rate, push, kickU, kickV) {
 }
 
 /**
- * Feed the three source balls, smearing each along the path it just travelled.
+ * Feed the three source balls across every point of the path just travelled.
  *
- * Every stamp along the segment gets the full source strength and the full
- * advection, not a share of it — the trail a moving ball leaves burns as hard as
- * the ball does, so speed buys length rather than costing brightness. Fuel and
- * heat clamp per cell, so a slow ball laying many overlapping stamps saturates
- * instead of running away.
+ * The swept disc applies one full-strength source operation to the entire
+ * capsule. Speed buys length rather than costing brightness, and using actual
+ * displacement for the current means reflected or constrained motion pushes in
+ * the direction the source really travelled.
  */
 function injectSources(dt) {
   var strength = srcLevel * srcLevel * 9;
@@ -1089,43 +1093,26 @@ function injectSources(dt) {
 
     var dx = ball.x - ball.px;
     var dy = ball.y - ball.py;
-    var distance = Math.sqrt(dx * dx + dy * dy);
-
-    // Half a radius between stamps keeps the swept trail solid; a lone stamp
-    // for a ball that barely moved keeps a still ball cheap.
-    var stamps = 1;
-    if (distance > 0) {
-      stamps = Math.ceil(distance / Math.max(radius * 0.5, 1e-4));
-      if (stamps < 1) {
-        stamps = 1;
-      } else if (stamps > MAX_SWEEP_STAMPS) {
-        stamps = MAX_SWEEP_STAMPS;
-      }
-    }
-
     var rate = strength * waver * dt;
     var push = jet * jet * 45 * waver * dt;
 
-    // The fluid is driven along the ball's own velocity, converted from
-    // frame-widths per second into the grid's cells per second. At a drive of 1
-    // the fluid ends up moving about as fast as the ball that stirred it.
-    var kickU = ball.vx * W1 * drive * dt;
-    var kickV = ball.vy * H1 * drive * dt;
+    // Convert the actual displacement this step into grid cells/sec, then back
+    // into this step's velocity impulse. This is algebraically dx*grid*drive,
+    // written explicitly to keep the units and zero-dt guard obvious.
+    var motionU = dt > 0 ? dx / dt : 0;
+    var motionV = dt > 0 ? dy / dt : 0;
+    var kickU = motionU * W1 * drive * dt;
+    var kickV = motionV * H1 * drive * dt;
 
-    for (var s = 0; s < stamps; ++s) {
-      // Stamp centers sit on the segment, offset half a step so the trail is
-      // symmetric about the path rather than piling up on one end of it.
-      var t = (s + 0.5) / stamps;
-      stampDisc(
-        ball.px + dx * t,
-        ball.py + dy * t,
-        radius,
-        rate,
-        push,
-        kickU,
-        kickV
-      );
-    }
+    stampSweptDisc(
+      ball.px, ball.py,
+      ball.x, ball.y,
+      radius,
+      rate,
+      push,
+      kickU,
+      kickV
+    );
 
     ball.px = ball.x;
     ball.py = ball.y;
