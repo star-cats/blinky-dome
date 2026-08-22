@@ -1,18 +1,23 @@
 /**
  * Static wiring calibration for the Waterfall's individual LED strips.
  *
- * Every strip is indexed from its own first physical point to its last, without
- * relying on global point indices. The layout begins with a solid colored band
- * and one checker-sized black blanking band. A white group number comes next,
- * followed by another blank band and the alternating black/color checker field
- * through the remainder of the strip.
+ * Every pixel is placed by its geometry, not by its index within a strip. The
+ * topmost Y of the whole Waterfall is the datum: a pixel's row is its distance
+ * below that datum measured in pixel pitches. Strips that hang lower therefore
+ * begin partway down the layout rather than restarting it, so every band, digit
+ * row and checker edge lines up horizontally across the full installation even
+ * when the strips have different vertical offsets. Misalignment on the physical
+ * waterfall is then a real discrepancy between the model and the rig.
  *
- * Four consecutive strips are one group. Twenty-four shared pixel positions form
- * a 24x4 display: pixel position is the digit row and strip-within-group is its
- * column. Even-numbered groups put the digit immediately after the leading
- * blank band. Odd-numbered groups put it one digit height plus one black band
- * lower. Both slots are reserved in every group, so adjacent white labels are
- * vertically staggered and cannot run together.
+ * The layout begins with a solid colored band and one checker-sized black
+ * blanking band. A white group number comes next, followed by another blank band
+ * and the alternating black/color checker field through the remainder.
+ *
+ * Four consecutive strips are one group. Twenty-four shared rows form a 24x4
+ * display: row is the digit row and strip-within-group is its column. Even
+ * groups put the digit immediately after the leading blank band. Odd groups put
+ * it one digit height plus one black band lower. Both slots are reserved in
+ * every group, so adjacent white labels are staggered and cannot run together.
  *
  * Checker colors repeat within every group by strip order:
  *
@@ -21,21 +26,15 @@
  * The leading solid band instead identifies the whole four-strip group: group
  * 0 is red, 1 green, 2 blue, 3 yellow, then that sequence repeats.
  *
- * The model hierarchy is indexed once when it changes. Ordinarily the pattern
- * finds the Waterfall-tagged fixture and walks its 40 ordered child components.
- * A flattened Waterfall view is also supported using the fixture's alternating
- * 360/315 point counts.
+ * Only Waterfall-tagged geometry is considered. Strip order comes from the
+ * fixture hierarchy, which is what identifies wiring; vertical placement comes
+ * from the model, which is what is being calibrated.
  */
 
 // knobi's upper bound is exclusive, hence 65 and 33 for useful maxima of 64
 // solid-band pixels and 32 pixels per checker block.
 knobi("solidPixels", "Solid Band", "Solid colored pixels at the start of every strip", 40, 65);
-knobi("checkerPixels", "Checker Size", "Pixels in each colored or black block through the bulk", 16, 33);
-
-var WATERFALL_STRIPS = 40;
-var LONG_STRIP_PIXELS = 360;
-var SHORT_STRIP_PIXELS = 315;
-var FLAT_WATERFALL_PIXELS = 20 * (LONG_STRIP_PIXELS + SHORT_STRIP_PIXELS);
+knobi("checkerPixels", "Checker Size", "Pixels in each colored or black block, and the blanking bands", 16, 33);
 
 var DIGIT_HEIGHT = 24;
 
@@ -58,22 +57,46 @@ var DIGIT_SEGMENTS = [
 
 var indexedModel = null;
 var indexedPointCount = -1;
+var indexedGeneration = -1;
 var stripForPoint = [];
-var positionForPoint = [];
+var rowForPoint = [];
 
 function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
-  if (indexedModel !== model || indexedPointCount !== model.points.length) {
+  // LXModel.bang() bumps the generation whenever geometry moves while the point
+  // count and structure stay the same, which is exactly what editing a per-strip
+  // trim offset does. Identity and point-count checks are both blind to it, so
+  // without the generation test the rows stay stale until something else forces
+  // a rebuild.
+  if (indexedModel !== model ||
+      indexedPointCount !== model.points.length ||
+      indexedGeneration !== model.getGeneration()) {
     indexModel(model);
   }
 }
 
-/** Build point-index -> strip/order lookup tables from the model hierarchy. */
+/** Build point-index -> strip/row lookup tables from the Waterfall geometry. */
 function indexModel(model) {
   indexedModel = model;
   indexedPointCount = model.points.length;
+  indexedGeneration = model.getGeneration();
   stripForPoint = [];
-  positionForPoint = [];
+  rowForPoint = [];
 
+  var strips = collectWaterfallStrips(model);
+  if (strips.length === 0) {
+    return;
+  }
+
+  var topY = waterfallTopY(strips);
+  var pitch = pixelPitch(strips);
+
+  for (var strip = 0; strip < strips.length; ++strip) {
+    indexStrip(strips[strip].points, strip, topY, pitch);
+  }
+}
+
+/** Ordered leaf components beneath every Waterfall-tagged model, and nothing else. */
+function collectWaterfallStrips(model) {
   var roots = [];
   if (hasTag(model, "waterfall")) {
     roots.push(model);
@@ -90,28 +113,10 @@ function indexModel(model) {
   }
 
   var strips = [];
-  if (roots.length > 0) {
-    for (var r = 0; r < roots.length; ++r) {
-      collectLeafModels(roots[r], strips);
-    }
-  } else {
-    // A model view may retain the fixture children but not the parent's tag.
-    collectLeafModels(model, strips);
+  for (var r = 0; r < roots.length; ++r) {
+    collectLeafModels(roots[r], strips);
   }
-
-  strips = uniqueModels(strips);
-
-  // Some views deliberately flatten their hierarchy. The Waterfall has an
-  // unambiguous 13,500-point layout: 360,315 repeated twenty times.
-  if (strips.length === 1 && strips[0] === model &&
-      model.points.length === FLAT_WATERFALL_PIXELS) {
-    indexFlatWaterfall(model.points);
-    return;
-  }
-
-  for (var strip = 0; strip < strips.length; ++strip) {
-    indexStrip(strips[strip].points, strip);
-  }
+  return uniqueModels(strips);
 }
 
 /** Recursively collect ordered leaf models, which are the fixture components. */
@@ -145,26 +150,55 @@ function uniqueModels(models) {
   return result;
 }
 
-function indexStrip(points, stripIndex) {
-  var length = points.length;
-  for (var position = 0; position < length; ++position) {
-    var pointIndex = points[position].index;
-    stripForPoint[pointIndex] = stripIndex;
-    positionForPoint[pointIndex] = position;
+/** The datum: highest point anywhere in the Waterfall. Row 0 sits here. */
+function waterfallTopY(strips) {
+  var top = null;
+  for (var s = 0; s < strips.length; ++s) {
+    var points = strips[s].points;
+    for (var i = 0; i < points.length; ++i) {
+      if (top === null || points[i].y > top) {
+        top = points[i].y;
+      }
+    }
   }
+  return top;
 }
 
-function indexFlatWaterfall(points) {
-  var offset = 0;
-  for (var strip = 0; strip < WATERFALL_STRIPS; ++strip) {
-    var length = (strip % 2 === 0) ? LONG_STRIP_PIXELS : SHORT_STRIP_PIXELS;
-    var end = offset + length;
-    for (var i = offset; i < end; ++i) {
-      var pointIndex = points[i].index;
-      stripForPoint[pointIndex] = strip;
-      positionForPoint[pointIndex] = i - offset;
+/**
+ * Median per-strip vertical spacing. The median rather than the mean so that a
+ * strip modelled flat, or one stray duplicate point, cannot skew every row.
+ */
+function pixelPitch(strips) {
+  var pitches = [];
+  for (var s = 0; s < strips.length; ++s) {
+    var points = strips[s].points;
+    if (points.length < 2) {
+      continue;
     }
-    offset = end;
+    var span = Math.abs(points[points.length - 1].y - points[0].y);
+    if (span > 0) {
+      pitches.push(span / (points.length - 1));
+    }
+  }
+  if (pitches.length === 0) {
+    return 0;
+  }
+  pitches.sort(function (a, b) { return a - b; });
+  return pitches[Math.floor(pitches.length / 2)];
+}
+
+/**
+ * Rows are measured down from the shared datum. Degenerate geometry, where no
+ * strip has any vertical extent, falls back to per-strip ordering so the
+ * pattern still renders something legible.
+ */
+function indexStrip(points, stripIndex, topY, pitch) {
+  for (var i = 0; i < points.length; ++i) {
+    var pointIndex = points[i].index;
+    stripForPoint[pointIndex] = stripIndex;
+    rowForPoint[pointIndex] = (pitch > 0)
+      ? Math.max(0, Math.round((topY - points[i].y) / pitch))
+      : i;
   }
 }
 
@@ -178,7 +212,7 @@ function renderPoint(point, deltaMs) {
     return rgb(0, 0, 0);
   }
 
-  var position = positionForPoint[point.index];
+  var row = rowForPoint[point.index];
   var solid = Math.max(0, solidPixels | 0);
   var block = Math.max(1, checkerPixels | 0);
   var group = Math.floor(strip / 4);
@@ -188,22 +222,22 @@ function renderPoint(point, deltaMs) {
   var digitEnd = digitStart + DIGIT_HEIGHT;
   var checkerStart = lowerDigitStart + DIGIT_HEIGHT + block;
 
-  if (position < solid) {
+  if (row < solid) {
     return groupColor(group);
-  } else if (position < digitEnd) {
-    if (position >= digitStart && digitPixel(group % 10, position - digitStart, strip % 4)) {
+  } else if (row < digitEnd) {
+    if (row >= digitStart && digitPixel(group % 10, row - digitStart, strip % 4)) {
       return rgb(255, 255, 255);
     }
     return rgb(0, 0, 0);
-  } else if (position < checkerStart) {
+  } else if (row < checkerStart) {
     // The leading blank and whichever digit slot this group does not use are
     // all held black, keeping adjacent group labels visually separate.
     return rgb(0, 0, 0);
   }
 
-  var checkerPosition = position - checkerStart;
+  var checkerRow = row - checkerStart;
   // The checker starts with n black pixels, then n colored pixels.
-  if ((Math.floor(checkerPosition / block) % 2) === 0) {
+  if ((Math.floor(checkerRow / block) % 2) === 0) {
     return rgb(0, 0, 0);
   }
 
