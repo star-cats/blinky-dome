@@ -370,10 +370,6 @@ function inspectBin(model, bin, u, v) {
   }
 }
 
-function wrap01(value) {
-  return value - Math.floor(value);
-}
-
 function mirror01(value) {
   var mirrored = wrap(value, 2);
   return mirrored <= 1 ? mirrored : 2 - mirrored;
