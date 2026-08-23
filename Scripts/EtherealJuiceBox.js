@@ -15,6 +15,7 @@ var DIFFUSION_ITERATIONS = 16;
 var PRESSURE_ITERATIONS = 24;
 var VORTICITY_CONFINEMENT = 6;
 var MAX_PARTICLES = 2048;
+var B1_PARTICLE_BURST = 40;
 var TAU = Math.PI * 2;
 
 // Settings row
@@ -27,7 +28,7 @@ knob("particleAmplitude", "Particle Amplitude", "Particle source emission multip
 
 // Momentary buttons: true while held and false when released.
 trigger("b1", "B1", "Emit particles from the source surface and pulse outward", onB1);
-trigger("b2", "B2", "Pull the fluid and its particles toward the source", onB2);
+toggle("b2", "B2", "Pull the fluid and its particles toward the source", false);
 trigger("b3", "B3", "Apply random impulses throughout the fluid", onB3);
 trigger("b4", "B4", "Reserved momentary button", onB4);
 trigger("b5", "B5", "Reserved momentary button", onB5);
@@ -72,11 +73,9 @@ var sourceInitialized = false;
 
 // A press is also queued so a very quick tap cannot fall between fixed steps.
 var queuedB1 = 0;
-var queuedB2 = 0;
 var queuedB3 = 0;
 
 function onB1() { ++queuedB1; }
-function onB2() { ++queuedB2; }
 function onB3() { ++queuedB3; }
 function onB4() {}
 function onB5() {}
@@ -112,7 +111,7 @@ function init() {
   sourceShape = sourcePrevShape = 0;
   sourceSizeScale = 1;
   sourceInitialized = false;
-  queuedB1 = queuedB2 = queuedB3 = 0;
+  queuedB1 = queuedB3 = 0;
 }
 
 function selectedShape() {
@@ -242,7 +241,7 @@ function currentParticleLifespan() {
   return 1 + 9 * particleLifespan;
 }
 
-function addParticle(x, y) {
+function addParticle(x, y, launchU, launchV) {
   if (particles.length >= MAX_PARTICLES) {
     particles.shift();
   }
@@ -250,7 +249,9 @@ function addParticle(x, y) {
     x: clampValue(x, 0, 1),
     y: clampValue(y, 0, 1),
     age: 0,
-    lifespan: currentParticleLifespan()
+    lifespan: currentParticleLifespan(),
+    launchU: launchU || 0,
+    launchV: launchV || 0
   });
 }
 
@@ -266,7 +267,12 @@ function emitSurfaceParticleAndPulse() {
   var p = Math.random();
   var position = sourceSurfacePoint(p);
   var normal = sourceSurfaceNormal(p);
-  addParticle(position.x, position.y);
+  var impulseScale = b2 ? 4 : 2;
+  // Start just outside the solid source so the new particle is immediately
+  // visible, then give it a strong short-lived outward launch velocity.
+  position.x += normal.x * 0.75 / W1;
+  position.y += normal.y * 0.75 / H1;
+  addParticle(position.x, position.y, normal.x * 21 * impulseScale, normal.y * 21 * impulseScale);
 
   var gx = position.x * W1;
   var gy = position.y * H1;
@@ -283,17 +289,19 @@ function emitSurfaceParticleAndPulse() {
       if (distance >= pulseRadius) continue;
       var falloff = 1 - distance / pulseRadius;
       var i = y * W + x;
-      velU[i] += normal.x * 18 * falloff;
-      velV[i] += normal.y * 18 * falloff;
+      velU[i] += normal.x * 18 * impulseScale * falloff;
+      velV[i] += normal.y * 18 * impulseScale * falloff;
     }
   }
 }
 
 function handleB1(dt) {
   var held = b1;
-  if (queuedB1 > 0) {
+  while (queuedB1 > 0) {
     --queuedB1;
-    emitSurfaceParticleAndPulse();
+    for (var burstParticle = 0; burstParticle < B1_PARTICLE_BURST; ++burstParticle) {
+      emitSurfaceParticleAndPulse();
+    }
   }
   if (held) {
     surfaceEmissionAccumulator += Math.max(10, ambientRatePerSecond()) * dt;
@@ -354,7 +362,7 @@ function applySourceSweep(dt) {
 
 function applyAttraction(dt, active) {
   if (!active) return;
-  var strength = 8 * dt;
+  var strength = 3.2 * dt;
   var softening = 0.035;
   for (var y = 1; y < H1; ++y) {
     var yn = y / H1;
@@ -529,8 +537,13 @@ function advectParticles(dt) {
     }
     var gx = particle.x * W1;
     var gy = particle.y * H1;
-    particle.x = clampValue(particle.x + sampleField(velU, gx, gy) * dt / W1, 0, 1);
-    particle.y = clampValue(particle.y + sampleField(velV, gx, gy) * dt / H1, 0, 1);
+    var carriedU = sampleField(velU, gx, gy) + particle.launchU;
+    var carriedV = sampleField(velV, gx, gy) + particle.launchV;
+    particle.x = clampValue(particle.x + carriedU * dt / W1, 0, 1);
+    particle.y = clampValue(particle.y + carriedV * dt / H1, 0, 1);
+    var launchRetention = Math.exp(-3.5 * dt);
+    particle.launchU *= launchRetention;
+    particle.launchV *= launchRetention;
   }
 }
 
@@ -592,17 +605,16 @@ function simulate(dt) {
   advectVelocity(dt);
   diffuseVelocity(dt);
   applySourceSweep(dt);
-  handleB1(dt);
-
-  var attractionActive = b2 || queuedB2 > 0;
   var randomPulseActive = b3 || queuedB3 > 0;
-  applyAttraction(dt, attractionActive);
   applyRandomFieldPulse(dt, randomPulseActive);
-  if (queuedB2 > 0) --queuedB2;
   if (queuedB3 > 0) --queuedB3;
 
   applyVorticityConfinement(dt);
   projectVelocity();
+  // Radial impulses must follow the zero-divergence projection; applying them
+  // before it would cause pressure to cancel most of the visible motion.
+  handleB1(dt);
+  applyAttraction(dt, b2);
   advectParticles(dt);
   advectAndDecayDye(dt);
   emitParticleDye();
