@@ -45,7 +45,7 @@ toggle("t6", "T6", "Reserved toggle", false);
 knob("k1", "K1", "Source X position", 0.5);
 knob("k2", "K2", "Source Y position", 0.5);
 knob("k3", "K3", "Source rotation rate; 50% is stopped", 0.5);
-knob("k4", "K4", "Reserved rotary control", 0.5);
+knob("k4", "K4", "Source size from 0.5x to 3x; 20% is the original size", 0.2);
 knob("k5", "K5", "Reserved rotary control", 0.5);
 knob("k6", "K6", "Reserved rotary control", 0.5);
 
@@ -67,6 +67,7 @@ var sourcePrevAngle = 0;
 var sourceAngularVelocity = 0;
 var sourceShape = 0;
 var sourcePrevShape = 0;
+var sourceSizeScale = 1;
 var sourceInitialized = false;
 
 // A press is also queued so a very quick tap cannot fall between fixed steps.
@@ -109,6 +110,7 @@ function init() {
   sourceY = sourcePrevY = 0.5;
   sourceAngle = sourcePrevAngle = 0;
   sourceShape = sourcePrevShape = 0;
+  sourceSizeScale = 1;
   sourceInitialized = false;
   queuedB1 = queuedB2 = queuedB3 = 0;
 }
@@ -142,7 +144,10 @@ function sourceSurfacePointLocal(p, shape) {
 
 /** Current source boundary position as a function of p in [0,1). */
 function sourceSurfacePoint(p) {
-  return localToWorld(sourceSurfacePointLocal(p, sourceShape), sourceX, sourceY, sourceAngle);
+  var local = sourceSurfacePointLocal(p, sourceShape);
+  local.x *= sourceSizeScale;
+  local.y *= sourceSizeScale;
+  return localToWorld(local, sourceX, sourceY, sourceAngle);
 }
 
 /** Outward unit normal of the current source boundary at p in [0,1). */
@@ -178,13 +183,13 @@ function localToWorld(local, cx, cy, angle) {
   return { x: cx + c * local.x - s * local.y, y: cy + s * local.x + c * local.y };
 }
 
-function sourceContainsWorld(x, y, cx, cy, angle, shape) {
+function sourceContainsWorld(x, y, cx, cy, angle, shape, sizeScale) {
   var c = Math.cos(angle);
   var s = Math.sin(angle);
   var dx = x - cx;
   var dy = y - cy;
-  var lx = c * dx + s * dy;
-  var ly = -s * dx + c * dy;
+  var lx = (c * dx + s * dy) / sizeScale;
+  var ly = (-s * dx + c * dy) / sizeScale;
   var ax = Math.abs(lx);
   var ay = Math.abs(ly);
 
@@ -214,6 +219,7 @@ function updateSource(dt) {
   sourceX = clampValue(k1, 0, 1);
   sourceY = clampValue(k2, 0, 1);
   sourceShape = selectedShape();
+  sourceSizeScale = 0.5 + 2.5 * k4;
   sourceAngularVelocity = (k3 - 0.5) * TAU;
   sourceAngle = wrapAngle(sourceAngle + sourceAngularVelocity * dt);
 
@@ -309,7 +315,7 @@ function applySourceSweep(dt) {
     return;
   }
   var travelCells = Math.sqrt(dx * dx + dy * dy) * Math.max(W1, H1);
-  var rotationalCells = Math.abs(da) * 0.13 * Math.max(W1, H1);
+  var rotationalCells = Math.abs(da) * 0.13 * sourceSizeScale * Math.max(W1, H1);
   var samples = Math.max(1, Math.min(96, Math.ceil(Math.max(travelCells, rotationalCells) * 2)));
   var translationU = dx * W1 / dt;
   var translationV = dy * H1 / dt;
@@ -328,7 +334,7 @@ function applySourceSweep(dt) {
         var cx = sourcePrevX + dx * amount;
         var cy = sourcePrevY + dy * amount;
         var angle = sourcePrevAngle + da * amount;
-        if (sourceContainsWorld(xn, yn, cx, cy, angle, sourceShape)) {
+        if (sourceContainsWorld(xn, yn, cx, cy, angle, sourceShape, sourceSizeScale)) {
           hit = true;
           hitCx = cx;
           hitCy = cy;
@@ -407,7 +413,8 @@ function advectVelocity(dt) {
 }
 
 function diffuseVelocity(dt) {
-  var nu = viscosity * viscosity * 18;
+  var viscosityRangeScale = 0.5 + 2.5 * viscosity;
+  var nu = viscosity * viscosity * 18 * viscosityRangeScale;
   if (nu <= 0) return;
   var a = nu * dt;
   var denominator = 1 + 4 * a;
@@ -572,7 +579,7 @@ function stampSolidSource() {
   for (var y = 0; y < H; ++y) {
     var yn = y / H1;
     for (var x = 0; x < W; ++x) {
-      if (sourceContainsWorld(x / W1, yn, sourceX, sourceY, sourceAngle, sourceShape)) {
+      if (sourceContainsWorld(x / W1, yn, sourceX, sourceY, sourceAngle, sourceShape, sourceSizeScale)) {
         dye[y * W + x] = 1;
       }
     }
