@@ -7,7 +7,9 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BoundedParameter;
 import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.pattern.LXPattern;
 
 /**
@@ -48,6 +50,20 @@ import heronarts.lx.pattern.LXPattern;
  * the piece reads as black ruling over flat ground with the darkest sections
  * inverting. They are flat: a mark is its tone edge to edge, and the only
  * blending anywhere is the pixel of anti-aliasing at a mark's border.
+ *
+ * The beat grid comes from the {@link PrimaryController}, through a
+ * {@link PrimaryController.Follower} that free-runs at the controller's tempo
+ * and drifts onto its grid rather than being set from it. Every phase boundary,
+ * every line's growth and every camera shift is a function of that clock's beat
+ * position, so the whole composition cuts in time with the rest of the show. A
+ * clock that could jump would be visible here in a way it is not in most
+ * patterns: a mark's extent is measured from the beat it was born on, so a
+ * discontinuity does not merely re-time the next event, it snaps every line
+ * currently being laid down to a new length. The Follower never jumps, which is
+ * exactly why it and not {@code getGridBeats} is what this reads.
+ *
+ * With no controller in the project, or before one has found a tempo, it free
+ * runs at {@link #fallbackBpm}.
  *
  * The four states — top, bottom, left, right — are one piece of code. A state is
  * an axis and a sign, and everything else is written against a coordinate `t`
@@ -176,9 +192,14 @@ public class BisectingShiftLinesPattern extends LXPattern {
    */
   private static final double OVERDRAW = .5;
 
-  public final CompoundParameter bpm =
-    new CompoundParameter("BPM", .5, 0, 1)
-    .setDescription("Tempo everything is cut to; 0.5 is 120");
+  public final BoundedParameter fallbackBpm =
+    new BoundedParameter("Free BPM", 120, 40, 200)
+    .setDescription("Tempo to cut to when there is no controller, or before it has found one");
+
+  public final CompoundParameter sync =
+    new CompoundParameter("Sync", 1, .1, 10)
+    .setUnits(LXParameter.Units.SECONDS)
+    .setDescription("How long the scene takes to drift back onto the controller's beat grid; it never snaps");
 
   public final CompoundParameter rate =
     new CompoundParameter("Rate", 0, 0, 1)
@@ -301,7 +322,22 @@ public class BisectingShiftLinesPattern extends LXPattern {
 
   // ----------------------------------------------------------------- the clock
 
+  /**
+   * The show's beat grid, free-running and drifting onto it. See the header.
+   */
+  private final PrimaryController.Follower clock = new PrimaryController.Follower();
+
+  /** This frame's position on that clock, in beats. Everything is timed off it. */
   private double beats = 0;
+
+  /**
+   * The last beat the state machine has acted on.
+   *
+   * Compared with {@code <} rather than {@code !=} because the Follower's drift
+   * correction can walk the clock back over a boundary it has just crossed.
+   * Re-crossing must not spawn a second line on the same beat, so only forward
+   * crossings fire; a beat retreated over is simply not delivered twice.
+   */
   private long lastBeat = -1;
 
   // ----------------------------------------------------------------- the phase
@@ -362,7 +398,8 @@ public class BisectingShiftLinesPattern extends LXPattern {
 
   public BisectingShiftLinesPattern(LX lx) {
     super(lx);
-    addParameter("bpm", this.bpm);
+    addParameter("fallbackBpm", this.fallbackBpm);
+    addParameter("sync", this.sync);
     addParameter("rate", this.rate);
     addParameter("count", this.count);
     addParameter("split", this.split);
@@ -378,11 +415,23 @@ public class BisectingShiftLinesPattern extends LXPattern {
     addParameter("autoAspect", this.autoAspect);
   }
 
+  /**
+   * Start the composition over, here and now.
+   *
+   * The clock is not rewound with it. It belongs to the show rather than to this
+   * pattern — rewinding it would put the scene back in step with a grid that has
+   * moved on — so the state machine is baselined onto wherever it has got to
+   * instead. Everything timed in beats, which is everything, is relative to that
+   * baseline, so a restart at beat 4000 composes exactly as one at beat 0.
+   */
   private void resetScene() {
     this.itemN = 0;
     this.drawN = 0;
-    this.beats = 0;
-    this.lastBeat = -1;
+    long beat = (long) Math.floor(this.beats);
+    // One short, so the first crossing in run() delivers this beat rather than
+    // skipping it and leaving the opening phase a line down.
+    this.lastBeat = beat - 1;
+    this.shiftStart = this.beats;
     this.camU = this.camV = this.camBaseU = this.camBaseV = 0;
     this.shiftDU = this.shiftDV = 0;
     this.phase = 0;
@@ -390,7 +439,7 @@ public class BisectingShiftLinesPattern extends LXPattern {
     this.sectionLevel = LINE_LEVELS[BASE_INDEX];
     // The whole frame is fair game for the opening phase, since nothing has been
     // cut yet and there is no field to draw into.
-    beginPhase(0, TOP, 0, 1);
+    beginPhase(beat, TOP, 0, 1);
     this.started = true;
     this.startedModel = this.model;
   }
@@ -770,6 +819,20 @@ public class BisectingShiftLinesPattern extends LXPattern {
   protected void run(double deltaMs) {
     double dt = Double.isFinite(deltaMs) ? clamp(deltaMs * .001, 0, .25) : 0;
 
+    // Before anything reads it, and before resetScene can need to baseline onto
+    // it. The Follower does its own controller lookup, so there is no tempo
+    // tracking and no wiring in this file at all.
+    //
+    // Fed the capped dt rather than the raw frame time, which matters more here
+    // than it does to an animation that merely reads a phase. A stall — a
+    // project load, a model rebuild — would otherwise arrive as one frame worth
+    // several beats, and the loop below would spawn every one of those beats'
+    // lines at once and run the state machine through whole phases nobody saw.
+    // Capping leaves the clock behind the grid instead, which is precisely the
+    // error the Follower exists to close, and it closes it over Sync.
+    this.clock.loop(dt * 1000, this.fallbackBpm.getValue(), this.sync.getValue());
+    this.beats = this.clock.getBeats();
+
     updateFrame();
 
     this.rateMul = 1 + 2 * clamp(this.rate.getValue(), 0, 1);
@@ -798,12 +861,6 @@ public class BisectingShiftLinesPattern extends LXPattern {
     // steps.
     this.phase += clamp(this.speed.getValue(), 0, 1) * PHASE_RATE * dt;
     this.phase -= Math.floor(this.phase);
-
-    // Musical time, accumulated rather than divided out of a wall clock, so that
-    // moving the tempo knob changes the rate from here on instead of jumping the
-    // phase to wherever the new tempo says it should already have been.
-    double beatSec = 60 / lerp(40, 200, clamp(this.bpm.getValue(), 0, 1));
-    this.beats += dt / beatSec;
 
     // A frame long enough to span two beats still gets both, in order.
     long beat = (long) Math.floor(this.beats);

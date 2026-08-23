@@ -37,6 +37,23 @@
  * inverting. They are flat: a mark is its tone edge to edge, and the only
  * blending anywhere is the pixel of anti-aliasing at a mark's border.
  *
+ * The beat grid comes from the PrimaryController in the blinky-dome-patterns
+ * package, through a PrimaryController.Follower that free-runs at the
+ * controller's tempo and drifts onto its grid rather than being set from it.
+ * Every phase boundary, every line's growth and every camera shift is a function
+ * of that clock's beat position, so the whole composition cuts in time with the
+ * rest of the show. A clock that could jump would be visible here in a way it is
+ * not in most patterns: a mark's extent is measured from the beat it was born
+ * on, so a discontinuity does not merely re-time the next event, it snaps every
+ * line currently being laid down to a new length. The Follower never jumps,
+ * which is exactly why it and not getGridBeats is what this reads.
+ *
+ * The script engine is handed Chromatik's package class loader, so Java.type
+ * reaches the package's classes the same way it reaches the JDK's. If the
+ * package is not installed the lookup fails and the pattern free-runs at the
+ * Free BPM knob, which is what the Follower would have done anyway with no
+ * controller in the project.
+ *
  * The four states — top, bottom, left, right — are one piece of code. A state is
  * an axis and a sign, and everything else is written against a coordinate `t`
  * that runs 0 at the edge the lines come from to 1 at the edge they reach. Lines
@@ -160,7 +177,8 @@ var PHASE_RATE = 0.25;
  */
 var OVERDRAW = 0.5;
 
-knob("bpm", "BPM", "Tempo everything is cut to; 0.5 is 120", 0.5);
+knob("fallbackBpm", "Free BPM", "Tempo to cut to when there is no controller, or before it has found one; 0.5 is 120", 0.5);
+knob("sync", "Sync", "How long the scene takes to drift back onto the controller's beat grid; it never snaps. 0.5 is one second", 0.5);
 knob("rate", "Rate", "How much quicker than a beat a line extends or the scene shifts; 0 is exactly one beat, 1 is three times", 0);
 knob("count", "Count", "Lines drawn per phase, before the cut", 0.5);
 
@@ -246,7 +264,35 @@ var drawN = 0;
 
 // ------------------------------------------------------------------ the clock
 
+/**
+ * The show's beat grid, free-running and drifting onto it. See the header.
+ *
+ * Resolved once at load. The guard is not for a missing controller — a Follower
+ * with no controller to follow is a supported case that free-runs — but for the
+ * package itself being absent, which would otherwise throw here and take the
+ * whole script down to a blank pattern rather than a merely unsynced one.
+ */
+var clock = null;
+try {
+  clock = new (Java.type("com.starcats.blinkydome.PrimaryController$Follower"))();
+} catch (e) {
+  clock = null;
+}
+
+/** Stands in for the Follower's own beat count when there is no Follower. */
+var freeBeats = 0;
+
+/** This frame's position on that clock, in beats. Everything is timed off it. */
 var beats = 0;
+
+/**
+ * The last beat the state machine has acted on.
+ *
+ * Compared with `<` rather than `!==` because the Follower's drift correction
+ * can walk the clock back over a boundary it has just crossed. Re-crossing must
+ * not spawn a second line on the same beat, so only forward crossings fire; a
+ * beat retreated over is simply not delivered twice.
+ */
 var lastBeat = -1;
 
 // ------------------------------------------------------------------ the phase
@@ -318,11 +364,23 @@ function init() {
   started = false;
 }
 
+/**
+ * Start the composition over, here and now.
+ *
+ * The clock is not rewound with it. It belongs to the show rather than to this
+ * pattern — rewinding it would put the scene back in step with a grid that has
+ * moved on — so the state machine is baselined onto wherever it has got to
+ * instead. Everything timed in beats, which is everything, is relative to that
+ * baseline, so a restart at beat 4000 composes exactly as one at beat 0.
+ */
 function resetScene() {
   itemN = 0;
   drawN = 0;
-  beats = 0;
-  lastBeat = -1;
+  var beat = Math.floor(beats);
+  // One short, so the first crossing in preRender delivers this beat rather than
+  // skipping it and leaving the opening phase a line down.
+  lastBeat = beat - 1;
+  shiftStart = beats;
   camU = camV = camBaseU = camBaseV = 0;
   shiftDU = shiftDV = 0;
   phase = 0;
@@ -330,7 +388,7 @@ function resetScene() {
   sectionLevel = LINE_LEVELS[BASE_INDEX];
   // The whole frame is fair game for the opening phase, since nothing has been
   // cut yet and there is no field to draw into.
-  beginPhase(0, TOP, 0, 1);
+  beginPhase(beat, TOP, 0, 1);
   started = true;
 }
 
@@ -697,6 +755,29 @@ function onBeat(beat) {
 function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   var dt = isFinite(deltaMs) ? clamp(deltaMs / 1000, 0, 0.25) : 0;
 
+  // Before anything reads it, and before resetScene can need to baseline onto
+  // it. The Follower does its own controller lookup, so there is no tempo
+  // tracking and no wiring in this script at all.
+  //
+  // Fed the capped dt rather than the raw frame time, which matters more here
+  // than it does to an animation that merely reads a phase. A stall — a project
+  // load, a model rebuild — would otherwise arrive as one frame worth several
+  // beats, and the loop below would spawn every one of those beats' lines at
+  // once and run the state machine through whole phases nobody saw. Capping
+  // leaves the clock behind the grid instead, which is precisely the error the
+  // Follower exists to close, and it closes it over Sync.
+  var freeBpm = lerp(40, 200, clamp(fallbackBpm, 0, 1));
+  if (clock !== null) {
+    // Exponential, so the knob's center is one second and each half of it is a
+    // decade either side. A linear 0.1..10 would spend nine tenths of its travel
+    // above a second, where the differences stop being visible.
+    clock.loop(dt * 1000, freeBpm, 0.1 * Math.pow(100, clamp(sync, 0, 1)));
+    beats = clock.getBeats();
+  } else {
+    freeBeats += dt * freeBpm / 60;
+    beats = freeBeats;
+  }
+
   updateFrame(model);
 
   rateMul = 1 + 2 * clamp(rate, 0, 1);
@@ -720,12 +801,6 @@ function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
   // so it cannot drift into the range where a float stops resolving small steps.
   phase += clamp(speed, 0, 1) * PHASE_RATE * dt;
   phase -= Math.floor(phase);
-
-  // Musical time, accumulated rather than divided out of a wall clock, so that
-  // moving the tempo knob changes the rate from here on instead of jumping the
-  // phase to wherever the new tempo says it should already have been.
-  var beatSec = 60 / lerp(40, 200, clamp(bpm, 0, 1));
-  beats += dt / beatSec;
 
   // A frame long enough to span two beats still gets both, in order.
   var beat = Math.floor(beats);
