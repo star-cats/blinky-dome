@@ -13,18 +13,19 @@ var SIM_HZ = 60;
 var MAX_SUBSTEPS = 4;
 var DIFFUSION_ITERATIONS = 16;
 var PRESSURE_ITERATIONS = 24;
-var VORTICITY_CONFINEMENT = 6;
+var MAX_VORTICITY_CONFINEMENT = 12;
 var MAX_PARTICLES = 2048;
 var B1_PARTICLE_BURST = 40;
 var TAU = Math.PI * 2;
 
 // Settings row
-knob("viscosity", "Viscosity", "Velocity diffusion; 0 is fluid, 1 is thick and smooth", 0.3);
-knob("particleRate", "Particle Rate", "Ambient particles emitted per second", 0.3);
-knob("particleLifespan", "Particle Lifespan", "Particle lifetime from 1 to 10 seconds", 0.45);
-knob("decayRate", "Decay Rate", "How quickly emitted source material dims to zero", 0.35);
-knob("gammaCorrection", "Gamma Correction", "Shape the source-value to output-brightness curve; 50% is neutral", 0.5);
-knob("particleAmplitude", "Particle Amplitude", "Particle source emission multiplier from 0.5x to 10x", 0.2313782132);
+knob("viscosity", "Viscosity", "Velocity diffusion; 0 is fluid, 1 is thick and smooth", 0.62);
+knob("turbulence", "Turbulence", "Restore fluid curls lost to interpolation; 0 is smooth", 0.5);
+knob("particleRate", "Particle Rate", "Ambient particles emitted per second", 1);
+knob("particleLifespan", "Particle Lifespan", "Particle lifetime from 1 to 10 seconds", 0);
+knob("decayRate", "Decay Rate", "How quickly emitted source material dims to zero", 1);
+knob("gammaCorrection", "Gamma Correction", "Shape the source-value to output-brightness curve; 50% is neutral", 0.25);
+knob("particleAmplitude", "Particle Amplitude", "Particle source emission multiplier from 0.5x to 10x", 0.3);
 
 // Momentary buttons: true while held and false when released.
 trigger("b1", "B1", "Emit particles from the source surface and pulse outward", onB1);
@@ -131,13 +132,14 @@ function sourceSurfacePointLocal(p, shape) {
   if (shape === 1) {
     return {
       x: 0.13 * signValue(c) * Math.sqrt(Math.abs(c)),
-      y: 0.075 * signValue(s) * Math.sqrt(Math.abs(s))
+      y: 0.0325 * signValue(s) * Math.sqrt(Math.abs(s))
     };
   }
   if (shape === 2) {
-    return { x: 0.115 * c * c * c, y: 0.115 * s * s * s };
+    return { x: 0.115 * Math.pow(c, 5), y: 0.115 * Math.pow(s, 5) };
   }
-  var radius = shape === 3 ? 0.09 + 0.028 * Math.cos(6 * theta) : 0.095;
+  var petal = 0.5 + 0.5 * Math.cos(6 * theta);
+  var radius = shape === 3 ? 0.052 + 0.066 * Math.pow(petal, 2.5) : 0.095;
   return { x: radius * c, y: radius * s };
 }
 
@@ -197,15 +199,16 @@ function sourceContainsWorld(x, y, cx, cy, angle, shape, sizeScale) {
   }
   if (shape === 1) {
     var sx = ax / 0.13;
-    var sy = ay / 0.075;
+    var sy = ay / 0.0325;
     return sx * sx * sx * sx + sy * sy * sy * sy <= 1;
   }
   if (shape === 2) {
-    return Math.pow(ax / 0.115, 2 / 3) + Math.pow(ay / 0.115, 2 / 3) <= 1;
+    return Math.pow(ax / 0.115, 2 / 5) + Math.pow(ay / 0.115, 2 / 5) <= 1;
   }
 
   var theta = Math.atan2(ly, lx);
-  var boundary = 0.09 + 0.028 * Math.cos(6 * theta);
+  var petal = 0.5 + 0.5 * Math.cos(6 * theta);
+  var boundary = 0.052 + 0.066 * Math.pow(petal, 2.5);
   return lx * lx + ly * ly <= boundary * boundary;
 }
 
@@ -465,7 +468,7 @@ function applyVorticityConfinement(dt) {
       var gy = 0.5 * (Math.abs(curl[j + W]) - Math.abs(curl[j - W]));
       var magnitude = Math.sqrt(gx * gx + gy * gy);
       if (magnitude < 1e-5) continue;
-      var force = curl[j] * VORTICITY_CONFINEMENT * dt / magnitude;
+      var force = curl[j] * MAX_VORTICITY_CONFINEMENT * turbulence * dt / magnitude;
       velU[j] += gy * force;
       velV[j] -= gx * force;
     }
