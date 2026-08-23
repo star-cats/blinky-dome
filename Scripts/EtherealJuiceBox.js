@@ -13,9 +13,12 @@ var SIM_HZ = 60;
 var MAX_SUBSTEPS = 4;
 var DIFFUSION_ITERATIONS = 16;
 var PRESSURE_ITERATIONS = 24;
-var MAX_VORTICITY_CONFINEMENT = 12;
+var MAX_VORTICITY_CONFINEMENT = 36;
 var MAX_PARTICLES = 2048;
 var B1_PARTICLE_BURST = 40;
+var B4_SWEEP_SECONDS = 0.3;
+var B4_FORCE_REFERENCE_SECONDS = 0.4;
+var B4_FORCE_MULTIPLIER = 3;
 var TAU = Math.PI * 2;
 
 // Settings row
@@ -31,7 +34,7 @@ knob("particleAmplitude", "Particle Amplitude", "Particle source emission multip
 trigger("b1", "B1", "Emit particles from the source surface and pulse outward", onB1);
 toggle("b2", "B2", "Pull the fluid and its particles toward the source", false);
 trigger("b3", "B3", "Apply random impulses throughout the fluid", onB3);
-trigger("b4", "B4", "Reserved momentary button", onB4);
+trigger("b4", "B4", "Sweep inward from both edges to the source X position", onB4);
 trigger("b5", "B5", "Reserved momentary button", onB5);
 trigger("b6", "B6", "Reserved momentary button", onB6);
 
@@ -75,10 +78,12 @@ var sourceInitialized = false;
 // A press is also queued so a very quick tap cannot fall between fixed steps.
 var queuedB1 = 0;
 var queuedB3 = 0;
+var queuedB4 = 0;
+var advectionWaves = [];
 
 function onB1() { ++queuedB1; }
 function onB3() { ++queuedB3; }
-function onB4() {}
+function onB4() { ++queuedB4; }
 function onB5() {}
 function onB6() {}
 
@@ -112,7 +117,8 @@ function init() {
   sourceShape = sourcePrevShape = 0;
   sourceSizeScale = 1;
   sourceInitialized = false;
-  queuedB1 = queuedB3 = 0;
+  queuedB1 = queuedB3 = queuedB4 = 0;
+  advectionWaves = [];
 }
 
 function selectedShape() {
@@ -384,12 +390,75 @@ function applyAttraction(dt, active) {
 
 function applyRandomFieldPulse(dt, active) {
   if (!active) return;
-  var strength = 42 * Math.sqrt(dt);
+  var strength = 630 * Math.sqrt(dt);
   for (var y = 1; y < H1; ++y) {
     for (var x = 1; x < W1; ++x) {
       var i = y * W + x;
       velU[i] += (Math.random() * 2 - 1) * strength;
       velV[i] += (Math.random() * 2 - 1) * strength;
+    }
+  }
+}
+
+/** Apply an inward impulse to every texel crossed by one vertical wavefront. */
+function applySweptVerticalFront(previousX, currentX, direction, frontierSpeed) {
+  var previousGridX = previousX * W1;
+  var currentGridX = currentX * W1;
+  var lowX = Math.min(previousGridX, currentGridX);
+  var highX = Math.max(previousGridX, currentGridX);
+  var edgeRadius = 1.15;
+  var strength = B4_FORCE_MULTIPLIER * Math.max(48, frontierSpeed * 1.15);
+  var minX = Math.max(1, Math.floor(lowX - edgeRadius));
+  var maxX = Math.min(W1 - 1, Math.ceil(highX + edgeRadius));
+
+  for (var x = minX; x <= maxX; ++x) {
+    var distance = x < lowX ? lowX - x : (x > highX ? x - highX : 0);
+    if (distance >= edgeRadius) continue;
+    var falloff = 1 - distance / edgeRadius;
+    for (var y = 1; y < H1; ++y) {
+      velU[y * W + x] += direction * strength * falloff;
+    }
+  }
+}
+
+/**
+ * Advance all B4 waves. Both fronts use the same normalized progress, so their
+ * unequal travel distances still terminate at the snapshotted source X on the
+ * same fixed step. Swept intervals prevent gaps between frontier positions.
+ */
+function updateAdvectionWaves(dt) {
+  while (queuedB4 > 0) {
+    --queuedB4;
+    advectionWaves.push({ targetX: sourceX, age: 0 });
+  }
+
+  for (var i = advectionWaves.length - 1; i >= 0; --i) {
+    var wave = advectionWaves[i];
+    var previousTime = clampValue(wave.age / B4_SWEEP_SECONDS, 0, 1);
+    wave.age = wave.age + dt >= B4_SWEEP_SECONDS - 1e-9
+      ? B4_SWEEP_SECONDS
+      : wave.age + dt;
+    var time = clampValue(wave.age / B4_SWEEP_SECONDS, 0, 1);
+    var previousProgress = previousTime * previousTime;
+    var progress = time * time;
+
+    var previousLeft = wave.targetX * previousProgress;
+    var currentLeft = wave.targetX * progress;
+    var previousRight = 1 - (1 - wave.targetX) * previousProgress;
+    var currentRight = 1 - (1 - wave.targetX) * progress;
+    // Force magnitude references the old 400ms linear frontier speeds. This
+    // keeps the requested 3x force change independent of the new timing curve.
+    var leftSpeed = wave.targetX * W1 / B4_FORCE_REFERENCE_SECONDS;
+    var rightSpeed = (1 - wave.targetX) * W1 / B4_FORCE_REFERENCE_SECONDS;
+
+    if (wave.targetX > 1e-6) {
+      applySweptVerticalFront(previousLeft, currentLeft, 1, leftSpeed);
+    }
+    if (wave.targetX < 1 - 1e-6) {
+      applySweptVerticalFront(previousRight, currentRight, -1, rightSpeed);
+    }
+    if (wave.age >= B4_SWEEP_SECONDS) {
+      advectionWaves.splice(i, 1);
     }
   }
 }
@@ -618,6 +687,7 @@ function simulate(dt) {
   // before it would cause pressure to cancel most of the visible motion.
   handleB1(dt);
   applyAttraction(dt, b2);
+  updateAdvectionWaves(dt);
   advectParticles(dt);
   advectAndDecayDye(dt);
   emitParticleDye();
