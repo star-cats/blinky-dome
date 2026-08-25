@@ -28,11 +28,27 @@ var DIFFUSION_ITERATIONS = 16;
 var PRESSURE_ITERATIONS = 24;
 var MAX_VORTICITY_CONFINEMENT = 36;
 var MAX_PARTICLES = 2048;
-var B1_PARTICLE_BURST = 40;
-var B4_SWEEP_SECONDS = 0.3;
-var B4_FORCE_REFERENCE_SECONDS = 0.4;
-var B4_FORCE_MULTIPLIER = 3;
 var TAU = Math.PI * 2;
+
+// The momentary row. B1, B2 and B3 apply while held and are also guaranteed
+// one full application per press, so a tap landing between fixed steps still
+// registers. All three are impulses into the velocity field.
+var B1_EDGE_BAND = 2;
+var B1_EDGE_IMPULSE = 220;
+var B1_PARTICLE_BURST = 24;
+var B1_PARTICLE_RATE = 90;
+var B1_PARTICLE_SPEED = 30;
+var B1_MAX_PRESSES_PER_STEP = 2;
+var B2_SPIRAL_FORCE = 80;
+var B2_SPIRAL_INFLOW = 0.35;
+var B2_SPIRAL_EDGE = 0.5;
+var B3_JOLT_FORCE = 1260;
+
+// B6 loosens the fluid while it is held. The rest targets are the Viscosity
+// and Decay Rate knobs, which default to the values it returns to.
+var B6_TWEEN_SECONDS = 0.5;
+var B6_HELD_VISCOSITY = 0.4;
+var B6_HELD_DECAY = 0.4;
 
 // Agent forms. All extents are multiples of the shared agent radius, so the
 // Agent Radius knob scales every form coherently.
@@ -77,24 +93,24 @@ var BOLT_IMPULSE = 260;
 var BOLT_IMPULSE_RADIUS = 2.2;
 
 // Settings row
-knob("viscosity", "Viscosity", "Velocity diffusion; 0 is fluid, 1 is thick and smooth", 0.62);
+knob("viscosity", "Viscosity", "Velocity diffusion; 0 is fluid, 1 is thick and smooth. B6 tweens away from this and back to it", 0.9);
 knob("turbulence", "Turbulence", "Restore fluid curls lost to interpolation; 0 is smooth", 0.5);
 knob("particleRate", "Particle Rate", "Ambient particles emitted per second", 1);
 knob("particleLifespan", "Particle Lifespan", "Particle lifetime from 1 to 10 seconds; takes effect on newly emitted particles only", 0);
-knob("decayRate", "Decay Rate", "How quickly emitted source material dims to zero", 1);
+knob("decayRate", "Decay Rate", "How quickly emitted source material dims to zero. B6 tweens away from this and back to it", 0.85);
 knob("gammaCorrection", "Gamma Correction", "Shape the source-value to output-brightness curve; 50% is neutral", 0.25);
 knob("particleAmplitude", "Particle Amplitude", "Particle source emission multiplier from 0.5x to 10x", 0.3);
 knob("agentRadius", "Agent Radius", "Fixed radius shared by the disc and the sink", 0.5);
 knob("spinRate", "Spin Rate", "How fast the orbiting dots and arcs rotate", 0.4);
 
-// Momentary buttons: true while held and false when released. B2 is the one
-// exception; it latches, so the pull stays on until it is switched off.
-trigger("b1", "B1", "Emit particles from the disc surface and pulse outward", onB1);
-toggle("b2", "B2", "Pull the fluid and its particles toward the disc", false);
-trigger("b3", "B3", "Apply random impulses throughout the fluid", onB3);
-trigger("b4", "B4", "Sweep inward from both edges to the disc X position", onB4);
+// Momentary buttons: true while held and false when released. B6 is the one
+// exception; it latches, so the smear stays on until it is switched off.
+trigger("b1", "B1", "Lay source and particles around all four walls and drive them at the center", onB1);
+trigger("b2", "B2", "Drive a spiral through the whole box", onB2);
+trigger("b3", "B3", "Jolt every cell in a random direction", onB3);
+trigger("b4", "B4", "Reserved momentary button", onB4);
 trigger("b5", "B5", "Reserved momentary button", onB5);
-trigger("b6", "B6", "Reserved momentary button", onB6);
+toggle("b6", "B6", "While on, smear viscosity and decay toward loose; half a second out and half a second back", false);
 
 // Latched switches. T5 and T6 act on the flip rather than on the position, so
 // both directions do something and neither has a resting state that is "off".
@@ -123,7 +139,6 @@ var dye, dye2, pressure, pressure2, divergence, curl;
 
 var particles = [];
 var ambientEmissionAccumulator = 0;
-var surfaceEmissionAccumulator = 0;
 var simAccumulator = 0;
 var renderGamma = 1;
 
@@ -143,15 +158,18 @@ var pendingBolt = null;
 
 // A press is also queued so a very quick tap cannot fall between fixed steps.
 var queuedB1 = 0;
+var queuedB2 = 0;
 var queuedB3 = 0;
-var queuedB4 = 0;
-var advectionWaves = [];
+var edgeEmissionAccumulator = 0;
+
+// 0 at the knob values, 1 at B6's held values.
+var slipEnvelope = 0;
 
 function onB1() { ++queuedB1; }
+function onB2() { ++queuedB2; }
 function onB3() { ++queuedB3; }
-function onB4() { ++queuedB4; }
+function onB4() {}
 function onB5() {}
-function onB6() {}
 
 function init() {
   W = Math.max(4, GRID_SIZE | 0);
@@ -175,7 +193,6 @@ function init() {
 
   particles = [];
   ambientEmissionAccumulator = 0;
-  surfaceEmissionAccumulator = 0;
   simAccumulator = 0;
 
   agents = [
@@ -188,8 +205,9 @@ function init() {
   sweep = null;
   pendingBolt = null;
 
-  queuedB1 = queuedB3 = queuedB4 = 0;
-  advectionWaves = [];
+  queuedB1 = queuedB2 = queuedB3 = 0;
+  edgeEmissionAccumulator = 0;
+  slipEnvelope = 0;
 }
 
 function newAgent(kind) {
@@ -759,7 +777,7 @@ function emitAmbientParticles(dt) {
 
 function emitSurfaceParticleAndPulse(agent, radius, boost) {
   var sample = agentSurfaceSample(agent, Math.random(), radius);
-  var impulseScale = (b2 ? 4 : 2) * (boost || 1);
+  var impulseScale = 2 * (boost || 1);
   // Start just outside the solid form so the new particle is immediately
   // visible, then give it a strong short-lived outward launch velocity.
   var x = sample.x + sample.nx * 0.75 / W1;
@@ -787,23 +805,161 @@ function emitSurfaceParticleAndPulse(agent, radius, boost) {
   }
 }
 
-function handleB1(dt, radius) {
-  var agent = agents[0];
+/**
+ * B1. A band of source around all four walls with an inward impulse behind it,
+ * so the box is squeezed from every edge at once. The dye is laid down in the
+ * stamping phase rather than here, so it is not advected away by the very
+ * impulse that accompanies it.
+ */
+function applyEdgeImpulse() {
+  var reach = B1_EDGE_BAND + 1;
+  for (var y = 1; y < H1; ++y) {
+    var yn = y / H1;
+    var fromBottom = y;
+    var fromTop = H1 - y;
+    for (var x = 1; x < W1; ++x) {
+      var depth = Math.min(x, W1 - x, fromBottom, fromTop);
+      if (depth > B1_EDGE_BAND) continue;
+      var dx = 0.5 - x / W1;
+      var dy = 0.5 - yn;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 1e-6) continue;
+      // Straight at the middle of the box rather than square off the nearest
+      // wall, so the four walls converge on one point instead of four fronts.
+      var scale = B1_EDGE_IMPULSE * (1 - depth / reach) / distance;
+      var i = y * W + x;
+      velU[i] += dx * scale;
+      velV[i] += dy * scale;
+    }
+  }
+}
+
+/** A point on the perimeter just inside the source band, p in [0,1). */
+function perimeterPoint(p) {
+  var inset = (B1_EDGE_BAND + 0.5) / Math.max(W1, H1);
+  var span = 1 - 2 * inset;
+  var walk = wrap01(p) * 4;
+  var side = Math.floor(walk);
+  var along = inset + (walk - side) * span;
+  if (side === 0) return { x: along, y: inset };
+  if (side === 1) return { x: 1 - inset, y: along };
+  if (side === 2) return { x: 1 - inset - (along - inset), y: 1 - inset };
+  return { x: inset, y: 1 - inset - (along - inset) };
+}
+
+/** One particle off the wall, launched at the middle of the box. */
+function emitEdgeParticle() {
+  var position = perimeterPoint(Math.random());
+  var dx = 0.5 - position.x;
+  var dy = 0.5 - position.y;
+  var distance = Math.sqrt(dx * dx + dy * dy) || 1;
+  addParticle(
+    position.x,
+    position.y,
+    dx / distance * B1_PARTICLE_SPEED,
+    dy / distance * B1_PARTICLE_SPEED
+  );
+}
+
+/**
+ * B1. Source around all four walls, particles thrown off them, and an impulse
+ * carrying both at the middle of the box. Returns whether the band should be
+ * stamped this step; the dye itself is laid down in the stamping phase so it
+ * is not advected away by the impulse that accompanies it.
+ */
+function handleB1(dt) {
+  var pressed = 0;
   while (queuedB1 > 0) {
     --queuedB1;
-    for (var burstParticle = 0; burstParticle < B1_PARTICLE_BURST; ++burstParticle) {
-      emitSurfaceParticleAndPulse(agent, radius);
-    }
+    if (pressed < B1_MAX_PRESSES_PER_STEP) ++pressed;
+  }
+  if (!b1 && pressed === 0) {
+    edgeEmissionAccumulator = 0;
+    return false;
+  }
+
+  applyEdgeImpulse();
+  var burst = pressed * B1_PARTICLE_BURST;
+  for (var i = 0; i < burst; ++i) {
+    emitEdgeParticle();
   }
   if (b1) {
-    surfaceEmissionAccumulator += Math.max(10, ambientRatePerSecond()) * dt;
-    while (surfaceEmissionAccumulator >= 1) {
-      surfaceEmissionAccumulator -= 1;
-      emitSurfaceParticleAndPulse(agent, radius);
+    edgeEmissionAccumulator += B1_PARTICLE_RATE * dt;
+    while (edgeEmissionAccumulator >= 1) {
+      edgeEmissionAccumulator -= 1;
+      emitEdgeParticle();
     }
   } else {
-    surfaceEmissionAccumulator = 0;
+    edgeEmissionAccumulator = 0;
   }
+  return true;
+}
+
+function stampEdgeSource() {
+  for (var y = 0; y < H; ++y) {
+    var inset = y > B1_EDGE_BAND && y < H1 - B1_EDGE_BAND;
+    for (var x = 0; x < W; ++x) {
+      if (inset && x > B1_EDGE_BAND && x < W1 - B1_EDGE_BAND) continue;
+      dye[y * W + x] = 1;
+    }
+  }
+}
+
+/**
+ * B2. A ring vortex about the box center, with enough inflow to make it read
+ * as a spiral rather than a turntable. The strength peaks partway out and
+ * eases to nothing before the walls, so the no-slip boundary is not fighting
+ * a hard tangential edge.
+ */
+function applySpiralImpulse() {
+  for (var y = 1; y < H1; ++y) {
+    var yn = y / H1 - 0.5;
+    for (var x = 1; x < W1; ++x) {
+      var xn = x / W1 - 0.5;
+      var r = Math.sqrt(xn * xn + yn * yn);
+      if (r < 1e-5 || r >= B2_SPIRAL_EDGE) continue;
+      var inverse = 1 / r;
+      var falloff = Math.sin(Math.PI * r / B2_SPIRAL_EDGE) * B2_SPIRAL_FORCE;
+      var i = y * W + x;
+      velU[i] += (-yn - xn * B2_SPIRAL_INFLOW) * inverse * falloff;
+      velV[i] += (xn - yn * B2_SPIRAL_INFLOW) * inverse * falloff;
+    }
+  }
+}
+
+/** B3. Every interior cell shoved in its own random direction. */
+function applyRandomFieldPulse(dt) {
+  var strength = B3_JOLT_FORCE * Math.sqrt(dt);
+  for (var y = 1; y < H1; ++y) {
+    for (var x = 1; x < W1; ++x) {
+      var i = y * W + x;
+      velU[i] += (Math.random() * 2 - 1) * strength;
+      velV[i] += (Math.random() * 2 - 1) * strength;
+    }
+  }
+}
+
+/**
+ * B6. While on, viscosity and decay smear toward loose and fast-decaying over
+ * half a second; switched off, they smear back to whatever the two knobs say
+ * over the same half second. Latching rather than momentary, so the smeared
+ * state can be held indefinitely without keeping the control pressed.
+ */
+function updateSlipEnvelope(dt) {
+  var step = dt / B6_TWEEN_SECONDS;
+  slipEnvelope = b6
+    ? Math.min(1, slipEnvelope + step)
+    : Math.max(0, slipEnvelope - step);
+}
+
+function effectiveViscosity() {
+  var rest = clampValue(viscosity, 0, 1);
+  return rest + (B6_HELD_VISCOSITY - rest) * slipEnvelope;
+}
+
+function effectiveDecayRate() {
+  var rest = clampValue(decayRate, 0, 1);
+  return rest + (B6_HELD_DECAY - rest) * slipEnvelope;
 }
 
 /**
@@ -869,103 +1025,6 @@ function emitParticleDye() {
   }
 }
 
-// ---------------------------------------------------------- the momentary row
-
-function applyAttraction(dt, active) {
-  if (!active) return;
-  var agent = agents[0];
-  var strength = 3.2 * dt;
-  var softening = 0.035;
-  for (var y = 1; y < H1; ++y) {
-    var yn = y / H1;
-    for (var x = 1; x < W1; ++x) {
-      var xn = x / W1;
-      var dx = agent.x - xn;
-      var dy = agent.y - yn;
-      var r = Math.sqrt(dx * dx + dy * dy);
-      var inverseR = 1 / Math.max(softening, r);
-      var i = y * W + x;
-      velU[i] += dx * inverseR * inverseR * strength * W1;
-      velV[i] += dy * inverseR * inverseR * strength * H1;
-    }
-  }
-}
-
-function applyRandomFieldPulse(dt, active) {
-  if (!active) return;
-  var strength = 630 * Math.sqrt(dt);
-  for (var y = 1; y < H1; ++y) {
-    for (var x = 1; x < W1; ++x) {
-      var i = y * W + x;
-      velU[i] += (Math.random() * 2 - 1) * strength;
-      velV[i] += (Math.random() * 2 - 1) * strength;
-    }
-  }
-}
-
-/** Apply an inward impulse to every texel crossed by one vertical wavefront. */
-function applySweptVerticalFront(previousX, currentX, direction, frontierSpeed) {
-  var previousGridX = previousX * W1;
-  var currentGridX = currentX * W1;
-  var lowX = Math.min(previousGridX, currentGridX);
-  var highX = Math.max(previousGridX, currentGridX);
-  var edgeRadius = 1.15;
-  var strength = B4_FORCE_MULTIPLIER * Math.max(48, frontierSpeed * 1.15);
-  var minX = Math.max(1, Math.floor(lowX - edgeRadius));
-  var maxX = Math.min(W1 - 1, Math.ceil(highX + edgeRadius));
-
-  for (var x = minX; x <= maxX; ++x) {
-    var distance = x < lowX ? lowX - x : (x > highX ? x - highX : 0);
-    if (distance >= edgeRadius) continue;
-    var falloff = 1 - distance / edgeRadius;
-    for (var y = 1; y < H1; ++y) {
-      velU[y * W + x] += direction * strength * falloff;
-    }
-  }
-}
-
-/**
- * Advance all B4 waves. Both fronts use the same normalized progress, so their
- * unequal travel distances still terminate at the snapshotted disc X on the
- * same fixed step. Swept intervals prevent gaps between frontier positions.
- */
-function updateAdvectionWaves(dt) {
-  while (queuedB4 > 0) {
-    --queuedB4;
-    advectionWaves.push({ targetX: agents[0].x, age: 0 });
-  }
-
-  for (var i = advectionWaves.length - 1; i >= 0; --i) {
-    var wave = advectionWaves[i];
-    var previousTime = clampValue(wave.age / B4_SWEEP_SECONDS, 0, 1);
-    wave.age = wave.age + dt >= B4_SWEEP_SECONDS - 1e-9
-      ? B4_SWEEP_SECONDS
-      : wave.age + dt;
-    var time = clampValue(wave.age / B4_SWEEP_SECONDS, 0, 1);
-    var previousProgress = previousTime * previousTime;
-    var progress = time * time;
-
-    var previousLeft = wave.targetX * previousProgress;
-    var currentLeft = wave.targetX * progress;
-    var previousRight = 1 - (1 - wave.targetX) * previousProgress;
-    var currentRight = 1 - (1 - wave.targetX) * progress;
-    // Force magnitude references the old 400ms linear frontier speeds. This
-    // keeps the requested 3x force change independent of the new timing curve.
-    var leftSpeed = wave.targetX * W1 / B4_FORCE_REFERENCE_SECONDS;
-    var rightSpeed = (1 - wave.targetX) * W1 / B4_FORCE_REFERENCE_SECONDS;
-
-    if (wave.targetX > 1e-6) {
-      applySweptVerticalFront(previousLeft, currentLeft, 1, leftSpeed);
-    }
-    if (wave.targetX < 1 - 1e-6) {
-      applySweptVerticalFront(previousRight, currentRight, -1, rightSpeed);
-    }
-    if (wave.age >= B4_SWEEP_SECONDS) {
-      advectionWaves.splice(i, 1);
-    }
-  }
-}
-
 // ----------------------------------------------------------------- the solver
 
 function sampleField(field, x, y) {
@@ -1000,8 +1059,9 @@ function advectVelocity(dt) {
 }
 
 function diffuseVelocity(dt) {
-  var viscosityRangeScale = 0.5 + 2.5 * viscosity;
-  var nu = viscosity * viscosity * 54 * viscosityRangeScale;
+  var thickness = effectiveViscosity();
+  var viscosityRangeScale = 0.5 + 2.5 * thickness;
+  var nu = thickness * thickness * 54 * viscosityRangeScale;
   if (nu <= 0) return;
   var a = nu * dt;
   var denominator = 1 + 4 * a;
@@ -1107,7 +1167,8 @@ function enforceNoSlipWalls() {
 }
 
 function advectAndDecayDye(dt) {
-  var decayPerSecond = 0.05 + 13.95 * decayRate * decayRate;
+  var fade = effectiveDecayRate();
+  var decayPerSecond = 0.05 + 13.95 * fade * fade;
   var retention = Math.exp(-decayPerSecond * dt);
   for (var y = 0; y < H; ++y) {
     for (var x = 0; x < W; ++x) {
@@ -1131,6 +1192,7 @@ function simulate(dt) {
   }
 
   var radius = agentRadiusValue();
+  updateSlipEnvelope(dt);
   updateAgents(dt);
   emitAmbientParticles(dt);
   advectVelocity(dt);
@@ -1138,29 +1200,35 @@ function simulate(dt) {
   for (var i = 0; i < agents.length; ++i) {
     applyAgentSweep(agents[i], dt, radius);
   }
-  var randomPulseActive = b3 || queuedB3 > 0;
-  applyRandomFieldPulse(dt, randomPulseActive);
+
+  // Held applies every step; a queued press guarantees one application even if
+  // the tap fell entirely between two fixed steps.
+  var joltActive = b3 || queuedB3 > 0;
+  if (joltActive) applyRandomFieldPulse(dt);
   if (queuedB3 > 0) --queuedB3;
 
   applyVorticityConfinement(dt);
   projectVelocity();
 
-  // Everything below is radial, impulsive or both. It has to follow the
+  // Everything below is radial, tangential or impulsive. It has to follow the
   // zero-divergence projection; applying it before would let pressure cancel
   // most of the visible motion.
-  handleB1(dt, radius);
-  applyAttraction(dt, b2);
+  var edgeActive = handleB1(dt);
+
+  if (b2 || queuedB2 > 0) applySpiralImpulse();
+  if (queuedB2 > 0) --queuedB2;
+
   if (t1) applyRadialField(agents[0], dt, radius, 1, T1_PUSH_MULTIPLIER);
   if (t3) applyRadialField(agents[1], dt, radius, -1, T3_PULL_MULTIPLIER);
   handleT1Transition(radius);
   updateSweep(dt);
   updateBolt();
-  updateAdvectionWaves(dt);
 
   advectParticles(dt);
   advectAndDecayDye(dt);
   emitParticleDye();
   stampPendingBolt();
+  if (edgeActive) stampEdgeSource();
   stampNodePair(sweepAngle(), NODE_LEVEL);
   stampNodePair(boltAngle(), NODE_LEVEL);
   stampAgent(agents[0], radius, false);
