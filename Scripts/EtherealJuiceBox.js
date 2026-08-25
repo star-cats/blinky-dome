@@ -5,10 +5,12 @@
  *
  * Two solid agents live in the box and stamp white dye. Each transfers the
  * rigid-body velocity of its translated and rotated form into every cell it
- * sweeps, and each has an alternate five-fold form that spins:
+ * sweeps, and each has an alternate spinning form:
  *
- *   Disc  K1/K2   T1 blows outward and emits.  T2 becomes five orbiting dots.
- *   Ring  K3/K4   T3 sucks inward.             T4 becomes five outward rays.
+ *   Disc  K1/K2   T1 blows outward.  T2 becomes five orbiting dots.
+ *   Sink  K3/K4   T3 sucks inward.   T4 becomes three orbiting arcs.
+ *
+ * The sink is drawn as a spinning X; its alternate form is the three arcs.
  *
  * Two more controls fire between opposing nodes on the box edge, each pair
  * placed by its own angle knob:
@@ -35,36 +37,41 @@ var TAU = Math.PI * 2;
 // Agent forms. All extents are multiples of the shared agent radius, so the
 // Agent Radius knob scales every form coherently.
 var AGENT_DISC = 0;
-var AGENT_RING = 1;
-var ARM_COUNT = 5;
+var AGENT_SINK = 1;
+var SATELLITE_COUNT = 5;
 var SATELLITE_ORBIT = 1.35;
 var SATELLITE_RADIUS = 0.32;
-var RING_HALF_WIDTH = 0.25;
-var RAY_INNER = 0.45;
-var RAY_OUTER = 1.5;
-var RAY_HALF_WIDTH = 0.2;
+var X_ARM = 1;
+var X_HALF_WIDTH = 0.22;
+var ARC_COUNT = 3;
+var ARC_RADIUS = 1.25;
+var ARC_HALF_WIDTH = 0.25;
+var ARC_FILL = 0.5;
 
 // T1 and T3 radial fields. A radial field is pure divergence, so both are
 // applied after the pressure projection; see the note in simulate().
 var RADIAL_REACH = 3;
 var RADIAL_STRENGTH = 40;
-var T1_EMISSION_RATE = 45;
+var T1_PUSH_MULTIPLIER = 0.5;
+var T3_PULL_MULTIPLIER = 2;
+var T1_TRANSITION_PARTICLES = 20;
+var T1_TRANSITION_IMPULSE = 1;
 
-// The two edge node pairs. Level is how brightly each pair marks itself.
+// The two edge node pairs.
 var NODE_RADIUS = 0.03;
-var SWEEP_NODE_LEVEL = 0.7;
-var BOLT_NODE_LEVEL = 1;
+var NODE_LEVEL = 1;
 
 // T5 sweep.
-var SWEEP_SECONDS = 0.5;
+var SWEEP_SECONDS = 0.2;
 var SWEEP_FRONT_HALF_WIDTH = 1.15;
 var SWEEP_FORCE = 200;
 
 // T6 bolt.
 var BOLT_SEGMENTS = 5;
-var BOLT_JAGGEDNESS = 0.11;
+var BOLT_JAGGEDNESS = 0.22;
 var BOLT_DYE_RADIUS = 1.1;
-var BOLT_PARTICLES = 25;
+var BOLT_INTENSITY = 4;
+var BOLT_PARTICLES = 15;
 var BOLT_PARTICLE_SPEED = 26;
 var BOLT_IMPULSE = 260;
 var BOLT_IMPULSE_RADIUS = 2.2;
@@ -77,8 +84,8 @@ knob("particleLifespan", "Particle Lifespan", "Particle lifetime from 1 to 10 se
 knob("decayRate", "Decay Rate", "How quickly emitted source material dims to zero", 1);
 knob("gammaCorrection", "Gamma Correction", "Shape the source-value to output-brightness curve; 50% is neutral", 0.25);
 knob("particleAmplitude", "Particle Amplitude", "Particle source emission multiplier from 0.5x to 10x", 0.3);
-knob("agentRadius", "Agent Radius", "Fixed radius shared by the disc and the ring", 0.5);
-knob("spinRate", "Spin Rate", "How fast the orbiting dots and the sun rays rotate", 0.4);
+knob("agentRadius", "Agent Radius", "Fixed radius shared by the disc and the sink", 0.5);
+knob("spinRate", "Spin Rate", "How fast the orbiting dots and arcs rotate", 0.4);
 
 // Momentary buttons: true while held and false when released. B2 is the one
 // exception; it latches, so the pull stays on until it is switched off.
@@ -91,23 +98,24 @@ trigger("b6", "B6", "Reserved momentary button", onB6);
 
 // Latched switches. T5 and T6 act on the flip rather than on the position, so
 // both directions do something and neither has a resting state that is "off".
-toggle("t1", "T1", "Disc blows the fluid outward and emits particles from its surface", false);
+toggle("t1", "T1", "Disc blows the fluid outward; either flip also throws a burst off its surface", false);
 toggle("t2", "T2", "Disc becomes five dots orbiting just outside its radius", false);
-toggle("t3", "T3", "Ring sucks the fluid inward like a vacuum", false);
-toggle("t4", "T4", "Ring becomes five outward rays, like a sun", false);
-toggle("t5", "T5", "Flip in to sweep the box inward, flip out to sweep it back outward", false);
+toggle("t3", "T3", "Sink sucks the fluid inward like a vacuum", false);
+toggle("t4", "T4", "Sink becomes three arc segments, whose interior stays clear under suction", false);
+toggle("t5", "T5", "Flip out to sweep the box inward, flip in to sweep it back outward", false);
 toggle("t6", "T6", "Either flip fires a lightning bolt between the two edge nodes", false);
 
 // K1/K2 and K3/K4 place the two agents. K5 and K6 rotate the two edge node
-// pairs; each pair is opposed, so half a turn covers every orientation.
+// pairs over a full turn. Each pair is opposed, so the second half of a knob
+// repeats the first with the two nodes swapped.
 knob("k1", "K1", "Disc X position", 0.5);
 knob("k2", "K2", "Disc Y position", 0.5);
-knob("k3", "K3", "Ring X position", 0.5);
-knob("k4", "K4", "Ring Y position", 0.5);
-knob("k5", "K5", "Sweep node angle, 0 to 180 degrees", 0.5);
+knob("k3", "K3", "Sink X position", 0.5);
+knob("k4", "K4", "Sink Y position", 0.5);
+knob("k5", "K5", "Sweep node angle, full turn", 0.25);
 // Defaulted a quarter turn apart from K5 so the two node pairs do not sit on
 // top of each other on load.
-knob("k6", "K6", "Bolt node angle, 0 to 180 degrees", 0);
+knob("k6", "K6", "Bolt node angle, full turn", 0);
 
 var W, H, W1, H1, cells;
 var velU, velV, velU2, velV2, diffusionU, diffusionV;
@@ -116,7 +124,6 @@ var dye, dye2, pressure, pressure2, divergence, curl;
 var particles = [];
 var ambientEmissionAccumulator = 0;
 var surfaceEmissionAccumulator = 0;
-var thrustEmissionAccumulator = 0;
 var simAccumulator = 0;
 var renderGamma = 1;
 
@@ -128,6 +135,7 @@ var agentsInitialized = false;
 // first simulated step rather than in init(), which the host calls before the
 // parameter variables exist.
 var togglesBaselined = false;
+var thrustPrevious = false;
 var sweepPrevious = false;
 var boltPrevious = false;
 var sweep = null;
@@ -168,12 +176,11 @@ function init() {
   particles = [];
   ambientEmissionAccumulator = 0;
   surfaceEmissionAccumulator = 0;
-  thrustEmissionAccumulator = 0;
   simAccumulator = 0;
 
   agents = [
     newAgent(AGENT_DISC),
-    newAgent(AGENT_RING)
+    newAgent(AGENT_SINK)
   ];
   agentsInitialized = false;
 
@@ -215,9 +222,9 @@ function agentExtent(agent, radius) {
   if (agent.alt) {
     return agent.kind === AGENT_DISC
       ? radius * (SATELLITE_ORBIT + SATELLITE_RADIUS)
-      : radius * RAY_OUTER;
+      : radius * (ARC_RADIUS + ARC_HALF_WIDTH);
   }
-  return agent.kind === AGENT_DISC ? radius : radius * (1 + RING_HALF_WIDTH);
+  return agent.kind === AGENT_DISC ? radius : radius * (X_ARM + X_HALF_WIDTH);
 }
 
 /**
@@ -225,8 +232,8 @@ function agentExtent(agent, radius) {
  *
  * The center and spin are passed in rather than read off the agent so the
  * swept-path test can walk the form back along the motion it made this step.
- * Both alternate forms are five-fold symmetric, so the point is folded onto
- * its nearest arm and one arm is tested instead of five.
+ * Both alternate forms are rotationally symmetric, so the point is folded onto
+ * its nearest arm and one arm is tested instead of all of them.
  */
 function agentContainsAt(agent, px, py, cx, cy, spin, radius) {
   var dx = px - cx;
@@ -237,14 +244,20 @@ function agentContainsAt(agent, px, py, cx, cy, spin, radius) {
     if (agent.kind === AGENT_DISC) {
       return distanceSquared <= radius * radius;
     }
-    var half = RING_HALF_WIDTH * radius;
-    var inner = radius - half;
-    var outer = radius + half;
-    return distanceSquared >= inner * inner && distanceSquared <= outer * outer;
+    // An X, which is a plus sign in a frame turned an eighth of a turn. Two
+    // trig calls beat folding here, and the crossing point stays solid.
+    var turn = spin + Math.PI / 4;
+    var turnCos = Math.cos(turn);
+    var turnSin = Math.sin(turn);
+    var barX = Math.abs(turnCos * dx + turnSin * dy);
+    var barY = Math.abs(turnCos * dy - turnSin * dx);
+    var barHalf = X_HALF_WIDTH * radius;
+    var barArm = X_ARM * radius;
+    return (barY <= barHalf && barX <= barArm) || (barX <= barHalf && barY <= barArm);
   }
 
   var distance = Math.sqrt(distanceSquared);
-  var sector = TAU / ARM_COUNT;
+  var sector = TAU / (agent.kind === AGENT_DISC ? SATELLITE_COUNT : ARC_COUNT);
   var offset = Math.atan2(dy, dx) - spin;
   offset -= Math.round(offset / sector) * sector;
 
@@ -257,10 +270,18 @@ function agentContainsAt(agent, px, py, cx, cy, spin, radius) {
     return gap <= dotRadius * dotRadius;
   }
 
-  if (distance < RAY_INNER * radius || distance > RAY_OUTER * radius) {
+  // A band at the arc radius, cut into ARC_COUNT pieces. ARC_FILL is how much
+  // of each sector is arc; the remainder is the gap between one arc and the
+  // next, which is what keeps the three segments reading as separate.
+  if (Math.abs(distance - ARC_RADIUS * radius) > ARC_HALF_WIDTH * radius) {
     return false;
   }
-  return Math.abs(distance * Math.sin(offset)) <= RAY_HALF_WIDTH * radius;
+  return Math.abs(offset) <= ARC_FILL * sector * 0.5;
+}
+
+/** The heading of the X's first arm. */
+function spinOffsetX(agent) {
+  return agent.spin + Math.PI / 4;
 }
 
 /** A point on an agent's outer surface with its outward normal, p in [0,1). */
@@ -268,32 +289,42 @@ function agentSurfaceSample(agent, p, radius) {
   p = wrap01(p);
 
   if (!agent.alt) {
-    var theta = TAU * p;
-    var c = Math.cos(theta);
-    var s = Math.sin(theta);
-    var edge = agent.kind === AGENT_DISC ? radius : radius * (1 + RING_HALF_WIDTH);
-    return { x: agent.x + edge * c, y: agent.y + edge * s, nx: c, ny: s };
+    if (agent.kind === AGENT_DISC) {
+      var theta = TAU * p;
+      var c = Math.cos(theta);
+      var s = Math.sin(theta);
+      return { x: agent.x + radius * c, y: agent.y + radius * s, nx: c, ny: s };
+    }
+    // Off the tip of one of the X's four arms.
+    var tipAngle = spinOffsetX(agent) + Math.floor(p * 4) * (Math.PI / 2);
+    var tipCos = Math.cos(tipAngle);
+    var tipSin = Math.sin(tipAngle);
+    var reach = X_ARM * radius;
+    return { x: agent.x + reach * tipCos, y: agent.y + reach * tipSin, nx: tipCos, ny: tipSin };
   }
 
-  var armAngle = agent.spin + Math.floor(p * ARM_COUNT) * (TAU / ARM_COUNT);
-  var armCos = Math.cos(armAngle);
-  var armSin = Math.sin(armAngle);
-
-  if (agent.kind === AGENT_RING) {
-    var tip = RAY_OUTER * radius;
-    return { x: agent.x + tip * armCos, y: agent.y + tip * armSin, nx: armCos, ny: armSin };
+  if (agent.kind === AGENT_SINK) {
+    // Somewhere along the outer edge of one of the three arcs.
+    var arcSector = TAU / ARC_COUNT;
+    var along = (wrap01(p * ARC_COUNT) - 0.5) * ARC_FILL * arcSector;
+    var arcAngle = agent.spin + Math.floor(p * ARC_COUNT) * arcSector + along;
+    var arcCos = Math.cos(arcAngle);
+    var arcSin = Math.sin(arcAngle);
+    var edge = (ARC_RADIUS + ARC_HALF_WIDTH) * radius;
+    return { x: agent.x + edge * arcCos, y: agent.y + edge * arcSin, nx: arcCos, ny: arcSin };
   }
 
+  var armAngle = agent.spin + Math.floor(p * SATELLITE_COUNT) * (TAU / SATELLITE_COUNT);
   // The fractional part within the chosen arm doubles as the angle around
   // that arm's dot, so one random number places the sample completely.
-  var local = TAU * wrap01(p * ARM_COUNT);
+  var local = TAU * wrap01(p * SATELLITE_COUNT);
   var localCos = Math.cos(local);
   var localSin = Math.sin(local);
   var orbit = SATELLITE_ORBIT * radius;
   var dotRadius = SATELLITE_RADIUS * radius;
   return {
-    x: agent.x + orbit * armCos + dotRadius * localCos,
-    y: agent.y + orbit * armSin + dotRadius * localSin,
+    x: agent.x + orbit * Math.cos(armAngle) + dotRadius * localCos,
+    y: agent.y + orbit * Math.sin(armAngle) + dotRadius * localSin,
     nx: localCos,
     ny: localSin
   };
@@ -385,19 +416,38 @@ function applyAgentSweep(agent, dt, radius) {
   }
 }
 
-/** An agent is always a solid, maximum-value emitter. */
-function stampAgent(agent, radius) {
+/**
+ * An agent is always a solid, maximum-value emitter. The sink's arc form is
+ * additionally a container: while suction is running its interior is forced to
+ * zero every step, which is the case that would otherwise pack the middle with
+ * everything the vacuum has just dragged in. The void is bounded by the inner
+ * edge of the arcs, so it reads as the shape containing it rather than as a
+ * hole floating on its own.
+ */
+function stampAgent(agent, radius, suction) {
   var extent = agentExtent(agent, radius);
   var minX = Math.max(0, Math.floor((agent.x - extent) * W1));
   var maxX = Math.min(W1, Math.ceil((agent.x + extent) * W1));
   var minY = Math.max(0, Math.floor((agent.y - extent) * H1));
   var maxY = Math.min(H1, Math.ceil((agent.y + extent) * H1));
+  // Only the arc form encloses anything. The X is a solid figure with no
+  // interior, so there is nothing to hold open when it is the one drawn.
+  var hollow = agent.kind === AGENT_SINK && agent.alt && suction;
+  var hollowRadius = radius * (ARC_RADIUS - ARC_HALF_WIDTH);
 
   for (var y = minY; y <= maxY; ++y) {
     var yn = y / H1;
     for (var x = minX; x <= maxX; ++x) {
-      if (agentContainsAt(agent, x / W1, yn, agent.x, agent.y, agent.spin, radius)) {
-        dye[y * W + x] = 1;
+      var xn = x / W1;
+      var i = y * W + x;
+      if (agentContainsAt(agent, xn, yn, agent.x, agent.y, agent.spin, radius)) {
+        dye[i] = 1;
+      } else if (hollow) {
+        var dx = xn - agent.x;
+        var dy = yn - agent.y;
+        if (dx * dx + dy * dy < hollowRadius * hollowRadius) {
+          dye[i] = 0;
+        }
       }
     }
   }
@@ -408,13 +458,13 @@ function stampAgent(agent, radius) {
  * The falloff is linear rather than inverse-square so there is no singularity
  * sitting inside the solid form.
  */
-function applyRadialField(agent, dt, radius, sign) {
+function applyRadialField(agent, dt, radius, sign, multiplier) {
   var reach = agentExtent(agent, radius) * RADIAL_REACH;
   var minX = Math.max(1, Math.floor((agent.x - reach) * W1));
   var maxX = Math.min(W1 - 1, Math.ceil((agent.x + reach) * W1));
   var minY = Math.max(1, Math.floor((agent.y - reach) * H1));
   var maxY = Math.min(H1 - 1, Math.ceil((agent.y + reach) * H1));
-  var scale = sign * RADIAL_STRENGTH * dt;
+  var scale = sign * RADIAL_STRENGTH * multiplier * dt;
 
   for (var y = minY; y <= maxY; ++y) {
     var yn = y / H1;
@@ -436,11 +486,11 @@ function applyRadialField(agent, dt, radius, sign) {
 // ------------------------------------------------------------- the edge nodes
 
 function sweepAngle() {
-  return clampValue(k5, 0, 1) * Math.PI;
+  return clampValue(k5, 0, 1) * TAU;
 }
 
 function boltAngle() {
-  return clampValue(k6, 0, 1) * Math.PI;
+  return clampValue(k6, 0, 1) * TAU;
 }
 
 /** Axial distance from the box center to the inset edge along this heading. */
@@ -487,14 +537,14 @@ function stampNodeDot(position, level) {
 // ----------------------------------------------------------------- T5, sweep
 
 /**
- * Flipping T5 in converges a pair of fronts on the box center; flipping it out
+ * Flipping T5 out converges a pair of fronts on the box center; flipping it in
  * drives them back to the edge. Only one sweep is ever in flight, so reversing
  * mid-travel abandons the old one on the spot rather than queueing behind it.
  */
 function updateSweep(dt) {
   if (t5 !== sweepPrevious) {
     sweepPrevious = t5;
-    sweep = { angle: sweepAngle(), outward: !t5, age: 0 };
+    sweep = { angle: sweepAngle(), outward: t5, age: 0 };
   }
   if (sweep === null) return;
 
@@ -665,7 +715,7 @@ function stampBoltPoint(x, y) {
       var dy = cy - gy;
       var distance = Math.sqrt(dx * dx + dy * dy);
       if (distance >= BOLT_DYE_RADIUS) continue;
-      var value = BOLT_NODE_LEVEL * (1 - 0.35 * distance / BOLT_DYE_RADIUS);
+      var value = BOLT_INTENSITY * (1 - 0.35 * distance / BOLT_DYE_RADIUS);
       var i = cy * W + cx;
       if (value > dye[i]) dye[i] = value;
     }
@@ -707,9 +757,9 @@ function emitAmbientParticles(dt) {
   }
 }
 
-function emitSurfaceParticleAndPulse(agent, radius) {
+function emitSurfaceParticleAndPulse(agent, radius, boost) {
   var sample = agentSurfaceSample(agent, Math.random(), radius);
-  var impulseScale = b2 ? 4 : 2;
+  var impulseScale = (b2 ? 4 : 2) * (boost || 1);
   // Start just outside the solid form so the new particle is immediately
   // visible, then give it a strong short-lived outward launch velocity.
   var x = sample.x + sample.nx * 0.75 / W1;
@@ -756,16 +806,17 @@ function handleB1(dt, radius) {
   }
 }
 
-/** The steady surface emission T1 adds on top of its outward field. */
-function handleT1Emission(dt, radius) {
-  if (!t1) {
-    thrustEmissionAccumulator = 0;
-    return;
-  }
-  thrustEmissionAccumulator += T1_EMISSION_RATE * dt;
-  while (thrustEmissionAccumulator >= 1) {
-    thrustEmissionAccumulator -= 1;
-    emitSurfaceParticleAndPulse(agents[0], radius);
+/**
+ * Either flip of T1 throws one burst off the disc, and that is the whole of
+ * its emission -- holding T1 on does not keep feeding particles in. Switching
+ * it off is therefore as much of an event as switching it on, and the on state
+ * is the sustained outward field alone.
+ */
+function handleT1Transition(radius) {
+  if (t1 === thrustPrevious) return;
+  thrustPrevious = t1;
+  for (var i = 0; i < T1_TRANSITION_PARTICLES; ++i) {
+    emitSurfaceParticleAndPulse(agents[0], radius, T1_TRANSITION_IMPULSE);
   }
 }
 
@@ -950,7 +1001,7 @@ function advectVelocity(dt) {
 
 function diffuseVelocity(dt) {
   var viscosityRangeScale = 0.5 + 2.5 * viscosity;
-  var nu = viscosity * viscosity * 18 * viscosityRangeScale;
+  var nu = viscosity * viscosity * 54 * viscosityRangeScale;
   if (nu <= 0) return;
   var a = nu * dt;
   var denominator = 1 + 4 * a;
@@ -1056,7 +1107,7 @@ function enforceNoSlipWalls() {
 }
 
 function advectAndDecayDye(dt) {
-  var decayPerSecond = 0.05 + 6.95 * decayRate * decayRate;
+  var decayPerSecond = 0.05 + 13.95 * decayRate * decayRate;
   var retention = Math.exp(-decayPerSecond * dt);
   for (var y = 0; y < H; ++y) {
     for (var x = 0; x < W; ++x) {
@@ -1073,6 +1124,7 @@ function simulate(dt) {
   // Baselined on first use rather than defaulted, so loading a project with a
   // switch already flipped does not read as a flip and fire on frame one.
   if (!togglesBaselined) {
+    thrustPrevious = t1;
     sweepPrevious = t5;
     boltPrevious = t6;
     togglesBaselined = true;
@@ -1098,9 +1150,9 @@ function simulate(dt) {
   // most of the visible motion.
   handleB1(dt, radius);
   applyAttraction(dt, b2);
-  if (t1) applyRadialField(agents[0], dt, radius, 1);
-  if (t3) applyRadialField(agents[1], dt, radius, -1);
-  handleT1Emission(dt, radius);
+  if (t1) applyRadialField(agents[0], dt, radius, 1, T1_PUSH_MULTIPLIER);
+  if (t3) applyRadialField(agents[1], dt, radius, -1, T3_PULL_MULTIPLIER);
+  handleT1Transition(radius);
   updateSweep(dt);
   updateBolt();
   updateAdvectionWaves(dt);
@@ -1109,11 +1161,10 @@ function simulate(dt) {
   advectAndDecayDye(dt);
   emitParticleDye();
   stampPendingBolt();
-  stampNodePair(sweepAngle(), SWEEP_NODE_LEVEL);
-  stampNodePair(boltAngle(), BOLT_NODE_LEVEL);
-  for (var j = 0; j < agents.length; ++j) {
-    stampAgent(agents[j], radius);
-  }
+  stampNodePair(sweepAngle(), NODE_LEVEL);
+  stampNodePair(boltAngle(), NODE_LEVEL);
+  stampAgent(agents[0], radius, false);
+  stampAgent(agents[1], radius, t3);
 }
 
 function preRender(deltaMs, nowMillis, model, colors, enabledAmount) {
