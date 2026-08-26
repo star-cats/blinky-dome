@@ -217,13 +217,20 @@ public class ClickyConsole extends LXModulator implements LXOscComponent {
     final long now = System.nanoTime();
     releaseHeldButtons(now);
     checkLink(now);
-    // Pushed while connected, and once more on the frame the link drops. That
-    // last push is what carries the releases out of dropLink() to the pattern;
-    // without it a button held at the moment the cable came out would stay on
-    // over there forever. After that the binding goes quiet, which is what lets
-    // the on-screen controls work with no console attached.
-    if (this.everReceived && this.bind.isOn() && (this.connected.isOn() || wasConnected)) {
-      this.binding.push(this.lx);
+    // The panel is read onto the pattern while connected, and once more on the
+    // frame the link drops. That last read is what carries the releases out of
+    // dropLink() to the pattern; without it a button held at the moment the
+    // cable came out would stay on over there forever. After that the binding
+    // stops writing the pattern's controls, which is what lets the on-screen
+    // ones work with no console attached.
+    //
+    // The binding is still called every frame, though, because it owns the
+    // waterfall faders as well as the pattern: a fade in flight when the cable
+    // came out has to run to the end rather than stop where it was. Nothing at
+    // all happens until the console has spoken once, so opening a project with
+    // no hardware on the network leaves every fader exactly as it was saved.
+    if (this.everReceived && this.bind.isOn()) {
+      this.binding.update(this.lx, deltaMs, this.connected.isOn() || wasConnected);
     }
     // The modulator's own value is the link state, so "is the console alive"
     // can be mapped onto something visible without opening this panel.
@@ -337,6 +344,7 @@ public class ClickyConsole extends LXModulator implements LXOscComponent {
       }
     } else {
       this.connected.setValue(true);
+      this.binding.linkUp();
       if (this.log.isOn()) {
         LX.log("Clicky console link up");
       }

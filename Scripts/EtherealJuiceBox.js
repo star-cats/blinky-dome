@@ -18,6 +18,21 @@
  *   Sweep K5      T5 drives a pair of converging or diverging pressure fronts.
  *   Bolt  K6      T6 lays a jagged lightning bolt clear across the box.
  *
+ * The six buttons are the gestural row. Three of them are one-shots on the
+ * press edge, three do work for as long as they are held, and two are both:
+ *
+ *   B1  press: a downward slam off the top edge.  held: a steady noisy downwash.
+ *   B2  press: a swirl slam, reversing every press. held: a slow curl the same way.
+ *   B3  press: the four walls punch inward, laying source and particles.
+ *   B4  held:  every cell shoved in its own random direction.
+ *   B5  held:  the Kaleidoscope Postprocess effect, at a symmetry rolled on press.
+ *   B6  held:  viscosity and decay smeared toward loose.
+ *
+ * B5 is the one control here that does nothing to the fluid: it is read by
+ * ClickyBinding, which owns the effect sitting on this pattern. T7 is likewise
+ * inert in the simulation -- it is the console's master switch, and the binding
+ * fades the WF-CTRL and WF-CLEAR channels with it.
+ *
  * The K/T pairing is the layout of the physical clicky console: pot N is knob
  * KN and pulling that same pot out is TN. The Clicky Console modulator drives
  * all of it over the network -- see ClickyBinding in the Blinky Dome package --
@@ -35,18 +50,37 @@ var MAX_VORTICITY_CONFINEMENT = 36;
 var MAX_PARTICLES = 2048;
 var TAU = Math.PI * 2;
 
-// The held row. B1, B2 and B3 apply for as long as they are on, and B1 also
-// throws one burst on the press itself. All three are impulses into the
-// velocity field.
-var B1_EDGE_BAND = 2;
-var B1_EDGE_IMPULSE = 220;
-var B1_PARTICLE_BURST = 24;
-var B1_PARTICLE_RATE = 90;
-var B1_PARTICLE_SPEED = 30;
-var B2_SPIRAL_FORCE = 80;
+// B1. A slam off the top edge on the press, then a downwash over the whole box
+// for as long as it is held. The noise is one-sided -- it varies how hard each
+// cell is pushed down and scatters it sideways, but never turns it upward -- so
+// a held B1 always reads as one direction rather than as agitation.
+var B1_SLAM_BAND = 4;
+var B1_SLAM_IMPULSE = 640;
+var B1_DOWNWASH_FORCE = 10;
+var B1_DOWNWASH_NOISE = 0.5;
+var B1_DOWNWASH_SPREAD = 0.6;
+
+// B2. A swirl slam on the press and a slow curl while held, both about the box
+// center. Inflow is what makes it read as a spiral rather than a turntable; it
+// stays inward whichever way the swirl is turning. The strength peaks partway
+// out and eases to nothing before the walls, so the no-slip boundary is not
+// fighting a hard tangential edge.
+var B2_SLAM_FORCE = 520;
+var B2_CURL_FORCE = 26;
 var B2_SPIRAL_INFLOW = 0.35;
 var B2_SPIRAL_EDGE = 0.5;
-var B3_JOLT_FORCE = 1260;
+
+// B3. One punch inward off all four walls, with a band of source and a handful
+// of particles riding in on it. A one-shot, so these are single-substep values
+// and much larger than anything applied every step.
+var B3_EDGE_BAND = 2;
+var B3_EDGE_IMPULSE = 900;
+var B3_SOURCE_LEVEL = 0.6;
+var B3_PARTICLES = 15;
+var B3_PARTICLE_SPEED = 30;
+
+// B4. Held, not edged: every interior cell in its own direction, every step.
+var B4_JOLT_FORCE = 1260;
 
 // B6 loosens the fluid while it is held. The rest targets are the Viscosity
 // and Decay Rate knobs, which default to the values it returns to.
@@ -107,20 +141,20 @@ knob("particleAmplitude", "Particle Amplitude", "Particle source emission multip
 knob("agentRadius", "Agent Radius", "Fixed radius shared by the disc and the sink", 0.5);
 knob("spinRate", "Spin Rate", "How fast the orbiting dots and arcs rotate", 0.4);
 
-// The button row, all held states rather than one-shots: on means the console
-// button is down, off means it is up. B1, B2 and B3 do work every step they are
-// on, and B1 additionally fires a burst on the press edge.
+// The button row. Every one of these is the held state of a console button: on
+// means it is down, off means it is up. Some read the press edge out of that,
+// some do work every step they are on, and B1 and B2 do both.
 //
 // These are toggle() and not trigger() because a trigger control cannot be
 // held -- it fires its listeners and puts itself straight back to false, so a
 // script reading it always reads false and "while held" can never work. Nothing
 // is lost on a short tap: the console holds a press for a minimum duration
 // before it will report the release, so a tap between two frames still lands.
-toggle("b1", "B1", "While on, lay source and particles around all four walls and drive them at the center", false);
-toggle("b2", "B2", "While on, drive a spiral through the whole box", false);
-toggle("b3", "B3", "While on, jolt every cell in a random direction", false);
-toggle("b4", "B4", "Reserved button", false);
-toggle("b5", "B5", "Reserved button", false);
+toggle("b1", "B1", "Press slams the fluid down off the top edge; holding keeps a noisy downwash running", false);
+toggle("b2", "B2", "Press slams a swirl in, reversing every press; holding keeps a slow curl the same way", false);
+toggle("b3", "B3", "Press punches all four walls inward, with a band of source and a few particles on it", false);
+toggle("b4", "B4", "While on, jolt every cell in a random direction, leaving the source untouched", false);
+toggle("b5", "B5", "While on, fold the frame through the Kaleidoscope Postprocess effect on this pattern", false);
 toggle("b6", "B6", "While on, smear viscosity and decay toward loose; half a second out and half a second back", false);
 
 // Latched switches. T5 and T6 act on the flip rather than on the position, so
@@ -131,6 +165,11 @@ toggle("t3", "T3", "Sink sucks the fluid inward like a vacuum", false);
 toggle("t4", "T4", "Sink becomes three arc segments, whose interior stays clear under suction", false);
 toggle("t5", "T5", "Flip out to sweep the box inward, flip in to sweep it back outward", false);
 toggle("t6", "T6", "Either flip fires a lightning bolt between the two edge nodes", false);
+
+// The console's one latching switch, and the only control here that is about
+// the installation rather than about the fluid. Nothing in the simulation reads
+// it: ClickyBinding does, and rides the WF-CTRL and WF-CLEAR faders with it.
+toggle("t7", "T7", "Master switch. Off fades the waterfall channels out; nothing in the simulation reads it", false);
 
 // K1/K2 and K3/K4 place the two agents. K5 and K6 rotate the two edge node
 // pairs over a full turn. Each pair is opposed, so the second half of a knob
@@ -164,11 +203,19 @@ var togglesBaselined = false;
 var thrustPrevious = false;
 var sweepPrevious = false;
 var boltPrevious = false;
-var edgePressPrevious = false;
+var b1Previous = false;
+var b2Previous = false;
+var b3Previous = false;
 var sweep = null;
 var pendingBolt = null;
 
-var edgeEmissionAccumulator = 0;
+// Which way B2 is turning. Flipped on every press, so mashing the button beats
+// the box back and forth rather than winding it further the same way.
+var swirlDirection = 1;
+
+// B3's band of source, held over to the stamping phase for the same reason the
+// bolt is: laid down here it would be advected away by its own impulse.
+var pendingEdgeSource = false;
 
 // 0 at the knob values, 1 at B6's held values.
 var slipEnvelope = 0;
@@ -207,7 +254,8 @@ function init() {
   sweep = null;
   pendingBolt = null;
 
-  edgeEmissionAccumulator = 0;
+  swirlDirection = 1;
+  pendingEdgeSource = false;
   slipEnvelope = 0;
 }
 
@@ -806,28 +854,107 @@ function emitSurfaceParticleAndPulse(agent, radius, boost) {
   }
 }
 
+// ------------------------------------------------------------------- B1, down
+
 /**
- * B1. A band of source around all four walls with an inward impulse behind it,
- * so the box is squeezed from every edge at once. The dye is laid down in the
- * stamping phase rather than here, so it is not advected away by the very
- * impulse that accompanies it.
+ * B1's press. A band along the top wall driven straight down, tapering over the
+ * band so the leading edge of the slug is soft rather than a step.
+ */
+function applyTopEdgeSlam() {
+  var reach = B1_SLAM_BAND + 1;
+  var lowest = Math.max(1, H1 - B1_SLAM_BAND);
+  for (var y = lowest; y < H1; ++y) {
+    var depth = H1 - y;
+    var scale = B1_SLAM_IMPULSE * (1 - depth / reach);
+    for (var x = 1; x < W1; ++x) {
+      velV[y * W + x] -= scale;
+    }
+  }
+}
+
+/**
+ * B1 held. A downward push on every interior cell. The vertical term is scaled
+ * by a positive random factor rather than offset by a signed one, so no cell is
+ * ever pushed upward; the sideways term is the only part that takes a sign, and
+ * it is what keeps the sheet from falling as one flat slab.
+ */
+function applyDownwash() {
+  for (var y = 1; y < H1; ++y) {
+    for (var x = 1; x < W1; ++x) {
+      var i = y * W + x;
+      var jitter = 1 - B1_DOWNWASH_NOISE * Math.random();
+      velV[i] -= B1_DOWNWASH_FORCE * jitter;
+      velU[i] += (Math.random() * 2 - 1)
+        * B1_DOWNWASH_FORCE * B1_DOWNWASH_NOISE * B1_DOWNWASH_SPREAD;
+    }
+  }
+}
+
+function handleB1() {
+  var pressed = b1 && !b1Previous;
+  b1Previous = b1;
+  if (pressed) applyTopEdgeSlam();
+  if (b1) applyDownwash();
+}
+
+// ------------------------------------------------------------------ B2, swirl
+
+/**
+ * A ring vortex about the box center. Direction turns the tangential term
+ * around; the inflow term is unsigned, so the spiral draws inward whichever way
+ * it is spinning.
+ */
+function applySpiralImpulse(force, direction) {
+  for (var y = 1; y < H1; ++y) {
+    var yn = y / H1 - 0.5;
+    for (var x = 1; x < W1; ++x) {
+      var xn = x / W1 - 0.5;
+      var r = Math.sqrt(xn * xn + yn * yn);
+      if (r < 1e-5 || r >= B2_SPIRAL_EDGE) continue;
+      var inverse = 1 / r;
+      var falloff = Math.sin(Math.PI * r / B2_SPIRAL_EDGE) * force;
+      var i = y * W + x;
+      velU[i] += (direction * -yn - xn * B2_SPIRAL_INFLOW) * inverse * falloff;
+      velV[i] += (direction * xn - yn * B2_SPIRAL_INFLOW) * inverse * falloff;
+    }
+  }
+}
+
+/**
+ * The reversal is taken on the press, before the slam, so the slam a press
+ * throws is already turning the new way. Holding then keeps that same direction
+ * until the button is released and pressed again.
+ */
+function handleB2() {
+  var pressed = b2 && !b2Previous;
+  b2Previous = b2;
+  if (pressed) {
+    swirlDirection = -swirlDirection;
+    applySpiralImpulse(B2_SLAM_FORCE, swirlDirection);
+  }
+  if (b2) applySpiralImpulse(B2_CURL_FORCE, swirlDirection);
+}
+
+// ------------------------------------------------------------------ B3, walls
+
+/**
+ * B3's press. Every cell in the wall band driven at the middle of the box, so
+ * the four walls converge on one point instead of arriving as four flat fronts.
  */
 function applyEdgeImpulse() {
-  var reach = B1_EDGE_BAND + 1;
+  var reach = B3_EDGE_BAND + 1;
   for (var y = 1; y < H1; ++y) {
     var yn = y / H1;
     var fromBottom = y;
     var fromTop = H1 - y;
     for (var x = 1; x < W1; ++x) {
       var depth = Math.min(x, W1 - x, fromBottom, fromTop);
-      if (depth > B1_EDGE_BAND) continue;
+      if (depth > B3_EDGE_BAND) continue;
       var dx = 0.5 - x / W1;
       var dy = 0.5 - yn;
       var distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < 1e-6) continue;
-      // Straight at the middle of the box rather than square off the nearest
-      // wall, so the four walls converge on one point instead of four fronts.
-      var scale = B1_EDGE_IMPULSE * (1 - depth / reach) / distance;
+      var scale = B3_EDGE_IMPULSE * (1 - depth / reach) / distance;
       var i = y * W + x;
       velU[i] += dx * scale;
       velV[i] += dy * scale;
@@ -837,7 +964,7 @@ function applyEdgeImpulse() {
 
 /** A point on the perimeter just inside the source band, p in [0,1). */
 function perimeterPoint(p) {
-  var inset = (B1_EDGE_BAND + 0.5) / Math.max(W1, H1);
+  var inset = (B3_EDGE_BAND + 0.5) / Math.max(W1, H1);
   var span = 1 - 2 * inset;
   var walk = wrap01(p) * 4;
   var side = Math.floor(walk);
@@ -857,79 +984,43 @@ function emitEdgeParticle() {
   addParticle(
     position.x,
     position.y,
-    dx / distance * B1_PARTICLE_SPEED,
-    dy / distance * B1_PARTICLE_SPEED
+    dx / distance * B3_PARTICLE_SPEED,
+    dy / distance * B3_PARTICLE_SPEED
   );
 }
 
-/**
- * B1. Source around all four walls, particles thrown off them, and an impulse
- * carrying both at the middle of the box. Returns whether the band should be
- * stamped this step; the dye itself is laid down in the stamping phase so it
- * is not advected away by the impulse that accompanies it.
- *
- * The impulse and the steady emission run for as long as the button is on. The
- * burst is on the press edge alone, so holding B1 is a wall of pressure with a
- * single throw of particles at the front of it rather than a throw per step.
- */
-function handleB1(dt) {
-  var pressed = b1 && !edgePressPrevious;
-  edgePressPrevious = b1;
-
-  if (!b1) {
-    edgeEmissionAccumulator = 0;
-    return false;
-  }
-
+function handleB3() {
+  var pressed = b3 && !b3Previous;
+  b3Previous = b3;
+  if (!pressed) return;
   applyEdgeImpulse();
-  if (pressed) {
-    for (var i = 0; i < B1_PARTICLE_BURST; ++i) {
-      emitEdgeParticle();
-    }
-  }
-  edgeEmissionAccumulator += B1_PARTICLE_RATE * dt;
-  while (edgeEmissionAccumulator >= 1) {
-    edgeEmissionAccumulator -= 1;
+  for (var i = 0; i < B3_PARTICLES; ++i) {
     emitEdgeParticle();
   }
-  return true;
-}
-
-function stampEdgeSource() {
-  for (var y = 0; y < H; ++y) {
-    var inset = y > B1_EDGE_BAND && y < H1 - B1_EDGE_BAND;
-    for (var x = 0; x < W; ++x) {
-      if (inset && x > B1_EDGE_BAND && x < W1 - B1_EDGE_BAND) continue;
-      dye[y * W + x] = 1;
-    }
-  }
+  pendingEdgeSource = true;
 }
 
 /**
- * B2. A ring vortex about the box center, with enough inflow to make it read
- * as a spiral rather than a turntable. The strength peaks partway out and
- * eases to nothing before the walls, so the no-slip boundary is not fighting
- * a hard tangential edge.
+ * The band is laid at a level rather than at full white, and takes the brighter
+ * of itself and what is already there. It is a wash the walls arrive under, not
+ * a wipe -- a bolt or an agent crossing the band keeps its own brightness.
  */
-function applySpiralImpulse() {
-  for (var y = 1; y < H1; ++y) {
-    var yn = y / H1 - 0.5;
-    for (var x = 1; x < W1; ++x) {
-      var xn = x / W1 - 0.5;
-      var r = Math.sqrt(xn * xn + yn * yn);
-      if (r < 1e-5 || r >= B2_SPIRAL_EDGE) continue;
-      var inverse = 1 / r;
-      var falloff = Math.sin(Math.PI * r / B2_SPIRAL_EDGE) * B2_SPIRAL_FORCE;
+function stampEdgeSource() {
+  for (var y = 0; y < H; ++y) {
+    var inset = y > B3_EDGE_BAND && y < H1 - B3_EDGE_BAND;
+    for (var x = 0; x < W; ++x) {
+      if (inset && x > B3_EDGE_BAND && x < W1 - B3_EDGE_BAND) continue;
       var i = y * W + x;
-      velU[i] += (-yn - xn * B2_SPIRAL_INFLOW) * inverse * falloff;
-      velV[i] += (xn - yn * B2_SPIRAL_INFLOW) * inverse * falloff;
+      if (B3_SOURCE_LEVEL > dye[i]) dye[i] = B3_SOURCE_LEVEL;
     }
   }
 }
 
-/** B3. Every interior cell shoved in its own random direction. */
+// ------------------------------------------------------------------ B4, chaos
+
+/** Every interior cell shoved in its own random direction, every step held. */
 function applyRandomFieldPulse(dt) {
-  var strength = B3_JOLT_FORCE * Math.sqrt(dt);
+  var strength = B4_JOLT_FORCE * Math.sqrt(dt);
   for (var y = 1; y < H1; ++y) {
     for (var x = 1; x < W1; ++x) {
       var i = y * W + x;
@@ -1188,7 +1279,9 @@ function simulate(dt) {
     thrustPrevious = t1;
     sweepPrevious = t5;
     boltPrevious = t6;
-    edgePressPrevious = b1;
+    b1Previous = b1;
+    b2Previous = b2;
+    b3Previous = b3;
     togglesBaselined = true;
   }
 
@@ -1202,7 +1295,7 @@ function simulate(dt) {
     applyAgentSweep(agents[i], dt, radius);
   }
 
-  if (b3) applyRandomFieldPulse(dt);
+  if (b4) applyRandomFieldPulse(dt);
 
   applyVorticityConfinement(dt);
   projectVelocity();
@@ -1210,9 +1303,9 @@ function simulate(dt) {
   // Everything below is radial, tangential or impulsive. It has to follow the
   // zero-divergence projection; applying it before would let pressure cancel
   // most of the visible motion.
-  var edgeActive = handleB1(dt);
-
-  if (b2) applySpiralImpulse();
+  handleB1();
+  handleB2();
+  handleB3();
 
   if (t1) applyRadialField(agents[0], dt, radius, 1, T1_PUSH_MULTIPLIER);
   if (t3) applyRadialField(agents[1], dt, radius, -1, T3_PULL_MULTIPLIER);
@@ -1224,7 +1317,10 @@ function simulate(dt) {
   advectAndDecayDye(dt);
   emitParticleDye();
   stampPendingBolt();
-  if (edgeActive) stampEdgeSource();
+  if (pendingEdgeSource) {
+    stampEdgeSource();
+    pendingEdgeSource = false;
+  }
   stampNodePair(sweepAngle(), NODE_LEVEL);
   stampNodePair(boltAngle(), NODE_LEVEL);
   stampAgent(agents[0], radius, false);
