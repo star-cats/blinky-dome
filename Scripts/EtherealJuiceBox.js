@@ -17,6 +17,11 @@
  *
  *   Sweep K5      T5 drives a pair of converging or diverging pressure fronts.
  *   Bolt  K6      T6 lays a jagged lightning bolt clear across the box.
+ *
+ * The K/T pairing is the layout of the physical clicky console: pot N is knob
+ * KN and pulling that same pot out is TN. The Clicky Console modulator drives
+ * all of it over the network -- see ClickyBinding in the Blinky Dome package --
+ * but nothing here depends on the hardware being present.
  */
 
 var FloatArray = Java.type("float[]");
@@ -30,15 +35,14 @@ var MAX_VORTICITY_CONFINEMENT = 36;
 var MAX_PARTICLES = 2048;
 var TAU = Math.PI * 2;
 
-// The momentary row. B1, B2 and B3 apply while held and are also guaranteed
-// one full application per press, so a tap landing between fixed steps still
-// registers. All three are impulses into the velocity field.
+// The held row. B1, B2 and B3 apply for as long as they are on, and B1 also
+// throws one burst on the press itself. All three are impulses into the
+// velocity field.
 var B1_EDGE_BAND = 2;
 var B1_EDGE_IMPULSE = 220;
 var B1_PARTICLE_BURST = 24;
 var B1_PARTICLE_RATE = 90;
 var B1_PARTICLE_SPEED = 30;
-var B1_MAX_PRESSES_PER_STEP = 2;
 var B2_SPIRAL_FORCE = 80;
 var B2_SPIRAL_INFLOW = 0.35;
 var B2_SPIRAL_EDGE = 0.5;
@@ -103,13 +107,20 @@ knob("particleAmplitude", "Particle Amplitude", "Particle source emission multip
 knob("agentRadius", "Agent Radius", "Fixed radius shared by the disc and the sink", 0.5);
 knob("spinRate", "Spin Rate", "How fast the orbiting dots and arcs rotate", 0.4);
 
-// Momentary buttons: true while held and false when released. B6 is the one
-// exception; it latches, so the smear stays on until it is switched off.
-trigger("b1", "B1", "Lay source and particles around all four walls and drive them at the center", onB1);
-trigger("b2", "B2", "Drive a spiral through the whole box", onB2);
-trigger("b3", "B3", "Jolt every cell in a random direction", onB3);
-trigger("b4", "B4", "Reserved momentary button", onB4);
-trigger("b5", "B5", "Reserved momentary button", onB5);
+// The button row, all held states rather than one-shots: on means the console
+// button is down, off means it is up. B1, B2 and B3 do work every step they are
+// on, and B1 additionally fires a burst on the press edge.
+//
+// These are toggle() and not trigger() because a trigger control cannot be
+// held -- it fires its listeners and puts itself straight back to false, so a
+// script reading it always reads false and "while held" can never work. Nothing
+// is lost on a short tap: the console holds a press for a minimum duration
+// before it will report the release, so a tap between two frames still lands.
+toggle("b1", "B1", "While on, lay source and particles around all four walls and drive them at the center", false);
+toggle("b2", "B2", "While on, drive a spiral through the whole box", false);
+toggle("b3", "B3", "While on, jolt every cell in a random direction", false);
+toggle("b4", "B4", "Reserved button", false);
+toggle("b5", "B5", "Reserved button", false);
 toggle("b6", "B6", "While on, smear viscosity and decay toward loose; half a second out and half a second back", false);
 
 // Latched switches. T5 and T6 act on the flip rather than on the position, so
@@ -145,31 +156,22 @@ var renderGamma = 1;
 var agents = [];
 var agentsInitialized = false;
 
-// T5 and T6 read positions rather than edges, so the previous position is kept
-// and the flip is recovered from the difference. They are baselined on the
-// first simulated step rather than in init(), which the host calls before the
-// parameter variables exist.
+// Everything that acts on a flip rather than on a position keeps its previous
+// value here and recovers the edge from the difference. They are baselined on
+// the first simulated step rather than in init(), which the host calls before
+// the parameter variables exist.
 var togglesBaselined = false;
 var thrustPrevious = false;
 var sweepPrevious = false;
 var boltPrevious = false;
+var edgePressPrevious = false;
 var sweep = null;
 var pendingBolt = null;
 
-// A press is also queued so a very quick tap cannot fall between fixed steps.
-var queuedB1 = 0;
-var queuedB2 = 0;
-var queuedB3 = 0;
 var edgeEmissionAccumulator = 0;
 
 // 0 at the knob values, 1 at B6's held values.
 var slipEnvelope = 0;
-
-function onB1() { ++queuedB1; }
-function onB2() { ++queuedB2; }
-function onB3() { ++queuedB3; }
-function onB4() {}
-function onB5() {}
 
 function init() {
   W = Math.max(4, GRID_SIZE | 0);
@@ -205,7 +207,6 @@ function init() {
   sweep = null;
   pendingBolt = null;
 
-  queuedB1 = queuedB2 = queuedB3 = 0;
   edgeEmissionAccumulator = 0;
   slipEnvelope = 0;
 }
@@ -866,31 +867,30 @@ function emitEdgeParticle() {
  * carrying both at the middle of the box. Returns whether the band should be
  * stamped this step; the dye itself is laid down in the stamping phase so it
  * is not advected away by the impulse that accompanies it.
+ *
+ * The impulse and the steady emission run for as long as the button is on. The
+ * burst is on the press edge alone, so holding B1 is a wall of pressure with a
+ * single throw of particles at the front of it rather than a throw per step.
  */
 function handleB1(dt) {
-  var pressed = 0;
-  while (queuedB1 > 0) {
-    --queuedB1;
-    if (pressed < B1_MAX_PRESSES_PER_STEP) ++pressed;
-  }
-  if (!b1 && pressed === 0) {
+  var pressed = b1 && !edgePressPrevious;
+  edgePressPrevious = b1;
+
+  if (!b1) {
     edgeEmissionAccumulator = 0;
     return false;
   }
 
   applyEdgeImpulse();
-  var burst = pressed * B1_PARTICLE_BURST;
-  for (var i = 0; i < burst; ++i) {
-    emitEdgeParticle();
-  }
-  if (b1) {
-    edgeEmissionAccumulator += B1_PARTICLE_RATE * dt;
-    while (edgeEmissionAccumulator >= 1) {
-      edgeEmissionAccumulator -= 1;
+  if (pressed) {
+    for (var i = 0; i < B1_PARTICLE_BURST; ++i) {
       emitEdgeParticle();
     }
-  } else {
-    edgeEmissionAccumulator = 0;
+  }
+  edgeEmissionAccumulator += B1_PARTICLE_RATE * dt;
+  while (edgeEmissionAccumulator >= 1) {
+    edgeEmissionAccumulator -= 1;
+    emitEdgeParticle();
   }
   return true;
 }
@@ -1188,6 +1188,7 @@ function simulate(dt) {
     thrustPrevious = t1;
     sweepPrevious = t5;
     boltPrevious = t6;
+    edgePressPrevious = b1;
     togglesBaselined = true;
   }
 
@@ -1201,11 +1202,7 @@ function simulate(dt) {
     applyAgentSweep(agents[i], dt, radius);
   }
 
-  // Held applies every step; a queued press guarantees one application even if
-  // the tap fell entirely between two fixed steps.
-  var joltActive = b3 || queuedB3 > 0;
-  if (joltActive) applyRandomFieldPulse(dt);
-  if (queuedB3 > 0) --queuedB3;
+  if (b3) applyRandomFieldPulse(dt);
 
   applyVorticityConfinement(dt);
   projectVelocity();
@@ -1215,8 +1212,7 @@ function simulate(dt) {
   // most of the visible motion.
   var edgeActive = handleB1(dt);
 
-  if (b2 || queuedB2 > 0) applySpiralImpulse();
-  if (queuedB2 > 0) --queuedB2;
+  if (b2) applySpiralImpulse();
 
   if (t1) applyRadialField(agents[0], dt, radius, 1, T1_PUSH_MULTIPLIER);
   if (t3) applyRadialField(agents[1], dt, radius, -1, T3_PULL_MULTIPLIER);
