@@ -97,7 +97,7 @@ public class ClickyBinding {
    * this is measured against actual control changes rather than against packet
    * arrival -- a console sitting untouched on the network is idle, not active.
    */
-  private static final long IDLE_NANOS = 3_000_000_000L;
+  private static final long IDLE_NANOS = 30_000_000_000L;
 
   /** Fader positions the master switch drives toward, on and off. */
   private static final double CTRL_ON = 1;
@@ -283,7 +283,7 @@ public class ClickyBinding {
    * box has something dark to read against. On means both come up, off means
    * both go away and the waterfall returns to whatever else is playing on it.
    *
-   * Three seconds without anybody touching the panel counts as off too, whatever
+   * Thirty seconds without anybody touching the panel counts as off too, whatever
    * the switch says, so the waterfall comes back to itself between visitors and
    * a console left latched on in an empty field does not hold it all night.
    *

@@ -18,13 +18,13 @@
  *   Sweep K5      T5 drives a pair of converging or diverging pressure fronts.
  *   Bolt  K6      T6 lays a jagged lightning bolt clear across the box.
  *
- * The six buttons are the gestural row. Three of them are one-shots on the
- * press edge, three do work for as long as they are held, and two are both:
+ * The six buttons are the gestural row. Two of them are one-shots on the press
+ * edge, two do work for as long as they are held, and two are both:
  *
  *   B1  press: a downward slam off the top edge.  held: a steady noisy downwash.
  *   B2  press: a swirl slam, reversing every press. held: a slow curl the same way.
- *   B3  press: the four walls punch inward, laying source and particles.
- *   B4  held:  every cell shoved in its own random direction.
+ *   B3  press: the whole box implodes, laying source and particles at the walls.
+ *   B4  press: every cell shoved in its own random direction, once.
  *   B5  held:  the Kaleidoscope Postprocess effect, at a symmetry rolled on press.
  *   B6  held:  viscosity and decay smeared toward loose.
  *
@@ -66,21 +66,30 @@ var B1_DOWNWASH_SPREAD = 0.6;
 // out and eases to nothing before the walls, so the no-slip boundary is not
 // fighting a hard tangential edge.
 var B2_SLAM_FORCE = 520;
-var B2_CURL_FORCE = 26;
+var B2_CURL_FORCE = 5.2;
 var B2_SPIRAL_INFLOW = 0.35;
 var B2_SPIRAL_EDGE = 0.5;
 
-// B3. One punch inward off all four walls, with a band of source and a handful
-// of particles riding in on it. A one-shot, so these are single-substep values
-// and much larger than anything applied every step.
+// B3. The whole box collapses on its own center at once, with a band of source
+// around the walls and a handful of particles riding in on it. A one-shot, so
+// the impulse is a single-substep value and much larger than anything applied
+// every step.
+//
+// The pull ramps in from nothing at the center rather than being uniform, which
+// is what keeps the middle from being a point every cell is crushed into at the
+// same speed. Past the ramp distance it is flat, so the corners -- which are
+// further out than 0.5 -- pull no harder than the wall midpoints do.
+var B3_IMPLOSION_IMPULSE = 900;
+var B3_IMPLOSION_RAMP = 0.5;
 var B3_EDGE_BAND = 2;
-var B3_EDGE_IMPULSE = 900;
 var B3_SOURCE_LEVEL = 0.6;
 var B3_PARTICLES = 15;
 var B3_PARTICLE_SPEED = 30;
 
-// B4. Held, not edged: every interior cell in its own direction, every step.
-var B4_JOLT_FORCE = 1260;
+// B4. One shatter per press: every interior cell in its own direction, once.
+// A flat amplitude rather than one scaled by the timestep, because this is a
+// single kick and not a noise process being integrated over a duration.
+var B4_JOLT_IMPULSE = 700;
 
 // B6 loosens the fluid while it is held. The rest targets are the Viscosity
 // and Decay Rate knobs, which default to the values it returns to.
@@ -152,8 +161,8 @@ knob("spinRate", "Spin Rate", "How fast the orbiting dots and arcs rotate", 0.4)
 // before it will report the release, so a tap between two frames still lands.
 toggle("b1", "B1", "Press slams the fluid down off the top edge; holding keeps a noisy downwash running", false);
 toggle("b2", "B2", "Press slams a swirl in, reversing every press; holding keeps a slow curl the same way", false);
-toggle("b3", "B3", "Press punches all four walls inward, with a band of source and a few particles on it", false);
-toggle("b4", "B4", "While on, jolt every cell in a random direction, leaving the source untouched", false);
+toggle("b3", "B3", "Press collapses the whole box on its center, with a band of source and a few particles at the walls", false);
+toggle("b4", "B4", "Press shatters the box, jolting every cell in a random direction, leaving the source untouched", false);
 toggle("b5", "B5", "While on, fold the frame through the Kaleidoscope Postprocess effect on this pattern", false);
 toggle("b6", "B6", "While on, smear viscosity and decay toward loose; half a second out and half a second back", false);
 
@@ -206,6 +215,7 @@ var boltPrevious = false;
 var b1Previous = false;
 var b2Previous = false;
 var b3Previous = false;
+var b4Previous = false;
 var sweep = null;
 var pendingBolt = null;
 
@@ -935,29 +945,27 @@ function handleB2() {
   if (b2) applySpiralImpulse(B2_CURL_FORCE, swirlDirection);
 }
 
-// ------------------------------------------------------------------ B3, walls
+// --------------------------------------------------------------- B3, implosion
 
 /**
- * B3's press. Every cell in the wall band driven at the middle of the box, so
- * the four walls converge on one point instead of arriving as four flat fronts.
+ * B3's press. Every interior cell driven straight at the middle of the box, so
+ * the whole scene collapses inward at once rather than four wall fronts marching
+ * in over the still fluid between them.
  */
-function applyEdgeImpulse() {
-  var reach = B3_EDGE_BAND + 1;
+function applyImplosion() {
   for (var y = 1; y < H1; ++y) {
-    var yn = y / H1;
-    var fromBottom = y;
-    var fromTop = H1 - y;
+    var yn = y / H1 - 0.5;
     for (var x = 1; x < W1; ++x) {
-      var depth = Math.min(x, W1 - x, fromBottom, fromTop);
-      if (depth > B3_EDGE_BAND) continue;
-      var dx = 0.5 - x / W1;
-      var dy = 0.5 - yn;
-      var distance = Math.sqrt(dx * dx + dy * dy);
+      var xn = x / W1 - 0.5;
+      var distance = Math.sqrt(xn * xn + yn * yn);
       if (distance < 1e-6) continue;
-      var scale = B3_EDGE_IMPULSE * (1 - depth / reach) / distance;
+      // Dividing by the distance normalizes the offset to a direction; the ramp
+      // is what supplies the magnitude, so the pull does not blow up near zero.
+      var scale = B3_IMPLOSION_IMPULSE
+        * Math.min(1, distance / B3_IMPLOSION_RAMP) / distance;
       var i = y * W + x;
-      velU[i] += dx * scale;
-      velV[i] += dy * scale;
+      velU[i] -= xn * scale;
+      velV[i] -= yn * scale;
     }
   }
 }
@@ -993,7 +1001,7 @@ function handleB3() {
   var pressed = b3 && !b3Previous;
   b3Previous = b3;
   if (!pressed) return;
-  applyEdgeImpulse();
+  applyImplosion();
   for (var i = 0; i < B3_PARTICLES; ++i) {
     emitEdgeParticle();
   }
@@ -1016,18 +1024,31 @@ function stampEdgeSource() {
   }
 }
 
-// ------------------------------------------------------------------ B4, chaos
+// ---------------------------------------------------------------- B4, shatter
 
-/** Every interior cell shoved in its own random direction, every step held. */
-function applyRandomFieldPulse(dt) {
-  var strength = B4_JOLT_FORCE * Math.sqrt(dt);
+/** Every interior cell shoved in its own random direction, once. */
+function applyRandomFieldPulse() {
   for (var y = 1; y < H1; ++y) {
     for (var x = 1; x < W1; ++x) {
       var i = y * W + x;
-      velU[i] += (Math.random() * 2 - 1) * strength;
-      velV[i] += (Math.random() * 2 - 1) * strength;
+      velU[i] += (Math.random() * 2 - 1) * B4_JOLT_IMPULSE;
+      velV[i] += (Math.random() * 2 - 1) * B4_JOLT_IMPULSE;
     }
   }
+}
+
+/**
+ * The one impulse here that stays on the near side of the pressure projection,
+ * and the reason is the whole character of the button. An uncorrelated field is
+ * almost entirely divergence; letting the projection have it strips that off and
+ * leaves the rotational part, so the box shatters into a spread of small eddies
+ * rather than into static. Applied after the projection, as the other presses
+ * are, it would land as one frame of snow and be gone.
+ */
+function handleB4() {
+  var pressed = b4 && !b4Previous;
+  b4Previous = b4;
+  if (pressed) applyRandomFieldPulse();
 }
 
 /**
@@ -1282,6 +1303,7 @@ function simulate(dt) {
     b1Previous = b1;
     b2Previous = b2;
     b3Previous = b3;
+    b4Previous = b4;
     togglesBaselined = true;
   }
 
@@ -1295,7 +1317,7 @@ function simulate(dt) {
     applyAgentSweep(agents[i], dt, radius);
   }
 
-  if (b4) applyRandomFieldPulse(dt);
+  handleB4();
 
   applyVorticityConfinement(dt);
   projectVelocity();
