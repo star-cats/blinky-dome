@@ -26,7 +26,8 @@
  *   B3  press: the whole box implodes, laying source and particles at the walls.
  *   B4  press: every cell shoved in its own random direction, once.
  *   B5  held:  the Kaleidoscope Postprocess effect, at a symmetry rolled on press.
- *   B6  held:  viscosity and decay smeared toward loose.
+ *   B6  held:  the fluid smeared thin, turbulent and fast-decaying, and every
+ *              particle inverted into a sink that eats the picture.
  *
  * B5 is the one control here that does nothing to the fluid: it is read by
  * ClickyBinding, which owns the effect sitting on this pattern. T7 is likewise
@@ -91,11 +92,25 @@ var B3_PARTICLE_SPEED = 30;
 // single kick and not a noise process being integrated over a duration.
 var B4_JOLT_IMPULSE = 700;
 
-// B6 loosens the fluid while it is held. The rest targets are the Viscosity
-// and Decay Rate knobs, which default to the values it returns to.
-var B6_TWEEN_SECONDS = 0.5;
-var B6_HELD_VISCOSITY = 0.4;
-var B6_HELD_DECAY = 0.4;
+// B6 loosens the fluid while it is held. The targets are multiples of whatever
+// the three knobs currently say rather than fixed values, so the button is a
+// gesture relative to the show's settings instead of a jump to one preset look:
+// a thin fluid gets thinner, a thick one only gets as thin as a quarter of thick.
+//
+// Turbulence is the one that can leave its knob range -- 1.5x a knob near the top
+// asks for more vorticity confinement than the control can otherwise reach. That
+// is deliberate and it is the point of the multiplier; nothing downstream treats
+// turbulence as bounded, it is a gain on the confinement force.
+var B6_TWEEN_SECONDS = 0.05;
+var B6_VISCOSITY_SCALE = 0.25;
+var B6_TURBULENCE_SCALE = 1.5;
+var B6_DECAY_SCALE = 0.3;
+
+// B6 also turns the whole swarm inside out. Every particle stops laying source
+// and instead draws the fluid onto itself and holds its own footprint at zero,
+// so the same specks that were drawing the picture start eating it.
+var B6_SINK_PULL = 18;
+var B6_SINK_RADIUS = 2.5;
 
 // Agent forms. All extents are multiples of the shared agent radius, so the
 // Agent Radius knob scales every form coherently.
@@ -140,11 +155,11 @@ var BOLT_IMPULSE = 260;
 var BOLT_IMPULSE_RADIUS = 2.2;
 
 // Settings row
-knob("viscosity", "Viscosity", "Velocity diffusion; 0 is fluid, 1 is thick and smooth. B6 tweens away from this and back to it", 0.9);
-knob("turbulence", "Turbulence", "Restore fluid curls lost to interpolation; 0 is smooth", 0.5);
+knob("viscosity", "Viscosity", "Velocity diffusion; 0 is fluid, 1 is thick and smooth. B6 holds it at a quarter of this", 0.9);
+knob("turbulence", "Turbulence", "Restore fluid curls lost to interpolation; 0 is smooth. B6 holds it at 1.5x this", 0.5);
 knob("particleRate", "Particle Rate", "Ambient particles emitted per second", 1);
 knob("particleLifespan", "Particle Lifespan", "Particle lifetime from 1 to 10 seconds; takes effect on newly emitted particles only", 0);
-knob("decayRate", "Decay Rate", "How quickly emitted source material dims to zero. B6 tweens away from this and back to it", 0.85);
+knob("decayRate", "Decay Rate", "How quickly emitted source material dims to zero. B6 holds it at 0.3x this", 0.85);
 knob("gammaCorrection", "Gamma Correction", "Shape the source-value to output-brightness curve; 50% is neutral", 0.25);
 knob("particleAmplitude", "Particle Amplitude", "Particle source emission multiplier from 0.5x to 10x", 0.3);
 knob("agentRadius", "Agent Radius", "Fixed radius shared by the disc and the sink", 0.5);
@@ -164,7 +179,7 @@ toggle("b2", "B2", "Press slams a swirl in, reversing every press; holding keeps
 toggle("b3", "B3", "Press collapses the whole box on its center, with a band of source and a few particles at the walls", false);
 toggle("b4", "B4", "Press shatters the box, jolting every cell in a random direction, leaving the source untouched", false);
 toggle("b5", "B5", "While on, fold the frame through the Kaleidoscope Postprocess effect on this pattern", false);
-toggle("b6", "B6", "While on, smear viscosity and decay toward loose; half a second out and half a second back", false);
+toggle("b6", "B6", "While on, thin the fluid, lift turbulence, speed the decay and invert every particle into a sink", false);
 
 // Latched switches. T5 and T6 act on the flip rather than on the position, so
 // both directions do something and neither has a resting state that is "off".
@@ -183,9 +198,9 @@ toggle("t7", "T7", "Master switch. Off fades the waterfall channels out; nothing
 // K1/K2 and K3/K4 place the two agents. K5 and K6 rotate the two edge node
 // pairs over a full turn. Each pair is opposed, so the second half of a knob
 // repeats the first with the two nodes swapped.
-knob("k1", "K1", "Disc X position", 0.5);
+knob("k1", "K1", "Disc X position, running right to left", 0.5);
 knob("k2", "K2", "Disc Y position", 0.5);
-knob("k3", "K3", "Sink X position", 0.5);
+knob("k3", "K3", "Sink X position, running right to left", 0.5);
 knob("k4", "K4", "Sink Y position", 0.5);
 knob("k5", "K5", "Sweep node angle, full turn", 0.25);
 // Defaulted a quarter turn apart from K5 so the two node pairs do not sit on
@@ -229,6 +244,7 @@ var pendingEdgeSource = false;
 
 // 0 at the knob values, 1 at B6's held values.
 var slipEnvelope = 0;
+
 
 function init() {
   W = Math.max(4, GRID_SIZE | 0);
@@ -418,10 +434,10 @@ function updateAgents(dt) {
     agent.spin = wrapAngle(agent.spin + spinDelta);
   }
 
-  agents[0].x = clampValue(k1, 0, 1);
+  agents[0].x = 1 - clampValue(k1, 0, 1);
   agents[0].y = clampValue(k2, 0, 1);
   agents[0].alt = t2;
-  agents[1].x = clampValue(k3, 0, 1);
+  agents[1].x = 1 - clampValue(k3, 0, 1);
   agents[1].y = clampValue(k4, 0, 1);
   agents[1].alt = t4;
 
@@ -1052,10 +1068,10 @@ function handleB4() {
 }
 
 /**
- * B6. While on, viscosity and decay smear toward loose and fast-decaying over
- * half a second; switched off, they smear back to whatever the two knobs say
- * over the same half second. Latching rather than momentary, so the smeared
- * state can be held indefinitely without keeping the control pressed.
+ * B6. While on, the fluid smears toward thin, turbulent and fast-decaying in a
+ * twentieth of a second; released, it smears back to whatever the three knobs
+ * say over the same span. Latching rather than momentary, so the smeared state
+ * can be held indefinitely without keeping the control pressed.
  */
 function updateSlipEnvelope(dt) {
   var step = dt / B6_TWEEN_SECONDS;
@@ -1064,14 +1080,26 @@ function updateSlipEnvelope(dt) {
     : Math.max(0, slipEnvelope - step);
 }
 
+/**
+ * The knob is clamped before it is scaled, not after: the clamp is there to keep
+ * a bad parameter value out of the solver, and applying it to the result would
+ * silently cancel the turbulence multiplier for every knob position above 2/3.
+ */
+function scaledByEnvelope(value, scale) {
+  var rest = clampValue(value, 0, 1);
+  return rest + (rest * scale - rest) * slipEnvelope;
+}
+
 function effectiveViscosity() {
-  var rest = clampValue(viscosity, 0, 1);
-  return rest + (B6_HELD_VISCOSITY - rest) * slipEnvelope;
+  return scaledByEnvelope(viscosity, B6_VISCOSITY_SCALE);
+}
+
+function effectiveTurbulence() {
+  return scaledByEnvelope(turbulence, B6_TURBULENCE_SCALE);
 }
 
 function effectiveDecayRate() {
-  var rest = clampValue(decayRate, 0, 1);
-  return rest + (B6_HELD_DECAY - rest) * slipEnvelope;
+  return scaledByEnvelope(decayRate, B6_DECAY_SCALE);
 }
 
 /**
@@ -1109,9 +1137,55 @@ function advectParticles(dt) {
   }
 }
 
-/** A particle is a one-texel soft emitter with a sinusoidal 0 -> 1 -> 0 cycle. */
+/**
+ * B6's swarm. Each particle pulls the fluid onto itself over a slightly wider
+ * reach than it draws, and the pull is scaled by the envelope so it arrives and
+ * leaves with the rest of the button rather than snapping on.
+ *
+ * Applied with the other impulses, after the projection: this is a radial field
+ * and therefore almost pure divergence, which the projection would otherwise take
+ * straight back out.
+ */
+function applyParticleSinks() {
+  var strength = B6_SINK_PULL * slipEnvelope;
+  if (strength <= 0) return;
+  for (var p = 0; p < particles.length; ++p) {
+    var particle = particles[p];
+    var gx = particle.x * W1;
+    var gy = particle.y * H1;
+    var minX = Math.max(1, Math.floor(gx - B6_SINK_RADIUS));
+    var maxX = Math.min(W1 - 1, Math.ceil(gx + B6_SINK_RADIUS));
+    var minY = Math.max(1, Math.floor(gy - B6_SINK_RADIUS));
+    var maxY = Math.min(H1 - 1, Math.ceil(gy + B6_SINK_RADIUS));
+    for (var y = minY; y <= maxY; ++y) {
+      for (var x = minX; x <= maxX; ++x) {
+        var dx = x - gx;
+        var dy = y - gy;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance >= B6_SINK_RADIUS || distance < 1e-4) continue;
+        // Normalized to a direction and then given a magnitude, rather than
+        // scaled by an inverse distance, so a cell landing almost on top of the
+        // particle is pulled no harder than one a texel away.
+        var inverse = 1 / distance;
+        var falloff = (1 - distance / B6_SINK_RADIUS) * strength;
+        var i = y * W + x;
+        velU[i] -= dx * inverse * falloff;
+        velV[i] -= dy * inverse * falloff;
+      }
+    }
+  }
+}
+
+/**
+ * A particle is a one-texel soft emitter with a sinusoidal 0 -> 1 -> 0 cycle --
+ * except under B6, where the whole swarm inverts and nothing emits at all.
+ */
 function emitParticleDye() {
   var radius = 1.25;
+  if (slipEnvelope > 0) {
+    stampParticleVoids(radius);
+    return;
+  }
   var amplitude = 0.5 * Math.pow(20, particleAmplitude);
   for (var p = 0; p < particles.length; ++p) {
     var particle = particles[p];
@@ -1132,6 +1206,28 @@ function emitParticleDye() {
         var value = emission * falloff * falloff;
         var i = y * W + x;
         if (value > dye[i]) dye[i] = value;
+      }
+    }
+  }
+
+}
+
+/** B6. Every particle punches its own footprint out of the source field. */
+function stampParticleVoids(radius) {
+  for (var q = 0; q < particles.length; ++q) {
+    var sinkParticle = particles[q];
+    var sx = sinkParticle.x * W1;
+    var sy = sinkParticle.y * H1;
+    var loX = Math.max(0, Math.floor(sx - radius));
+    var hiX = Math.min(W1, Math.ceil(sx + radius));
+    var loY = Math.max(0, Math.floor(sy - radius));
+    var hiY = Math.min(H1, Math.ceil(sy + radius));
+    for (var cy = loY; cy <= hiY; ++cy) {
+      for (var cx = loX; cx <= hiX; ++cx) {
+        var ddx = cx - sx;
+        var ddy = cy - sy;
+        if (ddx * ddx + ddy * ddy >= radius * radius) continue;
+        dye[cy * W + cx] = 0;
       }
     }
   }
@@ -1199,6 +1295,7 @@ function diffuseVelocity(dt) {
 }
 
 function applyVorticityConfinement(dt) {
+  var turb = effectiveTurbulence();
   for (var y = 0; y < H; ++y) {
     for (var x = 0; x < W; ++x) {
       var i = y * W + x;
@@ -1216,7 +1313,7 @@ function applyVorticityConfinement(dt) {
       var gy = 0.5 * (Math.abs(curl[j + W]) - Math.abs(curl[j - W]));
       var magnitude = Math.sqrt(gx * gx + gy * gy);
       if (magnitude < 1e-5) continue;
-      var force = curl[j] * MAX_VORTICITY_CONFINEMENT * turbulence * dt / magnitude;
+      var force = curl[j] * MAX_VORTICITY_CONFINEMENT * turb * dt / magnitude;
       velU[j] += gy * force;
       velV[j] -= gx * force;
     }
@@ -1328,6 +1425,7 @@ function simulate(dt) {
   handleB1();
   handleB2();
   handleB3();
+  applyParticleSinks();
 
   if (t1) applyRadialField(agents[0], dt, radius, 1, T1_PUSH_MULTIPLIER);
   if (t3) applyRadialField(agents[1], dt, radius, -1, T3_PULL_MULTIPLIER);

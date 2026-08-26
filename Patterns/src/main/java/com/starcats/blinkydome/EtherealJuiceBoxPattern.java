@@ -43,7 +43,8 @@ import heronarts.lx.pattern.LXPattern;
  *   B3  press: the whole box implodes, laying source and particles at the walls.
  *   B4  press: every cell shoved in its own random direction, once.
  *   B5  held:  the Kaleidoscope Postprocess effect, at a symmetry rolled on press.
- *   B6  held:  viscosity and decay smeared toward loose.
+ *   B6  held:  the fluid smeared thin, turbulent and fast-decaying, and every
+ *              particle inverted into a sink that eats the picture.
  * </pre>
  *
  * B5 is the one control here that does nothing to the fluid: it is read by
@@ -143,11 +144,25 @@ public class EtherealJuiceBoxPattern extends LXPattern {
   // single kick and not a noise process being integrated over a duration.
   private static final double B4_JOLT_IMPULSE = 700;
 
-  // B6 loosens the fluid while it is held. The rest targets are the Viscosity
-  // and Decay Rate knobs, which default to the values it returns to.
-  private static final double B6_TWEEN_SECONDS = .5;
-  private static final double B6_HELD_VISCOSITY = .4;
-  private static final double B6_HELD_DECAY = .4;
+  // B6 loosens the fluid while it is held. The targets are multiples of whatever
+  // the three knobs currently say rather than fixed values, so the button is a
+  // gesture relative to the show's settings instead of a jump to one preset look:
+  // a thin fluid gets thinner, a thick one only gets as thin as a quarter of thick.
+  //
+  // Turbulence is the one that can leave its knob range -- 1.5x a knob near the top
+  // asks for more vorticity confinement than the control can otherwise reach. That
+  // is deliberate and it is the point of the multiplier; nothing downstream treats
+  // turbulence as bounded, it is a gain on the confinement force.
+  private static final double B6_TWEEN_SECONDS = .05;
+  private static final double B6_VISCOSITY_SCALE = .25;
+  private static final double B6_TURBULENCE_SCALE = 1.5;
+  private static final double B6_DECAY_SCALE = .3;
+
+  // B6 also turns the whole swarm inside out. Every particle stops laying source
+  // and instead draws the fluid onto itself and holds its own footprint at zero,
+  // so the same specks that were drawing the picture start eating it.
+  private static final double B6_SINK_PULL = 18;
+  private static final double B6_SINK_RADIUS = 2.5;
 
   // Agent forms. All extents are multiples of the shared agent radius, so the
   // Agent Radius knob scales every form coherently.
@@ -195,11 +210,11 @@ public class EtherealJuiceBoxPattern extends LXPattern {
 
   public final CompoundParameter viscosity =
     new CompoundParameter("Viscosity", .9, 0, 1)
-    .setDescription("Velocity diffusion; 0 is fluid, 1 is thick and smooth. B6 tweens away from this and back to it");
+    .setDescription("Velocity diffusion; 0 is fluid, 1 is thick and smooth. B6 holds it at a quarter of this");
 
   public final CompoundParameter turbulence =
     new CompoundParameter("Turbulence", .5, 0, 1)
-    .setDescription("Restore fluid curls lost to interpolation; 0 is smooth");
+    .setDescription("Restore fluid curls lost to interpolation; 0 is smooth. B6 holds it at 1.5x this");
 
   public final CompoundParameter particleRate =
     new CompoundParameter("Particle Rate", 1, 0, 1)
@@ -211,7 +226,7 @@ public class EtherealJuiceBoxPattern extends LXPattern {
 
   public final CompoundParameter decayRate =
     new CompoundParameter("Decay Rate", .85, 0, 1)
-    .setDescription("How quickly emitted source material dims to zero. B6 tweens away from this and back to it");
+    .setDescription("How quickly emitted source material dims to zero. B6 holds it at 0.3x this");
 
   public final CompoundParameter gammaCorrection =
     new CompoundParameter("Gamma Correction", .25, 0, 1)
@@ -261,7 +276,7 @@ public class EtherealJuiceBoxPattern extends LXPattern {
 
   public final BooleanParameter b6 =
     new BooleanParameter("B6", false)
-    .setDescription("While on, smear viscosity and decay toward loose; half a second out and half a second back");
+    .setDescription("While on, thin the fluid, lift turbulence, speed the decay and invert every particle into a sink");
 
   // Latched switches. T5 and T6 act on the flip rather than on the position, so
   // both directions do something and neither has a resting state that is "off".
@@ -305,13 +320,13 @@ public class EtherealJuiceBoxPattern extends LXPattern {
   // repeats the first with the two nodes swapped.
 
   public final CompoundParameter k1 =
-    new CompoundParameter("K1", .5, 0, 1).setDescription("Disc X position");
+    new CompoundParameter("K1", .5, 0, 1).setDescription("Disc X position, running right to left");
 
   public final CompoundParameter k2 =
     new CompoundParameter("K2", .5, 0, 1).setDescription("Disc Y position");
 
   public final CompoundParameter k3 =
-    new CompoundParameter("K3", .5, 0, 1).setDescription("Sink X position");
+    new CompoundParameter("K3", .5, 0, 1).setDescription("Sink X position, running right to left");
 
   public final CompoundParameter k4 =
     new CompoundParameter("K4", .5, 0, 1).setDescription("Sink Y position");
@@ -353,6 +368,7 @@ public class EtherealJuiceBoxPattern extends LXPattern {
   private final double[] particleLaunchU = new double[MAX_PARTICLES];
   private final double[] particleLaunchV = new double[MAX_PARTICLES];
   private int particleCount = 0;
+
 
   private double ambientEmissionAccumulator = 0;
   private double simAccumulator = 0;
@@ -607,10 +623,10 @@ public class EtherealJuiceBoxPattern extends LXPattern {
       agent.spin = wrapAngle(agent.spin + spinDelta);
     }
 
-    this.agents[0].x = clamp(this.k1.getValue(), 0, 1);
+    this.agents[0].x = 1 - clamp(this.k1.getValue(), 0, 1);
     this.agents[0].y = clamp(this.k2.getValue(), 0, 1);
     this.agents[0].alt = this.t2.isOn();
-    this.agents[1].x = clamp(this.k3.getValue(), 0, 1);
+    this.agents[1].x = 1 - clamp(this.k3.getValue(), 0, 1);
     this.agents[1].y = clamp(this.k4.getValue(), 0, 1);
     this.agents[1].alt = this.t4.isOn();
 
@@ -1319,10 +1335,10 @@ public class EtherealJuiceBoxPattern extends LXPattern {
   // ------------------------------------------------------------------ B6 and T1
 
   /**
-   * B6. While on, viscosity and decay smear toward loose and fast-decaying over
-   * half a second; switched off, they smear back to whatever the two knobs say
-   * over the same half second. Latching rather than momentary, so the smeared
-   * state can be held indefinitely without keeping the control pressed.
+   * B6. While on, the fluid smears toward thin, turbulent and fast-decaying in a
+   * twentieth of a second; released, it smears back to whatever the three knobs
+   * say over the same span. Latching rather than momentary, so the smeared state
+   * can be held indefinitely without keeping the control pressed.
    */
   private void updateSlipEnvelope(double dt) {
     double step = dt / B6_TWEEN_SECONDS;
@@ -1331,14 +1347,26 @@ public class EtherealJuiceBoxPattern extends LXPattern {
       : Math.max(0, this.slipEnvelope - step);
   }
 
+  /**
+   * The knob is clamped before it is scaled, not after: the clamp is there to keep
+   * a bad parameter value out of the solver, and applying it to the result would
+   * silently cancel the turbulence multiplier for every knob position above 2/3.
+   */
+  private double scaledByEnvelope(double value, double scale) {
+    double rest = clamp(value, 0, 1);
+    return rest + (rest * scale - rest) * this.slipEnvelope;
+  }
+
   private double effectiveViscosity() {
-    double rest = clamp(this.viscosity.getValue(), 0, 1);
-    return rest + (B6_HELD_VISCOSITY - rest) * this.slipEnvelope;
+    return scaledByEnvelope(this.viscosity.getValue(), B6_VISCOSITY_SCALE);
+  }
+
+  private double effectiveTurbulence() {
+    return scaledByEnvelope(this.turbulence.getValue(), B6_TURBULENCE_SCALE);
   }
 
   private double effectiveDecayRate() {
-    double rest = clamp(this.decayRate.getValue(), 0, 1);
-    return rest + (B6_HELD_DECAY - rest) * this.slipEnvelope;
+    return scaledByEnvelope(this.decayRate.getValue(), B6_DECAY_SCALE);
   }
 
   /**
@@ -1383,9 +1411,58 @@ public class EtherealJuiceBoxPattern extends LXPattern {
     }
   }
 
-  /** A particle is a one-texel soft emitter with a sinusoidal 0 -&gt; 1 -&gt; 0 cycle. */
+  /**
+   * B6's swarm. Each particle pulls the fluid onto itself over a slightly wider
+   * reach than it draws, and the pull is scaled by the envelope so it arrives and
+   * leaves with the rest of the button rather than snapping on.
+   *
+   * Applied with the other impulses, after the projection: this is a radial field
+   * and therefore almost pure divergence, which the projection would otherwise
+   * take straight back out.
+   */
+  private void applyParticleSinks() {
+    double strength = B6_SINK_PULL * this.slipEnvelope;
+    if (strength <= 0) {
+      return;
+    }
+    for (int p = 0; p < this.particleCount; ++p) {
+      double gx = this.particleX[p] * W1;
+      double gy = this.particleY[p] * H1;
+      int minX = (int) Math.max(1, Math.floor(gx - B6_SINK_RADIUS));
+      int maxX = (int) Math.min(W1 - 1, Math.ceil(gx + B6_SINK_RADIUS));
+      int minY = (int) Math.max(1, Math.floor(gy - B6_SINK_RADIUS));
+      int maxY = (int) Math.min(H1 - 1, Math.ceil(gy + B6_SINK_RADIUS));
+      for (int y = minY; y <= maxY; ++y) {
+        for (int x = minX; x <= maxX; ++x) {
+          double dx = x - gx;
+          double dy = y - gy;
+          double distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance >= B6_SINK_RADIUS || distance < 1e-4) {
+            continue;
+          }
+          // Normalized to a direction and then given a magnitude, rather than
+          // scaled by an inverse distance, so a cell landing almost on top of the
+          // particle is pulled no harder than one a texel away.
+          double inverse = 1 / distance;
+          double falloff = (1 - distance / B6_SINK_RADIUS) * strength;
+          int i = y * W + x;
+          this.velU[i] -= dx * inverse * falloff;
+          this.velV[i] -= dy * inverse * falloff;
+        }
+      }
+    }
+  }
+
+  /**
+   * A particle is a one-texel soft emitter with a sinusoidal 0 -&gt; 1 -&gt; 0 cycle --
+   * except under B6, where the whole swarm inverts and nothing emits at all.
+   */
   private void emitParticleDye() {
     double radius = 1.25;
+    if (this.slipEnvelope > 0) {
+      stampParticleVoids(radius);
+      return;
+    }
     double amplitude = .5 * Math.pow(20, this.particleAmplitude.getValue());
     for (int p = 0; p < this.particleCount; ++p) {
       double emission = amplitude
@@ -1410,6 +1487,29 @@ public class EtherealJuiceBoxPattern extends LXPattern {
           if (value > this.dye[i]) {
             this.dye[i] = value;
           }
+        }
+      }
+    }
+
+  }
+
+  /** B6. Every particle punches its own footprint out of the source field. */
+  private void stampParticleVoids(double radius) {
+    for (int q = 0; q < this.particleCount; ++q) {
+      double sx = this.particleX[q] * W1;
+      double sy = this.particleY[q] * H1;
+      int loX = (int) Math.max(0, Math.floor(sx - radius));
+      int hiX = (int) Math.min(W1, Math.ceil(sx + radius));
+      int loY = (int) Math.max(0, Math.floor(sy - radius));
+      int hiY = (int) Math.min(H1, Math.ceil(sy + radius));
+      for (int cy = loY; cy <= hiY; ++cy) {
+        for (int cx = loX; cx <= hiX; ++cx) {
+          double ddx = cx - sx;
+          double ddy = cy - sy;
+          if (ddx * ddx + ddy * ddy >= radius * radius) {
+            continue;
+          }
+          this.dye[cy * W + cx] = 0;
         }
       }
     }
@@ -1492,7 +1592,7 @@ public class EtherealJuiceBoxPattern extends LXPattern {
     // own multiply order. Pre-multiplying the three constant factors would be a
     // different rounding of the same expression, and a one-ulp difference in a
     // velocity field is not something a fluid solver reliably forgets.
-    double turb = this.turbulence.getValue();
+    double turb = effectiveTurbulence();
     for (int y = 0; y < H; ++y) {
       for (int x = 0; x < W; ++x) {
         int i = y * W + x;
@@ -1633,6 +1733,7 @@ public class EtherealJuiceBoxPattern extends LXPattern {
     handleB1();
     handleB2();
     handleB3();
+    applyParticleSinks();
 
     if (this.t1.isOn()) {
       applyRadialField(this.agents[0], dt, radius, 1, T1_PUSH_MULTIPLIER);
