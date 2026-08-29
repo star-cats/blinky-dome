@@ -13,12 +13,14 @@
  *   0  Group     Every triangle on a harness holds one solid colour. Four flat
  *                colours, no motion. Reads the harness start universe/channel
  *                and the controller IP: a harness on the wrong universe is dark
- *                or wears its neighbour's colour.
+ *                or wears its neighbour's colour. The Triangle knob shows all
+ *                triangles at 0 or isolates one numbered triangle at 1-15.
  *   1  Alignment Every third pixel is lit and the lit set marches forward along
  *                each triangle, with its three edges red, green, and blue.
+ *                The Triangle knob applies here too.
  *                The march is built on model order -- strip A, then B, then C,
- *                each running
- *                corner to corner -- so it only looks like one clean lap of the
+ *                each running corner to corner -- so it only looks like one
+ *                clean lap of the
  *                triangle when that triangle's order and flip parameters match
  *                how it is really wired. A wrong order jumps the march to
  *                another edge; a wrong flip runs one edge backward.
@@ -40,9 +42,10 @@
  * the chase and the sweep.
  */
 
-// knobi's upper bound is exclusive, so 4 gives modes 0-3 and 101 gives a
-// useful maximum of 100 cm of band.
+// knobi's upper bound is exclusive: 4 gives modes 0-3, 16 gives triangle
+// choices 0-15, and 101 gives a useful maximum of 100 cm of band.
 knobi("mode", "Mode", "0 group, 1 alignment, 2 position, 3 module", 0, 4);
+knobi("triangle", "Triangle", "Group/Alignment triangle: 0 all, 1-15 isolate", 0, 16);
 knob("speed", "Speed", "Chase rate in Alignment mode, sweep rate in Position mode", 0.5);
 knobi("bandCm", "Band", "Height of one colored band in Position mode, centimetres", 25, 101);
 knob("beam", "Beam", "Angular width of the orbiting beam in Module mode", 0.35);
@@ -276,7 +279,12 @@ function renderPoint(point, deltaMs) {
   if (module == null) {
     return BLACK;
   }
-  switch (mode | 0) {
+  var selectedMode = mode | 0;
+  if ((selectedMode === MODE_GROUP || selectedMode === MODE_ALIGNMENT) &&
+      !triangleIsSelected(point)) {
+    return BLACK;
+  }
+  switch (selectedMode) {
     case MODE_GROUP:
       return groupColor(point);
     case MODE_ALIGNMENT:
@@ -286,6 +294,13 @@ function renderPoint(point, deltaMs) {
     default:
       return moduleColor(point, module);
   }
+}
+
+/** True when the point belongs to the triangle selected within its module. */
+function triangleIsSelected(point) {
+  var selectedTriangle = triangle | 0;
+  return selectedTriangle === 0 ||
+    triangleForPoint[point.index] === selectedTriangle - 1;
 }
 
 /** Solid colour per harness. Harness numbers are 1-based; 0 means untagged. */

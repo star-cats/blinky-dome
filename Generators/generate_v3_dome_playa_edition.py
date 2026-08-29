@@ -46,16 +46,25 @@ instance transform the mesh uses. In the camp projects that is x=100, y=0, z=0,
 yaw=0, and SCALE 10, because those projects run at ten scene units per metre.
 Leave the scale at 1 and the dome comes out a tenth of its size.
 
+The yaw that squares the module up with the dome as built is baked in too, so
+the five instances go in at yaw 0, 72, 144, 216 and 288 and nothing else.
+
 Everything the field can get wrong is a fixture parameter rather than a
 regenerated file:
 
   - protocol, controller IP, and a start universe + start channel per harness;
-  - per triangle, which of its three strips the data enters first (an order
-    0-5, ABC..CBA) and whether each of the three runs forward or backward.
+  - per triangle, which corner its run of LEDs starts at (a rotation of 0, 1 or
+    2 thirds of a turn) and whether it is fed from the far end instead.
 
-Those parameters move only the *output* mapping. Geometry stays put: the
-strips are always emitted in the same physical order, and the Art-Net segments
-pick pixel ranges out of them in whatever order the triangle is really wired.
+A triangle is one continuous 33-pixel strip that wraps all three edges, so those
+two settings are the whole of what can be wired differently: three corners it
+can start from, either direction round. Geometry still has to be three straight
+runs of 11 -- a strip component cannot bend -- but they are the three edges of
+one strip, not three separate strips.
+
+Those parameters move only the *output* mapping. Geometry stays put: the edges
+are always emitted in the same physical order, and the Art-Net segments pick
+pixel ranges out of them in whatever order the run really reaches them.
 
 Coordinates are metres, Y up, origin at the sphere centre.
 """
@@ -106,6 +115,16 @@ PANEL_RINGS_LIT = 10
 # loudly instead of quietly shipping a malformed dome.
 EXPECTED_PANELS = 75
 
+# Yaw the module needs to line up with the dome as it actually stands, in
+# Chromatik's sense -- the number you would otherwise type into the fixture's
+# yaw field. It is baked into the emitted geometry so the five instances sit at
+# plain multiples of MODULE_YAW_DEGREES with nothing else dialled in.
+#
+# Triangle numbering is deliberately worked out before this is applied: a
+# triangle's number belongs to the dome's tessellation, not to how the fixture
+# happens to be turned, so changing this does not renumber anything.
+FIXTURE_YAW_DEGREES = -35.0
+
 # The icosahedron is five-fold symmetric about its point-up axis, so the dome
 # divides into five identical modules.
 MODULES_PER_DOME = 5
@@ -132,34 +151,28 @@ TRIANGLE_EDGE_M = 0.575
 # Corner radius of an equilateral triangle: edge / sqrt(3).
 CORNER_RADIUS_M = TRIANGLE_EDGE_M / math.sqrt(3.0)
 
-# A triangle is three strips of 11 addressable RGB pixels, one per edge.
-LEDS_PER_STRIP = 11
-STRIPS_PER_TRIANGLE = 3
-LEDS_PER_TRIANGLE = LEDS_PER_STRIP * STRIPS_PER_TRIANGLE
+# A triangle is one continuous strip of addressable RGB pixels wrapping its
+# three edges, 11 to an edge.
+LEDS_PER_EDGE = 11
+EDGES_PER_TRIANGLE = 3
+LEDS_PER_TRIANGLE = LEDS_PER_EDGE * EDGES_PER_TRIANGLE
 
 # Each pixel owns one pitch of strip, so the run of 11 is centred on its edge:
 # the first pixel sits half a pitch in from the corner, the last half a pitch
 # shy of the next corner.
-LED_SPACING_M = TRIANGLE_EDGE_M / LEDS_PER_STRIP
+LED_SPACING_M = TRIANGLE_EDGE_M / LEDS_PER_EDGE
 
-# Strips within a triangle, in physical order: A runs corner 0 -> 1, B runs
-# 1 -> 2, C runs 2 -> 0. Corner 0 sits at the pose's roll angle and the corners
-# wind counter-clockwise seen from outside the dome.
-STRIP_NAMES = ("A", "B", "C")
+# Edges of a triangle, in physical order: edge 1 runs corner 0 -> 1, edge 2 runs
+# 1 -> 2, edge 3 runs 2 -> 0. Corner 0 sits at the pose's roll angle and the
+# corners wind counter-clockwise seen from outside the dome.
+EDGE_NAMES = ("1", "2", "3")
 
-# The six ways the data can walk a triangle's three strips. Entry n lists, for
-# each wiring slot (1st, 2nd, 3rd strip in the chain), which physical strip it
-# lands on. Index into this with the triangle's order parameter.
-ORDER_COMBINATIONS = (
-    (0, 1, 2),  # 0: ABC
-    (0, 2, 1),  # 1: ACB
-    (1, 0, 2),  # 2: BAC
-    (1, 2, 0),  # 3: BCA
-    (2, 0, 1),  # 4: CAB
-    (2, 1, 0),  # 5: CBA
-)
-ORDER_LABELS = ("ABC", "ACB", "BAC", "BCA", "CAB", "CBA")
-DEFAULT_ORDER = 0
+# One continuous strip round a triangle can only be wired six ways: it starts at
+# one of the three corners, and it is fed from one end or the other. That is a
+# rotation of 0, 1 or 2 thirds of a turn, plus a reverse -- there is no
+# permuting of edges, because they are not separable.
+TRIANGLE_ROTATIONS = 3
+DEFAULT_ROTATION = 0
 DEFAULT_REVERSED = False
 
 
@@ -292,7 +305,7 @@ def clockwise_bearing(point: Vec) -> float:
 
 
 def yaw_rotated(point: Vec, degrees: float) -> Vec:
-    """Point spun about the Y axis, the way a module instance is placed."""
+    """Point spun about the Y axis, increasing its azimuth by the given angle."""
     angle = math.radians(degrees)
     cos, sin = math.cos(angle), math.sin(angle)
     return (
@@ -300,6 +313,18 @@ def yaw_rotated(point: Vec, degrees: float) -> Vec:
         point[1],
         point[0] * sin + point[2] * cos,
     )
+
+
+def instance_yawed(point: Vec, degrees: float) -> Vec:
+    """Point spun the way Chromatik's fixture yaw field spins it.
+
+    LXMatrix.rotateY turns +X toward -Z, the opposite sense to the azimuth this
+    file measures with atan2(z, x), so a Chromatik yaw of d is a rotation of -d
+    in these coordinates. Checked against LXMatrix itself -- a yaw of +35 sends
+    +X to azimuth -35 -- because taking the sign on faith would leave the module
+    twice the angle out rather than on the dome.
+    """
+    return yaw_rotated(point, -degrees)
 
 
 # ---------------------------------------------------------------------------
@@ -505,6 +530,14 @@ def seated_roll(corners: tuple[Vec, Vec, Vec], centre: Vec, uphill: Vec, across:
 
     The averaging is done on tripled angles, which is what makes three bearings
     a third of a turn apart agree instead of cancelling.
+
+    Comes back in [-60, 60). The five-fold symmetric faces average out to exactly
+    half a turn, where atan2 answers +180 or -180 depending on which side of zero
+    the rounding falls, and a third of that is the difference between corner 0
+    landing on one corner of the panel or the next one round. Left alone, a
+    regeneration -- or a change of FIXTURE_YAW_DEGREES -- could quietly relabel
+    those triangles' A/B/C strips and invalidate their calibration. So the tie is
+    pinned to one side.
     """
     sin_total = cos_total = 0.0
     for index in range(3):
@@ -512,7 +545,8 @@ def seated_roll(corners: tuple[Vec, Vec, Vec], centre: Vec, uphill: Vec, across:
         bearing = 3.0 * math.atan2(dot(toward, across), dot(toward, uphill))
         sin_total += math.sin(bearing)
         cos_total += math.cos(bearing)
-    return math.degrees(math.atan2(sin_total, cos_total)) / 3.0
+    roll = math.degrees(math.atan2(sin_total, cos_total)) / 3.0
+    return roll - 120.0 if roll >= 60.0 - BEARING_TOLERANCE else roll
 
 
 def triangle_transform(number: int) -> dict:
@@ -523,13 +557,20 @@ def triangle_transform(number: int) -> dict:
     OBJ uses. Yaw and pitch in degrees aim the panel's outward normal along that
     plane's normal, seating the panel flat in the frame. Roll in degrees is the
     panel's spin about that normal, measured from uphill; it is the only free
-    angle once a panel is seated, and it comes back in (-60, 60] -- one third of
+    angle once a panel is seated, and it comes back in [-60, 60) -- one third of
     a turn, the triangle's own symmetry.
 
     The face is worked out around the sphere centre, where the geodesic is
-    defined, and only the finished centre is lifted onto the base datum.
+    defined, then turned by FIXTURE_YAW_DEGREES and lifted onto the base datum.
+    Turning the face itself, rather than patching the angles afterwards, is what
+    keeps pitch and roll honest: a spin about the world's vertical axis leaves
+    both untouched, and doing it this way makes that fall out rather than having
+    to be argued.
     """
-    corners = tuple(scale(hub, DOME_RADIUS_M) for hub in dome_faces()[number])
+    corners = tuple(
+        instance_yawed(scale(hub, DOME_RADIUS_M), FIXTURE_YAW_DEGREES)
+        for hub in dome_faces()[number]
+    )
     centre = centroid(corners)
     normal = face_normal(corners)
     yaw = azimuth_degrees(normal)
@@ -569,7 +610,7 @@ def triangle_corners(transform: dict) -> list[Vec]:
 
 
 def strip_run(corners: list[Vec], index: int) -> tuple[Vec, Vec]:
-    """One strip's first pixel and its direction, from the corners it spans."""
+    """One edge's first pixel and its direction, from the corners it spans."""
     corner, end = corners[index], corners[(index + 1) % 3]
     direction = normalize(subtract(end, corner))
     return add(corner, scale(direction, LED_SPACING_M / 2.0)), direction
@@ -621,12 +662,12 @@ def validate_module() -> None:
 # Fixture parameters
 # ---------------------------------------------------------------------------
 
-def order_parameter(triangle: int) -> str:
-    return f"t{triangle:02d}ord"
+def rotation_parameter(triangle: int) -> str:
+    return f"t{triangle:02d}rot"
 
 
-def direction_parameter(triangle: int, slot: int) -> str:
-    return f"t{triangle:02d}rev{slot}"
+def reverse_parameter(triangle: int) -> str:
+    return f"t{triangle:02d}rev"
 
 
 def universe_parameter(harness: int) -> str:
@@ -673,29 +714,27 @@ def fixture_parameters() -> dict:
             "description": f"Start channel for harness {harness}, within its start universe",
         }
 
-    combinations = ", ".join(f"{index}={label}" for index, label in enumerate(ORDER_LABELS))
     for triangle, harness, position in wiring_order():
-        parameters[order_parameter(triangle)] = {
+        parameters[rotation_parameter(triangle)] = {
             "type": "int",
-            "default": DEFAULT_ORDER,
+            "default": DEFAULT_ROTATION,
             "min": 0,
-            "max": len(ORDER_COMBINATIONS) - 1,
-            "label": f"T{triangle} order",
+            "max": TRIANGLE_ROTATIONS - 1,
+            "label": f"T{triangle} rotation",
             "description": (
-                f"H{harness} P{position} triangle {triangle}: which strips the data "
-                f"walks, in order ({combinations})"
+                f"H{harness} P{position} triangle {triangle}: which corner the run "
+                "of LEDs starts at, in thirds of a turn (0, 1, 2)"
             ),
         }
-        for slot in range(1, STRIPS_PER_TRIANGLE + 1):
-            parameters[direction_parameter(triangle, slot)] = {
-                "type": "boolean",
-                "default": DEFAULT_REVERSED,
-                "label": f"T{triangle} flip {slot}",
-                "description": (
-                    f"H{harness} P{position} triangle {triangle}: run strip {slot} "
-                    "of the chain backward"
-                ),
-            }
+        parameters[reverse_parameter(triangle)] = {
+            "type": "boolean",
+            "default": DEFAULT_REVERSED,
+            "label": f"T{triangle} reverse",
+            "description": (
+                f"H{harness} P{position} triangle {triangle}: feed the run from its "
+                "far end, so it walks the triangle the other way round"
+            ),
+        }
     return parameters
 
 
@@ -704,31 +743,33 @@ def fixture_parameters() -> dict:
 # ---------------------------------------------------------------------------
 
 def strip_components() -> list[dict]:
-    """Three strips per triangle, walked in wiring order.
+    """Three edges per triangle, walked in wiring order.
 
-    Physical order only. Which strip the data reaches first is the triangle's
-    order parameter, and that is applied in the output segments.
+    Physical order only -- a strip component cannot bend, so one triangle's
+    continuous run of LEDs is emitted as its three straight edges. Where the run
+    actually starts, and which way round it goes, are the triangle's rotation
+    and reverse parameters, applied in the output segments.
     """
     components = []
     for triangle, harness, position in wiring_order():
         corners = triangle_corners(triangle_transform(triangle))
-        for index, name in enumerate(STRIP_NAMES):
+        for index, name in enumerate(EDGE_NAMES):
             start, direction = strip_run(corners, index)
             components.append(
                 {
                     "type": "strip",
-                    "label": f"H{harness} P{position} · T{triangle} · {name}",
+                    "label": f"H{harness} P{position} · T{triangle} · edge {name}",
                     "tags": [
                         "triangle",
                         f"harness{harness}",
                         f"triangle{triangle}",
-                        f"strip{name}",
+                        f"edge{name}",
                     ],
                     "meta": {
                         "harness": harness,
                         "position": position,
                         "triangle": triangle,
-                        "strip": name,
+                        "edge": name,
                     },
                     "x": rounded(start[0], 5),
                     "y": rounded(start[1], 5),
@@ -739,24 +780,35 @@ def strip_components() -> list[dict]:
                         "z": rounded(direction[2], 6),
                     },
                     "spacing": round(LED_SPACING_M, 6),
-                    "numPoints": LEDS_PER_STRIP,
+                    "numPoints": LEDS_PER_EDGE,
                 }
             )
     return components
 
 
-def order_expression(triangle: int, base: int, slot: int) -> str:
-    """Pixel index the given wiring slot starts on, as an LXF expression.
+def segment_start(triangle: int, base: int, slot: int) -> str:
+    """Pixel index the given third of a triangle's run starts on.
 
-    Fully parenthesised: the LXF expression parser matches a ternary's '?' to
-    the *last* ':' in the string, so bare nesting would bind wrong.
+    The run enters at corner `rotation` and walks the edges from there, so the
+    slot-th third of the data lands on edge (rotation + slot). Fed from the far
+    end it walks the same loop backwards, hitting the edges in the opposite
+    order, which is (rotation + 2 - slot); each of those thirds is then itself
+    reversed, which the segment's own reverse flag handles.
+
+    Returned as an LXF expression, fully parenthesised: the parser matches a
+    ternary's '?' to the *last* ':' in the string, so bare nesting binds wrong.
     """
-    parameter = order_parameter(triangle)
-    starts = [base + LEDS_PER_STRIP * combination[slot] for combination in ORDER_COMBINATIONS]
-    expression = str(starts[-1])
-    for order in reversed(range(len(starts) - 1)):
-        expression = f"((${parameter} == {order}) ? {starts[order]} : {expression})"
-    return expression
+    rotation, reverse = rotation_parameter(triangle), reverse_parameter(triangle)
+    forward = [base + LEDS_PER_EDGE * ((turn + slot) % 3) for turn in range(TRIANGLE_ROTATIONS)]
+    backward = [base + LEDS_PER_EDGE * ((turn + 2 - slot) % 3) for turn in range(TRIANGLE_ROTATIONS)]
+
+    def by_rotation(starts: list[int]) -> str:
+        expression = str(starts[-1])
+        for turn in reversed(range(len(starts) - 1)):
+            expression = f"((${rotation} == {turn}) ? {starts[turn]} : {expression})"
+        return expression
+
+    return f"((${reverse}) ? {by_rotation(backward)} : {by_rotation(forward)})"
 
 
 def artnet_outputs() -> list[dict]:
@@ -774,12 +826,12 @@ def artnet_outputs() -> list[dict]:
             if owner != harness:
                 continue
             base = index * LEDS_PER_TRIANGLE
-            for slot in range(STRIPS_PER_TRIANGLE):
+            for slot in range(EDGES_PER_TRIANGLE):
                 segments.append(
                     {
-                        "start": order_expression(triangle, base, slot),
-                        "num": LEDS_PER_STRIP,
-                        "reverse": f"${direction_parameter(triangle, slot + 1)}",
+                        "start": segment_start(triangle, base, slot),
+                        "num": LEDS_PER_EDGE,
+                        "reverse": f"${reverse_parameter(triangle)}",
                     }
                 )
         outputs.append(
@@ -808,21 +860,23 @@ def build_fixture() -> dict:
             "frequency": FREQUENCY,
             "hub_rings_kept": HUB_RINGS_KEPT,
             "triangle_edge_m": TRIANGLE_EDGE_M,
-            "leds_per_strip": LEDS_PER_STRIP,
+            "leds_per_edge": LEDS_PER_EDGE,
             "leds_per_triangle": LEDS_PER_TRIANGLE,
             "triangles": len(wiring_order()),
             "harness_sizes": ", ".join(
                 str(len(HARNESS_TRIANGLES[harness])) for harness in sorted(HARNESS_TRIANGLES)
             ),
-            "total_strips": len(components),
-            "total_pixels": len(components) * LEDS_PER_STRIP,
+            "total_edges": len(components),
+            "total_pixels": len(components) * LEDS_PER_EDGE,
             "modules_per_dome": MODULES_PER_DOME,
             "module_yaw_degrees": MODULE_YAW_DEGREES,
             "corners_face": "strut-midpoints",
+            "wiring": "one continuous strip per triangle; rotation 0-2 thirds of a turn, plus reverse",
             "panels_seated": "in each face's own plane",
             "sphere_centre_above_base_m": round(sphere_centre_above_base_m(), 6),
             "numbering": "ring by ring from the apex, clockwise from twelve o'clock seen from above",
             "datum": "matches Fixtures/v3_dome_model.obj -- place this fixture with the same transform as that mesh",
+            "baked_yaw_degrees": FIXTURE_YAW_DEGREES,
         },
         "components": components,
         "outputs": artnet_outputs(),
@@ -868,7 +922,7 @@ def main() -> None:
     print(
         f"Wrote {output_path} "
         f"({fixture['meta']['triangles']} triangles, "
-        f"{fixture['meta']['total_strips']} strips, "
+        f"{fixture['meta']['total_edges']} edges, "
         f"{fixture['meta']['total_pixels']} pixels, "
         f"{len(fixture['parameters'])} parameters, "
         f"{len(fixture['outputs'])} outputs)"
