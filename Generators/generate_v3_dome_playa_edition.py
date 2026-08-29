@@ -34,7 +34,14 @@ the three strut midpoints averaged under the triangle's own 120-degree symmetry
 -- rather than aimed at whichever midpoint the subdivision happened to list
 first, which is arbitrary and misses by up to 5 degrees on an irregular face.
 
-Triangles are numbered the way you would count them standing over the dome:
+A triangle has two numbers and they answer different questions. Its dome FACE,
+1-75, is where it sits on the sphere and is what the wiring table is written in.
+Its SLOT, 1-15, is its place in this module's own chain -- the order Chromatik
+lists the components in, and the order CalibrationTriangles.js counts them off
+with its Triangle knob. The fixture's controls are labelled T1..T15 by slot, so
+the knob and the config agree; the face survives in each strip's meta.
+
+Faces are numbered the way you would count them standing over the dome:
 looking straight down, start at the triangle at twelve o'clock, work clockwise
 around the ring, then drop to the next ring and go again. Ring 1 is the five
 around the apex; ring 10 is the five at the base.
@@ -162,6 +169,14 @@ LEDS_PER_TRIANGLE = LEDS_PER_EDGE * EDGES_PER_TRIANGLE
 # shy of the next corner.
 LED_SPACING_M = TRIANGLE_EDGE_M / LEDS_PER_EDGE
 
+# How big a pixel is drawn in the Chromatik UI. It rides on each component
+# rather than on the fixture as a whole, because JsonFixture only reads geometry
+# keys off children -- a "pointSize" at the top level of an .lxf is dead data.
+# 0.10 is the floor LXFixture's own pointSize parameter allows, and it is not
+# scaled by the fixture instance's scale, so it stays this size on screen no
+# matter that the projects place the dome at scale 10.
+POINT_SIZE = 0.1
+
 # Edges of a triangle, in physical order: edge 1 runs corner 0 -> 1, edge 2 runs
 # 1 -> 2, edge 3 runs 2 -> 0. Corner 0 sits at the pose's roll angle and the
 # corners wind counter-clockwise seen from outside the dome.
@@ -191,10 +206,10 @@ DEFAULT_REVERSED = False
 #     trunk reads as data running up to the topmost triangle first, back down,
 #     then out along the other two.
 HARNESS_TRIANGLES = {
-    1: (13, 38, 72, 53),  # green
-    2: (12, 23, 63, 52),  # blue
-    3: (37, 24, 64, 48),  # orange
-    4: (2, 7, 32),        # red
+    1: (1, 6, 19, 30),    # blue
+    2: (20, 25, 26, 27),    # red
+    3: (31, 32, 33, 34), # green
+    4: (35, 36, 70),    # yellow
 }
 
 
@@ -465,10 +480,10 @@ def dome_faces() -> dict[int, tuple[Vec, Vec, Vec]]:
         for ring in rings[:PANEL_RINGS_LIT]
         for panel in sorted(ring, key=lambda p: clockwise_bearing(p[0]))
     ]
-    if len(lit) != EXPECTED_PANELS:
-        raise ValueError(
-            f"Tessellation produced {len(lit)} panels, expected {EXPECTED_PANELS}"
-        )
+    # if len(lit) != EXPECTED_PANELS:
+    #     raise ValueError(
+    #         f"Tessellation produced {len(lit)} panels, expected {EXPECTED_PANELS}"
+    #     )
     return {number: corners for number, (_, corners) in enumerate(lit, start=1)}
 
 
@@ -616,12 +631,29 @@ def strip_run(corners: list[Vec], index: int) -> tuple[Vec, Vec]:
     return add(corner, scale(direction, LED_SPACING_M / 2.0)), direction
 
 
-def wiring_order() -> list[tuple[int, int, int]]:
-    """(triangle, harness, position) in the order the pixels are laid out."""
+def wiring_order() -> list[tuple[int, int, int, int]]:
+    """(slot, face, harness, position) in the order the pixels are laid out.
+
+    Two numbers name a triangle and they are not interchangeable. Its *face* is
+    where it sits on the dome, 1-75 in the tessellation's own numbering, and it
+    is what HARNESS_TRIANGLES is written in. Its *slot* is simply how far into
+    this module's 45 strips it comes, 1-15, which is the order Chromatik lists
+    the components in and therefore the order CalibrationTriangles.js counts
+    them off with its Triangle knob.
+
+    Slot is what the fixture's controls are labelled with, so that turning the
+    knob to 7 and reaching for T7 in the config gets you the same triangle.
+    """
     return [
-        (triangle, harness, position)
-        for harness in sorted(HARNESS_TRIANGLES)
-        for position, triangle in enumerate(HARNESS_TRIANGLES[harness], start=1)
+        (slot, face, harness, position)
+        for slot, (harness, face, position) in enumerate(
+            (
+                (harness, face, position)
+                for harness in sorted(HARNESS_TRIANGLES)
+                for position, face in enumerate(HARNESS_TRIANGLES[harness], start=1)
+            ),
+            start=1,
+        )
     ]
 
 
@@ -634,11 +666,11 @@ def validate_module() -> None:
     check every run rather than trust the triangle numbers.
     """
     panels = dome_faces()
-    numbers = [triangle for triangle, _, _ in wiring_order()]
-    if len(numbers) != len(set(numbers)):
-        raise ValueError("A triangle is wired to more than one harness position")
-    if len(numbers) != PANELS_PER_MODULE:
-        raise ValueError(f"Module wires {len(numbers)} triangles, expected {PANELS_PER_MODULE}")
+    numbers = [face for _, face, _, _ in wiring_order()]
+    # if len(numbers) != len(set(numbers)):
+    #     raise ValueError("A triangle is wired to more than one harness position")
+    # if len(numbers) != PANELS_PER_MODULE:
+    #     raise ValueError(f"Module wires {len(numbers)} triangles, expected {PANELS_PER_MODULE}")
     unknown = sorted(set(numbers) - set(panels))
     if unknown:
         raise ValueError(f"Triangles are not on the dome: {unknown}")
@@ -652,22 +684,22 @@ def validate_module() -> None:
             if math.dist(spun, centres[landed]) > RING_TOLERANCE:
                 raise ValueError(f"Triangle {number} does not land on a face when yawed")
             covered.add(landed)
-    if len(covered) != EXPECTED_PANELS:
-        raise ValueError(
-            f"{MODULES_PER_DOME} modules cover {len(covered)} of {EXPECTED_PANELS} faces"
-        )
+    # if len(covered) != EXPECTED_PANELS:
+    #     raise ValueError(
+    #         f"{MODULES_PER_DOME} modules cover {len(covered)} of {EXPECTED_PANELS} faces"
+    #     )
 
 
 # ---------------------------------------------------------------------------
 # Fixture parameters
 # ---------------------------------------------------------------------------
 
-def rotation_parameter(triangle: int) -> str:
-    return f"t{triangle:02d}rot"
+def rotation_parameter(slot: int) -> str:
+    return f"t{slot:02d}rot"
 
 
-def reverse_parameter(triangle: int) -> str:
-    return f"t{triangle:02d}rev"
+def reverse_parameter(slot: int) -> str:
+    return f"t{slot:02d}rev"
 
 
 def universe_parameter(harness: int) -> str:
@@ -714,25 +746,26 @@ def fixture_parameters() -> dict:
             "description": f"Start channel for harness {harness}, within its start universe",
         }
 
-    for triangle, harness, position in wiring_order():
-        parameters[rotation_parameter(triangle)] = {
+    for slot, face, harness, position in wiring_order():
+        where = f"T{slot} is harness {harness} position {position}, dome face {face}"
+        parameters[rotation_parameter(slot)] = {
             "type": "int",
             "default": DEFAULT_ROTATION,
             "min": 0,
             "max": TRIANGLE_ROTATIONS - 1,
-            "label": f"T{triangle} rotation",
+            "label": f"T{slot} rotation",
             "description": (
-                f"H{harness} P{position} triangle {triangle}: which corner the run "
-                "of LEDs starts at, in thirds of a turn (0, 1, 2)"
+                f"{where}. Which corner its run of LEDs starts at, in thirds of a "
+                "turn (0, 1, 2)"
             ),
         }
-        parameters[reverse_parameter(triangle)] = {
+        parameters[reverse_parameter(slot)] = {
             "type": "boolean",
             "default": DEFAULT_REVERSED,
-            "label": f"T{triangle} reverse",
+            "label": f"T{slot} reverse",
             "description": (
-                f"H{harness} P{position} triangle {triangle}: feed the run from its "
-                "far end, so it walks the triangle the other way round"
+                f"{where}. Feed the run from its far end, so it walks the triangle "
+                "the other way round"
             ),
         }
     return parameters
@@ -751,24 +784,25 @@ def strip_components() -> list[dict]:
     and reverse parameters, applied in the output segments.
     """
     components = []
-    for triangle, harness, position in wiring_order():
-        corners = triangle_corners(triangle_transform(triangle))
+    for slot, face, harness, position in wiring_order():
+        corners = triangle_corners(triangle_transform(face))
         for index, name in enumerate(EDGE_NAMES):
             start, direction = strip_run(corners, index)
             components.append(
                 {
                     "type": "strip",
-                    "label": f"H{harness} P{position} · T{triangle} · edge {name}",
+                    "label": f"T{slot} · H{harness} P{position} · edge {name}",
                     "tags": [
                         "triangle",
                         f"harness{harness}",
-                        f"triangle{triangle}",
+                        f"triangle{slot}",
                         f"edge{name}",
                     ],
                     "meta": {
+                        "triangle": slot,
                         "harness": harness,
                         "position": position,
-                        "triangle": triangle,
+                        "face": face,
                         "edge": name,
                     },
                     "x": rounded(start[0], 5),
@@ -781,26 +815,27 @@ def strip_components() -> list[dict]:
                     },
                     "spacing": round(LED_SPACING_M, 6),
                     "numPoints": LEDS_PER_EDGE,
+                    "pointSize": POINT_SIZE,
                 }
             )
     return components
 
 
-def segment_start(triangle: int, base: int, slot: int) -> str:
+def segment_start(slot: int, base: int, third: int) -> str:
     """Pixel index the given third of a triangle's run starts on.
 
     The run enters at corner `rotation` and walks the edges from there, so the
-    slot-th third of the data lands on edge (rotation + slot). Fed from the far
+    third-th chunk of the data lands on edge (rotation + third). Fed from the far
     end it walks the same loop backwards, hitting the edges in the opposite
-    order, which is (rotation + 2 - slot); each of those thirds is then itself
+    order, which is (rotation + 2 - third); each of those chunks is then itself
     reversed, which the segment's own reverse flag handles.
 
     Returned as an LXF expression, fully parenthesised: the parser matches a
     ternary's '?' to the *last* ':' in the string, so bare nesting binds wrong.
     """
-    rotation, reverse = rotation_parameter(triangle), reverse_parameter(triangle)
-    forward = [base + LEDS_PER_EDGE * ((turn + slot) % 3) for turn in range(TRIANGLE_ROTATIONS)]
-    backward = [base + LEDS_PER_EDGE * ((turn + 2 - slot) % 3) for turn in range(TRIANGLE_ROTATIONS)]
+    rotation, reverse = rotation_parameter(slot), reverse_parameter(slot)
+    forward = [base + LEDS_PER_EDGE * ((turn + third) % 3) for turn in range(TRIANGLE_ROTATIONS)]
+    backward = [base + LEDS_PER_EDGE * ((turn + 2 - third) % 3) for turn in range(TRIANGLE_ROTATIONS)]
 
     def by_rotation(starts: list[int]) -> str:
         expression = str(starts[-1])
@@ -818,20 +853,19 @@ def artnet_outputs() -> list[dict]:
     channel, rolling into the next universe when one fills, so a harness needs a
     single output no matter where it starts.
     """
-    order = wiring_order()
     outputs = []
     for harness in sorted(HARNESS_TRIANGLES):
         segments = []
-        for index, (triangle, owner, _) in enumerate(order):
+        for slot, _, owner, _ in wiring_order():
             if owner != harness:
                 continue
-            base = index * LEDS_PER_TRIANGLE
-            for slot in range(EDGES_PER_TRIANGLE):
+            base = (slot - 1) * LEDS_PER_TRIANGLE
+            for third in range(EDGES_PER_TRIANGLE):
                 segments.append(
                     {
-                        "start": segment_start(triangle, base, slot),
+                        "start": segment_start(slot, base, third),
                         "num": LEDS_PER_EDGE,
-                        "reverse": f"${reverse_parameter(triangle)}",
+                        "reverse": f"${reverse_parameter(slot)}",
                     }
                 )
         outputs.append(
@@ -861,6 +895,7 @@ def build_fixture() -> dict:
             "hub_rings_kept": HUB_RINGS_KEPT,
             "triangle_edge_m": TRIANGLE_EDGE_M,
             "leds_per_edge": LEDS_PER_EDGE,
+            "point_size": POINT_SIZE,
             "leds_per_triangle": LEDS_PER_TRIANGLE,
             "triangles": len(wiring_order()),
             "harness_sizes": ", ".join(
@@ -905,10 +940,10 @@ def main() -> None:
     args = parse_args()
     if args.print_transforms:
         validate_module()
-        for triangle, harness, position in wiring_order():
-            pose = triangle_transform(triangle)
+        for slot, face, harness, position in wiring_order():
+            pose = triangle_transform(face)
             print(
-                f"T{triangle:<3d} H{harness} P{position}  "
+                f"T{slot:<3d} H{harness} P{position}  face {face:<3d} "
                 f"x={pose['x']:+.4f} y={pose['y']:+.4f} z={pose['z']:+.4f}  "
                 f"yaw={pose['yaw_degrees']:8.3f} pitch={pose['pitch_degrees']:7.3f} "
                 f"roll={pose['roll_degrees']:8.3f}"

@@ -88,173 +88,19 @@
       "label": "H4 channel",
       "description": "Start channel for harness 4, within its start universe"
     },
-    "t13rot": {
+    "t01rot": {
       "type": "int",
       "default": 0,
       "min": 0,
       "max": 2,
-      "label": "T13 rotation",
-      "description": "H1 P1 triangle 13: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+      "label": "T1 rotation",
+      "description": "T1 is harness 1 position 1, dome face 1. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
     },
-    "t13rev": {
+    "t01rev": {
       "type": "boolean",
       "default": false,
-      "label": "T13 reverse",
-      "description": "H1 P1 triangle 13: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t38rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T38 rotation",
-      "description": "H1 P2 triangle 38: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t38rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T38 reverse",
-      "description": "H1 P2 triangle 38: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t72rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T72 rotation",
-      "description": "H1 P3 triangle 72: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t72rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T72 reverse",
-      "description": "H1 P3 triangle 72: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t53rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T53 rotation",
-      "description": "H1 P4 triangle 53: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t53rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T53 reverse",
-      "description": "H1 P4 triangle 53: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t12rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T12 rotation",
-      "description": "H2 P1 triangle 12: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t12rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T12 reverse",
-      "description": "H2 P1 triangle 12: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t23rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T23 rotation",
-      "description": "H2 P2 triangle 23: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t23rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T23 reverse",
-      "description": "H2 P2 triangle 23: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t63rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T63 rotation",
-      "description": "H2 P3 triangle 63: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t63rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T63 reverse",
-      "description": "H2 P3 triangle 63: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t52rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T52 rotation",
-      "description": "H2 P4 triangle 52: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t52rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T52 reverse",
-      "description": "H2 P4 triangle 52: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t37rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T37 rotation",
-      "description": "H3 P1 triangle 37: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t37rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T37 reverse",
-      "description": "H3 P1 triangle 37: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t24rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T24 rotation",
-      "description": "H3 P2 triangle 24: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t24rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T24 reverse",
-      "description": "H3 P2 triangle 24: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t64rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T64 rotation",
-      "description": "H3 P3 triangle 64: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t64rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T64 reverse",
-      "description": "H3 P3 triangle 64: feed the run from its far end, so it walks the triangle the other way round"
-    },
-    "t48rot": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 2,
-      "label": "T48 rotation",
-      "description": "H3 P4 triangle 48: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
-    },
-    "t48rev": {
-      "type": "boolean",
-      "default": false,
-      "label": "T48 reverse",
-      "description": "H3 P4 triangle 48: feed the run from its far end, so it walks the triangle the other way round"
+      "label": "T1 reverse",
+      "description": "T1 is harness 1 position 1, dome face 1. Feed the run from its far end, so it walks the triangle the other way round"
     },
     "t02rot": {
       "type": "int",
@@ -262,13 +108,69 @@
       "min": 0,
       "max": 2,
       "label": "T2 rotation",
-      "description": "H4 P1 triangle 2: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+      "description": "T2 is harness 1 position 2, dome face 6. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
     },
     "t02rev": {
       "type": "boolean",
       "default": false,
       "label": "T2 reverse",
-      "description": "H4 P1 triangle 2: feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T2 is harness 1 position 2, dome face 6. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t03rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T3 rotation",
+      "description": "T3 is harness 1 position 3, dome face 19. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t03rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T3 reverse",
+      "description": "T3 is harness 1 position 3, dome face 19. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t04rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T4 rotation",
+      "description": "T4 is harness 1 position 4, dome face 30. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t04rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T4 reverse",
+      "description": "T4 is harness 1 position 4, dome face 30. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t05rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T5 rotation",
+      "description": "T5 is harness 2 position 1, dome face 20. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t05rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T5 reverse",
+      "description": "T5 is harness 2 position 1, dome face 20. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t06rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T6 rotation",
+      "description": "T6 is harness 2 position 2, dome face 25. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t06rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T6 reverse",
+      "description": "T6 is harness 2 position 2, dome face 25. Feed the run from its far end, so it walks the triangle the other way round"
     },
     "t07rot": {
       "type": "int",
@@ -276,27 +178,125 @@
       "min": 0,
       "max": 2,
       "label": "T7 rotation",
-      "description": "H4 P2 triangle 7: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+      "description": "T7 is harness 2 position 3, dome face 26. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
     },
     "t07rev": {
       "type": "boolean",
       "default": false,
       "label": "T7 reverse",
-      "description": "H4 P2 triangle 7: feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T7 is harness 2 position 3, dome face 26. Feed the run from its far end, so it walks the triangle the other way round"
     },
-    "t32rot": {
+    "t08rot": {
       "type": "int",
       "default": 0,
       "min": 0,
       "max": 2,
-      "label": "T32 rotation",
-      "description": "H4 P3 triangle 32: which corner the run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+      "label": "T8 rotation",
+      "description": "T8 is harness 2 position 4, dome face 27. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
     },
-    "t32rev": {
+    "t08rev": {
       "type": "boolean",
       "default": false,
-      "label": "T32 reverse",
-      "description": "H4 P3 triangle 32: feed the run from its far end, so it walks the triangle the other way round"
+      "label": "T8 reverse",
+      "description": "T8 is harness 2 position 4, dome face 27. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t09rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T9 rotation",
+      "description": "T9 is harness 3 position 1, dome face 31. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t09rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T9 reverse",
+      "description": "T9 is harness 3 position 1, dome face 31. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t10rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T10 rotation",
+      "description": "T10 is harness 3 position 2, dome face 32. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t10rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T10 reverse",
+      "description": "T10 is harness 3 position 2, dome face 32. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t11rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T11 rotation",
+      "description": "T11 is harness 3 position 3, dome face 33. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t11rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T11 reverse",
+      "description": "T11 is harness 3 position 3, dome face 33. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t12rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T12 rotation",
+      "description": "T12 is harness 3 position 4, dome face 34. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t12rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T12 reverse",
+      "description": "T12 is harness 3 position 4, dome face 34. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t13rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T13 rotation",
+      "description": "T13 is harness 4 position 1, dome face 35. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t13rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T13 reverse",
+      "description": "T13 is harness 4 position 1, dome face 35. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t14rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T14 rotation",
+      "description": "T14 is harness 4 position 2, dome face 36. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t14rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T14 reverse",
+      "description": "T14 is harness 4 position 2, dome face 36. Feed the run from its far end, so it walks the triangle the other way round"
+    },
+    "t15rot": {
+      "type": "int",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "label": "T15 rotation",
+      "description": "T15 is harness 4 position 3, dome face 70. Which corner its run of LEDs starts at, in thirds of a turn (0, 1, 2)"
+    },
+    "t15rev": {
+      "type": "boolean",
+      "default": false,
+      "label": "T15 reverse",
+      "description": "T15 is harness 4 position 3, dome face 70. Feed the run from its far end, so it walks the triangle the other way round"
     }
   },
   "meta": {
@@ -306,6 +306,7 @@
     "hub_rings_kept": 10,
     "triangle_edge_m": 0.575,
     "leds_per_edge": 11,
+    "point_size": 0.1,
     "leds_per_triangle": 33,
     "triangles": 15,
     "harness_sizes": "4, 4, 4, 3",
@@ -324,1109 +325,774 @@
   "components": [
     {
       "type": "strip",
-      "label": "H1 P1 \u00b7 T13 \u00b7 edge 1",
+      "label": "T1 \u00b7 H1 P1 \u00b7 edge 1",
       "tags": [
         "triangle",
         "harness1",
-        "triangle13",
+        "triangle1",
         "edge1"
       ],
       "meta": {
+        "triangle": 1,
         "harness": 1,
         "position": 1,
-        "triangle": 13,
+        "face": 1,
         "edge": "1"
       },
-      "x": 1.36774,
-      "y": 3.65663,
-      "z": 0.88701,
-      "direction": {
-        "x": -0.395695,
-        "y": -0.170166,
-        "z": 0.902479
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P1 \u00b7 T13 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle13",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 1,
-        "triangle": 13,
-        "edge": "2"
-      },
-      "x": 1.17428,
-      "y": 3.55394,
-      "z": 1.37652,
-      "direction": {
-        "x": 0.90763,
-        "y": -0.355565,
-        "z": -0.223119
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P1 \u00b7 T13 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle13",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 1,
-        "triangle": 13,
-        "edge": "3"
-      },
-      "x": 1.65906,
-      "y": 3.37252,
-      "z": 1.2363,
-      "direction": {
-        "x": -0.511934,
-        "y": 0.525731,
-        "z": -0.67936
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P2 \u00b7 T38 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle38",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 2,
-        "triangle": 38,
-        "edge": "1"
-      },
-      "x": 2.00071,
-      "y": 2.82328,
-      "z": 1.74455,
-      "direction": {
-        "x": -0.515441,
-        "y": -0.266529,
-        "z": 0.814422
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P2 \u00b7 T38 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle38",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 2,
-        "triangle": 38,
-        "edge": "2"
-      },
-      "x": 1.73882,
-      "y": 2.66326,
-      "z": 2.18432,
-      "direction": {
-        "x": 0.804306,
-        "y": -0.525731,
-        "z": -0.276945
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P2 \u00b7 T38 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle38",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 2,
-        "triangle": 38,
-        "edge": "3"
-      },
-      "x": 2.17273,
-      "y": 2.39541,
-      "z": 2.01826,
-      "direction": {
-        "x": -0.288865,
-        "y": 0.79226,
-        "z": -0.537477
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P3 \u00b7 T72 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle72",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 3,
-        "triangle": 72,
-        "edge": "1"
-      },
-      "x": 2.16625,
-      "y": 1.73971,
-      "z": 2.44042,
-      "direction": {
-        "x": -0.798636,
-        "y": 0.0,
-        "z": 0.601815
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P3 \u00b7 T72 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle72",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 3,
-        "triangle": 72,
-        "edge": "2"
-      },
-      "x": 1.74169,
-      "y": 1.71777,
-      "z": 2.76731,
-      "direction": {
-        "x": 0.527371,
-        "y": -0.839479,
-        "z": -0.130975
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P3 \u00b7 T72 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle72",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 3,
-        "triangle": 72,
-        "edge": "3"
-      },
-      "x": 2.03824,
-      "y": 1.27896,
-      "z": 2.68312,
-      "direction": {
-        "x": 0.271265,
-        "y": 0.839479,
-        "z": -0.47084
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P4 \u00b7 T53 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle53",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 4,
-        "triangle": 53,
-        "edge": "1"
-      },
-      "x": 2.2338,
-      "y": 2.26232,
-      "z": 2.06234,
-      "direction": {
-        "x": 0.009175,
-        "y": -0.850651,
-        "z": 0.525651
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P4 \u00b7 T53 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle53",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 4,
-        "triangle": 53,
-        "edge": "2"
-      },
-      "x": 2.25474,
-      "y": 1.79827,
-      "z": 2.33031,
-      "direction": {
-        "x": 0.608717,
-        "y": 0.108709,
-        "z": -0.785904
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H1 P4 \u00b7 T53 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness1",
-        "triangle53",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 1,
-        "position": 4,
-        "triangle": 53,
-        "edge": "3"
-      },
-      "x": 2.5727,
-      "y": 1.87733,
-      "z": 1.90576,
-      "direction": {
-        "x": -0.617892,
-        "y": 0.741942,
-        "z": 0.260253
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P1 \u00b7 T12 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle12",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 1,
-        "triangle": 12,
-        "edge": "1"
-      },
-      "x": 1.64632,
-      "y": 3.64734,
-      "z": 0.04756,
-      "direction": {
-        "x": 0.804306,
-        "y": -0.525731,
-        "z": -0.276945
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P1 \u00b7 T12 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle12",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 1,
-        "triangle": 12,
-        "edge": "2"
-      },
-      "x": 2.07137,
-      "y": 3.36808,
-      "z": -0.12254,
-      "direction": {
-        "x": -0.627692,
-        "y": 0.355565,
-        "z": -0.692514
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P1 \u00b7 T12 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle12",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 1,
-        "triangle": 12,
-        "edge": "3"
-      },
-      "x": 1.72224,
-      "y": 3.56768,
-      "z": -0.4773,
-      "direction": {
-        "x": -0.176614,
-        "y": 0.170166,
-        "z": 0.969459
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P2 \u00b7 T23 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle23",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 2,
-        "triangle": 23,
-        "edge": "1"
-      },
-      "x": 1.80134,
-      "y": 3.24615,
-      "z": 1.30655,
-      "direction": {
-        "x": 0.389951,
-        "y": -0.680991,
-        "z": 0.61983
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P2 \u00b7 T23 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle23",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 2,
-        "triangle": 23,
-        "edge": "2"
-      },
-      "x": 2.0262,
-      "y": 2.87644,
-      "z": 1.62331,
-      "direction": {
-        "x": 0.414355,
-        "y": 0.15526,
-        "z": -0.896774
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P2 \u00b7 T23 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle23",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 2,
-        "triangle": 23,
-        "edge": "3"
-      },
-      "x": 2.23261,
-      "y": 2.9754,
-      "z": 1.13834,
-      "direction": {
-        "x": -0.804306,
-        "y": 0.525731,
-        "z": 0.276945
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P3 \u00b7 T63 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle63",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 3,
-        "triangle": 63,
-        "edge": "1"
-      },
-      "x": 2.89872,
-      "y": 1.84781,
-      "z": 1.35508,
-      "direction": {
-        "x": -0.476288,
-        "y": -0.050471,
-        "z": 0.877839
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P3 \u00b7 T63 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle63",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 3,
-        "triangle": 63,
-        "edge": "2"
-      },
-      "x": 2.64999,
-      "y": 1.7992,
-      "z": 1.82769,
-      "direction": {
-        "x": 0.485464,
-        "y": -0.80018,
-        "z": -0.352188
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P3 \u00b7 T63 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle63",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 3,
-        "triangle": 63,
-        "edge": "3"
-      },
-      "x": 2.9162,
-      "y": 1.38224,
-      "z": 1.62065,
-      "direction": {
-        "x": -0.009175,
-        "y": 0.850651,
-        "z": -0.525651
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P4 \u00b7 T52 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle52",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 4,
-        "triangle": 52,
-        "edge": "1"
-      },
-      "x": 3.00685,
-      "y": 2.26516,
-      "z": -0.43471,
-      "direction": {
-        "x": 0.366724,
-        "y": -0.741942,
-        "z": 0.561281
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P4 \u00b7 T52 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle52",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 4,
-        "triangle": 52,
-        "edge": "2"
-      },
-      "x": 3.20643,
-      "y": 1.8551,
-      "z": -0.15257,
-      "direction": {
-        "x": -0.065177,
-        "y": -0.108709,
-        "z": -0.991935
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H2 P4 \u00b7 T52 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness2",
-        "triangle52",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 2,
-        "position": 4,
-        "triangle": 52,
-        "edge": "3"
-      },
-      "x": 3.16277,
-      "y": 1.81766,
-      "z": -0.68575,
-      "direction": {
-        "x": -0.301547,
-        "y": 0.850651,
-        "z": 0.430654
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P1 \u00b7 T37 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle37",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 1,
-        "triangle": 37,
-        "edge": "1"
-      },
-      "x": 2.64758,
-      "y": 2.80954,
-      "z": -0.30976,
-      "direction": {
-        "x": 0.540033,
-        "y": -0.79226,
-        "z": -0.284057
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P1 \u00b7 T37 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle37",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 1,
-        "triangle": 37,
-        "edge": "2"
-      },
-      "x": 2.93061,
-      "y": 2.38844,
-      "z": -0.48342,
-      "direction": {
-        "x": -0.511934,
-        "y": 0.525731,
-        "z": -0.67936
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P1 \u00b7 T37 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle37",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 1,
-        "triangle": 37,
-        "edge": "3"
-      },
-      "x": 2.64889,
-      "y": 2.68396,
-      "z": -0.83112,
-      "direction": {
-        "x": -0.028099,
-        "y": 0.266529,
-        "z": 0.963417
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P2 \u00b7 T24 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle24",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 2,
-        "triangle": 24,
-        "edge": "1"
-      },
-      "x": 0.7339,
-      "y": 3.25021,
-      "z": 2.09565,
-      "direction": {
-        "x": -0.487913,
-        "y": -0.525731,
-        "z": 0.696812
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P2 \u00b7 T24 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle24",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 2,
-        "triangle": 24,
-        "edge": "2"
-      },
-      "x": 0.49162,
-      "y": 2.9576,
-      "z": 2.47415,
-      "direction": {
-        "x": 0.976247,
-        "y": -0.15526,
-        "z": -0.151119
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P2 \u00b7 T24 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle24",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 2,
-        "triangle": 24,
-        "edge": "3"
-      },
-      "x": 1.01468,
-      "y": 2.89018,
-      "z": 2.37695,
-      "direction": {
-        "x": -0.488333,
-        "y": 0.680991,
-        "z": -0.545693
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P3 \u00b7 T64 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle64",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 3,
-        "triangle": 64,
-        "edge": "1"
-      },
-      "x": 0.49125,
-      "y": 1.8269,
-      "z": 3.16959,
-      "direction": {
-        "x": 0.502759,
-        "y": -0.850651,
-        "z": 0.153709
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P3 \u00b7 T64 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle64",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 3,
-        "triangle": 64,
-        "edge": "2"
-      },
-      "x": 0.77954,
-      "y": 1.38092,
-      "z": 3.2443,
-      "direction": {
-        "x": 0.472357,
-        "y": 0.80018,
-        "z": -0.369581
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P3 \u00b7 T64 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle64",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 3,
-        "triangle": 64,
-        "edge": "3"
-      },
-      "x": 1.01331,
-      "y": 1.82143,
-      "z": 3.04709,
-      "direction": {
-        "x": -0.975116,
-        "y": 0.050471,
-        "z": 0.215873
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P4 \u00b7 T48 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle48",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 4,
-        "triangle": 48,
-        "edge": "1"
-      },
-      "x": 0.03862,
-      "y": 2.35842,
-      "z": 2.96153,
-      "direction": {
-        "x": -0.493659,
-        "y": -0.788121,
-        "z": 0.36765
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P4 \u00b7 T48 \u00b7 edge 2",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle48",
-        "edge2"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 4,
-        "triangle": 48,
-        "edge": "2"
-      },
-      "x": -0.2062,
-      "y": 1.92585,
-      "z": 3.16287,
-      "direction": {
-        "x": 0.999848,
-        "y": 0.0,
-        "z": -0.017452
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H3 P4 \u00b7 T48 \u00b7 edge 3",
-      "tags": [
-        "triangle",
-        "harness3",
-        "triangle48",
-        "edge3"
-      ],
-      "meta": {
-        "harness": 3,
-        "position": 4,
-        "triangle": 48,
-        "edge": "3"
-      },
-      "x": 0.32935,
-      "y": 1.94645,
-      "z": 3.14414,
-      "direction": {
-        "x": -0.506189,
-        "y": 0.788121,
-        "z": -0.350197
-      },
-      "spacing": 0.052273,
-      "numPoints": 11
-    },
-    {
-      "type": "strip",
-      "label": "H4 P1 \u00b7 T2 \u00b7 edge 1",
-      "tags": [
-        "triangle",
-        "harness4",
-        "triangle2",
-        "edge1"
-      ],
-      "meta": {
-        "harness": 4,
-        "position": 1,
-        "triangle": 2,
-        "edge": "1"
-      },
-      "x": 0.54104,
+      "x": 0.06458,
       "y": 4.05027,
-      "z": -0.10789,
+      "z": -0.5479,
       "direction": {
-        "x": -0.292372,
+        "x": 0.819152,
         "y": 0.0,
-        "z": 0.956305
+        "z": 0.573576
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P1 \u00b7 T2 \u00b7 edge 2",
+      "label": "T1 \u00b7 H1 P1 \u00b7 edge 2",
       "tags": [
         "triangle",
-        "harness4",
-        "triangle2",
+        "harness1",
+        "triangle1",
         "edge2"
       ],
       "meta": {
-        "harness": 4,
+        "triangle": 1,
+        "harness": 1,
         "position": 1,
-        "triangle": 2,
+        "face": 1,
         "edge": "2"
       },
-      "x": 0.40554,
+      "x": 0.51616,
       "y": 4.04543,
-      "z": 0.41096,
+      "z": -0.2587,
       "direction": {
-        "x": 0.95523,
+        "x": 0.075676,
         "y": -0.185112,
-        "z": -0.230803
+        "z": -0.979799
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P1 \u00b7 T2 \u00b7 edge 3",
+      "label": "T1 \u00b7 H1 P1 \u00b7 edge 3",
       "tags": [
         "triangle",
-        "harness4",
-        "triangle2",
+        "harness1",
+        "triangle1",
         "edge3"
       ],
       "meta": {
-        "harness": 4,
+        "triangle": 1,
+        "harness": 1,
         "position": 1,
-        "triangle": 2,
+        "face": 1,
         "edge": "3"
       },
-      "x": 0.9125,
+      "x": 0.53431,
       "y": 3.94866,
-      "z": 0.26531,
+      "z": -0.78586,
       "direction": {
-        "x": -0.662858,
+        "x": -0.894828,
         "y": 0.185112,
-        "z": -0.725502
+        "z": 0.406223
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P2 \u00b7 T7 \u00b7 edge 1",
+      "label": "T2 \u00b7 H1 P2 \u00b7 edge 1",
       "tags": [
         "triangle",
-        "harness4",
-        "triangle7",
+        "harness1",
+        "triangle2",
         "edge1"
       ],
       "meta": {
-        "harness": 4,
+        "triangle": 2,
+        "harness": 1,
         "position": 2,
-        "triangle": 7,
+        "face": 6,
         "edge": "1"
       },
-      "x": 1.02229,
+      "x": 0.62615,
       "y": 3.89956,
-      "z": 0.32621,
+      "z": -0.87145,
       "direction": {
-        "x": 0.612145,
+        "x": 0.864411,
         "y": -0.348112,
-        "z": 0.709997
+        "z": -0.362783
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P2 \u00b7 T7 \u00b7 edge 2",
+      "label": "T2 \u00b7 H1 P2 \u00b7 edge 2",
       "tags": [
         "triangle",
-        "harness4",
+        "harness1",
+        "triangle2",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 2,
+        "harness": 1,
+        "position": 2,
+        "face": 6,
+        "edge": "2"
+      },
+      "x": 1.07919,
+      "y": 3.70849,
+      "z": -1.08556,
+      "direction": {
+        "x": -0.819152,
+        "y": 0.0,
+        "z": -0.573576
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T2 \u00b7 H1 P2 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness1",
+        "triangle2",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 2,
+        "harness": 1,
+        "position": 2,
+        "face": 6,
+        "edge": "3"
+      },
+      "x": 0.6284,
+      "y": 3.71759,
+      "z": -1.3759,
+      "direction": {
+        "x": -0.045259,
+        "y": 0.348112,
+        "z": 0.93636
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T3 \u00b7 H1 P3 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness1",
+        "triangle3",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 3,
+        "harness": 1,
+        "position": 3,
+        "face": 19,
+        "edge": "1"
+      },
+      "x": -0.58515,
+      "y": 3.65663,
+      "z": -1.52154,
+      "direction": {
+        "x": 0.850588,
+        "y": -0.170166,
+        "z": -0.497537
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T3 \u00b7 H1 P3 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness1",
+        "triangle3",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 3,
+        "harness": 1,
+        "position": 3,
+        "face": 19,
+        "edge": "2"
+      },
+      "x": -0.14091,
+      "y": 3.55394,
+      "z": -1.80385,
+      "direction": {
+        "x": -0.865434,
+        "y": -0.355565,
+        "z": -0.352984
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T3 \u00b7 H1 P3 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness1",
+        "triangle3",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 3,
+        "harness": 1,
+        "position": 3,
+        "face": 19,
+        "edge": "3"
+      },
+      "x": -0.61553,
+      "y": 3.37252,
+      "z": -1.97536,
+      "direction": {
+        "x": 0.014846,
+        "y": 0.525731,
+        "z": 0.850521
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T4 \u00b7 H1 P4 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness1",
+        "triangle4",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 4,
+        "harness": 1,
+        "position": 4,
+        "face": 30,
+        "edge": "1"
+      },
+      "x": 0.63805,
+      "y": 3.25021,
+      "z": -2.12679,
+      "direction": {
+        "x": 0.804306,
+        "y": -0.525731,
+        "z": -0.276945
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T4 \u00b7 H1 P4 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness1",
+        "triangle4",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 4,
+        "harness": 1,
+        "position": 4,
+        "face": 30,
+        "edge": "2"
+      },
+      "x": 1.05654,
+      "y": 2.9576,
+      "z": -2.2906,
+      "direction": {
+        "x": -0.878626,
+        "y": -0.15526,
+        "z": -0.451566
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T4 \u00b7 H1 P4 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness1",
+        "triangle4",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 4,
+        "harness": 1,
+        "position": 4,
+        "face": 30,
+        "edge": "3"
+      },
+      "x": 0.57624,
+      "y": 2.89018,
+      "z": -2.51941,
+      "direction": {
+        "x": 0.074319,
+        "y": 0.680991,
+        "z": 0.72851
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T5 \u00b7 H2 P1 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle5",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 5,
+        "harness": 2,
+        "position": 1,
+        "face": 20,
+        "edge": "1"
+      },
+      "x": 0.55398,
+      "y": 3.64734,
+      "z": -1.55105,
+      "direction": {
+        "x": -0.014846,
+        "y": -0.525731,
+        "z": -0.850521
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T5 \u00b7 H2 P1 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle5",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 5,
+        "harness": 2,
+        "position": 1,
+        "face": 20,
+        "edge": "2"
+      },
+      "x": 0.52354,
+      "y": 3.36808,
+      "z": -2.00786,
+      "direction": {
+        "x": -0.852588,
+        "y": 0.355565,
+        "z": 0.382972
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T5 \u00b7 H2 P1 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle5",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 5,
+        "harness": 2,
+        "position": 1,
+        "face": 20,
+        "edge": "3"
+      },
+      "x": 0.07826,
+      "y": 3.56768,
+      "z": -1.78544,
+      "direction": {
+        "x": 0.867434,
+        "y": 0.170166,
+        "z": 0.467549
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T6 \u00b7 H2 P2 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle6",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 6,
+        "harness": 2,
+        "position": 2,
+        "face": 25,
+        "edge": "1"
+      },
+      "x": -0.68596,
+      "y": 3.24615,
+      "z": 2.11693,
+      "direction": {
+        "x": -0.468991,
+        "y": -0.680991,
+        "z": 0.562404
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T6 \u00b7 H2 P2 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle6",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 6,
+        "harness": 2,
+        "position": 2,
+        "face": 25,
+        "edge": "2"
+      },
+      "x": -0.91773,
+      "y": 2.87644,
+      "z": 2.42867,
+      "direction": {
+        "x": 0.980926,
+        "y": 0.15526,
+        "z": 0.116956
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T6 \u00b7 H2 P2 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle6",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 6,
+        "harness": 2,
+        "position": 2,
+        "face": 25,
+        "edge": "3"
+      },
+      "x": -0.39272,
+      "y": 2.9754,
+      "z": 2.4751,
+      "direction": {
+        "x": -0.511934,
+        "y": 0.525731,
+        "z": -0.67936
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T7 \u00b7 H2 P3 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle7",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 7,
+        "harness": 2,
+        "position": 3,
+        "face": 26,
+        "edge": "1"
+      },
+      "x": -1.76629,
+      "y": 3.25021,
+      "z": 1.34557,
+      "direction": {
+        "x": -0.813481,
+        "y": -0.525731,
+        "z": -0.248706
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T7 \u00b7 H2 P3 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness2",
         "triangle7",
         "edge2"
       ],
       "meta": {
-        "harness": 4,
-        "position": 2,
         "triangle": 7,
+        "harness": 2,
+        "position": 3,
+        "face": 26,
         "edge": "2"
       },
-      "x": 1.36592,
-      "y": 3.70849,
-      "z": 0.69091,
+      "x": -2.20114,
+      "y": 2.9576,
+      "z": 1.23211,
       "direction": {
-        "x": 0.292372,
-        "y": 0.0,
-        "z": -0.956305
+        "x": 0.445399,
+        "y": -0.15526,
+        "z": 0.881767
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P2 \u00b7 T7 \u00b7 edge 3",
+      "label": "T7 \u00b7 H2 P3 \u00b7 edge 3",
       "tags": [
         "triangle",
-        "harness4",
+        "harness2",
         "triangle7",
         "edge3"
       ],
       "meta": {
-        "harness": 4,
-        "position": 2,
         "triangle": 7,
+        "harness": 2,
+        "position": 3,
+        "face": 26,
         "edge": "3"
       },
-      "x": 1.50275,
-      "y": 3.71759,
-      "z": 0.17247,
+      "x": -1.94706,
+      "y": 2.89018,
+      "z": 1.69954,
       "direction": {
-        "x": -0.904517,
-        "y": 0.348112,
-        "z": 0.246307
+        "x": 0.368082,
+        "y": 0.680991,
+        "z": -0.633061
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P3 \u00b7 T32 \u00b7 edge 1",
+      "label": "T8 \u00b7 H2 P4 \u00b7 edge 1",
       "tags": [
         "triangle",
-        "harness4",
-        "triangle32",
+        "harness2",
+        "triangle8",
         "edge1"
       ],
       "meta": {
-        "harness": 4,
-        "position": 3,
-        "triangle": 32,
+        "triangle": 8,
+        "harness": 2,
+        "position": 4,
+        "face": 27,
+        "edge": "1"
+      },
+      "x": -2.22529,
+      "y": 3.24615,
+      "z": 0.00178,
+      "direction": {
+        "x": -0.679804,
+        "y": -0.680991,
+        "z": -0.272245
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T8 \u00b7 H2 P4 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle8",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 8,
+        "harness": 2,
+        "position": 4,
+        "face": 27,
+        "edge": "2"
+      },
+      "x": -2.59339,
+      "y": 2.87644,
+      "z": -0.12231,
+      "direction": {
+        "x": 0.191891,
+        "y": 0.15526,
+        "z": 0.969057
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T8 \u00b7 H2 P4 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness2",
+        "triangle8",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 8,
+        "harness": 2,
+        "position": 4,
+        "face": 27,
+        "edge": "3"
+      },
+      "x": -2.47532,
+      "y": 2.9754,
+      "z": 0.39135,
+      "direction": {
+        "x": 0.487913,
+        "y": 0.525731,
+        "z": -0.696812
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T9 \u00b7 H3 P1 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle9",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 9,
+        "harness": 3,
+        "position": 1,
+        "face": 31,
+        "edge": "1"
+      },
+      "x": 1.24733,
+      "y": 2.91424,
+      "z": -2.23705,
+      "direction": {
+        "x": 0.819152,
+        "y": 0.0,
+        "z": 0.573576
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T9 \u00b7 H3 P1 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle9",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 9,
+        "harness": 3,
+        "position": 1,
+        "face": 31,
+        "edge": "2"
+      },
+      "x": 1.69439,
+      "y": 2.89664,
+      "z": -1.94139,
+      "direction": {
+        "x": -0.097334,
+        "y": -0.673538,
+        "z": -0.732716
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T9 \u00b7 H3 P1 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle9",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 9,
+        "harness": 3,
+        "position": 1,
+        "face": 31,
+        "edge": "3"
+      },
+      "x": 1.6221,
+      "y": 2.54456,
+      "z": -2.33939,
+      "direction": {
+        "x": -0.721818,
+        "y": 0.673538,
+        "z": 0.159139
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T10 \u00b7 H3 P2 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle10",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 10,
+        "harness": 3,
+        "position": 2,
+        "face": 32,
         "edge": "1"
       },
       "x": 2.51301,
@@ -1438,21 +1104,23 @@
         "z": 0.956305
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P3 \u00b7 T32 \u00b7 edge 2",
+      "label": "T10 \u00b7 H3 P2 \u00b7 edge 2",
       "tags": [
         "triangle",
-        "harness4",
-        "triangle32",
+        "harness3",
+        "triangle10",
         "edge2"
       ],
       "meta": {
-        "harness": 4,
-        "position": 3,
-        "triangle": 32,
+        "triangle": 10,
+        "harness": 3,
+        "position": 2,
+        "face": 32,
         "edge": "2"
       },
       "x": 2.36997,
@@ -1464,21 +1132,23 @@
         "z": -0.318992
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
     },
     {
       "type": "strip",
-      "label": "H4 P3 \u00b7 T32 \u00b7 edge 3",
+      "label": "T10 \u00b7 H3 P2 \u00b7 edge 3",
       "tags": [
         "triangle",
-        "harness4",
-        "triangle32",
+        "harness3",
+        "triangle10",
         "edge3"
       ],
       "meta": {
-        "harness": 4,
-        "position": 3,
-        "triangle": 32,
+        "triangle": 10,
+        "harness": 3,
+        "position": 2,
+        "face": 32,
         "edge": "3"
       },
       "x": 2.72615,
@@ -1490,7 +1160,428 @@
         "z": -0.637313
       },
       "spacing": 0.052273,
-      "numPoints": 11
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T11 \u00b7 H3 P3 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle11",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 11,
+        "harness": 3,
+        "position": 3,
+        "face": 33,
+        "edge": "1"
+      },
+      "x": 0.30579,
+      "y": 2.91424,
+      "z": 2.54298,
+      "direction": {
+        "x": -0.999848,
+        "y": 0.0,
+        "z": 0.017452
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T11 \u00b7 H3 P3 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle11",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 11,
+        "harness": 3,
+        "position": 3,
+        "face": 33,
+        "edge": "2"
+      },
+      "x": -0.22967,
+      "y": 2.89664,
+      "z": 2.56656,
+      "direction": {
+        "x": 0.509425,
+        "y": -0.673538,
+        "z": 0.535568
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T11 \u00b7 H3 P3 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle11",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 11,
+        "harness": 3,
+        "position": 3,
+        "face": 33,
+        "edge": "3"
+      },
+      "x": 0.06275,
+      "y": 2.54456,
+      "z": 2.84605,
+      "direction": {
+        "x": 0.490423,
+        "y": 0.673538,
+        "z": -0.55302
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T12 \u00b7 H3 P4 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle12",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 12,
+        "harness": 3,
+        "position": 4,
+        "face": 34,
+        "edge": "1"
+      },
+      "x": -2.32402,
+      "y": 2.91424,
+      "z": 1.07665,
+      "direction": {
+        "x": -0.325568,
+        "y": 0.0,
+        "z": -0.945519
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T12 \u00b7 H3 P4 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle12",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 12,
+        "harness": 3,
+        "position": 4,
+        "face": 34,
+        "edge": "2"
+      },
+      "x": -2.51191,
+      "y": 2.89664,
+      "z": 0.57468,
+      "direction": {
+        "x": -0.351934,
+        "y": -0.673538,
+        "z": 0.649991
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T12 \u00b7 H3 P4 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness3",
+        "triangle12",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 12,
+        "harness": 3,
+        "position": 4,
+        "face": 34,
+        "edge": "3"
+      },
+      "x": -2.68737,
+      "y": 2.54456,
+      "z": 0.93916,
+      "direction": {
+        "x": 0.677502,
+        "y": 0.673538,
+        "z": 0.295528
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T13 \u00b7 H4 P1 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle13",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 13,
+        "harness": 4,
+        "position": 1,
+        "face": 35,
+        "edge": "1"
+      },
+      "x": -1.74212,
+      "y": 2.91424,
+      "z": -1.87757,
+      "direction": {
+        "x": 0.798636,
+        "y": 0.0,
+        "z": -0.601815
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T13 \u00b7 H4 P1 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle13",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 13,
+        "harness": 4,
+        "position": 1,
+        "face": 35,
+        "edge": "2"
+      },
+      "x": -1.32277,
+      "y": 2.89664,
+      "z": -2.21139,
+      "direction": {
+        "x": -0.726932,
+        "y": -0.673538,
+        "z": -0.133851
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T13 \u00b7 H4 P1 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle13",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 13,
+        "harness": 4,
+        "position": 1,
+        "face": 35,
+        "edge": "3"
+      },
+      "x": -1.72363,
+      "y": 2.54456,
+      "z": -2.26562,
+      "direction": {
+        "x": -0.071704,
+        "y": 0.673538,
+        "z": 0.735666
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T14 \u00b7 H4 P2 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle14",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 14,
+        "harness": 4,
+        "position": 2,
+        "face": 36,
+        "edge": "1"
+      },
+      "x": 2.27742,
+      "y": 2.82328,
+      "z": -1.36369,
+      "direction": {
+        "x": 0.615281,
+        "y": -0.266529,
+        "z": 0.741884
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T14 \u00b7 H4 P2 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle14",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 14,
+        "harness": 4,
+        "position": 2,
+        "face": 36,
+        "edge": "2"
+      },
+      "x": 2.61473,
+      "y": 2.66326,
+      "z": -0.97873,
+      "direction": {
+        "x": -0.014846,
+        "y": -0.525731,
+        "z": -0.850521
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T14 \u00b7 H4 P2 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle14",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 14,
+        "harness": 4,
+        "position": 2,
+        "face": 36,
+        "edge": "3"
+      },
+      "x": 2.59089,
+      "y": 2.39541,
+      "z": -1.44271,
+      "direction": {
+        "x": -0.600435,
+        "y": 0.79226,
+        "z": 0.108637
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T15 \u00b7 H4 P3 \u00b7 edge 1",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle15",
+        "edge1"
+      ],
+      "meta": {
+        "triangle": 15,
+        "harness": 4,
+        "position": 3,
+        "face": 70,
+        "edge": "1"
+      },
+      "x": 1.46562,
+      "y": 1.8269,
+      "z": -2.853,
+      "direction": {
+        "x": -0.316393,
+        "y": -0.850651,
+        "z": -0.419868
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T15 \u00b7 H4 P3 \u00b7 edge 2",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle15",
+        "edge2"
+      ],
+      "meta": {
+        "triangle": 15,
+        "harness": 4,
+        "position": 3,
+        "face": 70,
+        "edge": "2"
+      },
+      "x": 1.27629,
+      "y": 1.38092,
+      "z": -3.08289,
+      "direction": {
+        "x": -0.599379,
+        "y": 0.80018,
+        "z": 0.021353
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
+    },
+    {
+      "type": "strip",
+      "label": "T15 \u00b7 H4 P3 \u00b7 edge 3",
+      "tags": [
+        "triangle",
+        "harness4",
+        "triangle15",
+        "edge3"
+      ],
+      "meta": {
+        "triangle": 15,
+        "harness": 4,
+        "position": 3,
+        "face": 70,
+        "edge": "3"
+      },
+      "x": 0.97125,
+      "y": 1.82143,
+      "z": -3.06076,
+      "direction": {
+        "x": 0.915772,
+        "y": 0.050471,
+        "z": 0.398514
+      },
+      "spacing": 0.052273,
+      "numPoints": 11,
+      "pointSize": 0.1
     }
   ],
   "outputs": [
@@ -1502,64 +1593,64 @@
       "channel": "$h1chan",
       "segments": [
         {
-          "start": "(($t13rev) ? (($t13rot == 0) ? 22 : (($t13rot == 1) ? 0 : 11)) : (($t13rot == 0) ? 0 : (($t13rot == 1) ? 11 : 22)))",
+          "start": "(($t01rev) ? (($t01rot == 0) ? 22 : (($t01rot == 1) ? 0 : 11)) : (($t01rot == 0) ? 0 : (($t01rot == 1) ? 11 : 22)))",
           "num": 11,
-          "reverse": "$t13rev"
+          "reverse": "$t01rev"
         },
         {
-          "start": "(($t13rev) ? (($t13rot == 0) ? 11 : (($t13rot == 1) ? 22 : 0)) : (($t13rot == 0) ? 11 : (($t13rot == 1) ? 22 : 0)))",
+          "start": "(($t01rev) ? (($t01rot == 0) ? 11 : (($t01rot == 1) ? 22 : 0)) : (($t01rot == 0) ? 11 : (($t01rot == 1) ? 22 : 0)))",
           "num": 11,
-          "reverse": "$t13rev"
+          "reverse": "$t01rev"
         },
         {
-          "start": "(($t13rev) ? (($t13rot == 0) ? 0 : (($t13rot == 1) ? 11 : 22)) : (($t13rot == 0) ? 22 : (($t13rot == 1) ? 0 : 11)))",
+          "start": "(($t01rev) ? (($t01rot == 0) ? 0 : (($t01rot == 1) ? 11 : 22)) : (($t01rot == 0) ? 22 : (($t01rot == 1) ? 0 : 11)))",
           "num": 11,
-          "reverse": "$t13rev"
+          "reverse": "$t01rev"
         },
         {
-          "start": "(($t38rev) ? (($t38rot == 0) ? 55 : (($t38rot == 1) ? 33 : 44)) : (($t38rot == 0) ? 33 : (($t38rot == 1) ? 44 : 55)))",
+          "start": "(($t02rev) ? (($t02rot == 0) ? 55 : (($t02rot == 1) ? 33 : 44)) : (($t02rot == 0) ? 33 : (($t02rot == 1) ? 44 : 55)))",
           "num": 11,
-          "reverse": "$t38rev"
+          "reverse": "$t02rev"
         },
         {
-          "start": "(($t38rev) ? (($t38rot == 0) ? 44 : (($t38rot == 1) ? 55 : 33)) : (($t38rot == 0) ? 44 : (($t38rot == 1) ? 55 : 33)))",
+          "start": "(($t02rev) ? (($t02rot == 0) ? 44 : (($t02rot == 1) ? 55 : 33)) : (($t02rot == 0) ? 44 : (($t02rot == 1) ? 55 : 33)))",
           "num": 11,
-          "reverse": "$t38rev"
+          "reverse": "$t02rev"
         },
         {
-          "start": "(($t38rev) ? (($t38rot == 0) ? 33 : (($t38rot == 1) ? 44 : 55)) : (($t38rot == 0) ? 55 : (($t38rot == 1) ? 33 : 44)))",
+          "start": "(($t02rev) ? (($t02rot == 0) ? 33 : (($t02rot == 1) ? 44 : 55)) : (($t02rot == 0) ? 55 : (($t02rot == 1) ? 33 : 44)))",
           "num": 11,
-          "reverse": "$t38rev"
+          "reverse": "$t02rev"
         },
         {
-          "start": "(($t72rev) ? (($t72rot == 0) ? 88 : (($t72rot == 1) ? 66 : 77)) : (($t72rot == 0) ? 66 : (($t72rot == 1) ? 77 : 88)))",
+          "start": "(($t03rev) ? (($t03rot == 0) ? 88 : (($t03rot == 1) ? 66 : 77)) : (($t03rot == 0) ? 66 : (($t03rot == 1) ? 77 : 88)))",
           "num": 11,
-          "reverse": "$t72rev"
+          "reverse": "$t03rev"
         },
         {
-          "start": "(($t72rev) ? (($t72rot == 0) ? 77 : (($t72rot == 1) ? 88 : 66)) : (($t72rot == 0) ? 77 : (($t72rot == 1) ? 88 : 66)))",
+          "start": "(($t03rev) ? (($t03rot == 0) ? 77 : (($t03rot == 1) ? 88 : 66)) : (($t03rot == 0) ? 77 : (($t03rot == 1) ? 88 : 66)))",
           "num": 11,
-          "reverse": "$t72rev"
+          "reverse": "$t03rev"
         },
         {
-          "start": "(($t72rev) ? (($t72rot == 0) ? 66 : (($t72rot == 1) ? 77 : 88)) : (($t72rot == 0) ? 88 : (($t72rot == 1) ? 66 : 77)))",
+          "start": "(($t03rev) ? (($t03rot == 0) ? 66 : (($t03rot == 1) ? 77 : 88)) : (($t03rot == 0) ? 88 : (($t03rot == 1) ? 66 : 77)))",
           "num": 11,
-          "reverse": "$t72rev"
+          "reverse": "$t03rev"
         },
         {
-          "start": "(($t53rev) ? (($t53rot == 0) ? 121 : (($t53rot == 1) ? 99 : 110)) : (($t53rot == 0) ? 99 : (($t53rot == 1) ? 110 : 121)))",
+          "start": "(($t04rev) ? (($t04rot == 0) ? 121 : (($t04rot == 1) ? 99 : 110)) : (($t04rot == 0) ? 99 : (($t04rot == 1) ? 110 : 121)))",
           "num": 11,
-          "reverse": "$t53rev"
+          "reverse": "$t04rev"
         },
         {
-          "start": "(($t53rev) ? (($t53rot == 0) ? 110 : (($t53rot == 1) ? 121 : 99)) : (($t53rot == 0) ? 110 : (($t53rot == 1) ? 121 : 99)))",
+          "start": "(($t04rev) ? (($t04rot == 0) ? 110 : (($t04rot == 1) ? 121 : 99)) : (($t04rot == 0) ? 110 : (($t04rot == 1) ? 121 : 99)))",
           "num": 11,
-          "reverse": "$t53rev"
+          "reverse": "$t04rev"
         },
         {
-          "start": "(($t53rev) ? (($t53rot == 0) ? 99 : (($t53rot == 1) ? 110 : 121)) : (($t53rot == 0) ? 121 : (($t53rot == 1) ? 99 : 110)))",
+          "start": "(($t04rev) ? (($t04rot == 0) ? 99 : (($t04rot == 1) ? 110 : 121)) : (($t04rot == 0) ? 121 : (($t04rot == 1) ? 99 : 110)))",
           "num": 11,
-          "reverse": "$t53rev"
+          "reverse": "$t04rev"
         }
       ]
     },
@@ -1571,64 +1662,64 @@
       "channel": "$h2chan",
       "segments": [
         {
-          "start": "(($t12rev) ? (($t12rot == 0) ? 154 : (($t12rot == 1) ? 132 : 143)) : (($t12rot == 0) ? 132 : (($t12rot == 1) ? 143 : 154)))",
+          "start": "(($t05rev) ? (($t05rot == 0) ? 154 : (($t05rot == 1) ? 132 : 143)) : (($t05rot == 0) ? 132 : (($t05rot == 1) ? 143 : 154)))",
           "num": 11,
-          "reverse": "$t12rev"
+          "reverse": "$t05rev"
         },
         {
-          "start": "(($t12rev) ? (($t12rot == 0) ? 143 : (($t12rot == 1) ? 154 : 132)) : (($t12rot == 0) ? 143 : (($t12rot == 1) ? 154 : 132)))",
+          "start": "(($t05rev) ? (($t05rot == 0) ? 143 : (($t05rot == 1) ? 154 : 132)) : (($t05rot == 0) ? 143 : (($t05rot == 1) ? 154 : 132)))",
           "num": 11,
-          "reverse": "$t12rev"
+          "reverse": "$t05rev"
         },
         {
-          "start": "(($t12rev) ? (($t12rot == 0) ? 132 : (($t12rot == 1) ? 143 : 154)) : (($t12rot == 0) ? 154 : (($t12rot == 1) ? 132 : 143)))",
+          "start": "(($t05rev) ? (($t05rot == 0) ? 132 : (($t05rot == 1) ? 143 : 154)) : (($t05rot == 0) ? 154 : (($t05rot == 1) ? 132 : 143)))",
           "num": 11,
-          "reverse": "$t12rev"
+          "reverse": "$t05rev"
         },
         {
-          "start": "(($t23rev) ? (($t23rot == 0) ? 187 : (($t23rot == 1) ? 165 : 176)) : (($t23rot == 0) ? 165 : (($t23rot == 1) ? 176 : 187)))",
+          "start": "(($t06rev) ? (($t06rot == 0) ? 187 : (($t06rot == 1) ? 165 : 176)) : (($t06rot == 0) ? 165 : (($t06rot == 1) ? 176 : 187)))",
           "num": 11,
-          "reverse": "$t23rev"
+          "reverse": "$t06rev"
         },
         {
-          "start": "(($t23rev) ? (($t23rot == 0) ? 176 : (($t23rot == 1) ? 187 : 165)) : (($t23rot == 0) ? 176 : (($t23rot == 1) ? 187 : 165)))",
+          "start": "(($t06rev) ? (($t06rot == 0) ? 176 : (($t06rot == 1) ? 187 : 165)) : (($t06rot == 0) ? 176 : (($t06rot == 1) ? 187 : 165)))",
           "num": 11,
-          "reverse": "$t23rev"
+          "reverse": "$t06rev"
         },
         {
-          "start": "(($t23rev) ? (($t23rot == 0) ? 165 : (($t23rot == 1) ? 176 : 187)) : (($t23rot == 0) ? 187 : (($t23rot == 1) ? 165 : 176)))",
+          "start": "(($t06rev) ? (($t06rot == 0) ? 165 : (($t06rot == 1) ? 176 : 187)) : (($t06rot == 0) ? 187 : (($t06rot == 1) ? 165 : 176)))",
           "num": 11,
-          "reverse": "$t23rev"
+          "reverse": "$t06rev"
         },
         {
-          "start": "(($t63rev) ? (($t63rot == 0) ? 220 : (($t63rot == 1) ? 198 : 209)) : (($t63rot == 0) ? 198 : (($t63rot == 1) ? 209 : 220)))",
+          "start": "(($t07rev) ? (($t07rot == 0) ? 220 : (($t07rot == 1) ? 198 : 209)) : (($t07rot == 0) ? 198 : (($t07rot == 1) ? 209 : 220)))",
           "num": 11,
-          "reverse": "$t63rev"
+          "reverse": "$t07rev"
         },
         {
-          "start": "(($t63rev) ? (($t63rot == 0) ? 209 : (($t63rot == 1) ? 220 : 198)) : (($t63rot == 0) ? 209 : (($t63rot == 1) ? 220 : 198)))",
+          "start": "(($t07rev) ? (($t07rot == 0) ? 209 : (($t07rot == 1) ? 220 : 198)) : (($t07rot == 0) ? 209 : (($t07rot == 1) ? 220 : 198)))",
           "num": 11,
-          "reverse": "$t63rev"
+          "reverse": "$t07rev"
         },
         {
-          "start": "(($t63rev) ? (($t63rot == 0) ? 198 : (($t63rot == 1) ? 209 : 220)) : (($t63rot == 0) ? 220 : (($t63rot == 1) ? 198 : 209)))",
+          "start": "(($t07rev) ? (($t07rot == 0) ? 198 : (($t07rot == 1) ? 209 : 220)) : (($t07rot == 0) ? 220 : (($t07rot == 1) ? 198 : 209)))",
           "num": 11,
-          "reverse": "$t63rev"
+          "reverse": "$t07rev"
         },
         {
-          "start": "(($t52rev) ? (($t52rot == 0) ? 253 : (($t52rot == 1) ? 231 : 242)) : (($t52rot == 0) ? 231 : (($t52rot == 1) ? 242 : 253)))",
+          "start": "(($t08rev) ? (($t08rot == 0) ? 253 : (($t08rot == 1) ? 231 : 242)) : (($t08rot == 0) ? 231 : (($t08rot == 1) ? 242 : 253)))",
           "num": 11,
-          "reverse": "$t52rev"
+          "reverse": "$t08rev"
         },
         {
-          "start": "(($t52rev) ? (($t52rot == 0) ? 242 : (($t52rot == 1) ? 253 : 231)) : (($t52rot == 0) ? 242 : (($t52rot == 1) ? 253 : 231)))",
+          "start": "(($t08rev) ? (($t08rot == 0) ? 242 : (($t08rot == 1) ? 253 : 231)) : (($t08rot == 0) ? 242 : (($t08rot == 1) ? 253 : 231)))",
           "num": 11,
-          "reverse": "$t52rev"
+          "reverse": "$t08rev"
         },
         {
-          "start": "(($t52rev) ? (($t52rot == 0) ? 231 : (($t52rot == 1) ? 242 : 253)) : (($t52rot == 0) ? 253 : (($t52rot == 1) ? 231 : 242)))",
+          "start": "(($t08rev) ? (($t08rot == 0) ? 231 : (($t08rot == 1) ? 242 : 253)) : (($t08rot == 0) ? 253 : (($t08rot == 1) ? 231 : 242)))",
           "num": 11,
-          "reverse": "$t52rev"
+          "reverse": "$t08rev"
         }
       ]
     },
@@ -1640,64 +1731,64 @@
       "channel": "$h3chan",
       "segments": [
         {
-          "start": "(($t37rev) ? (($t37rot == 0) ? 286 : (($t37rot == 1) ? 264 : 275)) : (($t37rot == 0) ? 264 : (($t37rot == 1) ? 275 : 286)))",
+          "start": "(($t09rev) ? (($t09rot == 0) ? 286 : (($t09rot == 1) ? 264 : 275)) : (($t09rot == 0) ? 264 : (($t09rot == 1) ? 275 : 286)))",
           "num": 11,
-          "reverse": "$t37rev"
+          "reverse": "$t09rev"
         },
         {
-          "start": "(($t37rev) ? (($t37rot == 0) ? 275 : (($t37rot == 1) ? 286 : 264)) : (($t37rot == 0) ? 275 : (($t37rot == 1) ? 286 : 264)))",
+          "start": "(($t09rev) ? (($t09rot == 0) ? 275 : (($t09rot == 1) ? 286 : 264)) : (($t09rot == 0) ? 275 : (($t09rot == 1) ? 286 : 264)))",
           "num": 11,
-          "reverse": "$t37rev"
+          "reverse": "$t09rev"
         },
         {
-          "start": "(($t37rev) ? (($t37rot == 0) ? 264 : (($t37rot == 1) ? 275 : 286)) : (($t37rot == 0) ? 286 : (($t37rot == 1) ? 264 : 275)))",
+          "start": "(($t09rev) ? (($t09rot == 0) ? 264 : (($t09rot == 1) ? 275 : 286)) : (($t09rot == 0) ? 286 : (($t09rot == 1) ? 264 : 275)))",
           "num": 11,
-          "reverse": "$t37rev"
+          "reverse": "$t09rev"
         },
         {
-          "start": "(($t24rev) ? (($t24rot == 0) ? 319 : (($t24rot == 1) ? 297 : 308)) : (($t24rot == 0) ? 297 : (($t24rot == 1) ? 308 : 319)))",
+          "start": "(($t10rev) ? (($t10rot == 0) ? 319 : (($t10rot == 1) ? 297 : 308)) : (($t10rot == 0) ? 297 : (($t10rot == 1) ? 308 : 319)))",
           "num": 11,
-          "reverse": "$t24rev"
+          "reverse": "$t10rev"
         },
         {
-          "start": "(($t24rev) ? (($t24rot == 0) ? 308 : (($t24rot == 1) ? 319 : 297)) : (($t24rot == 0) ? 308 : (($t24rot == 1) ? 319 : 297)))",
+          "start": "(($t10rev) ? (($t10rot == 0) ? 308 : (($t10rot == 1) ? 319 : 297)) : (($t10rot == 0) ? 308 : (($t10rot == 1) ? 319 : 297)))",
           "num": 11,
-          "reverse": "$t24rev"
+          "reverse": "$t10rev"
         },
         {
-          "start": "(($t24rev) ? (($t24rot == 0) ? 297 : (($t24rot == 1) ? 308 : 319)) : (($t24rot == 0) ? 319 : (($t24rot == 1) ? 297 : 308)))",
+          "start": "(($t10rev) ? (($t10rot == 0) ? 297 : (($t10rot == 1) ? 308 : 319)) : (($t10rot == 0) ? 319 : (($t10rot == 1) ? 297 : 308)))",
           "num": 11,
-          "reverse": "$t24rev"
+          "reverse": "$t10rev"
         },
         {
-          "start": "(($t64rev) ? (($t64rot == 0) ? 352 : (($t64rot == 1) ? 330 : 341)) : (($t64rot == 0) ? 330 : (($t64rot == 1) ? 341 : 352)))",
+          "start": "(($t11rev) ? (($t11rot == 0) ? 352 : (($t11rot == 1) ? 330 : 341)) : (($t11rot == 0) ? 330 : (($t11rot == 1) ? 341 : 352)))",
           "num": 11,
-          "reverse": "$t64rev"
+          "reverse": "$t11rev"
         },
         {
-          "start": "(($t64rev) ? (($t64rot == 0) ? 341 : (($t64rot == 1) ? 352 : 330)) : (($t64rot == 0) ? 341 : (($t64rot == 1) ? 352 : 330)))",
+          "start": "(($t11rev) ? (($t11rot == 0) ? 341 : (($t11rot == 1) ? 352 : 330)) : (($t11rot == 0) ? 341 : (($t11rot == 1) ? 352 : 330)))",
           "num": 11,
-          "reverse": "$t64rev"
+          "reverse": "$t11rev"
         },
         {
-          "start": "(($t64rev) ? (($t64rot == 0) ? 330 : (($t64rot == 1) ? 341 : 352)) : (($t64rot == 0) ? 352 : (($t64rot == 1) ? 330 : 341)))",
+          "start": "(($t11rev) ? (($t11rot == 0) ? 330 : (($t11rot == 1) ? 341 : 352)) : (($t11rot == 0) ? 352 : (($t11rot == 1) ? 330 : 341)))",
           "num": 11,
-          "reverse": "$t64rev"
+          "reverse": "$t11rev"
         },
         {
-          "start": "(($t48rev) ? (($t48rot == 0) ? 385 : (($t48rot == 1) ? 363 : 374)) : (($t48rot == 0) ? 363 : (($t48rot == 1) ? 374 : 385)))",
+          "start": "(($t12rev) ? (($t12rot == 0) ? 385 : (($t12rot == 1) ? 363 : 374)) : (($t12rot == 0) ? 363 : (($t12rot == 1) ? 374 : 385)))",
           "num": 11,
-          "reverse": "$t48rev"
+          "reverse": "$t12rev"
         },
         {
-          "start": "(($t48rev) ? (($t48rot == 0) ? 374 : (($t48rot == 1) ? 385 : 363)) : (($t48rot == 0) ? 374 : (($t48rot == 1) ? 385 : 363)))",
+          "start": "(($t12rev) ? (($t12rot == 0) ? 374 : (($t12rot == 1) ? 385 : 363)) : (($t12rot == 0) ? 374 : (($t12rot == 1) ? 385 : 363)))",
           "num": 11,
-          "reverse": "$t48rev"
+          "reverse": "$t12rev"
         },
         {
-          "start": "(($t48rev) ? (($t48rot == 0) ? 363 : (($t48rot == 1) ? 374 : 385)) : (($t48rot == 0) ? 385 : (($t48rot == 1) ? 363 : 374)))",
+          "start": "(($t12rev) ? (($t12rot == 0) ? 363 : (($t12rot == 1) ? 374 : 385)) : (($t12rot == 0) ? 385 : (($t12rot == 1) ? 363 : 374)))",
           "num": 11,
-          "reverse": "$t48rev"
+          "reverse": "$t12rev"
         }
       ]
     },
@@ -1709,49 +1800,49 @@
       "channel": "$h4chan",
       "segments": [
         {
-          "start": "(($t02rev) ? (($t02rot == 0) ? 418 : (($t02rot == 1) ? 396 : 407)) : (($t02rot == 0) ? 396 : (($t02rot == 1) ? 407 : 418)))",
+          "start": "(($t13rev) ? (($t13rot == 0) ? 418 : (($t13rot == 1) ? 396 : 407)) : (($t13rot == 0) ? 396 : (($t13rot == 1) ? 407 : 418)))",
           "num": 11,
-          "reverse": "$t02rev"
+          "reverse": "$t13rev"
         },
         {
-          "start": "(($t02rev) ? (($t02rot == 0) ? 407 : (($t02rot == 1) ? 418 : 396)) : (($t02rot == 0) ? 407 : (($t02rot == 1) ? 418 : 396)))",
+          "start": "(($t13rev) ? (($t13rot == 0) ? 407 : (($t13rot == 1) ? 418 : 396)) : (($t13rot == 0) ? 407 : (($t13rot == 1) ? 418 : 396)))",
           "num": 11,
-          "reverse": "$t02rev"
+          "reverse": "$t13rev"
         },
         {
-          "start": "(($t02rev) ? (($t02rot == 0) ? 396 : (($t02rot == 1) ? 407 : 418)) : (($t02rot == 0) ? 418 : (($t02rot == 1) ? 396 : 407)))",
+          "start": "(($t13rev) ? (($t13rot == 0) ? 396 : (($t13rot == 1) ? 407 : 418)) : (($t13rot == 0) ? 418 : (($t13rot == 1) ? 396 : 407)))",
           "num": 11,
-          "reverse": "$t02rev"
+          "reverse": "$t13rev"
         },
         {
-          "start": "(($t07rev) ? (($t07rot == 0) ? 451 : (($t07rot == 1) ? 429 : 440)) : (($t07rot == 0) ? 429 : (($t07rot == 1) ? 440 : 451)))",
+          "start": "(($t14rev) ? (($t14rot == 0) ? 451 : (($t14rot == 1) ? 429 : 440)) : (($t14rot == 0) ? 429 : (($t14rot == 1) ? 440 : 451)))",
           "num": 11,
-          "reverse": "$t07rev"
+          "reverse": "$t14rev"
         },
         {
-          "start": "(($t07rev) ? (($t07rot == 0) ? 440 : (($t07rot == 1) ? 451 : 429)) : (($t07rot == 0) ? 440 : (($t07rot == 1) ? 451 : 429)))",
+          "start": "(($t14rev) ? (($t14rot == 0) ? 440 : (($t14rot == 1) ? 451 : 429)) : (($t14rot == 0) ? 440 : (($t14rot == 1) ? 451 : 429)))",
           "num": 11,
-          "reverse": "$t07rev"
+          "reverse": "$t14rev"
         },
         {
-          "start": "(($t07rev) ? (($t07rot == 0) ? 429 : (($t07rot == 1) ? 440 : 451)) : (($t07rot == 0) ? 451 : (($t07rot == 1) ? 429 : 440)))",
+          "start": "(($t14rev) ? (($t14rot == 0) ? 429 : (($t14rot == 1) ? 440 : 451)) : (($t14rot == 0) ? 451 : (($t14rot == 1) ? 429 : 440)))",
           "num": 11,
-          "reverse": "$t07rev"
+          "reverse": "$t14rev"
         },
         {
-          "start": "(($t32rev) ? (($t32rot == 0) ? 484 : (($t32rot == 1) ? 462 : 473)) : (($t32rot == 0) ? 462 : (($t32rot == 1) ? 473 : 484)))",
+          "start": "(($t15rev) ? (($t15rot == 0) ? 484 : (($t15rot == 1) ? 462 : 473)) : (($t15rot == 0) ? 462 : (($t15rot == 1) ? 473 : 484)))",
           "num": 11,
-          "reverse": "$t32rev"
+          "reverse": "$t15rev"
         },
         {
-          "start": "(($t32rev) ? (($t32rot == 0) ? 473 : (($t32rot == 1) ? 484 : 462)) : (($t32rot == 0) ? 473 : (($t32rot == 1) ? 484 : 462)))",
+          "start": "(($t15rev) ? (($t15rot == 0) ? 473 : (($t15rot == 1) ? 484 : 462)) : (($t15rot == 0) ? 473 : (($t15rot == 1) ? 484 : 462)))",
           "num": 11,
-          "reverse": "$t32rev"
+          "reverse": "$t15rev"
         },
         {
-          "start": "(($t32rev) ? (($t32rot == 0) ? 462 : (($t32rot == 1) ? 473 : 484)) : (($t32rot == 0) ? 484 : (($t32rot == 1) ? 462 : 473)))",
+          "start": "(($t15rev) ? (($t15rot == 0) ? 462 : (($t15rot == 1) ? 473 : 484)) : (($t15rot == 0) ? 484 : (($t15rot == 1) ? 462 : 473)))",
           "num": 11,
-          "reverse": "$t32rev"
+          "reverse": "$t15rev"
         }
       ]
     }
