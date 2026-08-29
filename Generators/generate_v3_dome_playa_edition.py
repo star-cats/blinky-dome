@@ -207,9 +207,9 @@ DEFAULT_REVERSED = False
 #     then out along the other two.
 HARNESS_TRIANGLES = {
     1: (1, 6, 19, 30),    # blue
-    2: (20, 25, 26, 27),    # red
-    3: (31, 32, 33, 34), # green
-    4: (35, 36, 70),    # yellow
+    2: (20, 44, 50, 69),  # red
+    3: (29, 59, 60, 75), # green
+    4: (31, 45, 70),    # yellow
 }
 
 
