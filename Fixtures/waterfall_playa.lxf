@@ -25,10 +25,10 @@
     "spacing": {
       "type": "float",
       "default": 5.0,
-      "min": 0.0,
+      "min": -120.0,
       "max": 120.0,
       "label": "Strip spacing",
-      "description": "Horizontal distance between adjacent strips, in inches. The curtain stays centred on the fixture's origin as this opens and closes"
+      "description": "Horizontal distance between adjacent strips, in inches. The curtain stays centred on the fixture's origin as this opens and closes. Negative flips the curtain end for end, so port 1 lands on the other side"
     },
     "rev": {
       "type": "boolean",
@@ -912,7 +912,8 @@
     "pixels_per_metre": 60.0,
     "strip_lengths_m": "315 px = 5.25 m, 360 px = 6 m",
     "strip_spacing_in": 5.0,
-    "strip_spacing": "the $spacing parameter, in inches; x is an expression so it re-lays live",
+    "strip_spacing": "the $spacing parameter, in inches; x is an expression so it re-lays live, and a negative value mirrors the curtain end for end",
+    "port_direction": "port 1 on +X, counting toward -X at positive spacing",
     "curtain_width_m": 4.445,
     "alignment": "top-aligned; the two strip lengths differ by 0.75 m",
     "wiring": "each strip runs bottom to top; pixel 0 is the lowest LED",
@@ -940,7 +941,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.4445 * $spacing)",
+      "x": "(0.4445 * $spacing)",
       "y": "(0.75 + $a1trim)",
       "z": 0.0,
       "direction": {
@@ -968,7 +969,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.4191 * $spacing)",
+      "x": "(0.4191 * $spacing)",
       "y": "(0.0 + $a2trim)",
       "z": 0.0,
       "direction": {
@@ -996,7 +997,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.3937 * $spacing)",
+      "x": "(0.3937 * $spacing)",
       "y": "(0.75 + $a3trim)",
       "z": 0.0,
       "direction": {
@@ -1024,7 +1025,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.3683 * $spacing)",
+      "x": "(0.3683 * $spacing)",
       "y": "(0.0 + $a4trim)",
       "z": 0.0,
       "direction": {
@@ -1052,7 +1053,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.3429 * $spacing)",
+      "x": "(0.3429 * $spacing)",
       "y": "(0.75 + $b1trim)",
       "z": 0.0,
       "direction": {
@@ -1080,7 +1081,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.3175 * $spacing)",
+      "x": "(0.3175 * $spacing)",
       "y": "(0.0 + $b2trim)",
       "z": 0.0,
       "direction": {
@@ -1108,7 +1109,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.2921 * $spacing)",
+      "x": "(0.2921 * $spacing)",
       "y": "(0.75 + $b3trim)",
       "z": 0.0,
       "direction": {
@@ -1136,7 +1137,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.2667 * $spacing)",
+      "x": "(0.2667 * $spacing)",
       "y": "(0.0 + $b4trim)",
       "z": 0.0,
       "direction": {
@@ -1164,7 +1165,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.2413 * $spacing)",
+      "x": "(0.2413 * $spacing)",
       "y": "(0.75 + $c1trim)",
       "z": 0.0,
       "direction": {
@@ -1192,7 +1193,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.2159 * $spacing)",
+      "x": "(0.2159 * $spacing)",
       "y": "(0.0 + $c2trim)",
       "z": 0.0,
       "direction": {
@@ -1220,7 +1221,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.1905 * $spacing)",
+      "x": "(0.1905 * $spacing)",
       "y": "(0.75 + $c3trim)",
       "z": 0.0,
       "direction": {
@@ -1248,7 +1249,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.1651 * $spacing)",
+      "x": "(0.1651 * $spacing)",
       "y": "(0.0 + $c4trim)",
       "z": 0.0,
       "direction": {
@@ -1276,7 +1277,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.1397 * $spacing)",
+      "x": "(0.1397 * $spacing)",
       "y": "(0.75 + $d1trim)",
       "z": 0.0,
       "direction": {
@@ -1304,7 +1305,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.1143 * $spacing)",
+      "x": "(0.1143 * $spacing)",
       "y": "(0.0 + $d2trim)",
       "z": 0.0,
       "direction": {
@@ -1332,7 +1333,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.0889 * $spacing)",
+      "x": "(0.0889 * $spacing)",
       "y": "(0.75 + $d3trim)",
       "z": 0.0,
       "direction": {
@@ -1360,7 +1361,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.0635 * $spacing)",
+      "x": "(0.0635 * $spacing)",
       "y": "(0.0 + $d4trim)",
       "z": 0.0,
       "direction": {
@@ -1388,7 +1389,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(-0.0381 * $spacing)",
+      "x": "(0.0381 * $spacing)",
       "y": "(0.75 + $e1trim)",
       "z": 0.0,
       "direction": {
@@ -1416,7 +1417,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(-0.0127 * $spacing)",
+      "x": "(0.0127 * $spacing)",
       "y": "(0.0 + $e2trim)",
       "z": 0.0,
       "direction": {
@@ -1444,7 +1445,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.0127 * $spacing)",
+      "x": "(-0.0127 * $spacing)",
       "y": "(0.75 + $e3trim)",
       "z": 0.0,
       "direction": {
@@ -1472,7 +1473,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.0381 * $spacing)",
+      "x": "(-0.0381 * $spacing)",
       "y": "(0.0 + $e4trim)",
       "z": 0.0,
       "direction": {
@@ -1500,7 +1501,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.0635 * $spacing)",
+      "x": "(-0.0635 * $spacing)",
       "y": "(0.75 + $f1trim)",
       "z": 0.0,
       "direction": {
@@ -1528,7 +1529,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.0889 * $spacing)",
+      "x": "(-0.0889 * $spacing)",
       "y": "(0.0 + $f2trim)",
       "z": 0.0,
       "direction": {
@@ -1556,7 +1557,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.1143 * $spacing)",
+      "x": "(-0.1143 * $spacing)",
       "y": "(0.75 + $f3trim)",
       "z": 0.0,
       "direction": {
@@ -1584,7 +1585,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.1397 * $spacing)",
+      "x": "(-0.1397 * $spacing)",
       "y": "(0.0 + $f4trim)",
       "z": 0.0,
       "direction": {
@@ -1612,7 +1613,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.1651 * $spacing)",
+      "x": "(-0.1651 * $spacing)",
       "y": "(0.75 + $g1trim)",
       "z": 0.0,
       "direction": {
@@ -1640,7 +1641,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.1905 * $spacing)",
+      "x": "(-0.1905 * $spacing)",
       "y": "(0.0 + $g2trim)",
       "z": 0.0,
       "direction": {
@@ -1668,7 +1669,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.2159 * $spacing)",
+      "x": "(-0.2159 * $spacing)",
       "y": "(0.75 + $g3trim)",
       "z": 0.0,
       "direction": {
@@ -1696,7 +1697,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.2413 * $spacing)",
+      "x": "(-0.2413 * $spacing)",
       "y": "(0.0 + $g4trim)",
       "z": 0.0,
       "direction": {
@@ -1724,7 +1725,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.2667 * $spacing)",
+      "x": "(-0.2667 * $spacing)",
       "y": "(0.75 + $h1trim)",
       "z": 0.0,
       "direction": {
@@ -1752,7 +1753,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.2921 * $spacing)",
+      "x": "(-0.2921 * $spacing)",
       "y": "(0.0 + $h2trim)",
       "z": 0.0,
       "direction": {
@@ -1780,7 +1781,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.3175 * $spacing)",
+      "x": "(-0.3175 * $spacing)",
       "y": "(0.75 + $h3trim)",
       "z": 0.0,
       "direction": {
@@ -1808,7 +1809,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.3429 * $spacing)",
+      "x": "(-0.3429 * $spacing)",
       "y": "(0.0 + $h4trim)",
       "z": 0.0,
       "direction": {
@@ -1836,7 +1837,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.3683 * $spacing)",
+      "x": "(-0.3683 * $spacing)",
       "y": "(0.75 + $i1trim)",
       "z": 0.0,
       "direction": {
@@ -1864,7 +1865,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.3937 * $spacing)",
+      "x": "(-0.3937 * $spacing)",
       "y": "(0.0 + $i2trim)",
       "z": 0.0,
       "direction": {
@@ -1892,7 +1893,7 @@
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": "(0.4191 * $spacing)",
+      "x": "(-0.4191 * $spacing)",
       "y": "(0.75 + $i3trim)",
       "z": 0.0,
       "direction": {
@@ -1920,7 +1921,7 @@
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": "(0.4445 * $spacing)",
+      "x": "(-0.4445 * $spacing)",
       "y": "(0.0 + $i4trim)",
       "z": 0.0,
       "direction": {

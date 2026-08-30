@@ -101,10 +101,12 @@ def position_in_group(port: int) -> int:
 def strip_offset(port: int) -> float:
     """Strip's position in spacing-units from the centre of the curtain.
 
-    36 strips give half-unit offsets, -17.5 to +17.5, so the curtain stays
-    centred on x = 0 at any spacing.
+    36 strips give half-unit offsets, +17.5 down to -17.5, so the curtain stays
+    centred on x = 0 at any spacing. Ports walk -X: port 1 sits on the +X end
+    and the count runs toward -X, which is the way the curtain actually faces.
+    Negating the spacing parameter walks them the other way instead.
     """
-    return (port - 1) - (len(ports()) - 1) / 2.0
+    return (len(ports()) - 1) / 2.0 - (port - 1)
 
 
 def strip_x_expression(port: int) -> str:
@@ -216,12 +218,14 @@ def fixture_parameters() -> dict:
         "spacing": {
             "type": "float",
             "default": DEFAULT_STRIP_SPACING_IN,
-            "min": 0.0,
+            "min": -MAX_STRIP_SPACING_IN,
             "max": MAX_STRIP_SPACING_IN,
             "label": "Strip spacing",
             "description": (
                 "Horizontal distance between adjacent strips, in inches. The curtain "
-                "stays centred on the fixture's origin as this opens and closes"
+                "stays centred on the fixture's origin as this opens and closes. "
+                "Negative flips the curtain end for end, so port 1 lands on the "
+                "other side"
             ),
         },
         "rev": {
@@ -385,7 +389,11 @@ def build_fixture(alignment: str) -> dict:
             "pixels_per_metre": PIXELS_PER_METRE,
             "strip_lengths_m": "315 px = 5.25 m, 360 px = 6 m",
             "strip_spacing_in": DEFAULT_STRIP_SPACING_IN,
-            "strip_spacing": "the $spacing parameter, in inches; x is an expression so it re-lays live",
+            "strip_spacing": (
+                "the $spacing parameter, in inches; x is an expression so it re-lays "
+                "live, and a negative value mirrors the curtain end for end"
+            ),
+            "port_direction": "port 1 on +X, counting toward -X at positive spacing",
             "curtain_width_m": round(
                 (len(components) - 1) * DEFAULT_STRIP_SPACING_IN * IN_TO_M, 6
             ),
