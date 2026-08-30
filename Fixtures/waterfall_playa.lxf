@@ -22,890 +22,899 @@
       "label": "Controller IP",
       "description": "Static IP of the waterfall's pixel controller -- one for all 36 strips"
     },
+    "spacing": {
+      "type": "float",
+      "default": 5.0,
+      "min": 0.0,
+      "max": 120.0,
+      "label": "Strip spacing",
+      "description": "Horizontal distance between adjacent strips, in inches. The curtain stays centred on the fixture's origin as this opens and closes"
+    },
     "rev": {
       "type": "boolean",
       "default": false,
       "label": "Reverse waterfall",
       "description": "Flip the data direction of every strip at once. The strips are wired from the bottom upward, so leave this off unless the whole curtain runs the wrong way"
     },
-    "s01univ": {
+    "a1univ": {
       "type": "int",
       "default": 1,
       "min": 0,
       "max": 32767,
-      "label": "G1 S1 universe",
-      "description": "Start universe for G1 S1, port 1, 315 px"
+      "label": "A1 univ",
+      "description": "Start universe for A1, port 1, 315 px"
     },
-    "s01chan": {
-      "type": "int",
-      "default": 0,
-      "min": 0,
-      "max": 511,
-      "label": "G1 S1 channel",
-      "description": "Start channel for G1 S1, port 1, 315 px, within its start universe"
-    },
-    "s01trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G1 S1 trim",
-      "description": "Vertical trim for G1 S1, port 1, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s02univ": {
+    "a2univ": {
       "type": "int",
       "default": 2,
       "min": 0,
       "max": 32767,
-      "label": "G1 S2 universe",
-      "description": "Start universe for G1 S2, port 2, 360 px"
+      "label": "A2 univ",
+      "description": "Start universe for A2, port 2, 360 px"
     },
-    "s02chan": {
-      "type": "int",
-      "default": 435,
-      "min": 0,
-      "max": 511,
-      "label": "G1 S2 channel",
-      "description": "Start channel for G1 S2, port 2, 360 px, within its start universe"
-    },
-    "s02trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G1 S2 trim",
-      "description": "Vertical trim for G1 S2, port 2, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s03univ": {
+    "a3univ": {
       "type": "int",
       "default": 4,
       "min": 0,
       "max": 32767,
-      "label": "G1 S3 universe",
-      "description": "Start universe for G1 S3, port 3, 315 px"
+      "label": "A3 univ",
+      "description": "Start universe for A3, port 3, 315 px"
     },
-    "s03chan": {
-      "type": "int",
-      "default": 495,
-      "min": 0,
-      "max": 511,
-      "label": "G1 S3 channel",
-      "description": "Start channel for G1 S3, port 3, 315 px, within its start universe"
-    },
-    "s03trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G1 S3 trim",
-      "description": "Vertical trim for G1 S3, port 3, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s04univ": {
+    "a4univ": {
       "type": "int",
       "default": 6,
       "min": 0,
       "max": 32767,
-      "label": "G1 S4 universe",
-      "description": "Start universe for G1 S4, port 4, 360 px"
+      "label": "A4 univ",
+      "description": "Start universe for A4, port 4, 360 px"
     },
-    "s04chan": {
+    "a1chan": {
       "type": "int",
-      "default": 420,
+      "default": 0,
       "min": 0,
       "max": 511,
-      "label": "G1 S4 channel",
-      "description": "Start channel for G1 S4, port 4, 360 px, within its start universe"
+      "label": "A1 chan",
+      "description": "Start channel for A1, port 1, 315 px, within its start universe"
     },
-    "s04trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G1 S4 trim",
-      "description": "Vertical trim for G1 S4, port 4, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s05univ": {
-      "type": "int",
-      "default": 8,
-      "min": 0,
-      "max": 32767,
-      "label": "G2 S1 universe",
-      "description": "Start universe for G2 S1, port 5, 315 px"
-    },
-    "s05chan": {
-      "type": "int",
-      "default": 480,
-      "min": 0,
-      "max": 511,
-      "label": "G2 S1 channel",
-      "description": "Start channel for G2 S1, port 5, 315 px, within its start universe"
-    },
-    "s05trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G2 S1 trim",
-      "description": "Vertical trim for G2 S1, port 5, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s06univ": {
-      "type": "int",
-      "default": 10,
-      "min": 0,
-      "max": 32767,
-      "label": "G2 S2 universe",
-      "description": "Start universe for G2 S2, port 6, 360 px"
-    },
-    "s06chan": {
-      "type": "int",
-      "default": 405,
-      "min": 0,
-      "max": 511,
-      "label": "G2 S2 channel",
-      "description": "Start channel for G2 S2, port 6, 360 px, within its start universe"
-    },
-    "s06trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G2 S2 trim",
-      "description": "Vertical trim for G2 S2, port 6, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s07univ": {
-      "type": "int",
-      "default": 12,
-      "min": 0,
-      "max": 32767,
-      "label": "G2 S3 universe",
-      "description": "Start universe for G2 S3, port 7, 315 px"
-    },
-    "s07chan": {
-      "type": "int",
-      "default": 465,
-      "min": 0,
-      "max": 511,
-      "label": "G2 S3 channel",
-      "description": "Start channel for G2 S3, port 7, 315 px, within its start universe"
-    },
-    "s07trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G2 S3 trim",
-      "description": "Vertical trim for G2 S3, port 7, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s08univ": {
-      "type": "int",
-      "default": 14,
-      "min": 0,
-      "max": 32767,
-      "label": "G2 S4 universe",
-      "description": "Start universe for G2 S4, port 8, 360 px"
-    },
-    "s08chan": {
-      "type": "int",
-      "default": 390,
-      "min": 0,
-      "max": 511,
-      "label": "G2 S4 channel",
-      "description": "Start channel for G2 S4, port 8, 360 px, within its start universe"
-    },
-    "s08trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G2 S4 trim",
-      "description": "Vertical trim for G2 S4, port 8, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s09univ": {
-      "type": "int",
-      "default": 16,
-      "min": 0,
-      "max": 32767,
-      "label": "G3 S1 universe",
-      "description": "Start universe for G3 S1, port 9, 315 px"
-    },
-    "s09chan": {
-      "type": "int",
-      "default": 450,
-      "min": 0,
-      "max": 511,
-      "label": "G3 S1 channel",
-      "description": "Start channel for G3 S1, port 9, 315 px, within its start universe"
-    },
-    "s09trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G3 S1 trim",
-      "description": "Vertical trim for G3 S1, port 9, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s10univ": {
-      "type": "int",
-      "default": 18,
-      "min": 0,
-      "max": 32767,
-      "label": "G3 S2 universe",
-      "description": "Start universe for G3 S2, port 10, 360 px"
-    },
-    "s10chan": {
-      "type": "int",
-      "default": 375,
-      "min": 0,
-      "max": 511,
-      "label": "G3 S2 channel",
-      "description": "Start channel for G3 S2, port 10, 360 px, within its start universe"
-    },
-    "s10trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G3 S2 trim",
-      "description": "Vertical trim for G3 S2, port 10, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s11univ": {
-      "type": "int",
-      "default": 20,
-      "min": 0,
-      "max": 32767,
-      "label": "G3 S3 universe",
-      "description": "Start universe for G3 S3, port 11, 315 px"
-    },
-    "s11chan": {
+    "a2chan": {
       "type": "int",
       "default": 435,
       "min": 0,
       "max": 511,
-      "label": "G3 S3 channel",
-      "description": "Start channel for G3 S3, port 11, 315 px, within its start universe"
+      "label": "A2 chan",
+      "description": "Start channel for A2, port 2, 360 px, within its start universe"
     },
-    "s11trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G3 S3 trim",
-      "description": "Vertical trim for G3 S3, port 11, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s12univ": {
+    "a3chan": {
       "type": "int",
-      "default": 22,
-      "min": 0,
-      "max": 32767,
-      "label": "G3 S4 universe",
-      "description": "Start universe for G3 S4, port 12, 360 px"
-    },
-    "s12chan": {
-      "type": "int",
-      "default": 360,
+      "default": 495,
       "min": 0,
       "max": 511,
-      "label": "G3 S4 channel",
-      "description": "Start channel for G3 S4, port 12, 360 px, within its start universe"
+      "label": "A3 chan",
+      "description": "Start channel for A3, port 3, 315 px, within its start universe"
     },
-    "s12trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G3 S4 trim",
-      "description": "Vertical trim for G3 S4, port 12, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s13univ": {
-      "type": "int",
-      "default": 24,
-      "min": 0,
-      "max": 32767,
-      "label": "G4 S1 universe",
-      "description": "Start universe for G4 S1, port 13, 315 px"
-    },
-    "s13chan": {
+    "a4chan": {
       "type": "int",
       "default": 420,
       "min": 0,
       "max": 511,
-      "label": "G4 S1 channel",
-      "description": "Start channel for G4 S1, port 13, 315 px, within its start universe"
+      "label": "A4 chan",
+      "description": "Start channel for A4, port 4, 360 px, within its start universe"
     },
-    "s13trim": {
+    "a1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G4 S1 trim",
-      "description": "Vertical trim for G4 S1, port 13, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "A1 trim",
+      "description": "Vertical trim for A1, port 1, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     },
-    "s14univ": {
+    "a2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "A2 trim",
+      "description": "Vertical trim for A2, port 2, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "a3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "A3 trim",
+      "description": "Vertical trim for A3, port 3, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "a4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "A4 trim",
+      "description": "Vertical trim for A4, port 4, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "b1univ": {
       "type": "int",
-      "default": 26,
+      "default": 8,
       "min": 0,
       "max": 32767,
-      "label": "G4 S2 universe",
-      "description": "Start universe for G4 S2, port 14, 360 px"
+      "label": "B1 univ",
+      "description": "Start universe for B1, port 5, 315 px"
     },
-    "s14chan": {
+    "b2univ": {
       "type": "int",
-      "default": 345,
+      "default": 10,
+      "min": 0,
+      "max": 32767,
+      "label": "B2 univ",
+      "description": "Start universe for B2, port 6, 360 px"
+    },
+    "b3univ": {
+      "type": "int",
+      "default": 12,
+      "min": 0,
+      "max": 32767,
+      "label": "B3 univ",
+      "description": "Start universe for B3, port 7, 315 px"
+    },
+    "b4univ": {
+      "type": "int",
+      "default": 14,
+      "min": 0,
+      "max": 32767,
+      "label": "B4 univ",
+      "description": "Start universe for B4, port 8, 360 px"
+    },
+    "b1chan": {
+      "type": "int",
+      "default": 480,
       "min": 0,
       "max": 511,
-      "label": "G4 S2 channel",
-      "description": "Start channel for G4 S2, port 14, 360 px, within its start universe"
+      "label": "B1 chan",
+      "description": "Start channel for B1, port 5, 315 px, within its start universe"
     },
-    "s14trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G4 S2 trim",
-      "description": "Vertical trim for G4 S2, port 14, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s15univ": {
-      "type": "int",
-      "default": 28,
-      "min": 0,
-      "max": 32767,
-      "label": "G4 S3 universe",
-      "description": "Start universe for G4 S3, port 15, 315 px"
-    },
-    "s15chan": {
+    "b2chan": {
       "type": "int",
       "default": 405,
       "min": 0,
       "max": 511,
-      "label": "G4 S3 channel",
-      "description": "Start channel for G4 S3, port 15, 315 px, within its start universe"
+      "label": "B2 chan",
+      "description": "Start channel for B2, port 6, 360 px, within its start universe"
     },
-    "s15trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G4 S3 trim",
-      "description": "Vertical trim for G4 S3, port 15, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s16univ": {
+    "b3chan": {
       "type": "int",
-      "default": 30,
-      "min": 0,
-      "max": 32767,
-      "label": "G4 S4 universe",
-      "description": "Start universe for G4 S4, port 16, 360 px"
-    },
-    "s16chan": {
-      "type": "int",
-      "default": 330,
+      "default": 465,
       "min": 0,
       "max": 511,
-      "label": "G4 S4 channel",
-      "description": "Start channel for G4 S4, port 16, 360 px, within its start universe"
+      "label": "B3 chan",
+      "description": "Start channel for B3, port 7, 315 px, within its start universe"
     },
-    "s16trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G4 S4 trim",
-      "description": "Vertical trim for G4 S4, port 16, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s17univ": {
-      "type": "int",
-      "default": 32,
-      "min": 0,
-      "max": 32767,
-      "label": "G5 S1 universe",
-      "description": "Start universe for G5 S1, port 17, 315 px"
-    },
-    "s17chan": {
+    "b4chan": {
       "type": "int",
       "default": 390,
       "min": 0,
       "max": 511,
-      "label": "G5 S1 channel",
-      "description": "Start channel for G5 S1, port 17, 315 px, within its start universe"
+      "label": "B4 chan",
+      "description": "Start channel for B4, port 8, 360 px, within its start universe"
     },
-    "s17trim": {
+    "b1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G5 S1 trim",
-      "description": "Vertical trim for G5 S1, port 17, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "B1 trim",
+      "description": "Vertical trim for B1, port 5, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     },
-    "s18univ": {
+    "b2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "B2 trim",
+      "description": "Vertical trim for B2, port 6, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "b3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "B3 trim",
+      "description": "Vertical trim for B3, port 7, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "b4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "B4 trim",
+      "description": "Vertical trim for B4, port 8, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "c1univ": {
       "type": "int",
-      "default": 34,
+      "default": 16,
       "min": 0,
       "max": 32767,
-      "label": "G5 S2 universe",
-      "description": "Start universe for G5 S2, port 18, 360 px"
+      "label": "C1 univ",
+      "description": "Start universe for C1, port 9, 315 px"
     },
-    "s18chan": {
+    "c2univ": {
       "type": "int",
-      "default": 315,
+      "default": 18,
+      "min": 0,
+      "max": 32767,
+      "label": "C2 univ",
+      "description": "Start universe for C2, port 10, 360 px"
+    },
+    "c3univ": {
+      "type": "int",
+      "default": 20,
+      "min": 0,
+      "max": 32767,
+      "label": "C3 univ",
+      "description": "Start universe for C3, port 11, 315 px"
+    },
+    "c4univ": {
+      "type": "int",
+      "default": 22,
+      "min": 0,
+      "max": 32767,
+      "label": "C4 univ",
+      "description": "Start universe for C4, port 12, 360 px"
+    },
+    "c1chan": {
+      "type": "int",
+      "default": 450,
       "min": 0,
       "max": 511,
-      "label": "G5 S2 channel",
-      "description": "Start channel for G5 S2, port 18, 360 px, within its start universe"
+      "label": "C1 chan",
+      "description": "Start channel for C1, port 9, 315 px, within its start universe"
     },
-    "s18trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G5 S2 trim",
-      "description": "Vertical trim for G5 S2, port 18, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s19univ": {
-      "type": "int",
-      "default": 36,
-      "min": 0,
-      "max": 32767,
-      "label": "G5 S3 universe",
-      "description": "Start universe for G5 S3, port 19, 315 px"
-    },
-    "s19chan": {
+    "c2chan": {
       "type": "int",
       "default": 375,
       "min": 0,
       "max": 511,
-      "label": "G5 S3 channel",
-      "description": "Start channel for G5 S3, port 19, 315 px, within its start universe"
+      "label": "C2 chan",
+      "description": "Start channel for C2, port 10, 360 px, within its start universe"
     },
-    "s19trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G5 S3 trim",
-      "description": "Vertical trim for G5 S3, port 19, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s20univ": {
+    "c3chan": {
       "type": "int",
-      "default": 38,
-      "min": 0,
-      "max": 32767,
-      "label": "G5 S4 universe",
-      "description": "Start universe for G5 S4, port 20, 360 px"
-    },
-    "s20chan": {
-      "type": "int",
-      "default": 300,
+      "default": 435,
       "min": 0,
       "max": 511,
-      "label": "G5 S4 channel",
-      "description": "Start channel for G5 S4, port 20, 360 px, within its start universe"
+      "label": "C3 chan",
+      "description": "Start channel for C3, port 11, 315 px, within its start universe"
     },
-    "s20trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G5 S4 trim",
-      "description": "Vertical trim for G5 S4, port 20, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s21univ": {
-      "type": "int",
-      "default": 40,
-      "min": 0,
-      "max": 32767,
-      "label": "G6 S1 universe",
-      "description": "Start universe for G6 S1, port 21, 315 px"
-    },
-    "s21chan": {
+    "c4chan": {
       "type": "int",
       "default": 360,
       "min": 0,
       "max": 511,
-      "label": "G6 S1 channel",
-      "description": "Start channel for G6 S1, port 21, 315 px, within its start universe"
+      "label": "C4 chan",
+      "description": "Start channel for C4, port 12, 360 px, within its start universe"
     },
-    "s21trim": {
+    "c1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G6 S1 trim",
-      "description": "Vertical trim for G6 S1, port 21, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "C1 trim",
+      "description": "Vertical trim for C1, port 9, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     },
-    "s22univ": {
+    "c2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "C2 trim",
+      "description": "Vertical trim for C2, port 10, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "c3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "C3 trim",
+      "description": "Vertical trim for C3, port 11, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "c4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "C4 trim",
+      "description": "Vertical trim for C4, port 12, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "d1univ": {
       "type": "int",
-      "default": 42,
+      "default": 24,
       "min": 0,
       "max": 32767,
-      "label": "G6 S2 universe",
-      "description": "Start universe for G6 S2, port 22, 360 px"
+      "label": "D1 univ",
+      "description": "Start universe for D1, port 13, 315 px"
     },
-    "s22chan": {
+    "d2univ": {
       "type": "int",
-      "default": 285,
+      "default": 26,
+      "min": 0,
+      "max": 32767,
+      "label": "D2 univ",
+      "description": "Start universe for D2, port 14, 360 px"
+    },
+    "d3univ": {
+      "type": "int",
+      "default": 28,
+      "min": 0,
+      "max": 32767,
+      "label": "D3 univ",
+      "description": "Start universe for D3, port 15, 315 px"
+    },
+    "d4univ": {
+      "type": "int",
+      "default": 30,
+      "min": 0,
+      "max": 32767,
+      "label": "D4 univ",
+      "description": "Start universe for D4, port 16, 360 px"
+    },
+    "d1chan": {
+      "type": "int",
+      "default": 420,
       "min": 0,
       "max": 511,
-      "label": "G6 S2 channel",
-      "description": "Start channel for G6 S2, port 22, 360 px, within its start universe"
+      "label": "D1 chan",
+      "description": "Start channel for D1, port 13, 315 px, within its start universe"
     },
-    "s22trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G6 S2 trim",
-      "description": "Vertical trim for G6 S2, port 22, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s23univ": {
-      "type": "int",
-      "default": 44,
-      "min": 0,
-      "max": 32767,
-      "label": "G6 S3 universe",
-      "description": "Start universe for G6 S3, port 23, 315 px"
-    },
-    "s23chan": {
+    "d2chan": {
       "type": "int",
       "default": 345,
       "min": 0,
       "max": 511,
-      "label": "G6 S3 channel",
-      "description": "Start channel for G6 S3, port 23, 315 px, within its start universe"
+      "label": "D2 chan",
+      "description": "Start channel for D2, port 14, 360 px, within its start universe"
     },
-    "s23trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G6 S3 trim",
-      "description": "Vertical trim for G6 S3, port 23, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s24univ": {
+    "d3chan": {
       "type": "int",
-      "default": 46,
-      "min": 0,
-      "max": 32767,
-      "label": "G6 S4 universe",
-      "description": "Start universe for G6 S4, port 24, 360 px"
-    },
-    "s24chan": {
-      "type": "int",
-      "default": 270,
+      "default": 405,
       "min": 0,
       "max": 511,
-      "label": "G6 S4 channel",
-      "description": "Start channel for G6 S4, port 24, 360 px, within its start universe"
+      "label": "D3 chan",
+      "description": "Start channel for D3, port 15, 315 px, within its start universe"
     },
-    "s24trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G6 S4 trim",
-      "description": "Vertical trim for G6 S4, port 24, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s25univ": {
-      "type": "int",
-      "default": 48,
-      "min": 0,
-      "max": 32767,
-      "label": "G7 S1 universe",
-      "description": "Start universe for G7 S1, port 25, 315 px"
-    },
-    "s25chan": {
+    "d4chan": {
       "type": "int",
       "default": 330,
       "min": 0,
       "max": 511,
-      "label": "G7 S1 channel",
-      "description": "Start channel for G7 S1, port 25, 315 px, within its start universe"
+      "label": "D4 chan",
+      "description": "Start channel for D4, port 16, 360 px, within its start universe"
     },
-    "s25trim": {
+    "d1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G7 S1 trim",
-      "description": "Vertical trim for G7 S1, port 25, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "D1 trim",
+      "description": "Vertical trim for D1, port 13, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     },
-    "s26univ": {
+    "d2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "D2 trim",
+      "description": "Vertical trim for D2, port 14, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "d3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "D3 trim",
+      "description": "Vertical trim for D3, port 15, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "d4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "D4 trim",
+      "description": "Vertical trim for D4, port 16, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "e1univ": {
       "type": "int",
-      "default": 50,
+      "default": 32,
       "min": 0,
       "max": 32767,
-      "label": "G7 S2 universe",
-      "description": "Start universe for G7 S2, port 26, 360 px"
+      "label": "E1 univ",
+      "description": "Start universe for E1, port 17, 315 px"
     },
-    "s26chan": {
+    "e2univ": {
       "type": "int",
-      "default": 255,
+      "default": 34,
+      "min": 0,
+      "max": 32767,
+      "label": "E2 univ",
+      "description": "Start universe for E2, port 18, 360 px"
+    },
+    "e3univ": {
+      "type": "int",
+      "default": 36,
+      "min": 0,
+      "max": 32767,
+      "label": "E3 univ",
+      "description": "Start universe for E3, port 19, 315 px"
+    },
+    "e4univ": {
+      "type": "int",
+      "default": 38,
+      "min": 0,
+      "max": 32767,
+      "label": "E4 univ",
+      "description": "Start universe for E4, port 20, 360 px"
+    },
+    "e1chan": {
+      "type": "int",
+      "default": 390,
       "min": 0,
       "max": 511,
-      "label": "G7 S2 channel",
-      "description": "Start channel for G7 S2, port 26, 360 px, within its start universe"
+      "label": "E1 chan",
+      "description": "Start channel for E1, port 17, 315 px, within its start universe"
     },
-    "s26trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G7 S2 trim",
-      "description": "Vertical trim for G7 S2, port 26, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s27univ": {
-      "type": "int",
-      "default": 52,
-      "min": 0,
-      "max": 32767,
-      "label": "G7 S3 universe",
-      "description": "Start universe for G7 S3, port 27, 315 px"
-    },
-    "s27chan": {
+    "e2chan": {
       "type": "int",
       "default": 315,
       "min": 0,
       "max": 511,
-      "label": "G7 S3 channel",
-      "description": "Start channel for G7 S3, port 27, 315 px, within its start universe"
+      "label": "E2 chan",
+      "description": "Start channel for E2, port 18, 360 px, within its start universe"
     },
-    "s27trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G7 S3 trim",
-      "description": "Vertical trim for G7 S3, port 27, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s28univ": {
+    "e3chan": {
       "type": "int",
-      "default": 54,
-      "min": 0,
-      "max": 32767,
-      "label": "G7 S4 universe",
-      "description": "Start universe for G7 S4, port 28, 360 px"
-    },
-    "s28chan": {
-      "type": "int",
-      "default": 240,
+      "default": 375,
       "min": 0,
       "max": 511,
-      "label": "G7 S4 channel",
-      "description": "Start channel for G7 S4, port 28, 360 px, within its start universe"
+      "label": "E3 chan",
+      "description": "Start channel for E3, port 19, 315 px, within its start universe"
     },
-    "s28trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G7 S4 trim",
-      "description": "Vertical trim for G7 S4, port 28, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s29univ": {
-      "type": "int",
-      "default": 56,
-      "min": 0,
-      "max": 32767,
-      "label": "G8 S1 universe",
-      "description": "Start universe for G8 S1, port 29, 315 px"
-    },
-    "s29chan": {
+    "e4chan": {
       "type": "int",
       "default": 300,
       "min": 0,
       "max": 511,
-      "label": "G8 S1 channel",
-      "description": "Start channel for G8 S1, port 29, 315 px, within its start universe"
+      "label": "E4 chan",
+      "description": "Start channel for E4, port 20, 360 px, within its start universe"
     },
-    "s29trim": {
+    "e1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G8 S1 trim",
-      "description": "Vertical trim for G8 S1, port 29, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "E1 trim",
+      "description": "Vertical trim for E1, port 17, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     },
-    "s30univ": {
+    "e2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "E2 trim",
+      "description": "Vertical trim for E2, port 18, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "e3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "E3 trim",
+      "description": "Vertical trim for E3, port 19, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "e4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "E4 trim",
+      "description": "Vertical trim for E4, port 20, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "f1univ": {
       "type": "int",
-      "default": 58,
+      "default": 40,
       "min": 0,
       "max": 32767,
-      "label": "G8 S2 universe",
-      "description": "Start universe for G8 S2, port 30, 360 px"
+      "label": "F1 univ",
+      "description": "Start universe for F1, port 21, 315 px"
     },
-    "s30chan": {
+    "f2univ": {
       "type": "int",
-      "default": 225,
+      "default": 42,
+      "min": 0,
+      "max": 32767,
+      "label": "F2 univ",
+      "description": "Start universe for F2, port 22, 360 px"
+    },
+    "f3univ": {
+      "type": "int",
+      "default": 44,
+      "min": 0,
+      "max": 32767,
+      "label": "F3 univ",
+      "description": "Start universe for F3, port 23, 315 px"
+    },
+    "f4univ": {
+      "type": "int",
+      "default": 46,
+      "min": 0,
+      "max": 32767,
+      "label": "F4 univ",
+      "description": "Start universe for F4, port 24, 360 px"
+    },
+    "f1chan": {
+      "type": "int",
+      "default": 360,
       "min": 0,
       "max": 511,
-      "label": "G8 S2 channel",
-      "description": "Start channel for G8 S2, port 30, 360 px, within its start universe"
+      "label": "F1 chan",
+      "description": "Start channel for F1, port 21, 315 px, within its start universe"
     },
-    "s30trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G8 S2 trim",
-      "description": "Vertical trim for G8 S2, port 30, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s31univ": {
-      "type": "int",
-      "default": 60,
-      "min": 0,
-      "max": 32767,
-      "label": "G8 S3 universe",
-      "description": "Start universe for G8 S3, port 31, 315 px"
-    },
-    "s31chan": {
+    "f2chan": {
       "type": "int",
       "default": 285,
       "min": 0,
       "max": 511,
-      "label": "G8 S3 channel",
-      "description": "Start channel for G8 S3, port 31, 315 px, within its start universe"
+      "label": "F2 chan",
+      "description": "Start channel for F2, port 22, 360 px, within its start universe"
     },
-    "s31trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G8 S3 trim",
-      "description": "Vertical trim for G8 S3, port 31, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s32univ": {
+    "f3chan": {
       "type": "int",
-      "default": 62,
-      "min": 0,
-      "max": 32767,
-      "label": "G8 S4 universe",
-      "description": "Start universe for G8 S4, port 32, 360 px"
-    },
-    "s32chan": {
-      "type": "int",
-      "default": 210,
+      "default": 345,
       "min": 0,
       "max": 511,
-      "label": "G8 S4 channel",
-      "description": "Start channel for G8 S4, port 32, 360 px, within its start universe"
+      "label": "F3 chan",
+      "description": "Start channel for F3, port 23, 315 px, within its start universe"
     },
-    "s32trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G8 S4 trim",
-      "description": "Vertical trim for G8 S4, port 32, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s33univ": {
-      "type": "int",
-      "default": 64,
-      "min": 0,
-      "max": 32767,
-      "label": "G9 S1 universe",
-      "description": "Start universe for G9 S1, port 33, 315 px"
-    },
-    "s33chan": {
+    "f4chan": {
       "type": "int",
       "default": 270,
       "min": 0,
       "max": 511,
-      "label": "G9 S1 channel",
-      "description": "Start channel for G9 S1, port 33, 315 px, within its start universe"
+      "label": "F4 chan",
+      "description": "Start channel for F4, port 24, 360 px, within its start universe"
     },
-    "s33trim": {
+    "f1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G9 S1 trim",
-      "description": "Vertical trim for G9 S1, port 33, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "F1 trim",
+      "description": "Vertical trim for F1, port 21, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     },
-    "s34univ": {
+    "f2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "F2 trim",
+      "description": "Vertical trim for F2, port 22, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "f3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "F3 trim",
+      "description": "Vertical trim for F3, port 23, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "f4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "F4 trim",
+      "description": "Vertical trim for F4, port 24, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "g1univ": {
       "type": "int",
-      "default": 66,
+      "default": 48,
       "min": 0,
       "max": 32767,
-      "label": "G9 S2 universe",
-      "description": "Start universe for G9 S2, port 34, 360 px"
+      "label": "G1 univ",
+      "description": "Start universe for G1, port 25, 315 px"
     },
-    "s34chan": {
+    "g2univ": {
       "type": "int",
-      "default": 195,
+      "default": 50,
+      "min": 0,
+      "max": 32767,
+      "label": "G2 univ",
+      "description": "Start universe for G2, port 26, 360 px"
+    },
+    "g3univ": {
+      "type": "int",
+      "default": 52,
+      "min": 0,
+      "max": 32767,
+      "label": "G3 univ",
+      "description": "Start universe for G3, port 27, 315 px"
+    },
+    "g4univ": {
+      "type": "int",
+      "default": 54,
+      "min": 0,
+      "max": 32767,
+      "label": "G4 univ",
+      "description": "Start universe for G4, port 28, 360 px"
+    },
+    "g1chan": {
+      "type": "int",
+      "default": 330,
       "min": 0,
       "max": 511,
-      "label": "G9 S2 channel",
-      "description": "Start channel for G9 S2, port 34, 360 px, within its start universe"
+      "label": "G1 chan",
+      "description": "Start channel for G1, port 25, 315 px, within its start universe"
     },
-    "s34trim": {
-      "type": "float",
-      "default": 0.0,
-      "min": -5.0,
-      "max": 5.0,
-      "label": "G9 S2 trim",
-      "description": "Vertical trim for G9 S2, port 34, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
-    },
-    "s35univ": {
-      "type": "int",
-      "default": 68,
-      "min": 0,
-      "max": 32767,
-      "label": "G9 S3 universe",
-      "description": "Start universe for G9 S3, port 35, 315 px"
-    },
-    "s35chan": {
+    "g2chan": {
       "type": "int",
       "default": 255,
       "min": 0,
       "max": 511,
-      "label": "G9 S3 channel",
-      "description": "Start channel for G9 S3, port 35, 315 px, within its start universe"
+      "label": "G2 chan",
+      "description": "Start channel for G2, port 26, 360 px, within its start universe"
     },
-    "s35trim": {
+    "g3chan": {
+      "type": "int",
+      "default": 315,
+      "min": 0,
+      "max": 511,
+      "label": "G3 chan",
+      "description": "Start channel for G3, port 27, 315 px, within its start universe"
+    },
+    "g4chan": {
+      "type": "int",
+      "default": 240,
+      "min": 0,
+      "max": 511,
+      "label": "G4 chan",
+      "description": "Start channel for G4, port 28, 360 px, within its start universe"
+    },
+    "g1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G9 S3 trim",
-      "description": "Vertical trim for G9 S3, port 35, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "G1 trim",
+      "description": "Vertical trim for G1, port 25, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     },
-    "s36univ": {
+    "g2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "G2 trim",
+      "description": "Vertical trim for G2, port 26, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "g3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "G3 trim",
+      "description": "Vertical trim for G3, port 27, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "g4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "G4 trim",
+      "description": "Vertical trim for G4, port 28, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "h1univ": {
+      "type": "int",
+      "default": 56,
+      "min": 0,
+      "max": 32767,
+      "label": "H1 univ",
+      "description": "Start universe for H1, port 29, 315 px"
+    },
+    "h2univ": {
+      "type": "int",
+      "default": 58,
+      "min": 0,
+      "max": 32767,
+      "label": "H2 univ",
+      "description": "Start universe for H2, port 30, 360 px"
+    },
+    "h3univ": {
+      "type": "int",
+      "default": 60,
+      "min": 0,
+      "max": 32767,
+      "label": "H3 univ",
+      "description": "Start universe for H3, port 31, 315 px"
+    },
+    "h4univ": {
+      "type": "int",
+      "default": 62,
+      "min": 0,
+      "max": 32767,
+      "label": "H4 univ",
+      "description": "Start universe for H4, port 32, 360 px"
+    },
+    "h1chan": {
+      "type": "int",
+      "default": 300,
+      "min": 0,
+      "max": 511,
+      "label": "H1 chan",
+      "description": "Start channel for H1, port 29, 315 px, within its start universe"
+    },
+    "h2chan": {
+      "type": "int",
+      "default": 225,
+      "min": 0,
+      "max": 511,
+      "label": "H2 chan",
+      "description": "Start channel for H2, port 30, 360 px, within its start universe"
+    },
+    "h3chan": {
+      "type": "int",
+      "default": 285,
+      "min": 0,
+      "max": 511,
+      "label": "H3 chan",
+      "description": "Start channel for H3, port 31, 315 px, within its start universe"
+    },
+    "h4chan": {
+      "type": "int",
+      "default": 210,
+      "min": 0,
+      "max": 511,
+      "label": "H4 chan",
+      "description": "Start channel for H4, port 32, 360 px, within its start universe"
+    },
+    "h1trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "H1 trim",
+      "description": "Vertical trim for H1, port 29, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "h2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "H2 trim",
+      "description": "Vertical trim for H2, port 30, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "h3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "H3 trim",
+      "description": "Vertical trim for H3, port 31, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "h4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "H4 trim",
+      "description": "Vertical trim for H4, port 32, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "i1univ": {
+      "type": "int",
+      "default": 64,
+      "min": 0,
+      "max": 32767,
+      "label": "I1 univ",
+      "description": "Start universe for I1, port 33, 315 px"
+    },
+    "i2univ": {
+      "type": "int",
+      "default": 66,
+      "min": 0,
+      "max": 32767,
+      "label": "I2 univ",
+      "description": "Start universe for I2, port 34, 360 px"
+    },
+    "i3univ": {
+      "type": "int",
+      "default": 68,
+      "min": 0,
+      "max": 32767,
+      "label": "I3 univ",
+      "description": "Start universe for I3, port 35, 315 px"
+    },
+    "i4univ": {
       "type": "int",
       "default": 70,
       "min": 0,
       "max": 32767,
-      "label": "G9 S4 universe",
-      "description": "Start universe for G9 S4, port 36, 360 px"
+      "label": "I4 univ",
+      "description": "Start universe for I4, port 36, 360 px"
     },
-    "s36chan": {
+    "i1chan": {
+      "type": "int",
+      "default": 270,
+      "min": 0,
+      "max": 511,
+      "label": "I1 chan",
+      "description": "Start channel for I1, port 33, 315 px, within its start universe"
+    },
+    "i2chan": {
+      "type": "int",
+      "default": 195,
+      "min": 0,
+      "max": 511,
+      "label": "I2 chan",
+      "description": "Start channel for I2, port 34, 360 px, within its start universe"
+    },
+    "i3chan": {
+      "type": "int",
+      "default": 255,
+      "min": 0,
+      "max": 511,
+      "label": "I3 chan",
+      "description": "Start channel for I3, port 35, 315 px, within its start universe"
+    },
+    "i4chan": {
       "type": "int",
       "default": 180,
       "min": 0,
       "max": 511,
-      "label": "G9 S4 channel",
-      "description": "Start channel for G9 S4, port 36, 360 px, within its start universe"
+      "label": "I4 chan",
+      "description": "Start channel for I4, port 36, 360 px, within its start universe"
     },
-    "s36trim": {
+    "i1trim": {
       "type": "float",
       "default": 0.0,
       "min": -5.0,
       "max": 5.0,
-      "label": "G9 S4 trim",
-      "description": "Vertical trim for G9 S4, port 36, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+      "label": "I1 trim",
+      "description": "Vertical trim for I1, port 33, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "i2trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "I2 trim",
+      "description": "Vertical trim for I2, port 34, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "i3trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "I3 trim",
+      "description": "Vertical trim for I3, port 35, 315 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
+    },
+    "i4trim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -5.0,
+      "max": 5.0,
+      "label": "I4 trim",
+      "description": "Vertical trim for I4, port 36, 360 px, in metres. Moves the strip's geometry up (+) or down (-); does not touch its addressing"
     }
   },
   "meta": {
     "coordinate_system": "Y-up right-handed, metres, origin at the centre of the curtain on the ground line; the projects place this at scale 10",
     "groups": 9,
+    "group_letters": "A, B, C, D, E, F, G, H, I",
     "strips_per_group": 4,
     "group_pattern_px": "315, 360, 315, 360",
     "strips": 36,
     "total_pixels": 12150,
     "pixels_per_metre": 60.0,
     "strip_lengths_m": "315 px = 5.25 m, 360 px = 6 m",
-    "strip_spacing_m": 0.127,
     "strip_spacing_in": 5.0,
+    "strip_spacing": "the $spacing parameter, in inches; x is an expression so it re-lays live",
     "curtain_width_m": 4.445,
-    "alignment": "bottom-aligned; the two strip lengths differ by 0.75 m",
+    "alignment": "top-aligned; the two strip lengths differ by 0.75 m",
     "wiring": "each strip runs bottom to top; pixel 0 is the lowest LED",
     "reverse": "the single $rev parameter flips the data direction of all 36 strips",
     "trim": "each strip has its own vertical trim in metres, applied to geometry only",
@@ -916,23 +925,23 @@
   "components": [
     {
       "type": "strip",
-      "label": "G1 S1 \u00b7 port 1 \u00b7 315px",
+      "label": "A1 \u00b7 port 1 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group1",
-        "strip1",
+        "groupA",
+        "stripA1",
         "px315"
       ],
       "meta": {
         "port": 1,
-        "group": 1,
+        "group": "A",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -2.2225,
-      "y": "(0.0 + $s01trim)",
+      "x": "(-0.4445 * $spacing)",
+      "y": "(0.75 + $a1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -944,23 +953,23 @@
     },
     {
       "type": "strip",
-      "label": "G1 S2 \u00b7 port 2 \u00b7 360px",
+      "label": "A2 \u00b7 port 2 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group1",
-        "strip2",
+        "groupA",
+        "stripA2",
         "px360"
       ],
       "meta": {
         "port": 2,
-        "group": 1,
+        "group": "A",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -2.0955,
-      "y": "(0.0 + $s02trim)",
+      "x": "(-0.4191 * $spacing)",
+      "y": "(0.0 + $a2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -972,23 +981,23 @@
     },
     {
       "type": "strip",
-      "label": "G1 S3 \u00b7 port 3 \u00b7 315px",
+      "label": "A3 \u00b7 port 3 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group1",
-        "strip3",
+        "groupA",
+        "stripA3",
         "px315"
       ],
       "meta": {
         "port": 3,
-        "group": 1,
+        "group": "A",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -1.9685,
-      "y": "(0.0 + $s03trim)",
+      "x": "(-0.3937 * $spacing)",
+      "y": "(0.75 + $a3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1000,23 +1009,23 @@
     },
     {
       "type": "strip",
-      "label": "G1 S4 \u00b7 port 4 \u00b7 360px",
+      "label": "A4 \u00b7 port 4 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group1",
-        "strip4",
+        "groupA",
+        "stripA4",
         "px360"
       ],
       "meta": {
         "port": 4,
-        "group": 1,
+        "group": "A",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -1.8415,
-      "y": "(0.0 + $s04trim)",
+      "x": "(-0.3683 * $spacing)",
+      "y": "(0.0 + $a4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1028,23 +1037,23 @@
     },
     {
       "type": "strip",
-      "label": "G2 S1 \u00b7 port 5 \u00b7 315px",
+      "label": "B1 \u00b7 port 5 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group2",
-        "strip5",
+        "groupB",
+        "stripB1",
         "px315"
       ],
       "meta": {
         "port": 5,
-        "group": 2,
+        "group": "B",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -1.7145,
-      "y": "(0.0 + $s05trim)",
+      "x": "(-0.3429 * $spacing)",
+      "y": "(0.75 + $b1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1056,23 +1065,23 @@
     },
     {
       "type": "strip",
-      "label": "G2 S2 \u00b7 port 6 \u00b7 360px",
+      "label": "B2 \u00b7 port 6 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group2",
-        "strip6",
+        "groupB",
+        "stripB2",
         "px360"
       ],
       "meta": {
         "port": 6,
-        "group": 2,
+        "group": "B",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -1.5875,
-      "y": "(0.0 + $s06trim)",
+      "x": "(-0.3175 * $spacing)",
+      "y": "(0.0 + $b2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1084,23 +1093,23 @@
     },
     {
       "type": "strip",
-      "label": "G2 S3 \u00b7 port 7 \u00b7 315px",
+      "label": "B3 \u00b7 port 7 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group2",
-        "strip7",
+        "groupB",
+        "stripB3",
         "px315"
       ],
       "meta": {
         "port": 7,
-        "group": 2,
+        "group": "B",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -1.4605,
-      "y": "(0.0 + $s07trim)",
+      "x": "(-0.2921 * $spacing)",
+      "y": "(0.75 + $b3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1112,23 +1121,23 @@
     },
     {
       "type": "strip",
-      "label": "G2 S4 \u00b7 port 8 \u00b7 360px",
+      "label": "B4 \u00b7 port 8 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group2",
-        "strip8",
+        "groupB",
+        "stripB4",
         "px360"
       ],
       "meta": {
         "port": 8,
-        "group": 2,
+        "group": "B",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -1.3335,
-      "y": "(0.0 + $s08trim)",
+      "x": "(-0.2667 * $spacing)",
+      "y": "(0.0 + $b4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1140,23 +1149,23 @@
     },
     {
       "type": "strip",
-      "label": "G3 S1 \u00b7 port 9 \u00b7 315px",
+      "label": "C1 \u00b7 port 9 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group3",
-        "strip9",
+        "groupC",
+        "stripC1",
         "px315"
       ],
       "meta": {
         "port": 9,
-        "group": 3,
+        "group": "C",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -1.2065,
-      "y": "(0.0 + $s09trim)",
+      "x": "(-0.2413 * $spacing)",
+      "y": "(0.75 + $c1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1168,23 +1177,23 @@
     },
     {
       "type": "strip",
-      "label": "G3 S2 \u00b7 port 10 \u00b7 360px",
+      "label": "C2 \u00b7 port 10 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group3",
-        "strip10",
+        "groupC",
+        "stripC2",
         "px360"
       ],
       "meta": {
         "port": 10,
-        "group": 3,
+        "group": "C",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -1.0795,
-      "y": "(0.0 + $s10trim)",
+      "x": "(-0.2159 * $spacing)",
+      "y": "(0.0 + $c2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1196,23 +1205,23 @@
     },
     {
       "type": "strip",
-      "label": "G3 S3 \u00b7 port 11 \u00b7 315px",
+      "label": "C3 \u00b7 port 11 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group3",
-        "strip11",
+        "groupC",
+        "stripC3",
         "px315"
       ],
       "meta": {
         "port": 11,
-        "group": 3,
+        "group": "C",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -0.9525,
-      "y": "(0.0 + $s11trim)",
+      "x": "(-0.1905 * $spacing)",
+      "y": "(0.75 + $c3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1224,23 +1233,23 @@
     },
     {
       "type": "strip",
-      "label": "G3 S4 \u00b7 port 12 \u00b7 360px",
+      "label": "C4 \u00b7 port 12 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group3",
-        "strip12",
+        "groupC",
+        "stripC4",
         "px360"
       ],
       "meta": {
         "port": 12,
-        "group": 3,
+        "group": "C",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -0.8255,
-      "y": "(0.0 + $s12trim)",
+      "x": "(-0.1651 * $spacing)",
+      "y": "(0.0 + $c4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1252,23 +1261,23 @@
     },
     {
       "type": "strip",
-      "label": "G4 S1 \u00b7 port 13 \u00b7 315px",
+      "label": "D1 \u00b7 port 13 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group4",
-        "strip13",
+        "groupD",
+        "stripD1",
         "px315"
       ],
       "meta": {
         "port": 13,
-        "group": 4,
+        "group": "D",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -0.6985,
-      "y": "(0.0 + $s13trim)",
+      "x": "(-0.1397 * $spacing)",
+      "y": "(0.75 + $d1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1280,23 +1289,23 @@
     },
     {
       "type": "strip",
-      "label": "G4 S2 \u00b7 port 14 \u00b7 360px",
+      "label": "D2 \u00b7 port 14 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group4",
-        "strip14",
+        "groupD",
+        "stripD2",
         "px360"
       ],
       "meta": {
         "port": 14,
-        "group": 4,
+        "group": "D",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -0.5715,
-      "y": "(0.0 + $s14trim)",
+      "x": "(-0.1143 * $spacing)",
+      "y": "(0.0 + $d2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1308,23 +1317,23 @@
     },
     {
       "type": "strip",
-      "label": "G4 S3 \u00b7 port 15 \u00b7 315px",
+      "label": "D3 \u00b7 port 15 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group4",
-        "strip15",
+        "groupD",
+        "stripD3",
         "px315"
       ],
       "meta": {
         "port": 15,
-        "group": 4,
+        "group": "D",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -0.4445,
-      "y": "(0.0 + $s15trim)",
+      "x": "(-0.0889 * $spacing)",
+      "y": "(0.75 + $d3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1336,23 +1345,23 @@
     },
     {
       "type": "strip",
-      "label": "G4 S4 \u00b7 port 16 \u00b7 360px",
+      "label": "D4 \u00b7 port 16 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group4",
-        "strip16",
+        "groupD",
+        "stripD4",
         "px360"
       ],
       "meta": {
         "port": 16,
-        "group": 4,
+        "group": "D",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -0.3175,
-      "y": "(0.0 + $s16trim)",
+      "x": "(-0.0635 * $spacing)",
+      "y": "(0.0 + $d4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1364,23 +1373,23 @@
     },
     {
       "type": "strip",
-      "label": "G5 S1 \u00b7 port 17 \u00b7 315px",
+      "label": "E1 \u00b7 port 17 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group5",
-        "strip17",
+        "groupE",
+        "stripE1",
         "px315"
       ],
       "meta": {
         "port": 17,
-        "group": 5,
+        "group": "E",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": -0.1905,
-      "y": "(0.0 + $s17trim)",
+      "x": "(-0.0381 * $spacing)",
+      "y": "(0.75 + $e1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1392,23 +1401,23 @@
     },
     {
       "type": "strip",
-      "label": "G5 S2 \u00b7 port 18 \u00b7 360px",
+      "label": "E2 \u00b7 port 18 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group5",
-        "strip18",
+        "groupE",
+        "stripE2",
         "px360"
       ],
       "meta": {
         "port": 18,
-        "group": 5,
+        "group": "E",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": -0.0635,
-      "y": "(0.0 + $s18trim)",
+      "x": "(-0.0127 * $spacing)",
+      "y": "(0.0 + $e2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1420,23 +1429,23 @@
     },
     {
       "type": "strip",
-      "label": "G5 S3 \u00b7 port 19 \u00b7 315px",
+      "label": "E3 \u00b7 port 19 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group5",
-        "strip19",
+        "groupE",
+        "stripE3",
         "px315"
       ],
       "meta": {
         "port": 19,
-        "group": 5,
+        "group": "E",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 0.0635,
-      "y": "(0.0 + $s19trim)",
+      "x": "(0.0127 * $spacing)",
+      "y": "(0.75 + $e3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1448,23 +1457,23 @@
     },
     {
       "type": "strip",
-      "label": "G5 S4 \u00b7 port 20 \u00b7 360px",
+      "label": "E4 \u00b7 port 20 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group5",
-        "strip20",
+        "groupE",
+        "stripE4",
         "px360"
       ],
       "meta": {
         "port": 20,
-        "group": 5,
+        "group": "E",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 0.1905,
-      "y": "(0.0 + $s20trim)",
+      "x": "(0.0381 * $spacing)",
+      "y": "(0.0 + $e4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1476,23 +1485,23 @@
     },
     {
       "type": "strip",
-      "label": "G6 S1 \u00b7 port 21 \u00b7 315px",
+      "label": "F1 \u00b7 port 21 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group6",
-        "strip21",
+        "groupF",
+        "stripF1",
         "px315"
       ],
       "meta": {
         "port": 21,
-        "group": 6,
+        "group": "F",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 0.3175,
-      "y": "(0.0 + $s21trim)",
+      "x": "(0.0635 * $spacing)",
+      "y": "(0.75 + $f1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1504,23 +1513,23 @@
     },
     {
       "type": "strip",
-      "label": "G6 S2 \u00b7 port 22 \u00b7 360px",
+      "label": "F2 \u00b7 port 22 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group6",
-        "strip22",
+        "groupF",
+        "stripF2",
         "px360"
       ],
       "meta": {
         "port": 22,
-        "group": 6,
+        "group": "F",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 0.4445,
-      "y": "(0.0 + $s22trim)",
+      "x": "(0.0889 * $spacing)",
+      "y": "(0.0 + $f2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1532,23 +1541,23 @@
     },
     {
       "type": "strip",
-      "label": "G6 S3 \u00b7 port 23 \u00b7 315px",
+      "label": "F3 \u00b7 port 23 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group6",
-        "strip23",
+        "groupF",
+        "stripF3",
         "px315"
       ],
       "meta": {
         "port": 23,
-        "group": 6,
+        "group": "F",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 0.5715,
-      "y": "(0.0 + $s23trim)",
+      "x": "(0.1143 * $spacing)",
+      "y": "(0.75 + $f3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1560,23 +1569,23 @@
     },
     {
       "type": "strip",
-      "label": "G6 S4 \u00b7 port 24 \u00b7 360px",
+      "label": "F4 \u00b7 port 24 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group6",
-        "strip24",
+        "groupF",
+        "stripF4",
         "px360"
       ],
       "meta": {
         "port": 24,
-        "group": 6,
+        "group": "F",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 0.6985,
-      "y": "(0.0 + $s24trim)",
+      "x": "(0.1397 * $spacing)",
+      "y": "(0.0 + $f4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1588,23 +1597,23 @@
     },
     {
       "type": "strip",
-      "label": "G7 S1 \u00b7 port 25 \u00b7 315px",
+      "label": "G1 \u00b7 port 25 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group7",
-        "strip25",
+        "groupG",
+        "stripG1",
         "px315"
       ],
       "meta": {
         "port": 25,
-        "group": 7,
+        "group": "G",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 0.8255,
-      "y": "(0.0 + $s25trim)",
+      "x": "(0.1651 * $spacing)",
+      "y": "(0.75 + $g1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1616,23 +1625,23 @@
     },
     {
       "type": "strip",
-      "label": "G7 S2 \u00b7 port 26 \u00b7 360px",
+      "label": "G2 \u00b7 port 26 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group7",
-        "strip26",
+        "groupG",
+        "stripG2",
         "px360"
       ],
       "meta": {
         "port": 26,
-        "group": 7,
+        "group": "G",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 0.9525,
-      "y": "(0.0 + $s26trim)",
+      "x": "(0.1905 * $spacing)",
+      "y": "(0.0 + $g2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1644,23 +1653,23 @@
     },
     {
       "type": "strip",
-      "label": "G7 S3 \u00b7 port 27 \u00b7 315px",
+      "label": "G3 \u00b7 port 27 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group7",
-        "strip27",
+        "groupG",
+        "stripG3",
         "px315"
       ],
       "meta": {
         "port": 27,
-        "group": 7,
+        "group": "G",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 1.0795,
-      "y": "(0.0 + $s27trim)",
+      "x": "(0.2159 * $spacing)",
+      "y": "(0.75 + $g3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1672,23 +1681,23 @@
     },
     {
       "type": "strip",
-      "label": "G7 S4 \u00b7 port 28 \u00b7 360px",
+      "label": "G4 \u00b7 port 28 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group7",
-        "strip28",
+        "groupG",
+        "stripG4",
         "px360"
       ],
       "meta": {
         "port": 28,
-        "group": 7,
+        "group": "G",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 1.2065,
-      "y": "(0.0 + $s28trim)",
+      "x": "(0.2413 * $spacing)",
+      "y": "(0.0 + $g4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1700,23 +1709,23 @@
     },
     {
       "type": "strip",
-      "label": "G8 S1 \u00b7 port 29 \u00b7 315px",
+      "label": "H1 \u00b7 port 29 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group8",
-        "strip29",
+        "groupH",
+        "stripH1",
         "px315"
       ],
       "meta": {
         "port": 29,
-        "group": 8,
+        "group": "H",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 1.3335,
-      "y": "(0.0 + $s29trim)",
+      "x": "(0.2667 * $spacing)",
+      "y": "(0.75 + $h1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1728,23 +1737,23 @@
     },
     {
       "type": "strip",
-      "label": "G8 S2 \u00b7 port 30 \u00b7 360px",
+      "label": "H2 \u00b7 port 30 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group8",
-        "strip30",
+        "groupH",
+        "stripH2",
         "px360"
       ],
       "meta": {
         "port": 30,
-        "group": 8,
+        "group": "H",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 1.4605,
-      "y": "(0.0 + $s30trim)",
+      "x": "(0.2921 * $spacing)",
+      "y": "(0.0 + $h2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1756,23 +1765,23 @@
     },
     {
       "type": "strip",
-      "label": "G8 S3 \u00b7 port 31 \u00b7 315px",
+      "label": "H3 \u00b7 port 31 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group8",
-        "strip31",
+        "groupH",
+        "stripH3",
         "px315"
       ],
       "meta": {
         "port": 31,
-        "group": 8,
+        "group": "H",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 1.5875,
-      "y": "(0.0 + $s31trim)",
+      "x": "(0.3175 * $spacing)",
+      "y": "(0.75 + $h3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1784,23 +1793,23 @@
     },
     {
       "type": "strip",
-      "label": "G8 S4 \u00b7 port 32 \u00b7 360px",
+      "label": "H4 \u00b7 port 32 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group8",
-        "strip32",
+        "groupH",
+        "stripH4",
         "px360"
       ],
       "meta": {
         "port": 32,
-        "group": 8,
+        "group": "H",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 1.7145,
-      "y": "(0.0 + $s32trim)",
+      "x": "(0.3429 * $spacing)",
+      "y": "(0.0 + $h4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1812,23 +1821,23 @@
     },
     {
       "type": "strip",
-      "label": "G9 S1 \u00b7 port 33 \u00b7 315px",
+      "label": "I1 \u00b7 port 33 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group9",
-        "strip33",
+        "groupI",
+        "stripI1",
         "px315"
       ],
       "meta": {
         "port": 33,
-        "group": 9,
+        "group": "I",
         "position": 1,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 1.8415,
-      "y": "(0.0 + $s33trim)",
+      "x": "(0.3683 * $spacing)",
+      "y": "(0.75 + $i1trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1840,23 +1849,23 @@
     },
     {
       "type": "strip",
-      "label": "G9 S2 \u00b7 port 34 \u00b7 360px",
+      "label": "I2 \u00b7 port 34 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group9",
-        "strip34",
+        "groupI",
+        "stripI2",
         "px360"
       ],
       "meta": {
         "port": 34,
-        "group": 9,
+        "group": "I",
         "position": 2,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 1.9685,
-      "y": "(0.0 + $s34trim)",
+      "x": "(0.3937 * $spacing)",
+      "y": "(0.0 + $i2trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1868,23 +1877,23 @@
     },
     {
       "type": "strip",
-      "label": "G9 S3 \u00b7 port 35 \u00b7 315px",
+      "label": "I3 \u00b7 port 35 \u00b7 315px",
       "tags": [
         "waterfall",
-        "group9",
-        "strip35",
+        "groupI",
+        "stripI3",
         "px315"
       ],
       "meta": {
         "port": 35,
-        "group": 9,
+        "group": "I",
         "position": 3,
         "pixels": 315,
         "length_m": 5.25,
         "led_span_m": 5.233333
       },
-      "x": 2.0955,
-      "y": "(0.0 + $s35trim)",
+      "x": "(0.4191 * $spacing)",
+      "y": "(0.75 + $i3trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1896,23 +1905,23 @@
     },
     {
       "type": "strip",
-      "label": "G9 S4 \u00b7 port 36 \u00b7 360px",
+      "label": "I4 \u00b7 port 36 \u00b7 360px",
       "tags": [
         "waterfall",
-        "group9",
-        "strip36",
+        "groupI",
+        "stripI4",
         "px360"
       ],
       "meta": {
         "port": 36,
-        "group": 9,
+        "group": "I",
         "position": 4,
         "pixels": 360,
         "length_m": 6.0,
         "led_span_m": 5.983333
       },
-      "x": 2.2225,
-      "y": "(0.0 + $s36trim)",
+      "x": "(0.4445 * $spacing)",
+      "y": "(0.0 + $i4trim)",
       "z": 0.0,
       "direction": {
         "x": 0.0,
@@ -1928,8 +1937,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s01univ",
-      "channel": "$s01chan",
+      "universe": "$a1univ",
+      "channel": "$a1chan",
       "segments": [
         {
           "start": 0,
@@ -1942,8 +1951,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s02univ",
-      "channel": "$s02chan",
+      "universe": "$a2univ",
+      "channel": "$a2chan",
       "segments": [
         {
           "start": 315,
@@ -1956,8 +1965,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s03univ",
-      "channel": "$s03chan",
+      "universe": "$a3univ",
+      "channel": "$a3chan",
       "segments": [
         {
           "start": 675,
@@ -1970,8 +1979,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s04univ",
-      "channel": "$s04chan",
+      "universe": "$a4univ",
+      "channel": "$a4chan",
       "segments": [
         {
           "start": 990,
@@ -1984,8 +1993,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s05univ",
-      "channel": "$s05chan",
+      "universe": "$b1univ",
+      "channel": "$b1chan",
       "segments": [
         {
           "start": 1350,
@@ -1998,8 +2007,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s06univ",
-      "channel": "$s06chan",
+      "universe": "$b2univ",
+      "channel": "$b2chan",
       "segments": [
         {
           "start": 1665,
@@ -2012,8 +2021,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s07univ",
-      "channel": "$s07chan",
+      "universe": "$b3univ",
+      "channel": "$b3chan",
       "segments": [
         {
           "start": 2025,
@@ -2026,8 +2035,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s08univ",
-      "channel": "$s08chan",
+      "universe": "$b4univ",
+      "channel": "$b4chan",
       "segments": [
         {
           "start": 2340,
@@ -2040,8 +2049,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s09univ",
-      "channel": "$s09chan",
+      "universe": "$c1univ",
+      "channel": "$c1chan",
       "segments": [
         {
           "start": 2700,
@@ -2054,8 +2063,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s10univ",
-      "channel": "$s10chan",
+      "universe": "$c2univ",
+      "channel": "$c2chan",
       "segments": [
         {
           "start": 3015,
@@ -2068,8 +2077,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s11univ",
-      "channel": "$s11chan",
+      "universe": "$c3univ",
+      "channel": "$c3chan",
       "segments": [
         {
           "start": 3375,
@@ -2082,8 +2091,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s12univ",
-      "channel": "$s12chan",
+      "universe": "$c4univ",
+      "channel": "$c4chan",
       "segments": [
         {
           "start": 3690,
@@ -2096,8 +2105,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s13univ",
-      "channel": "$s13chan",
+      "universe": "$d1univ",
+      "channel": "$d1chan",
       "segments": [
         {
           "start": 4050,
@@ -2110,8 +2119,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s14univ",
-      "channel": "$s14chan",
+      "universe": "$d2univ",
+      "channel": "$d2chan",
       "segments": [
         {
           "start": 4365,
@@ -2124,8 +2133,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s15univ",
-      "channel": "$s15chan",
+      "universe": "$d3univ",
+      "channel": "$d3chan",
       "segments": [
         {
           "start": 4725,
@@ -2138,8 +2147,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s16univ",
-      "channel": "$s16chan",
+      "universe": "$d4univ",
+      "channel": "$d4chan",
       "segments": [
         {
           "start": 5040,
@@ -2152,8 +2161,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s17univ",
-      "channel": "$s17chan",
+      "universe": "$e1univ",
+      "channel": "$e1chan",
       "segments": [
         {
           "start": 5400,
@@ -2166,8 +2175,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s18univ",
-      "channel": "$s18chan",
+      "universe": "$e2univ",
+      "channel": "$e2chan",
       "segments": [
         {
           "start": 5715,
@@ -2180,8 +2189,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s19univ",
-      "channel": "$s19chan",
+      "universe": "$e3univ",
+      "channel": "$e3chan",
       "segments": [
         {
           "start": 6075,
@@ -2194,8 +2203,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s20univ",
-      "channel": "$s20chan",
+      "universe": "$e4univ",
+      "channel": "$e4chan",
       "segments": [
         {
           "start": 6390,
@@ -2208,8 +2217,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s21univ",
-      "channel": "$s21chan",
+      "universe": "$f1univ",
+      "channel": "$f1chan",
       "segments": [
         {
           "start": 6750,
@@ -2222,8 +2231,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s22univ",
-      "channel": "$s22chan",
+      "universe": "$f2univ",
+      "channel": "$f2chan",
       "segments": [
         {
           "start": 7065,
@@ -2236,8 +2245,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s23univ",
-      "channel": "$s23chan",
+      "universe": "$f3univ",
+      "channel": "$f3chan",
       "segments": [
         {
           "start": 7425,
@@ -2250,8 +2259,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s24univ",
-      "channel": "$s24chan",
+      "universe": "$f4univ",
+      "channel": "$f4chan",
       "segments": [
         {
           "start": 7740,
@@ -2264,8 +2273,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s25univ",
-      "channel": "$s25chan",
+      "universe": "$g1univ",
+      "channel": "$g1chan",
       "segments": [
         {
           "start": 8100,
@@ -2278,8 +2287,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s26univ",
-      "channel": "$s26chan",
+      "universe": "$g2univ",
+      "channel": "$g2chan",
       "segments": [
         {
           "start": 8415,
@@ -2292,8 +2301,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s27univ",
-      "channel": "$s27chan",
+      "universe": "$g3univ",
+      "channel": "$g3chan",
       "segments": [
         {
           "start": 8775,
@@ -2306,8 +2315,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s28univ",
-      "channel": "$s28chan",
+      "universe": "$g4univ",
+      "channel": "$g4chan",
       "segments": [
         {
           "start": 9090,
@@ -2320,8 +2329,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s29univ",
-      "channel": "$s29chan",
+      "universe": "$h1univ",
+      "channel": "$h1chan",
       "segments": [
         {
           "start": 9450,
@@ -2334,8 +2343,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s30univ",
-      "channel": "$s30chan",
+      "universe": "$h2univ",
+      "channel": "$h2chan",
       "segments": [
         {
           "start": 9765,
@@ -2348,8 +2357,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s31univ",
-      "channel": "$s31chan",
+      "universe": "$h3univ",
+      "channel": "$h3chan",
       "segments": [
         {
           "start": 10125,
@@ -2362,8 +2371,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s32univ",
-      "channel": "$s32chan",
+      "universe": "$h4univ",
+      "channel": "$h4chan",
       "segments": [
         {
           "start": 10440,
@@ -2376,8 +2385,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s33univ",
-      "channel": "$s33chan",
+      "universe": "$i1univ",
+      "channel": "$i1chan",
       "segments": [
         {
           "start": 10800,
@@ -2390,8 +2399,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s34univ",
-      "channel": "$s34chan",
+      "universe": "$i2univ",
+      "channel": "$i2chan",
       "segments": [
         {
           "start": 11115,
@@ -2404,8 +2413,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s35univ",
-      "channel": "$s35chan",
+      "universe": "$i3univ",
+      "channel": "$i3chan",
       "segments": [
         {
           "start": 11475,
@@ -2418,8 +2427,8 @@
       "protocol": "$proto",
       "host": "$ip",
       "byteOrder": "rgb",
-      "universe": "$s36univ",
-      "channel": "$s36chan",
+      "universe": "$i4univ",
+      "channel": "$i4chan",
       "segments": [
         {
           "start": 11790,

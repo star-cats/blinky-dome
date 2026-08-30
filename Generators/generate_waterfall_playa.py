@@ -44,7 +44,8 @@ IN_TO_M = 0.0254
 GROUPS = 9
 GROUP_PATTERN = (315, 360, 315, 360)  # pixels per strip, in port order
 PIXELS_PER_METRE = 60.0
-STRIP_SPACING_M = 5.0 * IN_TO_M
+DEFAULT_STRIP_SPACING_IN = 5.0
+MAX_STRIP_SPACING_IN = 120.0
 
 # Addressing
 CHANNELS_PER_PIXEL = 3
@@ -63,7 +64,7 @@ MAX_CHANNEL = 511
 MAX_TRIM_M = 5.0
 
 ALIGNMENTS = ("bottom", "top", "centre")
-DEFAULT_ALIGNMENT = "bottom"
+DEFAULT_ALIGNMENT = "top"
 
 
 # ---------------------------------------------------------------------------
@@ -97,10 +98,22 @@ def position_in_group(port: int) -> int:
     return (port - 1) % len(GROUP_PATTERN) + 1
 
 
-def strip_x_m(port: int) -> float:
-    """X of a strip, with the whole curtain centred on x = 0."""
-    span = (len(ports()) - 1) * STRIP_SPACING_M
-    return (port - 1) * STRIP_SPACING_M - span / 2.0
+def strip_offset(port: int) -> float:
+    """Strip's position in spacing-units from the centre of the curtain.
+
+    36 strips give half-unit offsets, -17.5 to +17.5, so the curtain stays
+    centred on x = 0 at any spacing.
+    """
+    return (port - 1) - (len(ports()) - 1) / 2.0
+
+
+def strip_x_expression(port: int) -> str:
+    """X as an LXF expression, so the spacing parameter re-lays the curtain live."""
+    return f"({round(strip_offset(port) * IN_TO_M, 6)} * $spacing)"
+
+
+def strip_x_m(port: int, spacing_in: float = DEFAULT_STRIP_SPACING_IN) -> float:
+    return strip_offset(port) * spacing_in * IN_TO_M
 
 
 def strip_base_y_m(port: int, alignment: str) -> float:
@@ -163,20 +176,26 @@ def check_calibration() -> None:
 # Fixture parameters
 # ---------------------------------------------------------------------------
 
-def universe_parameter(port: int) -> str:
-    return f"s{port:02d}univ"
-
-
-def channel_parameter(port: int) -> str:
-    return f"s{port:02d}chan"
-
-
-def trim_parameter(port: int) -> str:
-    return f"s{port:02d}trim"
+def group_letter(port: int) -> str:
+    """Groups are lettered A, B, C ... in port order."""
+    return chr(ord("A") + group_of(port) - 1)
 
 
 def strip_name(port: int) -> str:
-    return f"G{group_of(port)} S{position_in_group(port)}"
+    """A1 .. I4 -- group letter then position within the group."""
+    return f"{group_letter(port)}{position_in_group(port)}"
+
+
+def universe_parameter(port: int) -> str:
+    return f"{strip_name(port).lower()}univ"
+
+
+def channel_parameter(port: int) -> str:
+    return f"{strip_name(port).lower()}chan"
+
+
+def trim_parameter(port: int) -> str:
+    return f"{strip_name(port).lower()}trim"
 
 
 def fixture_parameters() -> dict:
@@ -194,6 +213,17 @@ def fixture_parameters() -> dict:
             "label": "Controller IP",
             "description": "Static IP of the waterfall's pixel controller -- one for all 36 strips",
         },
+        "spacing": {
+            "type": "float",
+            "default": DEFAULT_STRIP_SPACING_IN,
+            "min": 0.0,
+            "max": MAX_STRIP_SPACING_IN,
+            "label": "Strip spacing",
+            "description": (
+                "Horizontal distance between adjacent strips, in inches. The curtain "
+                "stays centred on the fixture's origin as this opens and closes"
+            ),
+        },
         "rev": {
             "type": "boolean",
             "default": False,
@@ -207,36 +237,62 @@ def fixture_parameters() -> dict:
     }
 
     rows = {row["port"]: row for row in calibration()}
-    for port in ports():
-        where = f"{strip_name(port)}, port {port}, {strip_pixels(port)} px"
-        parameters[universe_parameter(port)] = {
-            "type": "int",
-            "default": rows[port]["universe"],
-            "min": 0,
-            "max": MAX_UNIVERSE,
-            "label": f"{strip_name(port)} universe",
-            "description": f"Start universe for {where}",
-        }
-        parameters[channel_parameter(port)] = {
-            "type": "int",
-            "default": rows[port]["channel"],
-            "min": 0,
-            "max": MAX_CHANNEL,
-            "label": f"{strip_name(port)} channel",
-            "description": f"Start channel for {where}, within its start universe",
-        }
-        parameters[trim_parameter(port)] = {
-            "type": "float",
-            "default": 0.0,
-            "min": -MAX_TRIM_M,
-            "max": MAX_TRIM_M,
-            "label": f"{strip_name(port)} trim",
-            "description": (
-                f"Vertical trim for {where}, in metres. Moves the strip's geometry "
-                "up (+) or down (-); does not touch its addressing"
-            ),
-        }
+    all_ports = ports()
+    per_group = len(GROUP_PATTERN)
+
+    # Grouped and banded: a whole group's universes, then its channels, then its
+    # trims, before moving on to the next group. That is the order they get read
+    # off the controller and the order they get dialled in.
+    for first in range(0, len(all_ports), per_group):
+        group = all_ports[first:first + per_group]
+        for name, build in (
+            (universe_parameter, universe_definition),
+            (channel_parameter, channel_definition),
+            (trim_parameter, trim_definition),
+        ):
+            for port in group:
+                parameters[name(port)] = build(port, rows[port])
     return parameters
+
+
+def _where(port: int) -> str:
+    return f"{strip_name(port)}, port {port}, {strip_pixels(port)} px"
+
+
+def universe_definition(port: int, row: dict) -> dict:
+    return {
+        "type": "int",
+        "default": row["universe"],
+        "min": 0,
+        "max": MAX_UNIVERSE,
+        "label": f"{strip_name(port)} univ",
+        "description": f"Start universe for {_where(port)}",
+    }
+
+
+def channel_definition(port: int, row: dict) -> dict:
+    return {
+        "type": "int",
+        "default": row["channel"],
+        "min": 0,
+        "max": MAX_CHANNEL,
+        "label": f"{strip_name(port)} chan",
+        "description": f"Start channel for {_where(port)}, within its start universe",
+    }
+
+
+def trim_definition(port: int, row: dict) -> dict:
+    return {
+        "type": "float",
+        "default": 0.0,
+        "min": -MAX_TRIM_M,
+        "max": MAX_TRIM_M,
+        "label": f"{strip_name(port)} trim",
+        "description": (
+            f"Vertical trim for {_where(port)}, in metres. Moves the strip's geometry "
+            "up (+) or down (-); does not touch its addressing"
+        ),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -254,19 +310,19 @@ def strip_components(alignment: str) -> list[dict]:
                 "label": f"{strip_name(port)} · port {port} · {strip_pixels(port)}px",
                 "tags": [
                     "waterfall",
-                    f"group{group_of(port)}",
-                    f"strip{port}",
+                    f"group{group_letter(port)}",
+                    f"strip{strip_name(port)}",
                     f"px{strip_pixels(port)}",
                 ],
                 "meta": {
                     "port": port,
-                    "group": group_of(port),
+                    "group": group_letter(port),
                     "position": position_in_group(port),
                     "pixels": strip_pixels(port),
                     "length_m": round(strip_length_m(port), 6),
                     "led_span_m": round(led_span_m(port), 6),
                 },
-                "x": round(strip_x_m(port), 6),
+                "x": strip_x_expression(port),
                 # Base height plus the strip's own trim, so the parameter moves geometry.
                 "y": f"({round(base_y, 6)} + ${trim_parameter(port)})",
                 "z": 0.0,
@@ -321,15 +377,18 @@ def build_fixture(alignment: str) -> dict:
                 "the ground line; the projects place this at scale 10"
             ),
             "groups": GROUPS,
+            "group_letters": ", ".join(group_letter(p) for p in ports()[::len(GROUP_PATTERN)]),
             "strips_per_group": len(GROUP_PATTERN),
             "group_pattern_px": ", ".join(str(n) for n in GROUP_PATTERN),
             "strips": len(components),
             "total_pixels": total_pixels,
             "pixels_per_metre": PIXELS_PER_METRE,
             "strip_lengths_m": "315 px = 5.25 m, 360 px = 6 m",
-            "strip_spacing_m": round(STRIP_SPACING_M, 6),
-            "strip_spacing_in": 5.0,
-            "curtain_width_m": round((len(components) - 1) * STRIP_SPACING_M, 6),
+            "strip_spacing_in": DEFAULT_STRIP_SPACING_IN,
+            "strip_spacing": "the $spacing parameter, in inches; x is an expression so it re-lays live",
+            "curtain_width_m": round(
+                (len(components) - 1) * DEFAULT_STRIP_SPACING_IN * IN_TO_M, 6
+            ),
             "alignment": f"{alignment}-aligned; the two strip lengths differ by 0.75 m",
             "wiring": "each strip runs bottom to top; pixel 0 is the lowest LED",
             "reverse": "the single $rev parameter flips the data direction of all 36 strips",
@@ -377,10 +436,10 @@ def main() -> None:
     check_calibration()
 
     if args.print_calibration:
-        print(f"{'Port':>4} {'Grp':>4} {'Px':>4} {'Start ch':>9} {'Universe':>9} {'Channel':>8}")
+        print(f"{'Port':>4} {'Name':>5} {'Px':>4} {'Start ch':>9} {'Universe':>9} {'Channel':>8}")
         for row in calibration():
             print(
-                f"{row['port']:>4} {group_of(row['port']):>4} {row['pixels']:>4} "
+                f"{row['port']:>4} {strip_name(row['port']):>5} {row['pixels']:>4} "
                 f"{row['point_index'] * CHANNELS_PER_PIXEL + 1:>9} "
                 f"{row['universe']:>9} {row['channel']:>8}"
             )
