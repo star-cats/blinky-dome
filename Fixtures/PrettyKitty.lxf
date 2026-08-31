@@ -1,0 +1,303 @@
+{
+  "label": "PrettyKitty",
+  "parameters": {
+    "output01": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host01": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    },
+    "output02": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host02": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    },
+    "output03": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host03": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    },
+    "output04": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host04": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    },
+    "output05": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host05": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    },
+    "output06": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host06": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    },
+    "output07": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host07": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    },
+    "output08": {
+      "label": "Sign St1 On",
+      "type": "boolean",
+      "default": true,
+      "description": "Whether output to Sign St1 is enabled"
+    },
+    "host08": {
+      "label": "Sign St1 Host",
+      "type": "string",
+      "default": "192.168.44.251",
+      "description": "Output host for Sign St1"
+    }
+  },
+  "components": [
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 28.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output01",
+        "host": "$host01",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 0,
+        "channel": 0,
+        "priority": 100
+      }
+    },
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 24.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output02",
+        "host": "$host02",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 0,
+        "channel": 180,
+        "priority": 100
+      }
+    },
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 20.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output03",
+        "host": "$host03",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 0,
+        "channel": 360,
+        "priority": 100
+      }
+    },
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 16.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output04",
+        "host": "$host04",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 1,
+        "channel": 28,
+        "priority": 100
+      }
+    },
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 12.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output05",
+        "host": "$host05",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 1,
+        "channel": 208,
+        "priority": 100
+      }
+    },
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 8.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output06",
+        "host": "$host06",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 1,
+        "channel": 388,
+        "priority": 100
+      }
+    },
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 4.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output07",
+        "host": "$host07",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 2,
+        "channel": 56,
+        "priority": 100
+      }
+    },
+    {
+      "label": "Sign St1",
+      "tags": [
+        "strip",
+        "pretty"
+      ],
+      "type": "strip",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "yaw": 0.0,
+      "pitch": 0.0,
+      "roll": 0.0,
+      "numPoints": 60,
+      "spacing": 0.5,
+      "output": {
+        "enabled": "$output08",
+        "host": "$host08",
+        "byteOrder": "rgb",
+        "protocol": "sacn",
+        "universe": 2,
+        "channel": 236,
+        "priority": 100
+      }
+    }
+  ]
+}
