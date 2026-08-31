@@ -96,6 +96,62 @@
       "label": "H4 channel",
       "description": "Start channel for harness 4, within its start universe"
     },
+    "h1order": {
+      "type": "string",
+      "default": "bgr",
+      "options": [
+        "rgb",
+        "rbg",
+        "grb",
+        "gbr",
+        "brg",
+        "bgr"
+      ],
+      "label": "H1 byte order",
+      "description": "Channel order the strips on harness 1 expect. Change this when a harness comes up with red and blue swapped."
+    },
+    "h2order": {
+      "type": "string",
+      "default": "bgr",
+      "options": [
+        "rgb",
+        "rbg",
+        "grb",
+        "gbr",
+        "brg",
+        "bgr"
+      ],
+      "label": "H2 byte order",
+      "description": "Channel order the strips on harness 2 expect. Change this when a harness comes up with red and blue swapped."
+    },
+    "h3order": {
+      "type": "string",
+      "default": "rgb",
+      "options": [
+        "rgb",
+        "rbg",
+        "grb",
+        "gbr",
+        "brg",
+        "bgr"
+      ],
+      "label": "H3 byte order",
+      "description": "Channel order the strips on harness 3 expect. Change this when a harness comes up with red and blue swapped."
+    },
+    "h4order": {
+      "type": "string",
+      "default": "rgb",
+      "options": [
+        "rgb",
+        "rbg",
+        "grb",
+        "gbr",
+        "brg",
+        "bgr"
+      ],
+      "label": "H4 byte order",
+      "description": "Channel order the strips on harness 4 expect. Change this when a harness comes up with red and blue swapped."
+    },
     "t01rot": {
       "type": "int",
       "default": 0,
@@ -318,6 +374,7 @@
     "leds_per_triangle": 33,
     "triangles": 15,
     "harness_sizes": "4, 4, 4, 3",
+    "default_byte_orders": "H1 bgr, H2 bgr, H3 rgb, H4 rgb",
     "total_edges": 45,
     "total_pixels": 495,
     "modules_per_dome": 5,
@@ -1596,7 +1653,7 @@
     {
       "protocol": "$proto",
       "host": "$ip",
-      "byteOrder": "bgr",
+      "byteOrder": "$h1order",
       "universe": "$h1univ",
       "channel": "$h1chan",
       "segments": [
@@ -1665,7 +1722,7 @@
     {
       "protocol": "$proto",
       "host": "$ip",
-      "byteOrder": "bgr",
+      "byteOrder": "$h2order",
       "universe": "$h2univ",
       "channel": "$h2chan",
       "segments": [
@@ -1734,7 +1791,7 @@
     {
       "protocol": "$proto",
       "host": "$ip",
-      "byteOrder": "rgb",
+      "byteOrder": "$h3order",
       "universe": "$h3univ",
       "channel": "$h3chan",
       "segments": [
@@ -1803,7 +1860,7 @@
     {
       "protocol": "$proto",
       "host": "$ip",
-      "byteOrder": "rgb",
+      "byteOrder": "$h4order",
       "universe": "$h4univ",
       "channel": "$h4chan",
       "segments": [

@@ -60,6 +60,9 @@ Everything the field can get wrong is a fixture parameter rather than a
 regenerated file:
 
   - protocol, controller IP, and a start universe + start channel per harness;
+  - a byte order per harness, because the strip stock is not all one batch and a
+    port that comes up with red and blue swapped is fixed here, not by resoldering;
+  - a preview dot scale, since LX does not size points by the instance's Scale;
   - per triangle, which corner its run of LEDs starts at (a rotation of 0, 1 or
     2 thirds of a turn) and whether it is fed from the far end instead.
 
@@ -177,6 +180,15 @@ LED_SPACING_M = TRIANGLE_EDGE_M / LEDS_PER_EDGE
 # matter that the projects place the dome at scale 10.
 POINT_SIZE = 0.1
 
+# Which is why the size on each component is POINT_SIZE times a parameter rather
+# than POINT_SIZE flat: a dome placed at scale 10 needs its dots ten times the
+# native size to look the same, and nothing in LX does that multiplication for
+# us. The camp projects run this at 10; leave it at 1 at native metres.
+POINT_SCALE_PARAMETER = "pscale"
+DEFAULT_POINT_SCALE = 1.0
+MIN_POINT_SCALE = 1.0
+MAX_POINT_SCALE = 1000.0
+
 # Edges of a triangle, in physical order: edge 1 runs corner 0 -> 1, edge 2 runs
 # 1 -> 2, edge 3 runs 2 -> 0. Corner 0 sits at the pose's roll angle and the
 # corners wind counter-clockwise seen from outside the dome.
@@ -222,7 +234,18 @@ HARNESS_TRIANGLES = {
 # KiNET read different keys and are deliberately not offered.
 PROTOCOL_OPTIONS = ["artnet", "sacn"]
 DEFAULT_PROTOCOL = "artnet"
-BYTE_ORDER = "rgb"
+
+# Byte order is per harness, not per fixture, because it is a property of the
+# strip stock hanging off that port rather than of the dome. The build has two
+# batches on it: harnesses 1 and 2 came out BGR and 3 and 4 RGB, which is what
+# the field found and what the defaults below reproduce.
+#
+# Only the six three-byte permutations are offered. LXBufferOutput.ByteOrder
+# also defines the RGBW/WRGB family, but those are four bytes per pixel, and
+# picking one would silently widen every pixel and push each harness past the
+# single universe the channel offsets below assume it fits in.
+BYTE_ORDER_OPTIONS = ["rgb", "rbg", "grb", "gbr", "brg", "bgr"]
+DEFAULT_HARNESS_BYTE_ORDER = {1: "bgr", 2: "bgr", 3: "rgb", 4: "rgb"}
 
 DEFAULT_IP = "192.168.1.60"
 
@@ -710,6 +733,10 @@ def channel_parameter(harness: int) -> str:
     return f"h{harness}chan"
 
 
+def byte_order_parameter(harness: int) -> str:
+    return f"h{harness}order"
+
+
 def fixture_parameters() -> dict:
     parameters = {
         "proto": {
@@ -724,6 +751,18 @@ def fixture_parameters() -> dict:
             "default": DEFAULT_IP,
             "label": "Controller IP",
             "description": "Static IP of this module's pixel controller",
+        },
+        POINT_SCALE_PARAMETER: {
+            "type": "float",
+            "default": DEFAULT_POINT_SCALE,
+            "min": MIN_POINT_SCALE,
+            "max": MAX_POINT_SCALE,
+            "label": "Point scale",
+            "description": (
+                "Preview dot size multiplier. LX does not scale point size by "
+                "the fixture's Scale, so set this to match Scale: 10 in the "
+                "camp projects, 1 at native metres."
+            ),
         },
     }
 
@@ -744,6 +783,17 @@ def fixture_parameters() -> dict:
             "max": MAX_CHANNEL,
             "label": f"H{harness} channel",
             "description": f"Start channel for harness {harness}, within its start universe",
+        }
+    for harness in sorted(HARNESS_TRIANGLES):
+        parameters[byte_order_parameter(harness)] = {
+            "type": "string",
+            "default": DEFAULT_HARNESS_BYTE_ORDER[harness],
+            "options": BYTE_ORDER_OPTIONS,
+            "label": f"H{harness} byte order",
+            "description": (
+                f"Channel order the strips on harness {harness} expect. Change "
+                "this when a harness comes up with red and blue swapped."
+            ),
         }
 
     for slot, face, harness, position in wiring_order():
@@ -815,7 +865,7 @@ def strip_components() -> list[dict]:
                     },
                     "spacing": round(LED_SPACING_M, 6),
                     "numPoints": LEDS_PER_EDGE,
-                    "pointSize": POINT_SIZE,
+                    "pointSize": f"({POINT_SIZE} * ${POINT_SCALE_PARAMETER})",
                 }
             )
     return components
@@ -872,7 +922,7 @@ def artnet_outputs() -> list[dict]:
             {
                 "protocol": "$proto",
                 "host": "$ip",
-                "byteOrder": BYTE_ORDER,
+                "byteOrder": f"${byte_order_parameter(harness)}",
                 "universe": f"${universe_parameter(harness)}",
                 "channel": f"${channel_parameter(harness)}",
                 "segments": segments,
@@ -900,6 +950,10 @@ def build_fixture() -> dict:
             "triangles": len(wiring_order()),
             "harness_sizes": ", ".join(
                 str(len(HARNESS_TRIANGLES[harness])) for harness in sorted(HARNESS_TRIANGLES)
+            ),
+            "default_byte_orders": ", ".join(
+                f"H{harness} {DEFAULT_HARNESS_BYTE_ORDER[harness]}"
+                for harness in sorted(HARNESS_TRIANGLES)
             ),
             "total_edges": len(components),
             "total_pixels": len(components) * LEDS_PER_EDGE,
