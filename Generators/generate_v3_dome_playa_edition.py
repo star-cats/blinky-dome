@@ -218,10 +218,10 @@ DEFAULT_REVERSED = False
 #     trunk reads as data running up to the topmost triangle first, back down,
 #     then out along the other two.
 HARNESS_TRIANGLES = {
-    1: (1, 6, 19, 30),    # blue
+    1: (30, 19, 6, 1),    # blue
     2: (20, 44, 50, 69),  # red
-    3: (29, 59, 60, 75), # green
-    4: (31, 45, 70),    # yellow
+    3: (29, 59, 75, 60), # green
+    4: (45, 31, 70),    # yellow
 }
 
 
