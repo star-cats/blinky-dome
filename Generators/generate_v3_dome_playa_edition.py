@@ -64,13 +64,21 @@ regenerated file:
     port that comes up with red and blue swapped is fixed here, not by resoldering;
   - a preview dot scale, since LX does not size points by the instance's Scale;
   - per triangle, which corner its run of LEDs starts at (a rotation of 0, 1 or
-    2 thirds of a turn) and whether it is fed from the far end instead.
+    2 thirds of a turn), whether it is fed from the far end instead, and whether
+    its individual strips run against the direction the edges are walked in.
 
-A triangle is one continuous 33-pixel strip that wraps all three edges, so those
-two settings are the whole of what can be wired differently: three corners it
-can start from, either direction round. Geometry still has to be three straight
-runs of 11 -- a strip component cannot bend -- but they are the three edges of
-one strip, not three separate strips.
+A triangle is nominally one continuous 33-pixel strip that wraps all three edges,
+which can be wired six ways: three corners it can start from, either direction
+round. That is the rotation plus the reverse. Panels do turn up with their three
+strips soldered in independently, though, and then a strip can run backwards
+along its own edge without the run changing which edge it reaches first -- that
+is the separate strip flip, and it is a different fix from reverse. Reverse turns
+the loop round, so it changes the edge order *and* the direction along each edge;
+the strip flip changes only the direction along each edge. Both on is the loop
+turned round with its strips soldered back to front.
+
+Geometry still has to be three straight runs of 11 -- a strip component cannot
+bend -- but they are the three edges of one triangle either way.
 
 Those parameters move only the *output* mapping. Geometry stays put: the edges
 are always emitted in the same physical order, and the Art-Net segments pick
@@ -197,10 +205,17 @@ EDGE_NAMES = ("1", "2", "3")
 # One continuous strip round a triangle can only be wired six ways: it starts at
 # one of the three corners, and it is fed from one end or the other. That is a
 # rotation of 0, 1 or 2 thirds of a turn, plus a reverse -- there is no
-# permuting of edges, because they are not separable.
+# permuting of edges, because a single strip cannot be split up.
+#
+# Three separately soldered strips can be, but only in one extra way that shows
+# up on a panel: each strip running against its edge instead of along it. That
+# does not touch which edge the run reaches first, so it is its own flip rather
+# than a rotation. Chirality (which way round the edges are walked) is the
+# reverse; direction along each edge is the reverse XOR the strip flip.
 TRIANGLE_ROTATIONS = 3
 DEFAULT_ROTATION = 0
 DEFAULT_REVERSED = False
+DEFAULT_STRIP_FLIPPED = False
 
 
 # ---------------------------------------------------------------------------
@@ -725,6 +740,10 @@ def reverse_parameter(slot: int) -> str:
     return f"t{slot:02d}rev"
 
 
+def strip_flip_parameter(slot: int) -> str:
+    return f"t{slot:02d}sflip"
+
+
 def universe_parameter(harness: int) -> str:
     return f"h{harness}univ"
 
@@ -815,7 +834,19 @@ def fixture_parameters() -> dict:
             "label": f"T{slot} reverse",
             "description": (
                 f"{where}. Feed the run from its far end, so it walks the triangle "
-                "the other way round"
+                "the other way round -- edge order and pixel direction both flip"
+            ),
+        }
+        parameters[strip_flip_parameter(slot)] = {
+            "type": "boolean",
+            "default": DEFAULT_STRIP_FLIPPED,
+            "label": f"T{slot} strip flip",
+            "description": (
+                f"{where}. Its three strips are soldered against the edges instead "
+                "of along them: each edge lights from its far end, but the run "
+                "still reaches the edges in the same order. Use this when a "
+                "triangle chases the wrong way within each side but the sides "
+                "themselves come up in the right order"
             ),
         }
     return parameters
@@ -877,8 +908,11 @@ def segment_start(slot: int, base: int, third: int) -> str:
     The run enters at corner `rotation` and walks the edges from there, so the
     third-th chunk of the data lands on edge (rotation + third). Fed from the far
     end it walks the same loop backwards, hitting the edges in the opposite
-    order, which is (rotation + 2 - third); each of those chunks is then itself
-    reversed, which the segment's own reverse flag handles.
+    order, which is (rotation + 2 - third).
+
+    Only the reverse gets a say in which edge a chunk lands on. The direction the
+    chunk is read in is the segment's own reverse flag, which `segment_reverse`
+    builds from the reverse and the strip flip together.
 
     Returned as an LXF expression, fully parenthesised: the parser matches a
     ternary's '?' to the *last* ':' in the string, so bare nesting binds wrong.
@@ -894,6 +928,25 @@ def segment_start(slot: int, base: int, third: int) -> str:
         return expression
 
     return f"((${reverse}) ? {by_rotation(backward)} : {by_rotation(forward)})"
+
+
+def segment_reverse(slot: int) -> str:
+    """Whether this triangle's pixels run backwards along the edge they land on.
+
+    Reverse walks the loop the other way round, which reads every edge from its
+    far end; the strip flip reads every edge from its far end without changing
+    which edge comes first. Both at once cancel: the edges come in reversed order
+    but each one is read forwards again. So the flag is reverse XOR strip flip,
+    while `segment_start` picks the edge order from reverse alone.
+
+    Written as a fully parenthesised ternary over literal booleans, because a
+    boolean LXF expression can only reference boolean parameters and the parser
+    pairs a bare '?' with the last ':' in the string.
+    """
+    reverse, flip = reverse_parameter(slot), strip_flip_parameter(slot)
+    return (
+        f"((${reverse}) ? ((${flip}) ? false : true) : ((${flip}) ? true : false))"
+    )
 
 
 def artnet_outputs() -> list[dict]:
@@ -915,7 +968,7 @@ def artnet_outputs() -> list[dict]:
                     {
                         "start": segment_start(slot, base, third),
                         "num": LEDS_PER_EDGE,
-                        "reverse": f"${reverse_parameter(slot)}",
+                        "reverse": segment_reverse(slot),
                     }
                 )
         outputs.append(
@@ -960,7 +1013,11 @@ def build_fixture() -> dict:
             "modules_per_dome": MODULES_PER_DOME,
             "module_yaw_degrees": MODULE_YAW_DEGREES,
             "corners_face": "strut-midpoints",
-            "wiring": "one continuous strip per triangle; rotation 0-2 thirds of a turn, plus reverse",
+            "wiring": (
+                "one strip run per triangle; rotation 0-2 thirds of a turn, "
+                "reverse flips the edge order and the direction along each edge, "
+                "strip flip flips only the direction along each edge"
+            ),
             "panels_seated": "in each face's own plane",
             "sphere_centre_above_base_m": round(sphere_centre_above_base_m(), 6),
             "numbering": "ring by ring from the apex, clockwise from twelve o'clock seen from above",

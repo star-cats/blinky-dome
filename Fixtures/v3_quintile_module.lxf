@@ -164,7 +164,13 @@
       "type": "boolean",
       "default": false,
       "label": "T1 reverse",
-      "description": "T1 is harness 1 position 1, dome face 30. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T1 is harness 1 position 1, dome face 30. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t01sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T1 strip flip",
+      "description": "T1 is harness 1 position 1, dome face 30. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t02rot": {
       "type": "int",
@@ -178,7 +184,13 @@
       "type": "boolean",
       "default": false,
       "label": "T2 reverse",
-      "description": "T2 is harness 1 position 2, dome face 19. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T2 is harness 1 position 2, dome face 19. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t02sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T2 strip flip",
+      "description": "T2 is harness 1 position 2, dome face 19. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t03rot": {
       "type": "int",
@@ -192,7 +204,13 @@
       "type": "boolean",
       "default": false,
       "label": "T3 reverse",
-      "description": "T3 is harness 1 position 3, dome face 6. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T3 is harness 1 position 3, dome face 6. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t03sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T3 strip flip",
+      "description": "T3 is harness 1 position 3, dome face 6. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t04rot": {
       "type": "int",
@@ -206,7 +224,13 @@
       "type": "boolean",
       "default": false,
       "label": "T4 reverse",
-      "description": "T4 is harness 1 position 4, dome face 1. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T4 is harness 1 position 4, dome face 1. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t04sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T4 strip flip",
+      "description": "T4 is harness 1 position 4, dome face 1. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t05rot": {
       "type": "int",
@@ -220,7 +244,13 @@
       "type": "boolean",
       "default": false,
       "label": "T5 reverse",
-      "description": "T5 is harness 2 position 1, dome face 20. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T5 is harness 2 position 1, dome face 20. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t05sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T5 strip flip",
+      "description": "T5 is harness 2 position 1, dome face 20. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t06rot": {
       "type": "int",
@@ -234,7 +264,13 @@
       "type": "boolean",
       "default": false,
       "label": "T6 reverse",
-      "description": "T6 is harness 2 position 2, dome face 44. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T6 is harness 2 position 2, dome face 44. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t06sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T6 strip flip",
+      "description": "T6 is harness 2 position 2, dome face 44. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t07rot": {
       "type": "int",
@@ -248,7 +284,13 @@
       "type": "boolean",
       "default": false,
       "label": "T7 reverse",
-      "description": "T7 is harness 2 position 3, dome face 50. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T7 is harness 2 position 3, dome face 50. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t07sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T7 strip flip",
+      "description": "T7 is harness 2 position 3, dome face 50. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t08rot": {
       "type": "int",
@@ -262,7 +304,13 @@
       "type": "boolean",
       "default": false,
       "label": "T8 reverse",
-      "description": "T8 is harness 2 position 4, dome face 69. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T8 is harness 2 position 4, dome face 69. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t08sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T8 strip flip",
+      "description": "T8 is harness 2 position 4, dome face 69. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t09rot": {
       "type": "int",
@@ -276,7 +324,13 @@
       "type": "boolean",
       "default": false,
       "label": "T9 reverse",
-      "description": "T9 is harness 3 position 1, dome face 29. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T9 is harness 3 position 1, dome face 29. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t09sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T9 strip flip",
+      "description": "T9 is harness 3 position 1, dome face 29. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t10rot": {
       "type": "int",
@@ -290,7 +344,13 @@
       "type": "boolean",
       "default": false,
       "label": "T10 reverse",
-      "description": "T10 is harness 3 position 2, dome face 59. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T10 is harness 3 position 2, dome face 59. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t10sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T10 strip flip",
+      "description": "T10 is harness 3 position 2, dome face 59. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t11rot": {
       "type": "int",
@@ -304,7 +364,13 @@
       "type": "boolean",
       "default": false,
       "label": "T11 reverse",
-      "description": "T11 is harness 3 position 3, dome face 75. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T11 is harness 3 position 3, dome face 75. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t11sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T11 strip flip",
+      "description": "T11 is harness 3 position 3, dome face 75. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t12rot": {
       "type": "int",
@@ -318,7 +384,13 @@
       "type": "boolean",
       "default": false,
       "label": "T12 reverse",
-      "description": "T12 is harness 3 position 4, dome face 60. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T12 is harness 3 position 4, dome face 60. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t12sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T12 strip flip",
+      "description": "T12 is harness 3 position 4, dome face 60. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t13rot": {
       "type": "int",
@@ -332,7 +404,13 @@
       "type": "boolean",
       "default": false,
       "label": "T13 reverse",
-      "description": "T13 is harness 4 position 1, dome face 45. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T13 is harness 4 position 1, dome face 45. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t13sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T13 strip flip",
+      "description": "T13 is harness 4 position 1, dome face 45. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t14rot": {
       "type": "int",
@@ -346,7 +424,13 @@
       "type": "boolean",
       "default": false,
       "label": "T14 reverse",
-      "description": "T14 is harness 4 position 2, dome face 31. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T14 is harness 4 position 2, dome face 31. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t14sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T14 strip flip",
+      "description": "T14 is harness 4 position 2, dome face 31. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     },
     "t15rot": {
       "type": "int",
@@ -360,7 +444,13 @@
       "type": "boolean",
       "default": false,
       "label": "T15 reverse",
-      "description": "T15 is harness 4 position 3, dome face 70. Feed the run from its far end, so it walks the triangle the other way round"
+      "description": "T15 is harness 4 position 3, dome face 70. Feed the run from its far end, so it walks the triangle the other way round -- edge order and pixel direction both flip"
+    },
+    "t15sflip": {
+      "type": "boolean",
+      "default": false,
+      "label": "T15 strip flip",
+      "description": "T15 is harness 4 position 3, dome face 70. Its three strips are soldered against the edges instead of along them: each edge lights from its far end, but the run still reaches the edges in the same order. Use this when a triangle chases the wrong way within each side but the sides themselves come up in the right order"
     }
   },
   "meta": {
@@ -380,7 +470,7 @@
     "modules_per_dome": 5,
     "module_yaw_degrees": 72.0,
     "corners_face": "strut-midpoints",
-    "wiring": "one continuous strip per triangle; rotation 0-2 thirds of a turn, plus reverse",
+    "wiring": "one strip run per triangle; rotation 0-2 thirds of a turn, reverse flips the edge order and the direction along each edge, strip flip flips only the direction along each edge",
     "panels_seated": "in each face's own plane",
     "sphere_centre_above_base_m": 0.656574,
     "numbering": "ring by ring from the apex, clockwise from twelve o'clock seen from above",
@@ -1660,62 +1750,62 @@
         {
           "start": "(($t01rev) ? (($t01rot == 0) ? 22 : (($t01rot == 1) ? 0 : 11)) : (($t01rot == 0) ? 0 : (($t01rot == 1) ? 11 : 22)))",
           "num": 11,
-          "reverse": "$t01rev"
+          "reverse": "(($t01rev) ? (($t01sflip) ? false : true) : (($t01sflip) ? true : false))"
         },
         {
           "start": "(($t01rev) ? (($t01rot == 0) ? 11 : (($t01rot == 1) ? 22 : 0)) : (($t01rot == 0) ? 11 : (($t01rot == 1) ? 22 : 0)))",
           "num": 11,
-          "reverse": "$t01rev"
+          "reverse": "(($t01rev) ? (($t01sflip) ? false : true) : (($t01sflip) ? true : false))"
         },
         {
           "start": "(($t01rev) ? (($t01rot == 0) ? 0 : (($t01rot == 1) ? 11 : 22)) : (($t01rot == 0) ? 22 : (($t01rot == 1) ? 0 : 11)))",
           "num": 11,
-          "reverse": "$t01rev"
+          "reverse": "(($t01rev) ? (($t01sflip) ? false : true) : (($t01sflip) ? true : false))"
         },
         {
           "start": "(($t02rev) ? (($t02rot == 0) ? 55 : (($t02rot == 1) ? 33 : 44)) : (($t02rot == 0) ? 33 : (($t02rot == 1) ? 44 : 55)))",
           "num": 11,
-          "reverse": "$t02rev"
+          "reverse": "(($t02rev) ? (($t02sflip) ? false : true) : (($t02sflip) ? true : false))"
         },
         {
           "start": "(($t02rev) ? (($t02rot == 0) ? 44 : (($t02rot == 1) ? 55 : 33)) : (($t02rot == 0) ? 44 : (($t02rot == 1) ? 55 : 33)))",
           "num": 11,
-          "reverse": "$t02rev"
+          "reverse": "(($t02rev) ? (($t02sflip) ? false : true) : (($t02sflip) ? true : false))"
         },
         {
           "start": "(($t02rev) ? (($t02rot == 0) ? 33 : (($t02rot == 1) ? 44 : 55)) : (($t02rot == 0) ? 55 : (($t02rot == 1) ? 33 : 44)))",
           "num": 11,
-          "reverse": "$t02rev"
+          "reverse": "(($t02rev) ? (($t02sflip) ? false : true) : (($t02sflip) ? true : false))"
         },
         {
           "start": "(($t03rev) ? (($t03rot == 0) ? 88 : (($t03rot == 1) ? 66 : 77)) : (($t03rot == 0) ? 66 : (($t03rot == 1) ? 77 : 88)))",
           "num": 11,
-          "reverse": "$t03rev"
+          "reverse": "(($t03rev) ? (($t03sflip) ? false : true) : (($t03sflip) ? true : false))"
         },
         {
           "start": "(($t03rev) ? (($t03rot == 0) ? 77 : (($t03rot == 1) ? 88 : 66)) : (($t03rot == 0) ? 77 : (($t03rot == 1) ? 88 : 66)))",
           "num": 11,
-          "reverse": "$t03rev"
+          "reverse": "(($t03rev) ? (($t03sflip) ? false : true) : (($t03sflip) ? true : false))"
         },
         {
           "start": "(($t03rev) ? (($t03rot == 0) ? 66 : (($t03rot == 1) ? 77 : 88)) : (($t03rot == 0) ? 88 : (($t03rot == 1) ? 66 : 77)))",
           "num": 11,
-          "reverse": "$t03rev"
+          "reverse": "(($t03rev) ? (($t03sflip) ? false : true) : (($t03sflip) ? true : false))"
         },
         {
           "start": "(($t04rev) ? (($t04rot == 0) ? 121 : (($t04rot == 1) ? 99 : 110)) : (($t04rot == 0) ? 99 : (($t04rot == 1) ? 110 : 121)))",
           "num": 11,
-          "reverse": "$t04rev"
+          "reverse": "(($t04rev) ? (($t04sflip) ? false : true) : (($t04sflip) ? true : false))"
         },
         {
           "start": "(($t04rev) ? (($t04rot == 0) ? 110 : (($t04rot == 1) ? 121 : 99)) : (($t04rot == 0) ? 110 : (($t04rot == 1) ? 121 : 99)))",
           "num": 11,
-          "reverse": "$t04rev"
+          "reverse": "(($t04rev) ? (($t04sflip) ? false : true) : (($t04sflip) ? true : false))"
         },
         {
           "start": "(($t04rev) ? (($t04rot == 0) ? 99 : (($t04rot == 1) ? 110 : 121)) : (($t04rot == 0) ? 121 : (($t04rot == 1) ? 99 : 110)))",
           "num": 11,
-          "reverse": "$t04rev"
+          "reverse": "(($t04rev) ? (($t04sflip) ? false : true) : (($t04sflip) ? true : false))"
         }
       ]
     },
@@ -1729,62 +1819,62 @@
         {
           "start": "(($t05rev) ? (($t05rot == 0) ? 154 : (($t05rot == 1) ? 132 : 143)) : (($t05rot == 0) ? 132 : (($t05rot == 1) ? 143 : 154)))",
           "num": 11,
-          "reverse": "$t05rev"
+          "reverse": "(($t05rev) ? (($t05sflip) ? false : true) : (($t05sflip) ? true : false))"
         },
         {
           "start": "(($t05rev) ? (($t05rot == 0) ? 143 : (($t05rot == 1) ? 154 : 132)) : (($t05rot == 0) ? 143 : (($t05rot == 1) ? 154 : 132)))",
           "num": 11,
-          "reverse": "$t05rev"
+          "reverse": "(($t05rev) ? (($t05sflip) ? false : true) : (($t05sflip) ? true : false))"
         },
         {
           "start": "(($t05rev) ? (($t05rot == 0) ? 132 : (($t05rot == 1) ? 143 : 154)) : (($t05rot == 0) ? 154 : (($t05rot == 1) ? 132 : 143)))",
           "num": 11,
-          "reverse": "$t05rev"
+          "reverse": "(($t05rev) ? (($t05sflip) ? false : true) : (($t05sflip) ? true : false))"
         },
         {
           "start": "(($t06rev) ? (($t06rot == 0) ? 187 : (($t06rot == 1) ? 165 : 176)) : (($t06rot == 0) ? 165 : (($t06rot == 1) ? 176 : 187)))",
           "num": 11,
-          "reverse": "$t06rev"
+          "reverse": "(($t06rev) ? (($t06sflip) ? false : true) : (($t06sflip) ? true : false))"
         },
         {
           "start": "(($t06rev) ? (($t06rot == 0) ? 176 : (($t06rot == 1) ? 187 : 165)) : (($t06rot == 0) ? 176 : (($t06rot == 1) ? 187 : 165)))",
           "num": 11,
-          "reverse": "$t06rev"
+          "reverse": "(($t06rev) ? (($t06sflip) ? false : true) : (($t06sflip) ? true : false))"
         },
         {
           "start": "(($t06rev) ? (($t06rot == 0) ? 165 : (($t06rot == 1) ? 176 : 187)) : (($t06rot == 0) ? 187 : (($t06rot == 1) ? 165 : 176)))",
           "num": 11,
-          "reverse": "$t06rev"
+          "reverse": "(($t06rev) ? (($t06sflip) ? false : true) : (($t06sflip) ? true : false))"
         },
         {
           "start": "(($t07rev) ? (($t07rot == 0) ? 220 : (($t07rot == 1) ? 198 : 209)) : (($t07rot == 0) ? 198 : (($t07rot == 1) ? 209 : 220)))",
           "num": 11,
-          "reverse": "$t07rev"
+          "reverse": "(($t07rev) ? (($t07sflip) ? false : true) : (($t07sflip) ? true : false))"
         },
         {
           "start": "(($t07rev) ? (($t07rot == 0) ? 209 : (($t07rot == 1) ? 220 : 198)) : (($t07rot == 0) ? 209 : (($t07rot == 1) ? 220 : 198)))",
           "num": 11,
-          "reverse": "$t07rev"
+          "reverse": "(($t07rev) ? (($t07sflip) ? false : true) : (($t07sflip) ? true : false))"
         },
         {
           "start": "(($t07rev) ? (($t07rot == 0) ? 198 : (($t07rot == 1) ? 209 : 220)) : (($t07rot == 0) ? 220 : (($t07rot == 1) ? 198 : 209)))",
           "num": 11,
-          "reverse": "$t07rev"
+          "reverse": "(($t07rev) ? (($t07sflip) ? false : true) : (($t07sflip) ? true : false))"
         },
         {
           "start": "(($t08rev) ? (($t08rot == 0) ? 253 : (($t08rot == 1) ? 231 : 242)) : (($t08rot == 0) ? 231 : (($t08rot == 1) ? 242 : 253)))",
           "num": 11,
-          "reverse": "$t08rev"
+          "reverse": "(($t08rev) ? (($t08sflip) ? false : true) : (($t08sflip) ? true : false))"
         },
         {
           "start": "(($t08rev) ? (($t08rot == 0) ? 242 : (($t08rot == 1) ? 253 : 231)) : (($t08rot == 0) ? 242 : (($t08rot == 1) ? 253 : 231)))",
           "num": 11,
-          "reverse": "$t08rev"
+          "reverse": "(($t08rev) ? (($t08sflip) ? false : true) : (($t08sflip) ? true : false))"
         },
         {
           "start": "(($t08rev) ? (($t08rot == 0) ? 231 : (($t08rot == 1) ? 242 : 253)) : (($t08rot == 0) ? 253 : (($t08rot == 1) ? 231 : 242)))",
           "num": 11,
-          "reverse": "$t08rev"
+          "reverse": "(($t08rev) ? (($t08sflip) ? false : true) : (($t08sflip) ? true : false))"
         }
       ]
     },
@@ -1798,62 +1888,62 @@
         {
           "start": "(($t09rev) ? (($t09rot == 0) ? 286 : (($t09rot == 1) ? 264 : 275)) : (($t09rot == 0) ? 264 : (($t09rot == 1) ? 275 : 286)))",
           "num": 11,
-          "reverse": "$t09rev"
+          "reverse": "(($t09rev) ? (($t09sflip) ? false : true) : (($t09sflip) ? true : false))"
         },
         {
           "start": "(($t09rev) ? (($t09rot == 0) ? 275 : (($t09rot == 1) ? 286 : 264)) : (($t09rot == 0) ? 275 : (($t09rot == 1) ? 286 : 264)))",
           "num": 11,
-          "reverse": "$t09rev"
+          "reverse": "(($t09rev) ? (($t09sflip) ? false : true) : (($t09sflip) ? true : false))"
         },
         {
           "start": "(($t09rev) ? (($t09rot == 0) ? 264 : (($t09rot == 1) ? 275 : 286)) : (($t09rot == 0) ? 286 : (($t09rot == 1) ? 264 : 275)))",
           "num": 11,
-          "reverse": "$t09rev"
+          "reverse": "(($t09rev) ? (($t09sflip) ? false : true) : (($t09sflip) ? true : false))"
         },
         {
           "start": "(($t10rev) ? (($t10rot == 0) ? 319 : (($t10rot == 1) ? 297 : 308)) : (($t10rot == 0) ? 297 : (($t10rot == 1) ? 308 : 319)))",
           "num": 11,
-          "reverse": "$t10rev"
+          "reverse": "(($t10rev) ? (($t10sflip) ? false : true) : (($t10sflip) ? true : false))"
         },
         {
           "start": "(($t10rev) ? (($t10rot == 0) ? 308 : (($t10rot == 1) ? 319 : 297)) : (($t10rot == 0) ? 308 : (($t10rot == 1) ? 319 : 297)))",
           "num": 11,
-          "reverse": "$t10rev"
+          "reverse": "(($t10rev) ? (($t10sflip) ? false : true) : (($t10sflip) ? true : false))"
         },
         {
           "start": "(($t10rev) ? (($t10rot == 0) ? 297 : (($t10rot == 1) ? 308 : 319)) : (($t10rot == 0) ? 319 : (($t10rot == 1) ? 297 : 308)))",
           "num": 11,
-          "reverse": "$t10rev"
+          "reverse": "(($t10rev) ? (($t10sflip) ? false : true) : (($t10sflip) ? true : false))"
         },
         {
           "start": "(($t11rev) ? (($t11rot == 0) ? 352 : (($t11rot == 1) ? 330 : 341)) : (($t11rot == 0) ? 330 : (($t11rot == 1) ? 341 : 352)))",
           "num": 11,
-          "reverse": "$t11rev"
+          "reverse": "(($t11rev) ? (($t11sflip) ? false : true) : (($t11sflip) ? true : false))"
         },
         {
           "start": "(($t11rev) ? (($t11rot == 0) ? 341 : (($t11rot == 1) ? 352 : 330)) : (($t11rot == 0) ? 341 : (($t11rot == 1) ? 352 : 330)))",
           "num": 11,
-          "reverse": "$t11rev"
+          "reverse": "(($t11rev) ? (($t11sflip) ? false : true) : (($t11sflip) ? true : false))"
         },
         {
           "start": "(($t11rev) ? (($t11rot == 0) ? 330 : (($t11rot == 1) ? 341 : 352)) : (($t11rot == 0) ? 352 : (($t11rot == 1) ? 330 : 341)))",
           "num": 11,
-          "reverse": "$t11rev"
+          "reverse": "(($t11rev) ? (($t11sflip) ? false : true) : (($t11sflip) ? true : false))"
         },
         {
           "start": "(($t12rev) ? (($t12rot == 0) ? 385 : (($t12rot == 1) ? 363 : 374)) : (($t12rot == 0) ? 363 : (($t12rot == 1) ? 374 : 385)))",
           "num": 11,
-          "reverse": "$t12rev"
+          "reverse": "(($t12rev) ? (($t12sflip) ? false : true) : (($t12sflip) ? true : false))"
         },
         {
           "start": "(($t12rev) ? (($t12rot == 0) ? 374 : (($t12rot == 1) ? 385 : 363)) : (($t12rot == 0) ? 374 : (($t12rot == 1) ? 385 : 363)))",
           "num": 11,
-          "reverse": "$t12rev"
+          "reverse": "(($t12rev) ? (($t12sflip) ? false : true) : (($t12sflip) ? true : false))"
         },
         {
           "start": "(($t12rev) ? (($t12rot == 0) ? 363 : (($t12rot == 1) ? 374 : 385)) : (($t12rot == 0) ? 385 : (($t12rot == 1) ? 363 : 374)))",
           "num": 11,
-          "reverse": "$t12rev"
+          "reverse": "(($t12rev) ? (($t12sflip) ? false : true) : (($t12sflip) ? true : false))"
         }
       ]
     },
@@ -1867,47 +1957,47 @@
         {
           "start": "(($t13rev) ? (($t13rot == 0) ? 418 : (($t13rot == 1) ? 396 : 407)) : (($t13rot == 0) ? 396 : (($t13rot == 1) ? 407 : 418)))",
           "num": 11,
-          "reverse": "$t13rev"
+          "reverse": "(($t13rev) ? (($t13sflip) ? false : true) : (($t13sflip) ? true : false))"
         },
         {
           "start": "(($t13rev) ? (($t13rot == 0) ? 407 : (($t13rot == 1) ? 418 : 396)) : (($t13rot == 0) ? 407 : (($t13rot == 1) ? 418 : 396)))",
           "num": 11,
-          "reverse": "$t13rev"
+          "reverse": "(($t13rev) ? (($t13sflip) ? false : true) : (($t13sflip) ? true : false))"
         },
         {
           "start": "(($t13rev) ? (($t13rot == 0) ? 396 : (($t13rot == 1) ? 407 : 418)) : (($t13rot == 0) ? 418 : (($t13rot == 1) ? 396 : 407)))",
           "num": 11,
-          "reverse": "$t13rev"
+          "reverse": "(($t13rev) ? (($t13sflip) ? false : true) : (($t13sflip) ? true : false))"
         },
         {
           "start": "(($t14rev) ? (($t14rot == 0) ? 451 : (($t14rot == 1) ? 429 : 440)) : (($t14rot == 0) ? 429 : (($t14rot == 1) ? 440 : 451)))",
           "num": 11,
-          "reverse": "$t14rev"
+          "reverse": "(($t14rev) ? (($t14sflip) ? false : true) : (($t14sflip) ? true : false))"
         },
         {
           "start": "(($t14rev) ? (($t14rot == 0) ? 440 : (($t14rot == 1) ? 451 : 429)) : (($t14rot == 0) ? 440 : (($t14rot == 1) ? 451 : 429)))",
           "num": 11,
-          "reverse": "$t14rev"
+          "reverse": "(($t14rev) ? (($t14sflip) ? false : true) : (($t14sflip) ? true : false))"
         },
         {
           "start": "(($t14rev) ? (($t14rot == 0) ? 429 : (($t14rot == 1) ? 440 : 451)) : (($t14rot == 0) ? 451 : (($t14rot == 1) ? 429 : 440)))",
           "num": 11,
-          "reverse": "$t14rev"
+          "reverse": "(($t14rev) ? (($t14sflip) ? false : true) : (($t14sflip) ? true : false))"
         },
         {
           "start": "(($t15rev) ? (($t15rot == 0) ? 484 : (($t15rot == 1) ? 462 : 473)) : (($t15rot == 0) ? 462 : (($t15rot == 1) ? 473 : 484)))",
           "num": 11,
-          "reverse": "$t15rev"
+          "reverse": "(($t15rev) ? (($t15sflip) ? false : true) : (($t15sflip) ? true : false))"
         },
         {
           "start": "(($t15rev) ? (($t15rot == 0) ? 473 : (($t15rot == 1) ? 484 : 462)) : (($t15rot == 0) ? 473 : (($t15rot == 1) ? 484 : 462)))",
           "num": 11,
-          "reverse": "$t15rev"
+          "reverse": "(($t15rev) ? (($t15sflip) ? false : true) : (($t15sflip) ? true : false))"
         },
         {
           "start": "(($t15rev) ? (($t15rot == 0) ? 462 : (($t15rot == 1) ? 473 : 484)) : (($t15rot == 0) ? 484 : (($t15rot == 1) ? 462 : 473)))",
           "num": 11,
-          "reverse": "$t15rev"
+          "reverse": "(($t15rev) ? (($t15sflip) ? false : true) : (($t15sflip) ? true : false))"
         }
       ]
     }

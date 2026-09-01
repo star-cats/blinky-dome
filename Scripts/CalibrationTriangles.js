@@ -299,8 +299,19 @@ function renderPoint(point, deltaMs) {
 /** True when the point belongs to the triangle selected within its module. */
 function triangleIsSelected(point) {
   var selectedTriangle = triangle | 0;
-  return selectedTriangle === 0 ||
-    triangleForPoint[point.index] === selectedTriangle - 1;
+  if (selectedTriangle === 0) {
+    return true;
+  }
+
+  // The fixture's middle two four-triangle banks are opposite the numbering
+  // presented on the calibration knob: 5-8 select 9-12, and vice versa.
+  if (selectedTriangle >= 5 && selectedTriangle <= 8) {
+    selectedTriangle += 4;
+  } else if (selectedTriangle >= 9 && selectedTriangle <= 12) {
+    selectedTriangle -= 4;
+  }
+
+  return triangleForPoint[point.index] === selectedTriangle - 1;
 }
 
 /** Solid colour per harness. Harness numbers are 1-based; 0 means untagged. */
