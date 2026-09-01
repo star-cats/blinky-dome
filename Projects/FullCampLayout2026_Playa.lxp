@@ -1,6 +1,6 @@
 {
   "version": "1.2.1",
-  "timestamp": 1788219982638,
+  "timestamp": 1788220960397,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2092,7 +2092,7 @@
           "autoCycleMode": 0,
           "autoCycleMode/name": "NEXT",
           "autoCycleTimeSecs": 29.1,
-          "autoCycleCursor": 28,
+          "autoCycleCursor": 4,
           "triggerSwatchCycle": false,
           "expandedPerformance": true,
           "label1": "1",
@@ -2111,7 +2111,7 @@
               "modulationsExpanded": true
             },
             "parameters": {
-              "label": "Wisdom",
+              "label": "redblue",
               "recall": false,
               "autoCycleEligible": true
             },
@@ -2130,9 +2130,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 20.0,
-                  "primary/brightness": 34.606109619140625,
+                  "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 251.67185974121097,
+                  "primary/hue": 0.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 359.0
@@ -2152,9 +2152,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 21.0,
-                  "primary/brightness": 71.54622650146484,
+                  "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 303.01171875,
+                  "primary/hue": 56.0000114440918,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -2176,7 +2176,7 @@
                   "period": 22.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 297.46875,
+                  "primary/hue": 28.0000057220459,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 240.25782775878903
@@ -2193,15 +2193,15 @@
                 },
                 "parameters": {
                   "label": "LX",
-                  "mode": 1,
-                  "mode/name": "OSCILLATE",
-                  "period": 1.0,
-                  "primary/brightness": 94.1829605102539,
-                  "primary/saturation": 63.1875114440918,
-                  "primary/hue": 105.43359375,
+                  "mode": 0,
+                  "mode/name": "FIXED",
+                  "period": 30.0,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 100.0,
+                  "primary/hue": 240.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
-                  "secondary/hue": 179.54296875
+                  "secondary/hue": 120.0
                 },
                 "children": {}
               },
@@ -2218,9 +2218,9 @@
                   "mode": 0,
                   "mode/name": "FIXED",
                   "period": 30.0,
-                  "primary/brightness": 91.74151611328124,
-                  "primary/saturation": 36.97784423828125,
-                  "primary/hue": 56.66015625,
+                  "primary/brightness": 100.0,
+                  "primary/saturation": 0.0,
+                  "primary/hue": 0.0,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -6182,8 +6182,8 @@
           "label": "Tempo",
           "clockSource": 0,
           "clockSource/name": "INTERNAL",
-          "period": 491.2987361666667,
-          "bpm": 122.12528871567417,
+          "period": 493.87235775,
+          "bpm": 121.48888079776317,
           "tap": false,
           "nudgeUp": false,
           "nudgeDown": false,
@@ -6845,14 +6845,14 @@
               "attack": 28.82031186018139,
               "release": 139.4847403437656,
               "slope": 4.869140647351741,
-              "band-1": 0.024666206358583076,
-              "band-2": 0.11508861182411445,
-              "band-3": 0.10582030849993851,
-              "band-4": 0.050688601458655835,
-              "band-5": 0.0640228825610023,
-              "band-6": 0.19651831476646286,
-              "band-7": 0.10419641413070369,
-              "band-8": 0.0,
+              "band-1": 0.0,
+              "band-2": 0.0,
+              "band-3": 0.0,
+              "band-4": 0.0,
+              "band-5": 0.04124869765653272,
+              "band-6": 0.12451351805429556,
+              "band-7": 0.08556282626340461,
+              "band-8": 0.08414881154292841,
               "band-9": 0.0,
               "band-10": 0.0,
               "band-11": 0.0,
@@ -7059,7 +7059,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 2,
+            "patternIndex": 17,
             "patterns": [
               {
                 "id": 478700,
@@ -7984,7 +7984,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.49024166058758395
+                        "basis": 0.6202033064470837
                       },
                       {
                         "id": 486851,
@@ -8026,7 +8026,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3691281074014327
+                        "basis": 0.5022619015466047
                       },
                       {
                         "id": 487950,
@@ -8345,7 +8345,7 @@
                               "triggerIn": false,
                               "triggerOut": false,
                               "activeStep-1": false,
-                              "activeStep-2": true,
+                              "activeStep-2": false,
                               "activeStep-3": false,
                               "activeStep-4": false,
                               "activeStep-5": false,
@@ -8354,7 +8354,7 @@
                               "activeStep-8": false,
                               "activeStep-9": false,
                               "activeStep-10": false,
-                              "activeStep-11": false,
+                              "activeStep-11": true,
                               "activeStep-12": false,
                               "activeStep-13": false,
                               "activeStep-14": false,
@@ -8378,7 +8378,7 @@
                               "step-16": 1.0
                             },
                             "children": {},
-                            "basis": 0.23482499144591418
+                            "basis": 0.016800786521038114
                           },
                           {
                             "id": 1137380,
@@ -8580,7 +8580,7 @@
                           "triggerOut": false
                         },
                         "children": {},
-                        "basis": 0.06600693423695063
+                        "basis": 0.05859387764776125
                       },
                       {
                         "id": 537324,
@@ -8616,7 +8616,7 @@
                           "periodSlow": 10000.0
                         },
                         "children": {},
-                        "basis": 0.216367847451451,
+                        "basis": 0.32496674273112497,
                         "stages": [
                           {
                             "basis": 0.0,
@@ -8791,7 +8791,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6238005681681956
+                        "basis": 0.5026897112811348
                       }
                     ],
                     "modulations": [
@@ -9273,7 +9273,7 @@
                           "exp": 0.009921873148414306
                         },
                         "children": {},
-                        "basis": 0.7946057485710418
+                        "basis": 0.8632977748168507
                       },
                       {
                         "id": 1024692,
@@ -9315,7 +9315,7 @@
                           "exp": 0.32218749285675585
                         },
                         "children": {},
-                        "basis": 0.6305267207258987
+                        "basis": 0.009798997122554519
                       },
                       {
                         "id": 1024693,
@@ -9357,7 +9357,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.12067413369705554
+                        "basis": 0.49291831161877614
                       },
                       {
                         "id": 1024694,
@@ -9399,7 +9399,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3083053125000186
+                        "basis": 0.7954823500000178
                       }
                     ],
                     "modulations": [
@@ -9859,7 +9859,7 @@
                               "step-16": true
                             },
                             "children": {},
-                            "basis": 0.11017290917099475
+                            "basis": 0.00445560825006841
                           }
                         ],
                         "modulations": [],
@@ -10248,7 +10248,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.09347431327081988
+                        "basis": 0.2047118439484883
                       },
                       {
                         "id": 641355,
@@ -10317,7 +10317,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.20479725045826866
+                        "basis": 0.5171258473802968
                       }
                     ],
                     "modulations": [
@@ -10588,7 +10588,7 @@
                               "exp": 0.0121875018812716
                             },
                             "children": {},
-                            "basis": 0.6541657314659487
+                            "basis": 0.9040502706602506
                           }
                         ],
                         "modulations": [
@@ -10735,7 +10735,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3550794185190175
+                        "basis": 0.05510014033245479
                       }
                     ],
                     "modulations": [
@@ -11040,7 +11040,7 @@
                           "step-16": true
                         },
                         "children": {},
-                        "basis": 0.14380379560256
+                        "basis": 0.0498653615723299
                       }
                     ],
                     "modulations": [],
@@ -11310,7 +11310,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.16789398025802105
+                        "basis": 0.2843533351207516
                       },
                       {
                         "id": 1144554,
@@ -11352,7 +11352,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3681664750446528
+                        "basis": 0.06846819638601613
                       }
                     ],
                     "modulations": [
@@ -12172,7 +12172,7 @@
                               "exp": 0.0
                             },
                             "children": {},
-                            "basis": 0.022837066663460956
+                            "basis": 0.013057194485671922
                           }
                         ],
                         "modulations": [
@@ -12334,7 +12334,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.501841695329466
+                        "basis": 0.5088368915423944
                       },
                       {
                         "id": 1031891,
@@ -12376,7 +12376,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.10462335720001276
+                        "basis": 0.6289360280000122
                       }
                     ],
                     "modulations": [
@@ -12592,7 +12592,7 @@
                               "exp": 1.0
                             },
                             "children": {},
-                            "basis": 0.8409773361954429
+                            "basis": 0.5867653161434547
                           }
                         ],
                         "modulations": [
@@ -12754,7 +12754,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.018804377890915835
+                        "basis": 0.01809798176024202
                       },
                       {
                         "id": 1031823,
@@ -12796,7 +12796,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.07048038309999721
+                        "basis": 0.5952576955999976
                       }
                     ],
                     "modulations": [
@@ -13069,7 +13069,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.32521738662759936
+                        "basis": 0.8506144074276002
                       },
                       {
                         "id": 1059575,
@@ -13111,7 +13111,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.25041695889311
+                        "basis": 0.2557054791058751
                       }
                     ],
                     "modulations": [
@@ -13372,7 +13372,7 @@
                               "exp": 0.0
                             },
                             "children": {},
-                            "basis": 0.2082884232420429
+                            "basis": 0.39748567637151366
                           }
                         ],
                         "modulations": [
@@ -13499,7 +13499,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.14899712804741436
+                        "basis": 0.06244038405040997
                       },
                       {
                         "id": 1059754,
@@ -13541,7 +13541,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.4326647520267589
+                        "basis": 0.7082935893572387
                       },
                       {
                         "id": 1059800,
@@ -13583,7 +13583,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.28572748509374596
+                        "basis": 0.1984637834000491
                       },
                       {
                         "id": 1059803,
@@ -13625,7 +13625,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.4693564877457526
+                        "basis": 0.894154629231609
                       }
                     ],
                     "modulations": [
@@ -14207,7 +14207,7 @@
                               "exp": 0.0
                             },
                             "children": {},
-                            "basis": 0.6448842293766751
+                            "basis": 0.02238963563951683
                           }
                         ],
                         "modulations": [
@@ -14353,7 +14353,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.05516341692470801
+                        "basis": 0.9872150626451954
                       },
                       {
                         "id": 1060138,
@@ -14395,7 +14395,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.1245230845041183
+                        "basis": 0.74959629377279
                       },
                       {
                         "id": 1151254,
@@ -14437,7 +14437,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.8972824457162915
+                        "basis": 0.16134004198346236
                       }
                     ],
                     "modulations": [
@@ -14730,7 +14730,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6789808727651762
+                        "basis": 0.4812323097098596
                       }
                     ],
                     "modulations": [
@@ -14920,7 +14920,7 @@
                               "exp": 0.0
                             },
                             "children": {},
-                            "basis": 0.643654903395222
+                            "basis": 0.5972549462981719
                           }
                         ],
                         "modulations": [
@@ -19249,10 +19249,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
                   "color1/saturation": 100.0,
-                  "color1/hue": 297.46875,
+                  "color1/hue": 28.0000057220459,
                   "color2/brightness": 100.0,
                   "color2/saturation": 100.0,
-                  "color2/hue": 297.46875,
+                  "color2/hue": 28.0000057220459,
                   "paletteIndex": 3,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -19585,8 +19585,8 @@
                           "triggerMode/name": "EXTERNAL",
                           "triggerIn": false,
                           "triggerOut": false,
-                          "activeStep-1": false,
-                          "activeStep-2": true,
+                          "activeStep-1": true,
+                          "activeStep-2": false,
                           "activeStep-3": false,
                           "activeStep-4": false,
                           "activeStep-5": false,
@@ -20716,7 +20716,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 8,
+            "patternIndex": 22,
             "patterns": [
               {
                 "id": 772945,
@@ -22585,7 +22585,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.46964998289182835
+                        "basis": 0.9888245156393177
                       }
                     ],
                     "modulations": [
@@ -22782,7 +22782,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.2655531243524462
+                        "basis": 0.25527944363114674
                       },
                       {
                         "id": 869518,
@@ -22824,7 +22824,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.20216665200004721
+                        "basis": 0.5415636729000463
                       }
                     ],
                     "modulations": [
@@ -25392,7 +25392,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5617698907771124
+                        "basis": 0.00490985028014774
                       }
                     ],
                     "modulations": [
@@ -27669,7 +27669,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.20557012715620723
+                        "basis": 0.9380128271578124
                       }
                     ],
                     "modulations": [
@@ -28663,12 +28663,12 @@
                   "colorMode/name": "LINKED",
                   "blendMode": 1,
                   "blendMode/name": "HSV",
-                  "color1/brightness": 34.509803771972656,
+                  "color1/brightness": 100.0,
                   "color1/saturation": 100.0,
-                  "color1/hue": 251.67185974121094,
-                  "color2/brightness": 34.509803771972656,
+                  "color1/hue": 0.0,
+                  "color2/brightness": 100.0,
                   "color2/saturation": 95.23809440433979,
-                  "color2/hue": 228.90411059701728,
+                  "color2/hue": 344.10099511919714,
                   "paletteIndex": 1,
                   "paletteStops": 2,
                   "paletteInvert": false,
@@ -28758,7 +28758,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 66760,
@@ -29466,7 +29466,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5283880190000415
+                        "basis": 0.5469222398000421
                       }
                     ],
                     "modulations": [
@@ -29611,10 +29611,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 100.0,
                   "color1/saturation": 100.0,
-                  "color1/hue": 303.01171875,
+                  "color1/hue": 56.0000114440918,
                   "color2/brightness": 0.0,
                   "color2/saturation": 100.0,
-                  "color2/hue": 303.01171875,
+                  "color2/hue": 56.0000114440918,
                   "paletteIndex": 2,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -29649,7 +29649,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 15,
+            "patternIndex": 14,
             "patterns": [
               {
                 "id": 305411,
@@ -29763,7 +29763,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.39235603614257136
+                        "basis": 0.8830032130438075
                       }
                     ],
                     "modulations": [
@@ -29964,7 +29964,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.41280697161092916
+                        "basis": 0.9241665360498077
                       }
                     ],
                     "modulations": [
@@ -30291,7 +30291,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.4284687034579532
+                        "basis": 0.44542483441973546
                       }
                     ],
                     "modulations": [
@@ -30983,7 +30983,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7363183388318458
+                        "basis": 0.2932083189693368
                       },
                       {
                         "id": 228027,
@@ -31025,7 +31025,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.021699448800079887
+                        "basis": 0.4769062363000802
                       }
                     ],
                     "modulations": [
@@ -31641,7 +31641,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3363520011998786
+                        "basis": 0.2771755302998778
                       },
                       {
                         "id": 297483,
@@ -31683,7 +31683,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.975908576876925
+                        "basis": 0.9167321477473511
                       },
                       {
                         "id": 297563,
@@ -31725,7 +31725,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.744230391199876
+                        "basis": 0.6850539202998763
                       }
                     ],
                     "modulations": [
@@ -31886,11 +31886,11 @@
                       "blendMode": 0,
                       "blendMode/name": "RGB",
                       "color1/brightness": 0.0,
-                      "color1/saturation": 100.0,
-                      "color1/hue": 251.67185974121094,
-                      "color2/brightness": 34.509803771972656,
+                      "color1/saturation": 38.414634704589844,
+                      "color1/hue": 199.04763793945312,
+                      "color2/brightness": 64.31372833251953,
                       "color2/saturation": 0.0,
-                      "color2/hue": 17.386151373386383,
+                      "color2/hue": 324.76192957162857,
                       "paletteIndex": 1,
                       "paletteStops": 5,
                       "paletteInvert": false,
@@ -32088,10 +32088,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
                   "color1/saturation": 100.0,
-                  "color1/hue": 251.67185974121094,
-                  "color2/brightness": 34.509803771972656,
+                  "color1/hue": 0.0,
+                  "color2/brightness": 100.0,
                   "color2/saturation": 100.0,
-                  "color2/hue": 251.67185974121094,
+                  "color2/hue": 0.0,
                   "paletteIndex": 1,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -32329,10 +32329,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
                   "color1/saturation": 100.0,
-                  "color1/hue": 251.67185974121094,
-                  "color2/brightness": 34.509803771972656,
+                  "color1/hue": 0.0,
+                  "color2/brightness": 100.0,
                   "color2/saturation": 100.0,
-                  "color2/hue": 251.67553194567608,
+                  "color2/hue": 0.0,
                   "paletteIndex": 1,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -32399,7 +32399,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.31072890519265783
+                        "basis": 0.2787280414495874
                       }
                     ],
                     "modulations": [
@@ -32437,7 +32437,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 3,
+            "patternIndex": 6,
             "patterns": [
               {
                 "id": 135434,
@@ -32755,7 +32755,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.3042544957393095
+                        "basis": 0.9239220682521495
                       }
                     ],
                     "modulations": [
@@ -33139,7 +33139,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6163427190877032
+                        "basis": 0.828899244733539
                       }
                     ],
                     "modulations": [
@@ -33387,7 +33387,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5017024544570583
+                        "basis": 0.3498788172242414
                       }
                     ],
                     "modulations": [
@@ -33535,7 +33535,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.004569091600203468
+                        "basis": 0.8471463541002029
                       }
                     ],
                     "modulations": [
@@ -34483,7 +34483,7 @@
                       "exp": 0.0
                     },
                     "children": {},
-                    "basis": 0.08299495710006653
+                    "basis": 0.864342094600066
                   },
                   {
                     "id": 317465,
@@ -34525,7 +34525,7 @@
                       "exp": 0.0
                     },
                     "children": {},
-                    "basis": 0.4701070270999307
+                    "basis": 0.25145416459992853
                   }
                 ],
                 "modulations": [],
@@ -34534,7 +34534,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 382830,
@@ -34870,7 +34870,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.13005215794789612
+                        "basis": 0.12430153222745735
                       }
                     ],
                     "modulations": [
@@ -35046,7 +35046,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 4,
+            "patternIndex": 3,
             "patterns": [
               {
                 "id": 139482,
@@ -35221,7 +35221,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9858491576092471
+                        "basis": 0.9802189624468738
                       }
                     ],
                     "modulations": [
@@ -35370,7 +35370,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.33001158815007314
+                        "basis": 0.9892432737165745
                       }
                     ],
                     "modulations": [
@@ -35638,7 +35638,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.15654999429727612
+                        "basis": 0.32304950724540366
                       },
                       {
                         "id": 479179,
@@ -35680,7 +35680,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.92221252599991
+                        "basis": 0.9010548179999087
                       }
                     ],
                     "modulations": [
@@ -35832,7 +35832,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.999398213316116
+                        "basis": 0.9964240810179742
                       },
                       {
                         "id": 479207,
@@ -35874,7 +35874,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.10005065113171038
+                        "basis": 0.14423292921129938
                       }
                     ],
                     "modulations": [
@@ -36156,10 +36156,10 @@
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
                   "color1/saturation": 0.0,
-                  "color1/hue": 117.35294342041016,
+                  "color1/hue": 240.0,
                   "color2/brightness": 100.0,
-                  "color2/saturation": 78.21352886781096,
-                  "color2/hue": 117.35294342041016,
+                  "color2/saturation": 100.0,
+                  "color2/hue": 240.0,
                   "paletteIndex": 4,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -36259,7 +36259,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 16,
+            "patternIndex": 30,
             "patterns": [
               {
                 "id": 345954,
@@ -39249,7 +39249,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.25522579293052255
+                        "basis": 0.4998842662739654
                       },
                       {
                         "id": 296660,
@@ -39291,7 +39291,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.30615225194420154
+                        "basis": 0.10219400914279327
                       }
                     ],
                     "modulations": [
@@ -39756,7 +39756,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.8915215531367912
+                        "basis": 0.6876577738201608
                       }
                     ],
                     "modulations": [
@@ -40220,7 +40220,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.38506137854873573
+                        "basis": 0.2917125455487339
                       }
                     ],
                     "modulations": [
@@ -40349,7 +40349,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.0
+                        "basis": 0.8308016446565294
                       }
                     ],
                     "modulations": [
@@ -40834,7 +40834,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.2816527845109374
+                        "basis": 0.5757925999789915
                       }
                     ],
                     "modulations": [
@@ -41109,7 +41109,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7586675749333134
+                        "basis": 0.5303556867699154
                       }
                     ],
                     "modulations": [
@@ -41484,7 +41484,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.03010069807738027
+                        "basis": 0.20619284044394737
                       }
                     ],
                     "modulations": [
@@ -41733,7 +41733,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9366716517455885
+                        "basis": 0.15027586473878451
                       }
                     ],
                     "modulations": [
@@ -42018,7 +42018,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.26608766741875206
+                        "basis": 0.9529544183813285
                       }
                     ],
                     "modulations": [
@@ -42303,7 +42303,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5048017229269154
+                        "basis": 0.16727510135205864
                       }
                     ],
                     "modulations": [
@@ -44887,7 +44887,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 10,
+            "patternIndex": 0,
             "patterns": [
               {
                 "id": 478637,
@@ -45379,7 +45379,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.17368119792877867
+                        "basis": 0.7842666911896072
                       }
                     ],
                     "modulations": [
@@ -45559,11 +45559,11 @@
                           "triggerOut": false,
                           "activeStep-1": false,
                           "activeStep-2": false,
-                          "activeStep-3": true,
+                          "activeStep-3": false,
                           "activeStep-4": false,
                           "activeStep-5": false,
                           "activeStep-6": false,
-                          "activeStep-7": false,
+                          "activeStep-7": true,
                           "activeStep-8": false,
                           "activeStep-9": false,
                           "activeStep-10": false,
@@ -45591,7 +45591,7 @@
                           "step-16": 0.0
                         },
                         "children": {},
-                        "basis": 0.3651847375699254
+                        "basis": 0.2777323979310889
                       }
                     ],
                     "modulations": [],
@@ -46029,7 +46029,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7568648949768908
+                        "basis": 0.5454253080129887
                       }
                     ],
                     "modulations": [
@@ -46251,7 +46251,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.8998064320301737
+                        "basis": 0.40016582623750835
                       }
                     ],
                     "modulations": [
@@ -46882,7 +46882,7 @@
                           "exp": 0.6933333370834589
                         },
                         "children": {},
-                        "basis": 0.41709934200001836
+                        "basis": 0.41870621700001887
                       }
                     ],
                     "modulations": [
@@ -48312,7 +48312,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 8,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 783460,
@@ -48553,7 +48553,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.27975213710001107
+                        "basis": 0.6106715371000097
                       },
                       {
                         "id": 949851,
@@ -48595,7 +48595,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.034386738234346736
+                        "basis": 0.49894350461581566
                       }
                     ],
                     "modulations": [
@@ -48809,7 +48809,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9711814540489713
+                        "basis": 0.3992195136400557
                       }
                     ],
                     "modulations": [
@@ -49889,7 +49889,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.4054992906150333
+                        "basis": 0.577360521840739
                       },
                       {
                         "id": 1254336,
@@ -49931,7 +49931,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.04621913654000764
+                        "basis": 0.973584162779117
                       }
                     ],
                     "modulations": [
@@ -50103,7 +50103,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.911615365305505
+                        "basis": 0.07104674789194676
                       },
                       {
                         "id": 1254444,
@@ -50145,7 +50145,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.03417706404016241
+                        "basis": 0.032109215956183546
                       }
                     ],
                     "modulations": [
@@ -50317,7 +50317,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9943690929932101
+                        "basis": 0.36877810542983075
                       },
                       {
                         "id": 1254620,
@@ -50359,7 +50359,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9942751851555844
+                        "basis": 0.05547513392854064
                       }
                     ],
                     "modulations": [
@@ -50557,7 +50557,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9478175300985011
+                        "basis": 0.3818423283865943
                       },
                       {
                         "id": 1254267,
@@ -50599,7 +50599,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.04492682437512409
+                        "basis": 0.029275613350088214
                       }
                     ],
                     "modulations": [
@@ -50780,7 +50780,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.02948281147791446
+                        "basis": 0.022192183714889402
                       },
                       {
                         "id": 1255249,
@@ -50822,7 +50822,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.2573707028694786
+                        "basis": 0.2555480459287224
                       },
                       {
                         "id": 1255330,
@@ -50869,7 +50869,7 @@
                           "triggerOut": false
                         },
                         "children": {},
-                        "basis": 0.02948281147791446
+                        "basis": 0.022192183714889402
                       }
                     ],
                     "modulations": [
@@ -51334,7 +51334,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9996644750533089
+                        "basis": 0.04803904333294162
                       },
                       {
                         "id": 1255068,
@@ -51376,7 +51376,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.24991611876332723
+                        "basis": 0.2620097608332354
                       }
                     ],
                     "modulations": [
@@ -51808,7 +51808,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.6847735584969921
+                        "basis": 0.6005845858709773
                       }
                     ],
                     "modulations": [
@@ -52158,11 +52158,11 @@
                   "blendMode": 0,
                   "blendMode/name": "RGB",
                   "color1/brightness": 0.0,
-                  "color1/saturation": 36.97784423828125,
-                  "color1/hue": 56.66015625,
-                  "color2/brightness": 91.76470947265625,
-                  "color2/saturation": 36.97784423828125,
-                  "color2/hue": 56.66015625,
+                  "color1/saturation": 0.0,
+                  "color1/hue": 0.0,
+                  "color2/brightness": 100.0,
+                  "color2/saturation": 0.0,
+                  "color2/hue": 0.0,
                   "paletteIndex": 5,
                   "paletteStops": 5,
                   "paletteInvert": false,
@@ -52197,7 +52197,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 3,
+            "patternIndex": 2,
             "patterns": [
               {
                 "id": 66831,
@@ -53203,7 +53203,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.735912271899874
+                        "basis": 0.5172594093998669
                       },
                       {
                         "id": 928824,
@@ -53245,7 +53245,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.1744229998224396
+                        "basis": 0.6074548485765594
                       }
                     ],
                     "modulations": [
@@ -53309,7 +53309,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 1,
             "patterns": [
               {
                 "id": 333255,
@@ -53514,7 +53514,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.7931423913000224
+                        "basis": 0.9311519247000217
                       },
                       {
                         "id": 928826,
@@ -53556,7 +53556,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.5750416511818662
+                        "basis": 0.27344352464809
                       }
                     ],
                     "modulations": [
@@ -53897,7 +53897,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 6,
+            "patternIndex": 4,
             "patterns": [
               {
                 "id": 774537,
@@ -53996,11 +53996,11 @@
                       "blendMode": 0,
                       "blendMode/name": "RGB",
                       "color1/brightness": 0.0,
-                      "color1/saturation": 56.43153381347656,
-                      "color1/hue": 117.35294342041016,
-                      "color2/brightness": 94.50980377197266,
-                      "color2/saturation": 56.43153381347656,
-                      "color2/hue": 117.35294342041016,
+                      "color1/saturation": 50.86206817626953,
+                      "color1/hue": 108.3050765991211,
+                      "color2/brightness": 90.98039245605469,
+                      "color2/saturation": 50.86206817626953,
+                      "color2/hue": 108.3050765991211,
                       "paletteIndex": 4,
                       "paletteStops": 5,
                       "paletteInvert": false,
@@ -54301,7 +54301,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9986248465360719
+                        "basis": 0.8363840050396488
                       }
                     ],
                     "modulations": [
@@ -54571,7 +54571,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.1273655719756362
+                        "basis": 0.00490985028014774
                       }
                     ],
                     "modulations": [
@@ -54920,7 +54920,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 0,
+            "patternIndex": 1,
             "patterns": [
               {
                 "id": 887443,
@@ -55585,7 +55585,7 @@
                           "exp": -0.7199999149888754
                         },
                         "children": {},
-                        "basis": 0.025935509855693928
+                        "basis": 0.2583414788272607
                       },
                       {
                         "id": 828695,
@@ -58146,7 +58146,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.46964998289182835
+                        "basis": 0.1571152089647277
                       }
                     ],
                     "modulations": [
@@ -58563,7 +58563,7 @@
               }
             ],
             "clips": [],
-            "patternIndex": 5,
+            "patternIndex": 4,
             "patterns": [
               {
                 "id": 68193,
@@ -61132,7 +61132,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.46964998289182835
+                        "basis": 0.1571152089647277
                       }
                     ],
                     "modulations": [
@@ -62989,7 +62989,7 @@
                       "exp": 0.0
                     },
                     "children": {},
-                    "basis": 0.46964998289182835
+                    "basis": 0.1571152089647277
                   }
                 ],
                 "modulations": [],
@@ -63241,7 +63241,7 @@
                       "exp": 0.0
                     },
                     "children": {},
-                    "basis": 0.46964998289182835
+                    "basis": 0.1571152089647277
                   }
                 ],
                 "modulations": [],
@@ -63493,7 +63493,7 @@
                       "exp": 0.0
                     },
                     "children": {},
-                    "basis": 0.46964998289182835
+                    "basis": 0.1571152089647277
                   }
                 ],
                 "modulations": [],
@@ -64834,7 +64834,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.12530227932300975
+                        "basis": 0.9066494168230119
                       }
                     ],
                     "modulations": [
@@ -65430,7 +65430,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.17190143772301375
+                        "basis": 0.9532485752230149
                       }
                     ],
                     "modulations": [
@@ -66025,7 +66025,7 @@
               "floor": 0.0,
               "decay": 1600.0,
               "gate": false,
-              "average": 0.316015157882396,
+              "average": 0.20709636491428018,
               "tap": false
             },
             "children": {}
@@ -66112,7 +66112,7 @@
               "exp": -0.21742185857146976
             },
             "children": {},
-            "basis": 0.23071787420934978
+            "basis": 0.8440205763853618
           },
           {
             "id": 151165,
@@ -66181,11 +66181,11 @@
               "activeStep-5": false,
               "activeStep-6": false,
               "activeStep-7": false,
-              "activeStep-8": false,
+              "activeStep-8": true,
               "activeStep-9": false,
               "activeStep-10": false,
               "activeStep-11": false,
-              "activeStep-12": true,
+              "activeStep-12": false,
               "activeStep-13": false,
               "activeStep-14": false,
               "activeStep-15": false,
@@ -66255,10 +66255,10 @@
               "activeStep-10": false,
               "activeStep-11": false,
               "activeStep-12": false,
-              "activeStep-13": false,
+              "activeStep-13": true,
               "activeStep-14": false,
               "activeStep-15": false,
-              "activeStep-16": true,
+              "activeStep-16": false,
               "step-1": false,
               "step-2": false,
               "step-3": false,
@@ -66324,10 +66324,10 @@
               "activeStep-10": false,
               "activeStep-11": false,
               "activeStep-12": false,
-              "activeStep-13": false,
+              "activeStep-13": true,
               "activeStep-14": false,
               "activeStep-15": false,
-              "activeStep-16": true,
+              "activeStep-16": false,
               "step-1": false,
               "step-2": false,
               "step-3": false,
@@ -66385,9 +66385,9 @@
               "activeStep-2": false,
               "activeStep-3": false,
               "activeStep-4": false,
-              "activeStep-5": false,
+              "activeStep-5": true,
               "activeStep-6": false,
-              "activeStep-7": true,
+              "activeStep-7": false,
               "activeStep-8": false,
               "activeStep-9": false,
               "activeStep-10": false,
@@ -66451,7 +66451,7 @@
               "triggerOut": false
             },
             "children": {},
-            "basis": 0.15435312393073927
+            "basis": 0.00981970056029548
           },
           {
             "id": 1061097,
@@ -66487,7 +66487,7 @@
               "triggerOut": false
             },
             "children": {},
-            "basis": 0.07717656196536964
+            "basis": 0.00490985028014774
           },
           {
             "id": 645299,
@@ -66528,9 +66528,9 @@
               "lowWeight": 0.6346093774409383,
               "midWeight": 0.5696875020628795,
               "highWeight": 0.4275000008885399,
-              "bpm": 122.12528871567417,
-              "confidence": 0.7515966889514301,
-              "intensity": 0.17303269390453455,
+              "bpm": 121.48888079776317,
+              "confidence": 0.8050022127515102,
+              "intensity": 0.07304942668506749,
               "beat": false,
               "syncTempo": true,
               "relearn": false
