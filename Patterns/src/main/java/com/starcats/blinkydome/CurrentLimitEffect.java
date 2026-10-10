@@ -8,8 +8,7 @@ import heronarts.lx.effect.LXEffect;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.MutableParameter;
-import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.BoundedParameter;
 
 /**
  * Current limiter — a fader-mask that only engages when the frame as a whole
@@ -78,9 +77,17 @@ public class CurrentLimitEffect extends LXEffect {
     .setDescription(
       "How slowly the limiter unclamps when the frame drops back under budget. Longer = smoother; avoids pumping on strobe-like content.");
 
-  /** Read-only live display of the current load. Not user-driven. */
-  public final MutableParameter load =
-    new MutableParameter("Load", 0);
+  /**
+   * Live display of the frame's current load — the mean of (R+G+B)/(3*255)
+   * across every pixel.  Written each frame by {@link #run}.  Exposed as a
+   * normal {@link BoundedParameter} on 0..1 so Chromatik renders it as a
+   * meter in the control strip.  It isn't user-driven; the engine overwrites
+   * whatever a user drags it to on the next frame.
+   */
+  public final BoundedParameter load =
+    new BoundedParameter("Load", 0, 0, 1)
+    .setDescription(
+      "Live average of (R+G+B)/3 across every pixel on this bus. The limiter engages only when this value exceeds Budget.");
 
   // ── Internal state ────────────────────────────────────────────────────────
 
@@ -94,13 +101,6 @@ public class CurrentLimitEffect extends LXEffect {
     addParameter("attack", this.attackMs);
     addParameter("release", this.releaseMs);
     addParameter("load", this.load);
-  }
-
-  @Override
-  public boolean isHiddenControl(LXParameter p) {
-    // Load is read-only metering — don't put it in the normal control row.
-    // Users will still see it in the parameter inspector.
-    return p == this.load || super.isHiddenControl(p);
   }
 
   @Override
