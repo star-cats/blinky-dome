@@ -22,7 +22,7 @@
       "host": "$ip",
       "universe": "$universe",
       "channel": 0,
-      "byteOrder": "grb",
+      "byteOrder": "rgb",
       "start": "0",
       "num": 144
     }
@@ -913,7 +913,7 @@
       "default": "2",
       "label": "Starting Universe",
       "description": "Starting Universe of output"
-    },    
+    },
     "stepTrim": {
       "type": "float",
       "default": 0.0,
@@ -921,6 +921,19 @@
       "max": 1.5,
       "label": "Step trim rad LED",
       "description": "Extra angular step added per LED along the spiral. 0 is the baked geometry; positive makes the winding tighter, negative looser. Nudge until the preview matches the real strip."
+    },
+    "spin": {
+      "type": "float",
+      "default": 0.0,
+      "min": -360.0,
+      "max": 360.0,
+      "label": "Spin",
+      "description": "Rotate the whole spiral around its center axis (degrees). Positive values turn clockwise viewed from +Y."
     }
-  }
+  },
+  "transforms": [
+    {
+      "yaw": "$spin"
+    }
+  ]
 }
