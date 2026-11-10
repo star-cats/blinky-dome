@@ -1,0 +1,1879 @@
+{
+  "label": "LED Spiral Disc",
+  "tags": [
+    "disc",
+    "spiral"
+  ],
+  "metadata": {
+    "disc_diameter_mm": 292.0,
+    "spiral_radius_mm": 145.0,
+    "turns": 10.0,
+    "pitch_mm": 12.965,
+    "strip_length_mm": 5000.0,
+    "leds_per_metre": 60.0,
+    "total_leds": 300,
+    "data_input": "outer rim at the wire slot, LED 0 is outermost",
+    "coordinate_system": "Y-up right-handed, origin at disc centre on the base, units metres"
+  },
+  "outputs": [
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "$ip",
+      "universe": 0,
+      "channel": 0,
+      "byteOrder": "grb",
+      "start": 0,
+      "num": 170
+    },
+    {
+      "protocol": "artnet",
+      "enabled": true,
+      "host": "$ip",
+      "universe": 1,
+      "channel": 0,
+      "byteOrder": "grb",
+      "start": 170,
+      "num": 130
+    }
+  ],
+  "components": [
+    {
+      "type": "points",
+      "label": "Spiral (300 LEDs)",
+      "groupColor": "#FFB347",
+      "numPoints": 300,
+      "coords": [
+        {
+          "index": 0,
+          "x": "(0.135954 * cos(0 * $stepTrim) - (-0.047190) * sin(0 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.135954 * sin(0 * $stepTrim) + (-0.047190) * cos(0 * $stepTrim))"
+        },
+        {
+          "index": 1,
+          "x": "(0.129390 * cos(1 * $stepTrim) - (-0.062450) * sin(1 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.129390 * sin(1 * $stepTrim) + (-0.062450) * cos(1 * $stepTrim))"
+        },
+        {
+          "index": 2,
+          "x": "(0.121109 * cos(2 * $stepTrim) - (-0.076849) * sin(2 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.121109 * sin(2 * $stepTrim) + (-0.076849) * cos(2 * $stepTrim))"
+        },
+        {
+          "index": 3,
+          "x": "(0.111218 * cos(3 * $stepTrim) - (-0.090195) * sin(3 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.111218 * sin(3 * $stepTrim) + (-0.090195) * cos(3 * $stepTrim))"
+        },
+        {
+          "index": 4,
+          "x": "(0.099848 * cos(4 * $stepTrim) - (-0.102305) * sin(4 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.099848 * sin(4 * $stepTrim) + (-0.102305) * cos(4 * $stepTrim))"
+        },
+        {
+          "index": 5,
+          "x": "(0.087151 * cos(5 * $stepTrim) - (-0.113014) * sin(5 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.087151 * sin(5 * $stepTrim) + (-0.113014) * cos(5 * $stepTrim))"
+        },
+        {
+          "index": 6,
+          "x": "(0.073295 * cos(6 * $stepTrim) - (-0.122175) * sin(6 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.073295 * sin(6 * $stepTrim) + (-0.122175) * cos(6 * $stepTrim))"
+        },
+        {
+          "index": 7,
+          "x": "(0.058467 * cos(7 * $stepTrim) - (-0.129661) * sin(7 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.058467 * sin(7 * $stepTrim) + (-0.129661) * cos(7 * $stepTrim))"
+        },
+        {
+          "index": 8,
+          "x": "(0.042867 * cos(8 * $stepTrim) - (-0.135366) * sin(8 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.042867 * sin(8 * $stepTrim) + (-0.135366) * cos(8 * $stepTrim))"
+        },
+        {
+          "index": 9,
+          "x": "(0.026708 * cos(9 * $stepTrim) - (-0.139211) * sin(9 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.026708 * sin(9 * $stepTrim) + (-0.139211) * cos(9 * $stepTrim))"
+        },
+        {
+          "index": 10,
+          "x": "(0.010210 * cos(10 * $stepTrim) - (-0.141139) * sin(10 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.010210 * sin(10 * $stepTrim) + (-0.141139) * cos(10 * $stepTrim))"
+        },
+        {
+          "index": 11,
+          "x": "((-0.006400) * cos(11 * $stepTrim) - (-0.141120) * sin(11 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.006400) * sin(11 * $stepTrim) + (-0.141120) * cos(11 * $stepTrim))"
+        },
+        {
+          "index": 12,
+          "x": "((-0.022893) * cos(12 * $stepTrim) - (-0.139152) * sin(12 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.022893) * sin(12 * $stepTrim) + (-0.139152) * cos(12 * $stepTrim))"
+        },
+        {
+          "index": 13,
+          "x": "((-0.039040) * cos(13 * $stepTrim) - (-0.135258) * sin(13 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.039040) * sin(13 * $stepTrim) + (-0.135258) * cos(13 * $stepTrim))"
+        },
+        {
+          "index": 14,
+          "x": "((-0.054616) * cos(14 * $stepTrim) - (-0.129489) * sin(14 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.054616) * sin(14 * $stepTrim) + (-0.129489) * cos(14 * $stepTrim))"
+        },
+        {
+          "index": 15,
+          "x": "((-0.069402) * cos(15 * $stepTrim) - (-0.121922) * sin(15 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.069402) * sin(15 * $stepTrim) + (-0.121922) * cos(15 * $stepTrim))"
+        },
+        {
+          "index": 16,
+          "x": "((-0.083190) * cos(16 * $stepTrim) - (-0.112661) * sin(16 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.083190) * sin(16 * $stepTrim) + (-0.112661) * cos(16 * $stepTrim))"
+        },
+        {
+          "index": 17,
+          "x": "((-0.095784) * cos(17 * $stepTrim) - (-0.101832) * sin(17 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.095784) * sin(17 * $stepTrim) + (-0.101832) * cos(17 * $stepTrim))"
+        },
+        {
+          "index": 18,
+          "x": "((-0.107005) * cos(18 * $stepTrim) - (-0.089587) * sin(18 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.107005) * sin(18 * $stepTrim) + (-0.089587) * cos(18 * $stepTrim))"
+        },
+        {
+          "index": 19,
+          "x": "((-0.116692) * cos(19 * $stepTrim) - (-0.076095) * sin(19 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.116692) * sin(19 * $stepTrim) + (-0.076095) * cos(19 * $stepTrim))"
+        },
+        {
+          "index": 20,
+          "x": "((-0.124703) * cos(20 * $stepTrim) - (-0.061545) * sin(20 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.124703) * sin(20 * $stepTrim) + (-0.061545) * cos(20 * $stepTrim))"
+        },
+        {
+          "index": 21,
+          "x": "((-0.130923) * cos(21 * $stepTrim) - (-0.046145) * sin(21 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.130923) * sin(21 * $stepTrim) + (-0.046145) * cos(21 * $stepTrim))"
+        },
+        {
+          "index": 22,
+          "x": "((-0.135258) * cos(22 * $stepTrim) - (-0.030112) * sin(22 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.135258) * sin(22 * $stepTrim) + (-0.030112) * cos(22 * $stepTrim))"
+        },
+        {
+          "index": 23,
+          "x": "((-0.137644) * cos(23 * $stepTrim) - (-0.013676) * sin(23 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.137644) * sin(23 * $stepTrim) + (-0.013676) * cos(23 * $stepTrim))"
+        },
+        {
+          "index": 24,
+          "x": "((-0.138043) * cos(24 * $stepTrim) - 0.002928 * sin(24 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.138043) * sin(24 * $stepTrim) + 0.002928 * cos(24 * $stepTrim))"
+        },
+        {
+          "index": 25,
+          "x": "((-0.136445) * cos(25 * $stepTrim) - 0.019459 * sin(25 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.136445) * sin(25 * $stepTrim) + 0.019459 * cos(25 * $stepTrim))"
+        },
+        {
+          "index": 26,
+          "x": "((-0.132870) * cos(26 * $stepTrim) - 0.035678 * sin(26 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.132870) * sin(26 * $stepTrim) + 0.035678 * cos(26 * $stepTrim))"
+        },
+        {
+          "index": 27,
+          "x": "((-0.127366) * cos(27 * $stepTrim) - 0.051348 * sin(27 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.127366) * sin(27 * $stepTrim) + 0.051348 * cos(27 * $stepTrim))"
+        },
+        {
+          "index": 28,
+          "x": "((-0.120011) * cos(28 * $stepTrim) - 0.066239 * sin(28 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.120011) * sin(28 * $stepTrim) + 0.066239 * cos(28 * $stepTrim))"
+        },
+        {
+          "index": 29,
+          "x": "((-0.110909) * cos(29 * $stepTrim) - 0.080130 * sin(29 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.110909) * sin(29 * $stepTrim) + 0.080130 * cos(29 * $stepTrim))"
+        },
+        {
+          "index": 30,
+          "x": "((-0.100190) * cos(30 * $stepTrim) - 0.092816 * sin(30 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.100190) * sin(30 * $stepTrim) + 0.092816 * cos(30 * $stepTrim))"
+        },
+        {
+          "index": 31,
+          "x": "((-0.088011) * cos(31 * $stepTrim) - 0.104108 * sin(31 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.088011) * sin(31 * $stepTrim) + 0.104108 * cos(31 * $stepTrim))"
+        },
+        {
+          "index": 32,
+          "x": "((-0.074550) * cos(32 * $stepTrim) - 0.113834 * sin(32 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.074550) * sin(32 * $stepTrim) + 0.113834 * cos(32 * $stepTrim))"
+        },
+        {
+          "index": 33,
+          "x": "((-0.060004) * cos(33 * $stepTrim) - 0.121847 * sin(33 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.060004) * sin(33 * $stepTrim) + 0.121847 * cos(33 * $stepTrim))"
+        },
+        {
+          "index": 34,
+          "x": "((-0.044589) * cos(34 * $stepTrim) - 0.128026 * sin(34 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.044589) * sin(34 * $stepTrim) + 0.128026 * cos(34 * $stepTrim))"
+        },
+        {
+          "index": 35,
+          "x": "((-0.028534) * cos(35 * $stepTrim) - 0.132272 * sin(35 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.028534) * sin(35 * $stepTrim) + 0.132272 * cos(35 * $stepTrim))"
+        },
+        {
+          "index": 36,
+          "x": "((-0.012079) * cos(36 * $stepTrim) - 0.134520 * sin(36 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.012079) * sin(36 * $stepTrim) + 0.134520 * cos(36 * $stepTrim))"
+        },
+        {
+          "index": 37,
+          "x": "(0.004526 * cos(37 * $stepTrim) - 0.134731 * sin(37 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.004526 * sin(37 * $stepTrim) + 0.134731 * cos(37 * $stepTrim))"
+        },
+        {
+          "index": 38,
+          "x": "(0.021032 * cos(38 * $stepTrim) - 0.132899 * sin(38 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.021032 * sin(38 * $stepTrim) + 0.132899 * cos(38 * $stepTrim))"
+        },
+        {
+          "index": 39,
+          "x": "(0.037185 * cos(39 * $stepTrim) - 0.129047 * sin(39 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.037185 * sin(39 * $stepTrim) + 0.129047 * cos(39 * $stepTrim))"
+        },
+        {
+          "index": 40,
+          "x": "(0.052740 * cos(40 * $stepTrim) - 0.123231 * sin(40 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.052740 * sin(40 * $stepTrim) + 0.123231 * cos(40 * $stepTrim))"
+        },
+        {
+          "index": 41,
+          "x": "(0.067456 * cos(41 * $stepTrim) - 0.115535 * sin(41 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.067456 * sin(41 * $stepTrim) + 0.115535 * cos(41 * $stepTrim))"
+        },
+        {
+          "index": 42,
+          "x": "(0.081105 * cos(42 * $stepTrim) - 0.106076 * sin(42 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.081105 * sin(42 * $stepTrim) + 0.106076 * cos(42 * $stepTrim))"
+        },
+        {
+          "index": 43,
+          "x": "(0.093474 * cos(43 * $stepTrim) - 0.094996 * sin(43 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.093474 * sin(43 * $stepTrim) + 0.094996 * cos(43 * $stepTrim))"
+        },
+        {
+          "index": 44,
+          "x": "(0.104369 * cos(44 * $stepTrim) - 0.082464 * sin(44 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.104369 * sin(44 * $stepTrim) + 0.082464 * cos(44 * $stepTrim))"
+        },
+        {
+          "index": 45,
+          "x": "(0.113617 * cos(45 * $stepTrim) - 0.068671 * sin(45 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.113617 * sin(45 * $stepTrim) + 0.068671 * cos(45 * $stepTrim))"
+        },
+        {
+          "index": 46,
+          "x": "(0.121070 * cos(46 * $stepTrim) - 0.053832 * sin(46 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.121070 * sin(46 * $stepTrim) + 0.053832 * cos(46 * $stepTrim))"
+        },
+        {
+          "index": 47,
+          "x": "(0.126609 * cos(47 * $stepTrim) - 0.038178 * sin(47 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.126609 * sin(47 * $stepTrim) + 0.038178 * cos(47 * $stepTrim))"
+        },
+        {
+          "index": 48,
+          "x": "(0.130142 * cos(48 * $stepTrim) - 0.021953 * sin(48 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.130142 * sin(48 * $stepTrim) + 0.021953 * cos(48 * $stepTrim))"
+        },
+        {
+          "index": 49,
+          "x": "(0.131609 * cos(49 * $stepTrim) - 0.005412 * sin(49 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.131609 * sin(49 * $stepTrim) + 0.005412 * cos(49 * $stepTrim))"
+        },
+        {
+          "index": 50,
+          "x": "(0.130983 * cos(50 * $stepTrim) - (-0.011181) * sin(50 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.130983 * sin(50 * $stepTrim) + (-0.011181) * cos(50 * $stepTrim))"
+        },
+        {
+          "index": 51,
+          "x": "(0.128271 * cos(51 * $stepTrim) - (-0.027563) * sin(51 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.128271 * sin(51 * $stepTrim) + (-0.027563) * cos(51 * $stepTrim))"
+        },
+        {
+          "index": 52,
+          "x": "(0.123510 * cos(52 * $stepTrim) - (-0.043471) * sin(52 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.123510 * sin(52 * $stepTrim) + (-0.043471) * cos(52 * $stepTrim))"
+        },
+        {
+          "index": 53,
+          "x": "(0.116775 * cos(53 * $stepTrim) - (-0.058648) * sin(53 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.116775 * sin(53 * $stepTrim) + (-0.058648) * cos(53 * $stepTrim))"
+        },
+        {
+          "index": 54,
+          "x": "(0.108169 * cos(54 * $stepTrim) - (-0.072848) * sin(54 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.108169 * sin(54 * $stepTrim) + (-0.072848) * cos(54 * $stepTrim))"
+        },
+        {
+          "index": 55,
+          "x": "(0.097828 * cos(55 * $stepTrim) - (-0.085840) * sin(55 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.097828 * sin(55 * $stepTrim) + (-0.085840) * cos(55 * $stepTrim))"
+        },
+        {
+          "index": 56,
+          "x": "(0.085918 * cos(56 * $stepTrim) - (-0.097409) * sin(56 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.085918 * sin(56 * $stepTrim) + (-0.097409) * cos(56 * $stepTrim))"
+        },
+        {
+          "index": 57,
+          "x": "(0.072628 * cos(57 * $stepTrim) - (-0.107363) * sin(57 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.072628 * sin(57 * $stepTrim) + (-0.107363) * cos(57 * $stepTrim))"
+        },
+        {
+          "index": 58,
+          "x": "(0.058176 * cos(58 * $stepTrim) - (-0.115537) * sin(58 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.058176 * sin(58 * $stepTrim) + (-0.115537) * cos(58 * $stepTrim))"
+        },
+        {
+          "index": 59,
+          "x": "(0.042795 * cos(59 * $stepTrim) - (-0.121792) * sin(59 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.042795 * sin(59 * $stepTrim) + (-0.121792) * cos(59 * $stepTrim))"
+        },
+        {
+          "index": 60,
+          "x": "(0.026739 * cos(60 * $stepTrim) - (-0.126020) * sin(60 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.026739 * sin(60 * $stepTrim) + (-0.126020) * cos(60 * $stepTrim))"
+        },
+        {
+          "index": 61,
+          "x": "(0.010272 * cos(61 * $stepTrim) - (-0.128148) * sin(61 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.010272 * sin(61 * $stepTrim) + (-0.128148) * cos(61 * $stepTrim))"
+        },
+        {
+          "index": 62,
+          "x": "((-0.006331) * cos(62 * $stepTrim) - (-0.128136) * sin(62 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.006331) * sin(62 * $stepTrim) + (-0.128136) * cos(62 * $stepTrim))"
+        },
+        {
+          "index": 63,
+          "x": "((-0.022794) * cos(63 * $stepTrim) - (-0.125980) * sin(63 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.022794) * sin(63 * $stepTrim) + (-0.125980) * cos(63 * $stepTrim))"
+        },
+        {
+          "index": 64,
+          "x": "((-0.038838) * cos(64 * $stepTrim) - (-0.121710) * sin(64 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.038838) * sin(64 * $stepTrim) + (-0.121710) * cos(64 * $stepTrim))"
+        },
+        {
+          "index": 65,
+          "x": "((-0.054194) * cos(65 * $stepTrim) - (-0.115396) * sin(65 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.054194) * sin(65 * $stepTrim) + (-0.115396) * cos(65 * $stepTrim))"
+        },
+        {
+          "index": 66,
+          "x": "((-0.068598) * cos(66 * $stepTrim) - (-0.107140) * sin(66 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.068598) * sin(66 * $stepTrim) + (-0.107140) * cos(66 * $stepTrim))"
+        },
+        {
+          "index": 67,
+          "x": "((-0.081804) * cos(67 * $stepTrim) - (-0.097078) * sin(67 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.081804) * sin(67 * $stepTrim) + (-0.097078) * cos(67 * $stepTrim))"
+        },
+        {
+          "index": 68,
+          "x": "((-0.093584) * cos(68 * $stepTrim) - (-0.085379) * sin(68 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.093584) * sin(68 * $stepTrim) + (-0.085379) * cos(68 * $stepTrim))"
+        },
+        {
+          "index": 69,
+          "x": "((-0.103733) * cos(69 * $stepTrim) - (-0.072240) * sin(69 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.103733) * sin(69 * $stepTrim) + (-0.072240) * cos(69 * $stepTrim))"
+        },
+        {
+          "index": 70,
+          "x": "((-0.112071) * cos(70 * $stepTrim) - (-0.057884) * sin(70 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.112071) * sin(70 * $stepTrim) + (-0.057884) * cos(70 * $stepTrim))"
+        },
+        {
+          "index": 71,
+          "x": "((-0.118452) * cos(71 * $stepTrim) - (-0.042557) * sin(71 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.118452) * sin(71 * $stepTrim) + (-0.042557) * cos(71 * $stepTrim))"
+        },
+        {
+          "index": 72,
+          "x": "((-0.122760) * cos(72 * $stepTrim) - (-0.026524) * sin(72 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.122760) * sin(72 * $stepTrim) + (-0.026524) * cos(72 * $stepTrim))"
+        },
+        {
+          "index": 73,
+          "x": "((-0.124914) * cos(73 * $stepTrim) - (-0.010063) * sin(73 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.124914) * sin(73 * $stepTrim) + (-0.010063) * cos(73 * $stepTrim))"
+        },
+        {
+          "index": 74,
+          "x": "((-0.124874) * cos(74 * $stepTrim) - 0.006539 * sin(74 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.124874) * sin(74 * $stepTrim) + 0.006539 * cos(74 * $stepTrim))"
+        },
+        {
+          "index": 75,
+          "x": "((-0.122635) * cos(75 * $stepTrim) - 0.022988 * sin(75 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.122635) * sin(75 * $stepTrim) + 0.022988 * cos(75 * $stepTrim))"
+        },
+        {
+          "index": 76,
+          "x": "((-0.118231) * cos(76 * $stepTrim) - 0.038995 * sin(76 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.118231) * sin(76 * $stepTrim) + 0.038995 * cos(76 * $stepTrim))"
+        },
+        {
+          "index": 77,
+          "x": "((-0.111737) * cos(77 * $stepTrim) - 0.054272 * sin(77 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.111737) * sin(77 * $stepTrim) + 0.054272 * cos(77 * $stepTrim))"
+        },
+        {
+          "index": 78,
+          "x": "((-0.103263) * cos(78 * $stepTrim) - 0.068548 * sin(78 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.103263) * sin(78 * $stepTrim) + 0.068548 * cos(78 * $stepTrim))"
+        },
+        {
+          "index": 79,
+          "x": "((-0.092958) * cos(79 * $stepTrim) - 0.081562 * sin(79 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.092958) * sin(79 * $stepTrim) + 0.081562 * cos(79 * $stepTrim))"
+        },
+        {
+          "index": 80,
+          "x": "((-0.081002) * cos(80 * $stepTrim) - 0.093079 * sin(80 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.081002) * sin(80 * $stepTrim) + 0.093079 * cos(80 * $stepTrim))"
+        },
+        {
+          "index": 81,
+          "x": "((-0.067609) * cos(81 * $stepTrim) - 0.102886 * sin(81 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.067609) * sin(81 * $stepTrim) + 0.102886 * cos(81 * $stepTrim))"
+        },
+        {
+          "index": 82,
+          "x": "((-0.053018) * cos(82 * $stepTrim) - 0.110802 * sin(82 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.053018) * sin(82 * $stepTrim) + 0.110802 * cos(82 * $stepTrim))"
+        },
+        {
+          "index": 83,
+          "x": "((-0.037493) * cos(83 * $stepTrim) - 0.116678 * sin(83 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.037493) * sin(83 * $stepTrim) + 0.116678 * cos(83 * $stepTrim))"
+        },
+        {
+          "index": 84,
+          "x": "((-0.021316) * cos(84 * $stepTrim) - 0.120401 * sin(84 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.021316) * sin(84 * $stepTrim) + 0.120401 * cos(84 * $stepTrim))"
+        },
+        {
+          "index": 85,
+          "x": "((-0.004784) * cos(85 * $stepTrim) - 0.121899 * sin(85 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.004784) * sin(85 * $stepTrim) + 0.121899 * cos(85 * $stepTrim))"
+        },
+        {
+          "index": 86,
+          "x": "(0.011798 * cos(86 * $stepTrim) - 0.121139 * sin(86 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.011798 * sin(86 * $stepTrim) + 0.121139 * cos(86 * $stepTrim))"
+        },
+        {
+          "index": 87,
+          "x": "(0.028122 * cos(87 * $stepTrim) - 0.118129 * sin(87 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.028122 * sin(87 * $stepTrim) + 0.118129 * cos(87 * $stepTrim))"
+        },
+        {
+          "index": 88,
+          "x": "(0.043882 * cos(88 * $stepTrim) - 0.112920 * sin(88 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.043882 * sin(88 * $stepTrim) + 0.112920 * cos(88 * $stepTrim))"
+        },
+        {
+          "index": 89,
+          "x": "(0.058783 * cos(89 * $stepTrim) - 0.105606 * sin(89 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.058783 * sin(89 * $stepTrim) + 0.105606 * cos(89 * $stepTrim))"
+        },
+        {
+          "index": 90,
+          "x": "(0.072540 * cos(90 * $stepTrim) - 0.096320 * sin(90 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.072540 * sin(90 * $stepTrim) + 0.096320 * cos(90 * $stepTrim))"
+        },
+        {
+          "index": 91,
+          "x": "(0.084892 * cos(91 * $stepTrim) - 0.085232 * sin(91 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.084892 * sin(91 * $stepTrim) + 0.085232 * cos(91 * $stepTrim))"
+        },
+        {
+          "index": 92,
+          "x": "(0.095599 * cos(92 * $stepTrim) - 0.072549 * sin(92 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.095599 * sin(92 * $stepTrim) + 0.072549 * cos(92 * $stepTrim))"
+        },
+        {
+          "index": 93,
+          "x": "(0.104453 * cos(93 * $stepTrim) - 0.058510 * sin(93 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.104453 * sin(93 * $stepTrim) + 0.058510 * cos(93 * $stepTrim))"
+        },
+        {
+          "index": 94,
+          "x": "(0.111281 * cos(94 * $stepTrim) - 0.043382 * sin(94 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.111281 * sin(94 * $stepTrim) + 0.043382 * cos(94 * $stepTrim))"
+        },
+        {
+          "index": 95,
+          "x": "(0.115945 * cos(95 * $stepTrim) - 0.027453 * sin(95 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.115945 * sin(95 * $stepTrim) + 0.027453 * cos(95 * $stepTrim))"
+        },
+        {
+          "index": 96,
+          "x": "(0.118350 * cos(96 * $stepTrim) - 0.011031 * sin(96 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.118350 * sin(96 * $stepTrim) + 0.011031 * cos(96 * $stepTrim))"
+        },
+        {
+          "index": 97,
+          "x": "(0.118443 * cos(97 * $stepTrim) - (-0.005566) * sin(97 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.118443 * sin(97 * $stepTrim) + (-0.005566) * cos(97 * $stepTrim))"
+        },
+        {
+          "index": 98,
+          "x": "(0.116218 * cos(98 * $stepTrim) - (-0.022014) * sin(98 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.116218 * sin(98 * $stepTrim) + (-0.022014) * cos(98 * $stepTrim))"
+        },
+        {
+          "index": 99,
+          "x": "(0.111713 * cos(99 * $stepTrim) - (-0.037987) * sin(99 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.111713 * sin(99 * $stepTrim) + (-0.037987) * cos(99 * $stepTrim))"
+        },
+        {
+          "index": 100,
+          "x": "(0.105010 * cos(100 * $stepTrim) - (-0.053170) * sin(100 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.105010 * sin(100 * $stepTrim) + (-0.053170) * cos(100 * $stepTrim))"
+        },
+        {
+          "index": 101,
+          "x": "(0.096239 * cos(101 * $stepTrim) - (-0.067259) * sin(101 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.096239 * sin(101 * $stepTrim) + (-0.067259) * cos(101 * $stepTrim))"
+        },
+        {
+          "index": 102,
+          "x": "(0.085568 * cos(102 * $stepTrim) - (-0.079970) * sin(102 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.085568 * sin(102 * $stepTrim) + (-0.079970) * cos(102 * $stepTrim))"
+        },
+        {
+          "index": 103,
+          "x": "(0.073208 * cos(103 * $stepTrim) - (-0.091045) * sin(103 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.073208 * sin(103 * $stepTrim) + (-0.091045) * cos(103 * $stepTrim))"
+        },
+        {
+          "index": 104,
+          "x": "(0.059403 * cos(104 * $stepTrim) - (-0.100256) * sin(104 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.059403 * sin(104 * $stepTrim) + (-0.100256) * cos(104 * $stepTrim))"
+        },
+        {
+          "index": 105,
+          "x": "(0.044430 * cos(105 * $stepTrim) - (-0.107413) * sin(105 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.044430 * sin(105 * $stepTrim) + (-0.107413) * cos(105 * $stepTrim))"
+        },
+        {
+          "index": 106,
+          "x": "(0.028591 * cos(106 * $stepTrim) - (-0.112364) * sin(106 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.028591 * sin(106 * $stepTrim) + (-0.112364) * cos(106 * $stepTrim))"
+        },
+        {
+          "index": 107,
+          "x": "(0.012207 * cos(107 * $stepTrim) - (-0.115002) * sin(107 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.012207 * sin(107 * $stepTrim) + (-0.115002) * cos(107 * $stepTrim))"
+        },
+        {
+          "index": 108,
+          "x": "((-0.004386) * cos(108 * $stepTrim) - (-0.115268) * sin(108 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.004386) * sin(108 * $stepTrim) + (-0.115268) * cos(108 * $stepTrim))"
+        },
+        {
+          "index": 109,
+          "x": "((-0.020845) * cos(109 * $stepTrim) - (-0.113150) * sin(109 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.020845) * sin(109 * $stepTrim) + (-0.113150) * cos(109 * $stepTrim))"
+        },
+        {
+          "index": 110,
+          "x": "((-0.036828) * cos(110 * $stepTrim) - (-0.108686) * sin(110 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.036828) * sin(110 * $stepTrim) + (-0.108686) * cos(110 * $stepTrim))"
+        },
+        {
+          "index": 111,
+          "x": "((-0.051999) * cos(111 * $stepTrim) - (-0.101963) * sin(111 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.051999) * sin(111 * $stepTrim) + (-0.101963) * cos(111 * $stepTrim))"
+        },
+        {
+          "index": 112,
+          "x": "((-0.066039) * cos(112 * $stepTrim) - (-0.093117) * sin(112 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.066039) * sin(112 * $stepTrim) + (-0.093117) * cos(112 * $stepTrim))"
+        },
+        {
+          "index": 113,
+          "x": "((-0.078647) * cos(113 * $stepTrim) - (-0.082328) * sin(113 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.078647) * sin(113 * $stepTrim) + (-0.082328) * cos(113 * $stepTrim))"
+        },
+        {
+          "index": 114,
+          "x": "((-0.089552) * cos(114 * $stepTrim) - (-0.069822) * sin(114 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.089552) * sin(114 * $stepTrim) + (-0.069822) * cos(114 * $stepTrim))"
+        },
+        {
+          "index": 115,
+          "x": "((-0.098519) * cos(115 * $stepTrim) - (-0.055860) * sin(115 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.098519) * sin(115 * $stepTrim) + (-0.055860) * cos(115 * $stepTrim))"
+        },
+        {
+          "index": 116,
+          "x": "((-0.105348) * cos(116 * $stepTrim) - (-0.040737) * sin(116 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.105348) * sin(116 * $stepTrim) + (-0.040737) * cos(116 * $stepTrim))"
+        },
+        {
+          "index": 117,
+          "x": "((-0.109887) * cos(117 * $stepTrim) - (-0.024778) * sin(117 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.109887) * sin(117 * $stepTrim) + (-0.024778) * cos(117 * $stepTrim))"
+        },
+        {
+          "index": 118,
+          "x": "((-0.112033) * cos(118 * $stepTrim) - (-0.008324) * sin(118 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.112033) * sin(118 * $stepTrim) + (-0.008324) * cos(118 * $stepTrim))"
+        },
+        {
+          "index": 119,
+          "x": "((-0.111731) * cos(119 * $stepTrim) - 0.008265 * sin(119 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.111731) * sin(119 * $stepTrim) + 0.008265 * cos(119 * $stepTrim))"
+        },
+        {
+          "index": 120,
+          "x": "((-0.108982) * cos(120 * $stepTrim) - 0.024628 * sin(120 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.108982) * sin(120 * $stepTrim) + 0.024628 * cos(120 * $stepTrim))"
+        },
+        {
+          "index": 121,
+          "x": "((-0.103840) * cos(121 * $stepTrim) - 0.040403 * sin(121 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.103840) * sin(121 * $stepTrim) + 0.040403 * cos(121 * $stepTrim))"
+        },
+        {
+          "index": 122,
+          "x": "((-0.096412) * cos(122 * $stepTrim) - 0.055239 * sin(122 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.096412) * sin(122 * $stepTrim) + 0.055239 * cos(122 * $stepTrim))"
+        },
+        {
+          "index": 123,
+          "x": "((-0.086857) * cos(123 * $stepTrim) - 0.068803 * sin(123 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.086857) * sin(123 * $stepTrim) + 0.068803 * cos(123 * $stepTrim))"
+        },
+        {
+          "index": 124,
+          "x": "((-0.075385) * cos(124 * $stepTrim) - 0.080788 * sin(124 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.075385) * sin(124 * $stepTrim) + 0.080788 * cos(124 * $stepTrim))"
+        },
+        {
+          "index": 125,
+          "x": "((-0.062247) * cos(125 * $stepTrim) - 0.090919 * sin(125 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.062247) * sin(125 * $stepTrim) + 0.090919 * cos(125 * $stepTrim))"
+        },
+        {
+          "index": 126,
+          "x": "((-0.047736) * cos(126 * $stepTrim) - 0.098963 * sin(126 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.047736) * sin(126 * $stepTrim) + 0.098963 * cos(126 * $stepTrim))"
+        },
+        {
+          "index": 127,
+          "x": "((-0.032181) * cos(127 * $stepTrim) - 0.104730 * sin(127 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.032181) * sin(127 * $stepTrim) + 0.104730 * cos(127 * $stepTrim))"
+        },
+        {
+          "index": 128,
+          "x": "((-0.015933) * cos(128 * $stepTrim) - 0.108081 * sin(128 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.015933) * sin(128 * $stepTrim) + 0.108081 * cos(128 * $stepTrim))"
+        },
+        {
+          "index": 129,
+          "x": "(0.000635 * cos(129 * $stepTrim) - 0.108934 * sin(129 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.000635 * sin(129 * $stepTrim) + 0.108934 * cos(129 * $stepTrim))"
+        },
+        {
+          "index": 130,
+          "x": "(0.017140 * cos(130 * $stepTrim) - 0.107260 * sin(130 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.017140 * sin(130 * $stepTrim) + 0.107260 * cos(130 * $stepTrim))"
+        },
+        {
+          "index": 131,
+          "x": "(0.033197 * cos(131 * $stepTrim) - 0.103092 * sin(131 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.033197 * sin(131 * $stepTrim) + 0.103092 * cos(131 * $stepTrim))"
+        },
+        {
+          "index": 132,
+          "x": "(0.048429 * cos(132 * $stepTrim) - 0.096520 * sin(132 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.048429 * sin(132 * $stepTrim) + 0.096520 * cos(132 * $stepTrim))"
+        },
+        {
+          "index": 133,
+          "x": "(0.062474 * cos(133 * $stepTrim) - 0.087692 * sin(133 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.062474 * sin(133 * $stepTrim) + 0.087692 * cos(133 * $stepTrim))"
+        },
+        {
+          "index": 134,
+          "x": "(0.074995 * cos(134 * $stepTrim) - 0.076812 * sin(134 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.074995 * sin(134 * $stepTrim) + 0.076812 * cos(134 * $stepTrim))"
+        },
+        {
+          "index": 135,
+          "x": "(0.085691 * cos(135 * $stepTrim) - 0.064132 * sin(135 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.085691 * sin(135 * $stepTrim) + 0.064132 * cos(135 * $stepTrim))"
+        },
+        {
+          "index": 136,
+          "x": "(0.094298 * cos(136 * $stepTrim) - 0.049952 * sin(136 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.094298 * sin(136 * $stepTrim) + 0.049952 * cos(136 * $stepTrim))"
+        },
+        {
+          "index": 137,
+          "x": "(0.100603 * cos(137 * $stepTrim) - 0.034610 * sin(137 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.100603 * sin(137 * $stepTrim) + 0.034610 * cos(137 * $stepTrim))"
+        },
+        {
+          "index": 138,
+          "x": "(0.104446 * cos(138 * $stepTrim) - 0.018474 * sin(138 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.104446 * sin(138 * $stepTrim) + 0.018474 * cos(138 * $stepTrim))"
+        },
+        {
+          "index": 139,
+          "x": "(0.105726 * cos(139 * $stepTrim) - 0.001936 * sin(139 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.105726 * sin(139 * $stepTrim) + 0.001936 * cos(139 * $stepTrim))"
+        },
+        {
+          "index": 140,
+          "x": "(0.104404 * cos(140 * $stepTrim) - (-0.014598) * sin(140 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.104404 * sin(140 * $stepTrim) + (-0.014598) * cos(140 * $stepTrim))"
+        },
+        {
+          "index": 141,
+          "x": "(0.100505 * cos(141 * $stepTrim) - (-0.030719) * sin(141 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.100505 * sin(141 * $stepTrim) + (-0.030719) * cos(141 * $stepTrim))"
+        },
+        {
+          "index": 142,
+          "x": "(0.094117 * cos(142 * $stepTrim) - (-0.046026) * sin(142 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.094117 * sin(142 * $stepTrim) + (-0.046026) * cos(142 * $stepTrim))"
+        },
+        {
+          "index": 143,
+          "x": "(0.085393 * cos(143 * $stepTrim) - (-0.060132) * sin(143 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.085393 * sin(143 * $stepTrim) + (-0.060132) * cos(143 * $stepTrim))"
+        },
+        {
+          "index": 144,
+          "x": "(0.074546 * cos(144 * $stepTrim) - (-0.072679) * sin(144 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.074546 * sin(144 * $stepTrim) + (-0.072679) * cos(144 * $stepTrim))"
+        },
+        {
+          "index": 145,
+          "x": "(0.061844 * cos(145 * $stepTrim) - (-0.083343) * sin(145 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.061844 * sin(145 * $stepTrim) + (-0.083343) * cos(145 * $stepTrim))"
+        },
+        {
+          "index": 146,
+          "x": "(0.047606 * cos(146 * $stepTrim) - (-0.091848) * sin(146 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.047606 * sin(146 * $stepTrim) + (-0.091848) * cos(146 * $stepTrim))"
+        },
+        {
+          "index": 147,
+          "x": "(0.032192 * cos(147 * $stepTrim) - (-0.097967) * sin(147 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.032192 * sin(147 * $stepTrim) + (-0.097967) * cos(147 * $stepTrim))"
+        },
+        {
+          "index": 148,
+          "x": "(0.015996 * cos(148 * $stepTrim) - (-0.101535) * sin(148 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.015996 * sin(148 * $stepTrim) + (-0.101535) * cos(148 * $stepTrim))"
+        },
+        {
+          "index": 149,
+          "x": "((-0.000563) * cos(149 * $stepTrim) - (-0.102452) * sin(149 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.000563) * sin(149 * $stepTrim) + (-0.102452) * cos(149 * $stepTrim))"
+        },
+        {
+          "index": 150,
+          "x": "((-0.017052) * cos(150 * $stepTrim) - (-0.100685) * sin(150 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.017052) * sin(150 * $stepTrim) + (-0.100685) * cos(150 * $stepTrim))"
+        },
+        {
+          "index": 151,
+          "x": "((-0.033037) * cos(151 * $stepTrim) - (-0.096272) * sin(151 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.033037) * sin(151 * $stepTrim) + (-0.096272) * cos(151 * $stepTrim))"
+        },
+        {
+          "index": 152,
+          "x": "((-0.048093) * cos(152 * $stepTrim) - (-0.089322) * sin(152 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.048093) * sin(152 * $stepTrim) + (-0.089322) * cos(152 * $stepTrim))"
+        },
+        {
+          "index": 153,
+          "x": "((-0.061815) * cos(153 * $stepTrim) - (-0.080011) * sin(153 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.061815) * sin(153 * $stepTrim) + (-0.080011) * cos(153 * $stepTrim))"
+        },
+        {
+          "index": 154,
+          "x": "((-0.073830) * cos(154 * $stepTrim) - (-0.068582) * sin(154 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.073830) * sin(154 * $stepTrim) + (-0.068582) * cos(154 * $stepTrim))"
+        },
+        {
+          "index": 155,
+          "x": "((-0.083807) * cos(155 * $stepTrim) - (-0.055338) * sin(155 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.083807) * sin(155 * $stepTrim) + (-0.055338) * cos(155 * $stepTrim))"
+        },
+        {
+          "index": 156,
+          "x": "((-0.091468) * cos(156 * $stepTrim) - (-0.040632) * sin(156 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.091468) * sin(156 * $stepTrim) + (-0.040632) * cos(156 * $stepTrim))"
+        },
+        {
+          "index": 157,
+          "x": "((-0.096595) * cos(157 * $stepTrim) - (-0.024864) * sin(157 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.096595) * sin(157 * $stepTrim) + (-0.024864) * cos(157 * $stepTrim))"
+        },
+        {
+          "index": 158,
+          "x": "((-0.099039) * cos(158 * $stepTrim) - (-0.008464) * sin(158 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.099039) * sin(158 * $stepTrim) + (-0.008464) * cos(158 * $stepTrim))"
+        },
+        {
+          "index": 159,
+          "x": "((-0.098722) * cos(159 * $stepTrim) - 0.008113 * sin(159 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.098722) * sin(159 * $stepTrim) + 0.008113 * cos(159 * $stepTrim))"
+        },
+        {
+          "index": 160,
+          "x": "((-0.095644) * cos(160 * $stepTrim) - 0.024405 * sin(160 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.095644) * sin(160 * $stepTrim) + 0.024405 * cos(160 * $stepTrim))"
+        },
+        {
+          "index": 161,
+          "x": "((-0.089882) * cos(161 * $stepTrim) - 0.039951 * sin(161 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.089882) * sin(161 * $stepTrim) + 0.039951 * cos(161 * $stepTrim))"
+        },
+        {
+          "index": 162,
+          "x": "((-0.081591) * cos(162 * $stepTrim) - 0.054308 * sin(162 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.081591) * sin(162 * $stepTrim) + 0.054308 * cos(162 * $stepTrim))"
+        },
+        {
+          "index": 163,
+          "x": "((-0.070998) * cos(163 * $stepTrim) - 0.067062 * sin(163 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.070998) * sin(163 * $stepTrim) + 0.067062 * cos(163 * $stepTrim))"
+        },
+        {
+          "index": 164,
+          "x": "((-0.058400) * cos(164 * $stepTrim) - 0.077839 * sin(164 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.058400) * sin(164 * $stepTrim) + 0.077839 * cos(164 * $stepTrim))"
+        },
+        {
+          "index": 165,
+          "x": "((-0.044156) * cos(165 * $stepTrim) - 0.086321 * sin(165 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.044156) * sin(165 * $stepTrim) + 0.086321 * cos(165 * $stepTrim))"
+        },
+        {
+          "index": 166,
+          "x": "((-0.028675) * cos(166 * $stepTrim) - 0.092251 * sin(166 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.028675) * sin(166 * $stepTrim) + 0.092251 * cos(166 * $stepTrim))"
+        },
+        {
+          "index": 167,
+          "x": "((-0.012409) * cos(167 * $stepTrim) - 0.095446 * sin(167 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.012409) * sin(167 * $stepTrim) + 0.095446 * cos(167 * $stepTrim))"
+        },
+        {
+          "index": 168,
+          "x": "(0.004165 * cos(168 * $stepTrim) - 0.095803 * sin(168 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.004165 * sin(168 * $stepTrim) + 0.095803 * cos(168 * $stepTrim))"
+        },
+        {
+          "index": 169,
+          "x": "(0.020551 * cos(169 * $stepTrim) - 0.093299 * sin(169 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.020551 * sin(169 * $stepTrim) + 0.093299 * cos(169 * $stepTrim))"
+        },
+        {
+          "index": 170,
+          "x": "(0.036257 * cos(170 * $stepTrim) - 0.088000 * sin(170 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.036257 * sin(170 * $stepTrim) + 0.088000 * cos(170 * $stepTrim))"
+        },
+        {
+          "index": 171,
+          "x": "(0.050805 * cos(171 * $stepTrim) - 0.080056 * sin(171 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.050805 * sin(171 * $stepTrim) + 0.080056 * cos(171 * $stepTrim))"
+        },
+        {
+          "index": 172,
+          "x": "(0.063747 * cos(172 * $stepTrim) - 0.069699 * sin(172 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.063747 * sin(172 * $stepTrim) + 0.069699 * cos(172 * $stepTrim))"
+        },
+        {
+          "index": 173,
+          "x": "(0.074678 * cos(173 * $stepTrim) - 0.057240 * sin(173 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.074678 * sin(173 * $stepTrim) + 0.057240 * cos(173 * $stepTrim))"
+        },
+        {
+          "index": 174,
+          "x": "(0.083252 * cos(174 * $stepTrim) - 0.043056 * sin(174 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.083252 * sin(174 * $stepTrim) + 0.043056 * cos(174 * $stepTrim))"
+        },
+        {
+          "index": 175,
+          "x": "(0.089193 * cos(175 * $stepTrim) - 0.027583 * sin(175 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.089193 * sin(175 * $stepTrim) + 0.027583 * cos(175 * $stepTrim))"
+        },
+        {
+          "index": 176,
+          "x": "(0.092304 * cos(176 * $stepTrim) - 0.011304 * sin(176 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.092304 * sin(176 * $stepTrim) + 0.011304 * cos(176 * $stepTrim))"
+        },
+        {
+          "index": 177,
+          "x": "(0.092474 * cos(177 * $stepTrim) - (-0.005268) * sin(177 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.092474 * sin(177 * $stepTrim) + (-0.005268) * cos(177 * $stepTrim))"
+        },
+        {
+          "index": 178,
+          "x": "(0.089689 * cos(178 * $stepTrim) - (-0.021605) * sin(178 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.089689 * sin(178 * $stepTrim) + (-0.021605) * cos(178 * $stepTrim))"
+        },
+        {
+          "index": 179,
+          "x": "(0.084024 * cos(179 * $stepTrim) - (-0.037179) * sin(179 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.084024 * sin(179 * $stepTrim) + (-0.037179) * cos(179 * $stepTrim))"
+        },
+        {
+          "index": 180,
+          "x": "(0.075654 * cos(180 * $stepTrim) - (-0.051482) * sin(180 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.075654 * sin(180 * $stepTrim) + (-0.051482) * cos(180 * $stepTrim))"
+        },
+        {
+          "index": 181,
+          "x": "(0.064841 * cos(181 * $stepTrim) - (-0.064039) * sin(181 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.064841 * sin(181 * $stepTrim) + (-0.064039) * cos(181 * $stepTrim))"
+        },
+        {
+          "index": 182,
+          "x": "(0.051934 * cos(182 * $stepTrim) - (-0.074430) * sin(182 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.051934 * sin(182 * $stepTrim) + (-0.074430) * cos(182 * $stepTrim))"
+        },
+        {
+          "index": 183,
+          "x": "(0.037352 * cos(183 * $stepTrim) - (-0.082300) * sin(183 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.037352 * sin(183 * $stepTrim) + (-0.082300) * cos(183 * $stepTrim))"
+        },
+        {
+          "index": 184,
+          "x": "(0.021578 * cos(184 * $stepTrim) - (-0.087375) * sin(184 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.021578 * sin(184 * $stepTrim) + (-0.087375) * cos(184 * $stepTrim))"
+        },
+        {
+          "index": 185,
+          "x": "(0.005142 * cos(185 * $stepTrim) - (-0.089471) * sin(185 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.005142 * sin(185 * $stepTrim) + (-0.089471) * cos(185 * $stepTrim))"
+        },
+        {
+          "index": 186,
+          "x": "((-0.011398) * cos(186 * $stepTrim) - (-0.088505) * sin(186 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.011398) * sin(186 * $stepTrim) + (-0.088505) * cos(186 * $stepTrim))"
+        },
+        {
+          "index": 187,
+          "x": "((-0.027474) * cos(187 * $stepTrim) - (-0.084498) * sin(187 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.027474) * sin(187 * $stepTrim) + (-0.084498) * cos(187 * $stepTrim))"
+        },
+        {
+          "index": 188,
+          "x": "((-0.042526) * cos(188 * $stepTrim) - (-0.077574) * sin(188 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.042526) * sin(188 * $stepTrim) + (-0.077574) * cos(188 * $stepTrim))"
+        },
+        {
+          "index": 189,
+          "x": "((-0.056022) * cos(189 * $stepTrim) - (-0.067965) * sin(189 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.056022) * sin(189 * $stepTrim) + (-0.067965) * cos(189 * $stepTrim))"
+        },
+        {
+          "index": 190,
+          "x": "((-0.067479) * cos(190 * $stepTrim) - (-0.055999) * sin(190 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.067479) * sin(190 * $stepTrim) + (-0.055999) * cos(190 * $stepTrim))"
+        },
+        {
+          "index": 191,
+          "x": "((-0.076480) * cos(191 * $stepTrim) - (-0.042092) * sin(191 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.076480) * sin(191 * $stepTrim) + (-0.042092) * cos(191 * $stepTrim))"
+        },
+        {
+          "index": 192,
+          "x": "((-0.082690) * cos(192 * $stepTrim) - (-0.026735) * sin(192 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.082690) * sin(192 * $stepTrim) + (-0.026735) * cos(192 * $stepTrim))"
+        },
+        {
+          "index": 193,
+          "x": "((-0.085873) * cos(193 * $stepTrim) - (-0.010478) * sin(193 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.085873) * sin(193 * $stepTrim) + (-0.010478) * cos(193 * $stepTrim))"
+        },
+        {
+          "index": 194,
+          "x": "((-0.085898) * cos(194 * $stepTrim) - 0.006086 * sin(194 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.085898) * sin(194 * $stepTrim) + 0.006086 * cos(194 * $stepTrim))"
+        },
+        {
+          "index": 195,
+          "x": "((-0.082751) * cos(195 * $stepTrim) - 0.022348 * sin(195 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.082751) * sin(195 * $stepTrim) + 0.022348 * cos(195 * $stepTrim))"
+        },
+        {
+          "index": 196,
+          "x": "((-0.076534) * cos(196 * $stepTrim) - 0.037700 * sin(196 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.076534) * sin(196 * $stepTrim) + 0.037700 * cos(196 * $stepTrim))"
+        },
+        {
+          "index": 197,
+          "x": "((-0.067467) * cos(197 * $stepTrim) - 0.051560 * sin(197 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.067467) * sin(197 * $stepTrim) + 0.051560 * cos(197 * $stepTrim))"
+        },
+        {
+          "index": 198,
+          "x": "((-0.055882) * cos(198 * $stepTrim) - 0.063396 * sin(198 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.055882) * sin(198 * $stepTrim) + 0.063396 * cos(198 * $stepTrim))"
+        },
+        {
+          "index": 199,
+          "x": "((-0.042211) * cos(199 * $stepTrim) - 0.072743 * sin(199 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.042211) * sin(199 * $stepTrim) + 0.072743 * cos(199 * $stepTrim))"
+        },
+        {
+          "index": 200,
+          "x": "((-0.026973) * cos(200 * $stepTrim) - 0.079230 * sin(200 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.026973) * sin(200 * $stepTrim) + 0.079230 * cos(200 * $stepTrim))"
+        },
+        {
+          "index": 201,
+          "x": "((-0.010757) * cos(201 * $stepTrim) - 0.082588 * sin(201 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.010757) * sin(201 * $stepTrim) + 0.082588 * cos(201 * $stepTrim))"
+        },
+        {
+          "index": 202,
+          "x": "(0.005802 * cos(202 * $stepTrim) - 0.082671 * sin(202 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.005802 * sin(202 * $stepTrim) + 0.082671 * cos(202 * $stepTrim))"
+        },
+        {
+          "index": 203,
+          "x": "(0.022046 * cos(203 * $stepTrim) - 0.079458 * sin(203 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.022046 * sin(203 * $stepTrim) + 0.079458 * cos(203 * $stepTrim))"
+        },
+        {
+          "index": 204,
+          "x": "(0.037320 * cos(204 * $stepTrim) - 0.073065 * sin(204 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.037320 * sin(204 * $stepTrim) + 0.073065 * cos(204 * $stepTrim))"
+        },
+        {
+          "index": 205,
+          "x": "(0.050997 * cos(205 * $stepTrim) - 0.063734 * sin(205 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.050997 * sin(205 * $stepTrim) + 0.063734 * cos(205 * $stepTrim))"
+        },
+        {
+          "index": 206,
+          "x": "(0.062510 * cos(206 * $stepTrim) - 0.051835 * sin(206 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.062510 * sin(206 * $stepTrim) + 0.051835 * cos(206 * $stepTrim))"
+        },
+        {
+          "index": 207,
+          "x": "(0.071368 * cos(207 * $stepTrim) - 0.037849 * sin(207 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.071368 * sin(207 * $stepTrim) + 0.037849 * cos(207 * $stepTrim))"
+        },
+        {
+          "index": 208,
+          "x": "(0.077188 * cos(208 * $stepTrim) - 0.022350 * sin(208 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.077188 * sin(208 * $stepTrim) + 0.022350 * cos(208 * $stepTrim))"
+        },
+        {
+          "index": 209,
+          "x": "(0.079707 * cos(209 * $stepTrim) - 0.005989 * sin(209 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.079707 * sin(209 * $stepTrim) + 0.005989 * cos(209 * $stepTrim))"
+        },
+        {
+          "index": 210,
+          "x": "(0.078801 * cos(210 * $stepTrim) - (-0.010540) * sin(210 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.078801 * sin(210 * $stepTrim) + (-0.010540) * cos(210 * $stepTrim))"
+        },
+        {
+          "index": 211,
+          "x": "(0.074491 * cos(211 * $stepTrim) - (-0.026522) * sin(211 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.074491 * sin(211 * $stepTrim) + (-0.026522) * cos(211 * $stepTrim))"
+        },
+        {
+          "index": 212,
+          "x": "(0.066947 * cos(212 * $stepTrim) - (-0.041255) * sin(212 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.066947 * sin(212 * $stepTrim) + (-0.041255) * cos(212 * $stepTrim))"
+        },
+        {
+          "index": 213,
+          "x": "(0.056486 * cos(213 * $stepTrim) - (-0.054081) * sin(213 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.056486 * sin(213 * $stepTrim) + (-0.054081) * cos(213 * $stepTrim))"
+        },
+        {
+          "index": 214,
+          "x": "(0.043560 * cos(214 * $stepTrim) - (-0.064417) * sin(214 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.043560 * sin(214 * $stepTrim) + (-0.064417) * cos(214 * $stepTrim))"
+        },
+        {
+          "index": 215,
+          "x": "(0.028740 * cos(215 * $stepTrim) - (-0.071782) * sin(215 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.028740 * sin(215 * $stepTrim) + (-0.071782) * cos(215 * $stepTrim))"
+        },
+        {
+          "index": 216,
+          "x": "(0.012692 * cos(216 * $stepTrim) - (-0.075823) * sin(216 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.012692 * sin(216 * $stepTrim) + (-0.075823) * cos(216 * $stepTrim))"
+        },
+        {
+          "index": 217,
+          "x": "((-0.003848) * cos(217 * $stepTrim) - (-0.076335) * sin(217 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.003848) * sin(217 * $stepTrim) + (-0.076335) * cos(217 * $stepTrim))"
+        },
+        {
+          "index": 218,
+          "x": "((-0.020109) * cos(218 * $stepTrim) - (-0.073274) * sin(218 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.020109) * sin(218 * $stepTrim) + (-0.073274) * cos(218 * $stepTrim))"
+        },
+        {
+          "index": 219,
+          "x": "((-0.035321) * cos(219 * $stepTrim) - (-0.066765) * sin(219 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.035321) * sin(219 * $stepTrim) + (-0.066765) * cos(219 * $stepTrim))"
+        },
+        {
+          "index": 220,
+          "x": "((-0.048749) * cos(220 * $stepTrim) - (-0.057099) * sin(220 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.048749) * sin(220 * $stepTrim) + (-0.057099) * cos(220 * $stepTrim))"
+        },
+        {
+          "index": 221,
+          "x": "((-0.059732) * cos(221 * $stepTrim) - (-0.044726) * sin(221 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.059732) * sin(221 * $stepTrim) + (-0.044726) * cos(221 * $stepTrim))"
+        },
+        {
+          "index": 222,
+          "x": "((-0.067717) * cos(222 * $stepTrim) - (-0.030237) * sin(222 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.067717) * sin(222 * $stepTrim) + (-0.030237) * cos(222 * $stepTrim))"
+        },
+        {
+          "index": 223,
+          "x": "((-0.072291) * cos(223 * $stepTrim) - (-0.014340) * sin(223 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.072291) * sin(223 * $stepTrim) + (-0.014340) * cos(223 * $stepTrim))"
+        },
+        {
+          "index": 224,
+          "x": "((-0.073201) * cos(224 * $stepTrim) - 0.002176 * sin(224 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.073201) * sin(224 * $stepTrim) + 0.002176 * cos(224 * $stepTrim))"
+        },
+        {
+          "index": 225,
+          "x": "((-0.070381) * cos(225 * $stepTrim) - 0.018475 * sin(225 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.070381) * sin(225 * $stepTrim) + 0.018475 * cos(225 * $stepTrim))"
+        },
+        {
+          "index": 226,
+          "x": "((-0.063952) * cos(226 * $stepTrim) - 0.033713 * sin(226 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.063952) * sin(226 * $stepTrim) + 0.033713 * cos(226 * $stepTrim))"
+        },
+        {
+          "index": 227,
+          "x": "((-0.054227) * cos(227 * $stepTrim) - 0.047090 * sin(227 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.054227) * sin(227 * $stepTrim) + 0.047090 * cos(227 * $stepTrim))"
+        },
+        {
+          "index": 228,
+          "x": "((-0.041700) * cos(228 * $stepTrim) - 0.057886 * sin(228 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.041700) * sin(228 * $stepTrim) + 0.057886 * cos(228 * $stepTrim))"
+        },
+        {
+          "index": 229,
+          "x": "((-0.027024) * cos(229 * $stepTrim) - 0.065506 * sin(229 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.027024) * sin(229 * $stepTrim) + 0.065506 * cos(229 * $stepTrim))"
+        },
+        {
+          "index": 230,
+          "x": "((-0.010983) * cos(230 * $stepTrim) - 0.069515 * sin(230 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.010983) * sin(230 * $stepTrim) + 0.069515 * cos(230 * $stepTrim))"
+        },
+        {
+          "index": 231,
+          "x": "(0.005550 * cos(231 * $stepTrim) - 0.069669 * sin(231 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.005550 * sin(231 * $stepTrim) + 0.069669 * cos(231 * $stepTrim))"
+        },
+        {
+          "index": 232,
+          "x": "(0.021655 * cos(232 * $stepTrim) - 0.065934 * sin(232 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.021655 * sin(232 * $stepTrim) + 0.065934 * cos(232 * $stepTrim))"
+        },
+        {
+          "index": 233,
+          "x": "(0.036418 * cos(233 * $stepTrim) - 0.058495 * sin(233 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.036418 * sin(233 * $stepTrim) + 0.058495 * cos(233 * $stepTrim))"
+        },
+        {
+          "index": 234,
+          "x": "(0.048982 * cos(234 * $stepTrim) - 0.047753 * sin(234 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.048982 * sin(234 * $stepTrim) + 0.047753 * cos(234 * $stepTrim))"
+        },
+        {
+          "index": 235,
+          "x": "(0.058600 * cos(235 * $stepTrim) - 0.034311 * sin(235 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.058600 * sin(235 * $stepTrim) + 0.034311 * cos(235 * $stepTrim))"
+        },
+        {
+          "index": 236,
+          "x": "(0.064684 * cos(236 * $stepTrim) - 0.018944 * sin(236 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.064684 * sin(236 * $stepTrim) + 0.018944 * cos(236 * $stepTrim))"
+        },
+        {
+          "index": 237,
+          "x": "(0.066843 * cos(237 * $stepTrim) - 0.002560 * sin(237 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.066843 * sin(237 * $stepTrim) + 0.002560 * cos(237 * $stepTrim))"
+        },
+        {
+          "index": 238,
+          "x": "(0.064917 * cos(238 * $stepTrim) - (-0.013853) * sin(238 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.064917 * sin(238 * $stepTrim) + (-0.013853) * cos(238 * $stepTrim))"
+        },
+        {
+          "index": 239,
+          "x": "(0.058997 * cos(239 * $stepTrim) - (-0.029279) * sin(239 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.058997 * sin(239 * $stepTrim) + (-0.029279) * cos(239 * $stepTrim))"
+        },
+        {
+          "index": 240,
+          "x": "(0.049422 * cos(240 * $stepTrim) - (-0.042743) * sin(240 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.049422 * sin(240 * $stepTrim) + (-0.042743) * cos(240 * $stepTrim))"
+        },
+        {
+          "index": 241,
+          "x": "(0.036776 * cos(241 * $stepTrim) - (-0.053373) * sin(241 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.036776 * sin(241 * $stepTrim) + (-0.053373) * cos(241 * $stepTrim))"
+        },
+        {
+          "index": 242,
+          "x": "(0.021854 * cos(242 * $stepTrim) - (-0.060459) * sin(242 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.021854 * sin(242 * $stepTrim) + (-0.060459) * cos(242 * $stepTrim))"
+        },
+        {
+          "index": 243,
+          "x": "(0.005621 * cos(243 * $stepTrim) - (-0.063505) * sin(243 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.005621 * sin(243 * $stepTrim) + (-0.063505) * cos(243 * $stepTrim))"
+        },
+        {
+          "index": 244,
+          "x": "((-0.010849) * cos(244 * $stepTrim) - (-0.062278) * sin(244 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.010849) * sin(244 * $stepTrim) + (-0.062278) * cos(244 * $stepTrim))"
+        },
+        {
+          "index": 245,
+          "x": "((-0.026437) * cos(245 * $stepTrim) - (-0.056824) * sin(245 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.026437) * sin(245 * $stepTrim) + (-0.056824) * cos(245 * $stepTrim))"
+        },
+        {
+          "index": 246,
+          "x": "((-0.040056) * cos(246 * $stepTrim) - (-0.047488) * sin(246 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.040056) * sin(246 * $stepTrim) + (-0.047488) * cos(246 * $stepTrim))"
+        },
+        {
+          "index": 247,
+          "x": "((-0.050732) * cos(247 * $stepTrim) - (-0.034894) * sin(247 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.050732) * sin(247 * $stepTrim) + (-0.034894) * cos(247 * $stepTrim))"
+        },
+        {
+          "index": 248,
+          "x": "((-0.057674) * cos(248 * $stepTrim) - (-0.019917) * sin(248 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.057674) * sin(248 * $stepTrim) + (-0.019917) * cos(248 * $stepTrim))"
+        },
+        {
+          "index": 249,
+          "x": "((-0.060345) * cos(249 * $stepTrim) - (-0.003628) * sin(249 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.060345) * sin(249 * $stepTrim) + (-0.003628) * cos(249 * $stepTrim))"
+        },
+        {
+          "index": 250,
+          "x": "((-0.058509) * cos(250 * $stepTrim) - 0.012774 * sin(250 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.058509) * sin(250 * $stepTrim) + 0.012774 * cos(250 * $stepTrim))"
+        },
+        {
+          "index": 251,
+          "x": "((-0.052263) * cos(251 * $stepTrim) - 0.028049 * sin(251 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.052263) * sin(251 * $stepTrim) + 0.028049 * cos(251 * $stepTrim))"
+        },
+        {
+          "index": 252,
+          "x": "((-0.042050) * cos(252 * $stepTrim) - 0.041009 * sin(252 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.042050) * sin(252 * $stepTrim) + 0.041009 * cos(252 * $stepTrim))"
+        },
+        {
+          "index": 253,
+          "x": "((-0.028635) * cos(253 * $stepTrim) - 0.050613 * sin(253 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.028635) * sin(253 * $stepTrim) + 0.050613 * cos(253 * $stepTrim))"
+        },
+        {
+          "index": 254,
+          "x": "((-0.013064) * cos(254 * $stepTrim) - 0.056060 * sin(254 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.013064) * sin(254 * $stepTrim) + 0.056060 * cos(254 * $stepTrim))"
+        },
+        {
+          "index": 255,
+          "x": "(0.003410 * cos(255 * $stepTrim) - 0.056864 * sin(255 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.003410 * sin(255 * $stepTrim) + 0.056864 * cos(255 * $stepTrim))"
+        },
+        {
+          "index": 256,
+          "x": "(0.019420 * cos(256 * $stepTrim) - 0.052912 * sin(256 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.019420 * sin(256 * $stepTrim) + 0.052912 * cos(256 * $stepTrim))"
+        },
+        {
+          "index": 257,
+          "x": "(0.033598 * cos(257 * $stepTrim) - 0.044494 * sin(257 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.033598 * sin(257 * $stepTrim) + 0.044494 * cos(257 * $stepTrim))"
+        },
+        {
+          "index": 258,
+          "x": "(0.044690 * cos(258 * $stepTrim) - 0.032298 * sin(258 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.044690 * sin(258 * $stepTrim) + 0.032298 * cos(258 * $stepTrim))"
+        },
+        {
+          "index": 259,
+          "x": "(0.051677 * cos(259 * $stepTrim) - 0.017368 * sin(259 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.051677 * sin(259 * $stepTrim) + 0.017368 * cos(259 * $stepTrim))"
+        },
+        {
+          "index": 260,
+          "x": "(0.053878 * cos(260 * $stepTrim) - 0.001035 * sin(260 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.053878 * sin(260 * $stepTrim) + 0.001035 * cos(260 * $stepTrim))"
+        },
+        {
+          "index": 261,
+          "x": "(0.051037 * cos(261 * $stepTrim) - (-0.015195) * sin(261 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.051037 * sin(261 * $stepTrim) + (-0.015195) * cos(261 * $stepTrim))"
+        },
+        {
+          "index": 262,
+          "x": "(0.043369 * cos(262 * $stepTrim) - (-0.029776) * sin(262 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.043369 * sin(262 * $stepTrim) + (-0.029776) * cos(262 * $stepTrim))"
+        },
+        {
+          "index": 263,
+          "x": "(0.031566 * cos(263 * $stepTrim) - (-0.041266) * sin(263 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.031566 * sin(263 * $stepTrim) + (-0.041266) * cos(263 * $stepTrim))"
+        },
+        {
+          "index": 264,
+          "x": "(0.016761 * cos(264 * $stepTrim) - (-0.048478) * sin(264 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.016761 * sin(264 * $stepTrim) + (-0.048478) * cos(264 * $stepTrim))"
+        },
+        {
+          "index": 265,
+          "x": "(0.000437 * cos(265 * $stepTrim) - (-0.050623) * sin(265 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.000437 * sin(265 * $stepTrim) + (-0.050623) * cos(265 * $stepTrim))"
+        },
+        {
+          "index": 266,
+          "x": "((-0.015708) * cos(266 * $stepTrim) - (-0.047413) * sin(266 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.015708) * sin(266 * $stepTrim) + (-0.047413) * cos(266 * $stepTrim))"
+        },
+        {
+          "index": 267,
+          "x": "((-0.029927) * cos(267 * $stepTrim) - (-0.039127) * sin(267 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.029927) * sin(267 * $stepTrim) + (-0.039127) * cos(267 * $stepTrim))"
+        },
+        {
+          "index": 268,
+          "x": "((-0.040617) * cos(268 * $stepTrim) - (-0.026620) * sin(268 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.040617) * sin(268 * $stepTrim) + (-0.026620) * cos(268 * $stepTrim))"
+        },
+        {
+          "index": 269,
+          "x": "((-0.046512) * cos(269 * $stepTrim) - (-0.011264) * sin(269 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.046512) * sin(269 * $stepTrim) + (-0.011264) * cos(269 * $stepTrim))"
+        },
+        {
+          "index": 270,
+          "x": "((-0.046854) * cos(270 * $stepTrim) - 0.005177 * sin(270 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.046854) * sin(270 * $stepTrim) + 0.005177 * cos(270 * $stepTrim))"
+        },
+        {
+          "index": 271,
+          "x": "((-0.041524) * cos(271 * $stepTrim) - 0.020729 * sin(271 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.041524) * sin(271 * $stepTrim) + 0.020729 * cos(271 * $stepTrim))"
+        },
+        {
+          "index": 272,
+          "x": "((-0.031107) * cos(272 * $stepTrim) - 0.033440 * sin(272 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.031107) * sin(272 * $stepTrim) + 0.033440 * cos(272 * $stepTrim))"
+        },
+        {
+          "index": 273,
+          "x": "((-0.016866) * cos(273 * $stepTrim) - 0.041632 * sin(273 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.016866) * sin(273 * $stepTrim) + 0.041632 * cos(273 * $stepTrim))"
+        },
+        {
+          "index": 274,
+          "x": "((-0.000636) * cos(274 * $stepTrim) - 0.044150 * sin(274 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.000636) * sin(274 * $stepTrim) + 0.044150 * cos(274 * $stepTrim))"
+        },
+        {
+          "index": 275,
+          "x": "(0.015384 * cos(275 * $stepTrim) - 0.040557 * sin(275 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.015384 * sin(275 * $stepTrim) + 0.040557 * cos(275 * $stepTrim))"
+        },
+        {
+          "index": 276,
+          "x": "(0.028913 * cos(276 * $stepTrim) - 0.031265 * sin(276 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.028913 * sin(276 * $stepTrim) + 0.031265 * cos(276 * $stepTrim))"
+        },
+        {
+          "index": 277,
+          "x": "(0.037913 * cos(277 * $stepTrim) - 0.017550 * sin(277 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.037913 * sin(277 * $stepTrim) + 0.017550 * cos(277 * $stepTrim))"
+        },
+        {
+          "index": 278,
+          "x": "(0.040931 * cos(278 * $stepTrim) - 0.001432 * sin(278 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.040931 * sin(278 * $stepTrim) + 0.001432 * cos(278 * $stepTrim))"
+        },
+        {
+          "index": 279,
+          "x": "(0.037378 * cos(279 * $stepTrim) - (-0.014568) * sin(279 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.037378 * sin(279 * $stepTrim) + (-0.014568) * cos(279 * $stepTrim))"
+        },
+        {
+          "index": 280,
+          "x": "(0.027721 * cos(280 * $stepTrim) - (-0.027801) * sin(280 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.027721 * sin(280 * $stepTrim) + (-0.027801) * cos(280 * $stepTrim))"
+        },
+        {
+          "index": 281,
+          "x": "(0.013508 * cos(281 * $stepTrim) - (-0.035929) * sin(281 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.013508 * sin(281 * $stepTrim) + (-0.035929) * cos(281 * $stepTrim))"
+        },
+        {
+          "index": 282,
+          "x": "((-0.002790) * cos(282 * $stepTrim) - (-0.037385) * sin(282 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.002790) * sin(282 * $stepTrim) + (-0.037385) * cos(282 * $stepTrim))"
+        },
+        {
+          "index": 283,
+          "x": "((-0.018143) * cos(283 * $stepTrim) - (-0.031754) * sin(283 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.018143) * sin(283 * $stepTrim) + (-0.031754) * cos(283 * $stepTrim))"
+        },
+        {
+          "index": 284,
+          "x": "((-0.029491) * cos(284 * $stepTrim) - (-0.019995) * sin(284 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.029491) * sin(284 * $stepTrim) + (-0.019995) * cos(284 * $stepTrim))"
+        },
+        {
+          "index": 285,
+          "x": "((-0.034382) * cos(285 * $stepTrim) - (-0.004416) * sin(285 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.034382) * sin(285 * $stepTrim) + (-0.004416) * cos(285 * $stepTrim))"
+        },
+        {
+          "index": 286,
+          "x": "((-0.031589) * cos(286 * $stepTrim) - 0.011658 * sin(286 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.031589) * sin(286 * $stepTrim) + 0.011658 * cos(286 * $stepTrim))"
+        },
+        {
+          "index": 287,
+          "x": "((-0.021567) * cos(287 * $stepTrim) - 0.024512 * sin(287 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.021567) * sin(287 * $stepTrim) + 0.024512 * cos(287 * $stepTrim))"
+        },
+        {
+          "index": 288,
+          "x": "((-0.006590) * cos(288 * $stepTrim) - 0.030899 * sin(288 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.006590) * sin(288 * $stepTrim) + 0.030899 * cos(288 * $stepTrim))"
+        },
+        {
+          "index": 289,
+          "x": "(0.009558 * cos(289 * $stepTrim) - 0.028967 * sin(289 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.009558 * sin(289 * $stepTrim) + 0.028967 * cos(289 * $stepTrim))"
+        },
+        {
+          "index": 290,
+          "x": "(0.022389 * cos(290 * $stepTrim) - 0.019011 * sin(290 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.022389 * sin(290 * $stepTrim) + 0.019011 * cos(290 * $stepTrim))"
+        },
+        {
+          "index": 291,
+          "x": "(0.027942 * cos(291 * $stepTrim) - 0.003776 * sin(291 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.027942 * sin(291 * $stepTrim) + 0.003776 * cos(291 * $stepTrim))"
+        },
+        {
+          "index": 292,
+          "x": "(0.024171 * cos(292 * $stepTrim) - (-0.011966) * sin(292 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.024171 * sin(292 * $stepTrim) + (-0.011966) * cos(292 * $stepTrim))"
+        },
+        {
+          "index": 293,
+          "x": "(0.012077 * cos(293 * $stepTrim) - (-0.022672) * sin(293 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.012077 * sin(293 * $stepTrim) + (-0.022672) * cos(293 * $stepTrim))"
+        },
+        {
+          "index": 294,
+          "x": "((-0.003979) * cos(294 * $stepTrim) - (-0.024012) * sin(294 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.003979) * sin(294 * $stepTrim) + (-0.024012) * cos(294 * $stepTrim))"
+        },
+        {
+          "index": 295,
+          "x": "((-0.017295) * cos(295 * $stepTrim) - (-0.015029) * sin(295 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.017295) * sin(295 * $stepTrim) + (-0.015029) * cos(295 * $stepTrim))"
+        },
+        {
+          "index": 296,
+          "x": "((-0.021390) * cos(296 * $stepTrim) - 0.000438 * sin(296 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.021390) * sin(296 * $stepTrim) + 0.000438 * cos(296 * $stepTrim))"
+        },
+        {
+          "index": 297,
+          "x": "((-0.013611) * cos(297 * $stepTrim) - 0.014329 * sin(297 * $stepTrim))",
+          "y": 0.0067,
+          "z": "((-0.013611) * sin(297 * $stepTrim) + 0.014329 * cos(297 * $stepTrim))"
+        },
+        {
+          "index": 298,
+          "x": "(0.001796 * cos(298 * $stepTrim) - 0.017899 * sin(298 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.001796 * sin(298 * $stepTrim) + 0.017899 * cos(298 * $stepTrim))"
+        },
+        {
+          "index": 299,
+          "x": "(0.013909 * cos(299 * $stepTrim) - 0.007964 * sin(299 * $stepTrim))",
+          "y": 0.0067,
+          "z": "(0.013909 * sin(299 * $stepTrim) + 0.007964 * cos(299 * $stepTrim))"
+        }
+      ]
+    }
+  ],
+  "parameters": {
+    "ip": {
+      "type": "string",
+      "default": "192.168.1.99",
+      "label": "Controller IP",
+      "description": "Static IP of the pixel controller"
+    },
+    "stepTrim": {
+      "type": "float",
+      "default": 0.0,
+      "min": -0.5,
+      "max": 0.5,
+      "label": "Step trim rad LED",
+      "description": "Extra angular step added per LED along the spiral. 0 is the baked geometry; positive makes the winding tighter, negative looser. Nudge until the preview matches the real strip."
+    },
+    "spin": {
+      "type": "float",
+      "default": 0.0,
+      "min": -360.0,
+      "max": 360.0,
+      "label": "Spin",
+      "description": "Rotate the whole spiral around its center axis (degrees). Positive values turn clockwise viewed from +Y."
+    }
+  },
+  "transforms": [
+    {
+      "yaw": "$spin"
+    }
+  ]
+}
